@@ -10,7 +10,7 @@ Dispatch a fresh context that had no part in building the work. Give it the prod
 The reviewer:
 
 1. **Runs the product.** Walks the path a real user takes, end to end. Reading the code is not reviewing; a review with nothing executed is worthless and gets discarded.
-2. **Tries to break it.** Boundary inputs, wrong inputs, missing and corrupted files or data, interrupted operations, overlapping runs. Where auth or permissions exist, acts as the least-privileged user and attempts what should be forbidden.
+2. **Tries to break it.** Read `references/attack-playbook.md` and run what applies — boundary and hostile inputs, corrupted data, interrupted and overlapping runs, forced dependency failures, real least-privileged users attempting the forbidden.
 3. **Distrusts the tests.** A test that asserts current behavior may be asserting a bug. Judge behavior against the promises, not against the test suite.
 4. **Reports only what it reproduced**, with the exact command and what happened, severity-tagged: breaks a promise · real defect · polish. Then one verdict line per promise: kept, broken, or not judged.
 
