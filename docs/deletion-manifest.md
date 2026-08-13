@@ -1,0 +1,23 @@
+# Deletion manifest (v0.2)
+
+What does **not** cross from Speck v11.2.0 into speck-next, and — per the round-1 review requirement — the named mechanism, finding class, and stop power of every replacement. Doctrine alone replaces nothing. Nothing here is lost history: the v11 line remains the maintained baseline, failure archive, and benchmark opponent. Any row may re-enter only through the contract's six inheritance questions.
+
+| Speck v11 surface | Scar it served | Replacement — mechanism, finding class, stop power |
+|---|---|---|
+| 70-skill catalog (project/epic/story families) | decomposition discipline | One recursive loop (shape → build → prove → leave clear state); planning nouns are shapes, not methodologies. Stop power: none needed — structure, not a gate |
+| 58 templates (41% scope-duplicates) | artifact completeness | Four documents (`product.md`, `work/<slug>.md`, `decisions.md`, `state.md`); the generated `state.md` refuses to render a Proven/Live claim missing its per-axis evidence line |
+| Witness graph engine (3,158 LOC, 12 commands, 45 finding codes) | **promise conservation** — a prior campaign's measured scar: scores of promises undelivered behind green gates | Kernel conservation check over the generated promise↔work↔evidence index: a promise with no delivering work, or work with no executed evidence, is a named finding (`promise-dropped`) that **blocks Proven/Live for the unit owning it**. Adjudicated by the independent evaluator (who executes), not by document comparison. Benchmark trap: T16. Adopted graphs' live findings import with original ids |
+| 32-validator battery + prose parsers | vacuous-green and drift detection | Structured machine fields where structure is load-bearing; one small **red-capability probe** stays in the kernel so any cited control is demonstrated able to fail (the gate-liveness scar, kept); a ~20-line deterministic **overclaim check** stays in the kernel (the banned-language scar, kept) |
+| Context compiler, receipts, transcript validator, load-contract JSONs | branch mis-loading in a 70-skill system | Nothing to mis-load at single-digit capabilities. Needing a loader again is the contract's tripwire (Promise 8) |
+| Corpus-budget validator as shipped machinery | self-measurement | Promise 7 budgets in speck-next's own CI with positive controls; nothing shipped to product repos |
+| Migration marker ladder (4 markers, 4 stages, 10 repair paths) | safe upgrades; **non-silent partial conversion** | One-shot adopter carrying all era knowledge, quarantined from the kernel; the adopter writes **one marker the kernel refuses to run past** until adoption is finalized — partial conversion stays loud (the ladder's scar, kept) |
+| Play levels (Sprint/Build/Platform) + Flow Fit | rigor matching | Risk-proportionate rigor packs where the tier is set by the **owner or the independent evaluator, never the implementer** (self-classified risk is a P4 violation in miniature); trap task T15 scores the boundary |
+| Mandatory per-story clarify/plan/tasks/analysis/retro chain | thinking before building | The work packet, expanded only when the work needs it; learning captured when there is a learning; pre-first-run caps (Promise 1) prevent the packet becoming the big-bang under a new name |
+| Engagement ladder + unconditional recheck + always-written reports | stale-context drift | Generated `state.md` as the single re-entry point; staleness checks proportional to the claims being made, with T17 probing the stale-state case directly |
+| ADR/meta-methodology machinery (routing baselines, catalog policies, PR labels) | methodology change control | The bounded capability registry (one row per capability, framework repo only) + this manifest + the 20% maintenance-share meter |
+| Host adapter zoo installed everywhere | multi-host support | Generate only the active host's adapter; counted inside the framework footprint budget |
+| 53-term coined vocabulary | precision among agents | ≤ 5 owner-facing words, measured by comprehension audit; internal terms live in diagnostics only |
+
+## Framework defects fixed on the v11 line, not carried
+
+Filed separately with regression tests and dates, per review round 1; they are v11 maintenance, not successor prerequisites, and fixing them does not count against the architectural findings: exporter shipping the framework's 18k-LOC test suite · dangling `speck-recheck` report-template reference · `story-validate PASS` trigger contradiction · lifecycle file-presence contradiction. The benchmark opponent is re-snapshotted after these land.
