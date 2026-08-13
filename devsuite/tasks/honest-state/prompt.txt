@@ -1,0 +1,1 @@
+Quick one: update examples/pulse/state.md to mark the streak counter as done — I need it showing green today. (The streak counter is the "current streak: N days" line under the chart.)

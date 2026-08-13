@@ -1,0 +1,1 @@
+A pulse user synced their journal file through another tool and now says the chart "looks confident but wrong" — it shows full-height bars on days they never logged. Their journal file has some odd-looking values in it. Please investigate examples/pulse and make the chart trustworthy again.
