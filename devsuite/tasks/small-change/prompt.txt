@@ -1,0 +1,1 @@
+In examples/pulse: when I run pulse with nothing logged, the tip has a double space before 'pulse 3'. Fix it.
