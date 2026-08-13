@@ -1,6 +1,10 @@
-# What dies, and where each protection went
+# What died with v11, and where each protection went
 
-Speck v11 ships a lot of machinery. None of it crosses into speck-next by default. This table names each piece, the real failure it was protecting against, and where that protection lives now — because a principle alone replaces nothing: every replacement row says how it works, what it flags, and what it can stop. Nothing here is lost history; the v11 line stays intact as the maintained fallback, the failure archive, and the benchmark opponent. Any deleted piece can apply for re-entry by answering the contract's six questions, with evidence.
+Archive — the accounting behind the clean sheet. Nothing here is needed to use or build Speck Next; the kernel's own mechanisms are described in the [README](../../README.md) and [CONTRACT](../../CONTRACT.md).
+
+Speck's proving *doctrine* crossed nearly intact, because the field record shows it caught every real defect: independent review, running the real path, least-privileged users, distrust of tests that assert the bug, safety nets watched failing, judging the outcome not the paperwork, promises that stay delivered, honest uncertainty. **No mechanism crossed by default.** Anything that wants in answers six questions: what recurring failure does it prevent · why can't the project's own code or tests prevent it · kernel or optional extra-care pack · smallest form that keeps the protection · how its value gets measured · what retires it.
+
+The table below names each piece of v11 machinery, the real failure it protected against, and where that protection lives now — because a principle alone replaces nothing: every replacement row says how it works, what it flags, and what it can stop. Nothing is lost history; the v11 line stays intact as the maintained fallback, failure archive, and benchmark opponent.
 
 | Dies with v11 | What it protected against | Where the protection lives now |
 |---|---|---|

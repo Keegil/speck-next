@@ -1,6 +1,6 @@
 # speck-next · Product contract
 
-Status: **v0.4.** Survived attack review round 1 and its closure check, then failed the owner's language review — v0.3 had started speaking the same foreign dialect it bans — and finally a fresh-reader test on the rewrite ([docs/reviews/](docs/reviews/)). This version folds all of it. Next step: the rules freeze.
+The promises Speck Next makes, each with the check that can fail it. (v0.5 — how this document has been attacked and revised lives in [docs/reviews/](docs/reviews/).)
 
 ## The job
 
@@ -63,20 +63,6 @@ A decision is big enough to weigh against this list when it defers, simplifies, 
 
 Proving process compliance · carrying old-Speck compatibility in the kernel (the upgrader owns all of it) · installing adapters for every host (generate the one in use) · replacing the project's own tests and CI · writing the whole spec before building anything · shipping method-management machinery into product repos.
 
-## What crosses from Speck
+## Until it wins
 
-Speck's proving *doctrine* crosses nearly intact, because the field record shows it caught every real defect: independent review, running the real path, least-privileged users, distrust of tests that assert the bug, safety nets watched failing, judging the outcome not the paperwork, promises that stay delivered, honest uncertainty. **No mechanism crosses by default.** Anything that wants in answers six questions: what recurring failure does it prevent · why can't the project's own code or tests prevent it · kernel or optional extra-care pack · smallest form that keeps the protection · how its value gets measured · what retires it. Where the [deletion manifest](docs/deletion-manifest.md) replaces a mechanism, the replacement row names how it works, what it flags, and what it can stop — a principle alone replaces nothing.
-
-## How this experiment can fail
-
-Judged on pre-declared first builds: the task set, attempt counts, and at least three runs per task per system are fixed at the rules freeze, and results are immutable once run. **The failure list is exactly the five benchmark checks — each passes or fails on its own, and any one failing kills the thesis:**
-
-1. **Bug-catching**, per bug type, against old Speck's frozen results — on the published *and* the secret planted bugs, overclaim types included.
-2. **Product quality**, on all four verdicts.
-3. **Owner experience** — interruptions, comprehension of the closing state, and the felt rating (constraint 4).
-4. **Total cost** — tokens, minutes, method files, installed footprint; any promise 7 limit blown fails this check, with no "but quality" excuse.
-5. **Upgrade fidelity** — across T11–T14, T18, and the constructed old eras; anything lost, any hand-repair, any old-Speck knowledge needed afterwards is a fail.
-
-And one more, outside the benchmark entirely: **if no real product repository is doing real work on speck-next by 2026-10-01, the thesis failed no matter what the scores say.** The owner decides continuation explicitly; silence means failure.
-
-While the experiment runs, Speck v11 stays the method of record and takes bug fixes only, no new features; its four known framework bugs get fixed there on dated issues, so the fallback cannot rot.
+Speck Next replaces Speck v11 only by beating it on the frozen contest in [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md) — five checks that each pass or fail alone, plus one condition outside the benchmark: real use in a real product repository by 2026-10-01, or the thesis is dead regardless of scores. The contest file owns the full failure clause; this contract does not restate it.
