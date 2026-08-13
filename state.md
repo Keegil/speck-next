@@ -6,6 +6,6 @@
 
 **What needs the owner.** Nothing right now — the next pieces are agent work.
 
-**What happens next.** Verify next session that a fresh agent is governed by `AGENTS.md` without being pointed at it. Then the upgrader's first slice: era detection plus a dry-run report against a real old-Speck repo snapshot. In parallel, the contest's independent bug-planting stays with a different AI, unseen by anything building this kernel.
+**What happens next.** Verify next session that a fresh agent is governed by `AGENTS.md` without being pointed at it. Then the upgrader's first slice: era detection plus a dry-run report against a real old-Speck repo snapshot. In parallel, the contest's independent bug-planting stays with a different AI, unseen by anything building this kernel. Harvesting continues by pull, not push: the review skill now carries the attack playbook (old Speck's reviewing knowledge, distilled); the UI/LARP pack gets written when the first UI product needs it.
 
 **Evidence.** The files sit at the paths hosts actually read — `AGENTS.md`, `CLAUDE.md`, `.claude/skills/` (this repo, this commit). Pulse's proof runs and review reproductions: its state file and this repo's history, 2026-08-13. Next-session governance: not yet evidenced, open above.
