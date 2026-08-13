@@ -56,6 +56,6 @@ A decision is big enough to weigh against this list when it defers, simplifies, 
 
 Proving process compliance · carrying old-Speck compatibility in the kernel (the upgrader owns all of it) · installing adapters for every host (generate the one in use) · replacing the project's own tests and CI · writing the whole spec before building anything · shipping method-management machinery into product repos.
 
-## Until it wins
+## Until it earns the job
 
-Speck Next replaces Speck v11 only by beating it on the frozen contest in [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md) — five checks that each pass or fail alone, plus one condition outside the benchmark: real use in a real product repository by 2026-10-01, or the thesis is dead regardless of scores. The contest file owns the full failure clause; this contract does not restate it.
+v1 is accepted on demonstrated confidence, by owner decision (2026-08-13, recorded in [decisions.md](decisions.md)): the old system's valuable lessons adopted and traceable, the development suite green with checks proven able to fail, real products built end to end with the method, and a fresh adversarial audit agreeing it's a true value-add over a no-harness agent. The designed head-to-head contest ([docs/benchmark/fixtures.md](docs/benchmark/fixtures.md)) is shelved, not deleted — its planted-bug classes seed the development suite, and it remains available if the question ever needs settling by measurement. Real use stays the final judge: v1's job is rebooting a real product, and failing there outranks any green suite.
