@@ -4,7 +4,7 @@ Speck Next is a small kernel — a few files and one page of instructions — th
 
 ## What a session feels like
 
-> **You:** People keep asking if Flyt can show who's coming to tomorrow's classes.
+> **You:** People keep asking if the app can show who's coming to tomorrow's classes.
 >
 > **Agent:** On it. Smallest real version: a "Tomorrow" list on the studio dashboard. Building it now.
 > …It runs — I've been clicking through it as a studio owner. Using it I noticed the list sits empty at midnight before data loads, and long names overflow on phones. Fixed both. Here's the demo — try tomorrow's view.
@@ -39,4 +39,4 @@ The full promises, each with the check that can fail it: [CONTRACT.md](CONTRACT.
 
 ## Status
 
-Being built — not usable yet, and no kernel code exists until the benchmark's scoring rules are locked. Before Speck Next may replace Speck v11 it must beat it head-to-head on a contest frozen before design started: [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md). Why the clean sheet, and what happened to v11's machinery: [docs/history/](docs/history/). How these documents have been attacked and revised: [docs/reviews/](docs/reviews/).
+Being built — the kernel is taking shape in [kernel/](kernel/), not usable in real products yet. Before Speck Next may replace Speck v11 it must beat it head-to-head on a contest frozen before design started: [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md). The contest can't run until its scoring rules are locked by an independent reviewer, and the planted bugs stay secret from everyone building the kernel. Why the clean sheet, and what happened to v11's machinery: [docs/history/](docs/history/). How these documents have been attacked and revised: [docs/reviews/](docs/reviews/).

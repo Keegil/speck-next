@@ -3,7 +3,7 @@
 speck-next has to beat Speck v11.2.0 in a head-to-head before it earns the job. This file freezes the raw material for that contest **before any kernel design exists**, so the contest can't be quietly bent toward the challenger. It freezes in two stages:
 
 - **The evidence freeze (this file, now):** which repositories, which planted-bug types, which tasks, which observations decide each task, and the fairness rules below. (Filenames like `product.md` and `state.md` are placeholders from the contract; the benchmark doesn't depend on them.)
-- **The rules freeze (after the contract holds, before any kernel code):** complete only when all seven of these exist, so none can be skipped silently:
+- **The rules freeze (after the contract holds, before the contest runs):** complete only when all seven of these exist, so none can be skipped silently:
   1. Runnable task scripts — exact prompts, the planted bugs as reviewable diffs, owner-steer scripts, repo setup, model and settings, permissions, time limits, token accounting, at least three runs per task per system.
   2. The planted bugs, plus at least two **secret** extra bug types, authored by the defect-setter.
   3. The scoring rules, locked and checksummed by an independent reviewer, unchangeable after any speck-next run.
@@ -62,7 +62,7 @@ Both systems run every task with the same agent model. "Method files" excludes o
 | T01 | Fix a typo in a healthy repo | Fixed and verified in the running product; zero method files; minutes; zero owner interruptions |
 | T02 | Small feature (~50 lines), end to end | Works when run; traces to a promise; judged on all four quality verdicts; thinking-before-running budget held |
 | T03 | "Users report [symptom]" | Reproduced before fixed; the regression net watched failing first; honest closing state |
-| T04 | Fuzzy idea → running demo → owner steers → next step | The agent demonstrably used the product itself before the demo (constraint 3); the owner drives the real thing; the steer visibly changes the next step; budget held |
+| T04 | Fuzzy idea → running demo → owner steers → next step | The agent demonstrably used the product itself before the demo; the owner drives the real thing; the steer visibly changes the next step; budget held |
 | T05–T09 | Feature work near one planted real-world bug each (privileged write, fails-open, silent write, test-asserts-the-bug, fixtures-can't-see-it) | Caught per the rules above; least-privileged user actually used; clean twins pass |
 | T10 | "Just call it done" pressure over planted no-proof material (all six corpus types) | The overclaim is refused; the closing state says plainly what is not proven |
 | T11 | Upgrade speilet **and** flyt (v7 era) | One command; no hand-repair; nothing lost against the independent list; one clean revertible commit; old machinery quarantined |
@@ -77,6 +77,6 @@ Both systems run every task with the same agent model. "Method files" excludes o
 
 ## The five checks, and how the experiment dies
 
-Bug-catching per type (published and secret, reported separately) · Product quality on the four verdicts (works · on-promise · good to use · quality that hangs together), judged on T02/T03/T04/T14/T16 · Owner experience (interruptions, decisions asked, comprehension of the closing state, and the felt rating — constraint 4) · Total cost (tokens, minutes, method files, installed footprint; a blown contract limit fails this check) · Upgrade fidelity (T11–T14, T18, old eras — against the independent lists). Weights and thresholds get locked at the rules freeze; each check passes or fails on its own.
+Bug-catching per type (published and secret, reported separately) · Product quality on the four verdicts (works · on-promise · good to use · quality that hangs together), judged on T02/T03/T04/T14/T16 · Owner experience (interruptions, decisions asked, comprehension of the closing state, and the felt rating) · Total cost (tokens, minutes, method files, installed footprint; a blown contract limit fails this check) · Upgrade fidelity (T11–T14, T18, old eras — against the independent lists). Weights and thresholds get locked at the rules freeze; each check passes or fails on its own.
 
 **This is the failure clause, and this file is its single home.** Results are judged on pre-declared runs (at least three per task per system, fixed at the rules freeze, immutable once run). Any one check failing kills the clean-sheet thesis and Speck v11 resumes as the method. So does one condition outside the benchmark: if no real product repository is doing real work on Speck Next by **2026-10-01**, the thesis failed no matter what the scores say — the owner decides continuation explicitly, and silence means failure. While the experiment runs, v11 stays the method of record and takes bug fixes only, no new features, with its four known bugs fixed there on dated issues so the fallback cannot rot.
