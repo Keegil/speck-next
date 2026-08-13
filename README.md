@@ -1,30 +1,38 @@
 # speck-next
 
-The clean-sheet successor to [Speck](https://github.com/telum-ai/speck): a small agent kernel whose job is to help an agent build great products and prove the result, while keeping methodology operation invisible to the owner.
+The clean-sheet successor to [Speck](https://github.com/telum-ai/speck): a small kernel that helps an agent build great products and prove they're great — by running them — while the method itself stays out of the owner's way.
 
-**Status: pre-code, contract v0.3 — round-1 review and round-2 closure check passed; next is Lock 2.** The founding thesis, evidence, and program live in [telum-ai/speck#130](https://github.com/telum-ai/speck/issues/130). No framework code exists, by design: the [product contract](CONTRACT.md) must survive adversarial review, and the successor must then beat Speck v11.2.0 on a benchmark whose raw evidence was frozen before any kernel design existed.
+**Status: no code yet, on purpose.** The [product contract](CONTRACT.md) is at v0.4 and has survived one round of attack review plus a closure check ([docs/reviews/](docs/reviews/)). Next comes the rules freeze for the benchmark, then the first real build — which has to beat Speck v11.2.0 head-to-head before this thing earns the job. The founding case lives in [telum-ai/speck#130](https://github.com/telum-ai/speck/issues/130).
 
-## Why a new repository
+## Why start over
 
-Speck's principles repeatedly caught real, serious defects — always through two mechanisms: an independently motivated evaluator, and exercising the real product path with controls demonstrated able to fail. The system around those mechanisms grew into a methodology compliance platform (70 skills, 130 scripts, 53 coined terms, 3.1 MB installed per repo, ~53k tokens of process per 50-line feature) whose dominant recent activity was maintaining itself. Two disciplined subtraction attempts (v8, v11) cut context cost while the mechanism count kept growing. The full diagnosis is in #130 and its reviews.
+Speck kept catching real, serious bugs — a crisis-support path that failed open, a forgeable audit log, workouts silently not saved behind a "Set logged." toast. Every single catch came from the same two moves: **someone independent attacking the work, and the real product actually being run.** Everything else grew into a methodology that mostly managed itself: 70 skills, 130 scripts, 53 coined terms, 3 MB installed into every repo, ~53k tokens of process to ship a 50-line feature, and no way to just fix a typo. Two serious slim-down attempts made it cheaper to load without making it smaller. So the two moves that worked keep their job, and everything else starts from zero and has to earn its way back.
 
-## The program
+## The promises, in one breath
 
-1. **Lock 1 — raw evidence frozen** before kernel design: [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md) (snapshots, defect classes, task intents and observables; integrity rules, custodian role, non-compensatory gates — with contract-derived labels marked as such).
-2. **Product contract** — [CONTRACT.md](CONTRACT.md), with the [deletion manifest](docs/deletion-manifest.md) naming what does not cross and what replaces it.
-3. **Adversarial review** — round 1 complete (three decorrelated reviewers; verdict: fixable, not survivable as written — [docs/reviews/](docs/reviews/)); v0.2 responded finding-by-finding; the round-2 closure check verified 14/16 P0 closures and caught 4 more, closed in v0.3.
-4. **Lock 2** — gated on the seven-item completion checklist enumerated in [fixtures.md](docs/benchmark/fixtures.md): custodian-authored manifests and plantings with held-out classes, the hashed rubric, the frozen v11.2.0 baseline, fixture portability, the coverage matrix, and the adoption source ledgers.
-5. **Vertical slice** — judged against Speck v11.2.0 on the frozen tasks, n ≥ 3, per-class scoring, decorrelated judge.
-6. **Decide with data** — the contract's falsification clause includes a use-it-in-anger deadline: if no consumer repo is doing real work on speck-next by 2026-10-01, the thesis has failed regardless of benchmark score.
+Small steps that always end in something runnable. The agent uses the product itself, constantly — that loop is the engine, and the owner steers on top of it by reacting to running product, never by reading a spec corpus. Typo-sized changes cost minutes and zero paperwork. Independent reviewers run the product and try to break it; nobody grades their own homework. One honest state file. Upgrading from **any** Speck version is one command, keeps everything, hides nothing, and never asks for hand-repair. The whole thing stays small by CI-enforced law, speaks plain language, and is supposed to be **fun** — the owner should feel like they're watching a sharp colleague build their product, never like they're watching an agent speak a foreign language. Full text with the checks behind each: [CONTRACT.md](CONTRACT.md).
 
-While the experiment runs, the v11 line takes honest-freeze fixes only, so the fallback cannot rot.
+## What a session should feel like
 
-## Non-negotiables carried from the field record
+A sketch, not a transcript — this is the bar the kernel gets judged against:
 
-- The author never certifies their own substantive work, and the evaluator executes — reading is not evaluation.
-- Proof means the real path ran, with controls seen failing red.
-- Promises are conserved: work that quietly stops delivering the promise cannot be called done.
-- State is honest and generated: what is true, what is blocked, what needs the owner, what happens next.
-- Upgrading from any version of Speck is 100% seamless for any project: adoption itself needs zero manual repair, and anything unmappable becomes disclosed residue — never silent loss, with a loud refusal reserved solely for a genuinely ambiguous era.
-- The loop is iterative and involves the owner through working demos and real decisions — never a big-bang spec.
-- The agent's own use of the product — running it, using it as a user, feeding what it finds back into the build — is the primary feedback loop; owner involvement adds steering on top and never reduces it.
+> **You:** People keep asking if the app can show who's coming tomorrow.
+>
+> **Agent:** On it. Smallest real version: a "Tomorrow" list on the studio dashboard. Building it now.
+> …It runs — I've been clicking through it as a studio owner. Using it I noticed the list sits empty at midnight before data loads, and long names overflow on phones. Fixed both. Here's the demo — try tomorrow's view.
+>
+> **You:** *(two minutes of clicking)* Nice. Sort by class time, not alphabetically.
+>
+> **Agent:** Done, re-checked in the app. A fresh reviewer ran it too — tried to open another studio's list with a member login and couldn't. State: Built; Proven for "works" and "on-promise"; "good to use" checked on desktop and phone; nothing open. The next valuable piece looks like class reminders — want it?
+
+No ceremony visible, no vocabulary to learn, and the product ran before anyone wrote a plan about it.
+
+## The plan
+
+1. **Evidence freeze — done.** Repositories, planted-bug types, tasks, and fairness rules, frozen before any kernel design: [docs/benchmark/fixtures.md](docs/benchmark/fixtures.md).
+2. **Contract — done, v0.4.** Attacked by three independent reviewers (one from a different AI vendor) told to tear it apart; every blocking finding closed, and a separate verifier confirmed each fix actually landed. Then the owner failed v0.3 on language — it had started speaking methodology dialect — so v0.4 is the plain-language rewrite, tested on a fresh reader who had never seen Speck. That ruling is now constraint 4. All reviews preserved in full.
+3. **Rules freeze — next.** Seven items, enumerated in the fixtures file, including: an independent defect-setter plants the bugs (plus secret extras), the scoring rules get locked and checksummed by an independent reviewer, v11's baseline gets measured at full strength, and the repo snapshots become portable.
+4. **First real build,** judged against Speck v11.2.0 on the frozen tasks — at least three runs per task, per-bug-type scoring, an independent judge.
+5. **Decide with data.** The contract can fail; its failure clause includes a hard one: if no real product repo is doing real work on speck-next by **2026-10-01**, the thesis is dead no matter what the benchmark says.
+
+While the experiment runs, Speck v11 stays the method of record and takes bug fixes only, no new features, so the fallback can't rot.

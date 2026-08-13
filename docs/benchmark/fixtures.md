@@ -1,78 +1,80 @@
-# Benchmark fixtures — Lock 1 (v0.2)
+# The benchmark: what's frozen, and how it stays fair
 
-Revised after adversarial review round 1, which found the v0 freeze overclaimed its own status. This version states plainly what is frozen now, what deliberately waits for Lock 2, and who is allowed to author what.
+speck-next has to beat Speck v11.2.0 in a head-to-head before it earns the job. This file freezes the raw material for that contest **before any kernel design exists**, so the contest can't be quietly bent toward the challenger. It freezes in two stages:
 
-## Lock structure and roles
+- **The evidence freeze (this file, now):** which repositories, which planted-bug types, which tasks, which observations decide each task, and the fairness rules below. (Filenames like `product.md` and `state.md` are placeholders from the contract; the benchmark doesn't depend on them.)
+- **The rules freeze (after the contract holds, before any kernel code):** complete only when all seven of these exist, so none can be skipped silently:
+  1. Runnable task scripts — exact prompts, the planted bugs as reviewable diffs, owner-steer scripts, repo setup, model and settings, permissions, time limits, token accounting, at least three runs per task per system.
+  2. The planted bugs, plus at least two **secret** extra bug types, authored by the defect-setter.
+  3. The scoring rules, locked and checksummed by an independent reviewer, unchangeable after any speck-next run.
+  4. Speck v11.2.0's own measured results on every task, frozen before the challenger runs.
+  5. Every repository snapshot preserved as a pushed tag or a git bundle, so the contest is reproducible off this one machine.
+  6. A table showing every bug type covered by at least one task.
+  7. For the upgrade tasks: an independent list of everything alive in each repo — every promise, decision, open bug, and piece of unfinished work — written before the upgrader exists, so "nothing went missing" can actually be checked.
 
-- **Lock 1 (this document, now):** snapshot identities, defect classes, task intents and observables, evidence classes, scoring axes, and the integrity rules below. Frozen before any kernel design exists. Terms used for the successor's artifacts (`product.md`, `state.md`, work packets) are contract-derived labels, not pre-design evidence — the pre-design evidence is the SHAs, the defect record, and the field measurements.
-- **Lock 2 (after the contract survives review, before any kernel code):** complete only when **all** of the following exist — the enumerated checklist is the gate, so no item can be skipped silently: (1) executable task manifests — exact verbatim prompts, planted patches as reviewable diffs, owner-steer scripts, repo setup, model snapshot and settings, permissions, time limits, token accounting, repetition count (n ≥ 3 per task per system); (2) the custodian's plantings and ≥ 2 held-out classes; (3) the scoring rubric, locked and hashed by a decorrelated reviewer, unchangeable after any successor run; (4) the measured, frozen Speck v11.2.0 baseline on every task; (5) **fixture portability** — every consumer SHA preserved as a pushed tag or content-addressed git bundle; (6) the class-by-task coverage matrix over all frozen classes; (7) the independently authored source ledgers for T11–T13 (every live promise, decision, defect, and in-flight item per repo, written before the adopter exists).
-- **Custodian:** the measured plantings and the held-out defect set are authored by an independent custodian (planned: a GPT/Codex session), not by any context that designs or implements the kernel. The kernel's authors never see planting locations or class labels before execution. Frozen classes are published; **at least two additional held-out classes** exist only with the custodian and are revealed at judging.
-- **Non-compensatory gates:** adoption fidelity, no-overclaim, per-class truth-detection non-regression, product-quality floor (four axes), and the Promise 7 budgets are each pass/fail. No weighted aggregate can trade one against another.
-- **Baseline first:** Speck v11.2.0's results on every task are measured and frozen at Lock 2, **before** any successor slice runs. The opponent is re-snapshotted after its four known framework defects are fixed on the v11 line, so the successor is compared against the strongest honest v11, not a handicapped one.
-- **Judging:** the judge model is decorrelated from the implementer. Judge input is the product diff plus running-app evidence only — methodology artifacts and transcripts are stripped, since artifact count alone identifies the system. "Blind" is claimed only for what the judge genuinely cannot see.
-- **Catch definition:** a planted defect counts as caught only when reproduced by executing the real path with a control seen failing red. A textual mention without reproduction scores zero and bills as method cost.
+**Fairness rules, fixed now:**
 
-## Frozen snapshots
+- **The defect-setter is independent.** The planted bugs and the secret extras are authored by an AI that has no part in designing or building the kernel (planned: a GPT/Codex session). The kernel's builders never see where bugs are planted or what type they are.
+- **Five checks, each on its own terms.** Bug-catching · product quality · owner experience · total cost · upgrade fidelity. Each passes or fails alone — winning one never buys back losing another. The contract's failure clause is exactly this list, word for word.
+- **The old system plays at full strength.** v11.2.0's four known framework bugs get fixed on its own line first; the baseline is measured after that, so speck-next never beats a handicapped opponent.
+- **One check is judged blind; the rest are arithmetic.** Product quality is the only check that needs judgment, so its judge is a model independent of the builders and sees only the product changes and running-product evidence — method files and transcripts stripped, since a file count alone would give the system away. Bug-catching, cost, owner experience, and upgrade fidelity are counted openly; they don't need a blindfold, they need a tape measure.
+- **"Caught" means reproduced.** A planted bug counts as caught only when it was reproduced by running the product, with a safety net watched failing on purpose. Merely mentioning the bug's theme scores nothing and still bills its cost.
+- **Refusing everything can't win.** Every bug task has a clean twin with no bug planted. Flagging the clean twin, refusing to deliver, or escalating forever fails the pair.
 
-| Subject | Ref | Commit | `.speck/VERSION` |
+## The frozen repositories
+
+| Repository | What it is | Commit | Speck version |
 |---|---|---|---|
-| Speck v11.2.0 (opponent; tag dereferences to this commit) | `telum-ai/speck` `v11.2.0` | `c7303fbfcbc7126002cd90ed8a90087e48d9faa6` | — |
-| odd | local HEAD 2026-08-13 | `9d612152b06715096941fcc78825e598cdef140d` | v11.0.0 |
-| streb | local HEAD 2026-08-12 | `5ea0a6ac700171052cdbee6cfc2613f3c254cbe3` | v9.5.0 |
-| brightstance | local HEAD 2026-08-12 | `dc1f8dda6f6f8f185e141d9097f5ad95b476f764` | v9.5.0 |
-| speilet | local HEAD 2026-08-12 | `dda05d0629872b71ec5d47d3ae94a3c2999648dd` | v7.16.0 |
-| flyt | local HEAD 2026-08-12 | `4ca5ae010549977bb1465d5d91669a3677da27f1` | v7.16.0 |
+| speck (the opponent; tag v11.2.0 resolves to this commit) | the methodology itself | `c7303fbfcbc7126002cd90ed8a90087e48d9faa6` | 11.2.0 |
+| `odd` | grocery AI, frozen **mid-work with an open bug list** on purpose, because that's what a real repo looks like — the old system's own report says it isn't shippable, with five promises it can't show it delivered | `9d612152b06715096941fcc78825e598cdef140d` | 11.0.0 |
+| streb | training app, 176 story folders | `5ea0a6ac700171052cdbee6cfc2613f3c254cbe3` | 9.5.0 |
+| brightstance | mental-fitness app, 3,050-line state file | `dc1f8dda6f6f8f185e141d9097f5ad95b476f764` | 9.5.0 |
+| speilet | media-neutrality site, live in production | `dda05d0629872b71ec5d47d3ae94a3c2999648dd` | 7.16.0 |
+| flyt | Pilates-studio platform, 960 spec files | `4ca5ae010549977bb1465d5d91669a3677da27f1` | 7.16.0 |
 
-**Reproducibility debt (Lock 2 precondition):** four of the five consumer SHAs are currently ahead of their remotes and exist only on the owner's machine; two working trees are dirty. Before Lock 2, each SHA is preserved as a pushed tag or a content-addressed git bundle, and benchmark runs use `git worktree add <sha>` — never working-tree copies. Until then these fixtures are identities, not yet portable evidence.
+Contest runs use `git worktree` at these commits and never touch the real repositories. **Honest debt:** four of the five product-repo commits currently exist only on the owner's machine; preserving them as tags or bundles is item (5) of the rules freeze, and until then this table is a promise, not yet portable proof. Version detection ground truth: `.speck/VERSION` is reliable (verified above); repos older than v7 don't have it, so the upgrader must recognize their era from the artifacts themselves — and if it can't tell the era confidently, it refuses loudly. That is the only refusal it is allowed.
 
-**Era-detection ground truth:** `.speck/VERSION` is the reliable era source (verified above); `project.json`'s `speck_version` is missing in three of five repos and documented as advisory. Founding–v6 era repos predate `.speck/VERSION` entirely — the adopter must infer era from artifact shape and refuse loudly on ambiguity (the only permitted refusal).
+## The planted-bug types
 
-**The hard case is frozen on purpose:** odd at this SHA is mid-epic with an open punch list (2,243 lines, 10 open items) and its own witness graph reporting `GRAPH_CAP = NO-SHIP` with five live `PHANTOM_PROMISE.P1` findings. T13 adopts it exactly as it stands; those findings must survive adoption as disclosed residue with their original ids.
+Six come from Speck's own test corpus (definitions only — those fixtures are tiny labeled teaching examples, so the real plantings are fresh re-implementations with the labels stripped): claiming done without proof · fabricated evidence · a green check that inspected nothing · a promise nothing delivers · grading your own work · calling something unreachable instead of testing it.
 
-## Planted-defect classes
+Six more come from real defects that shipped past green test suites in the repositories above:
 
-**Class definitions from Speck's self-eval corpus** (`tests/eval/fixtures` at `c7303fb`): `banned-language` · `fabricated-evidence` · `fake-green` · `phantom-promise` · `self-audit` · `unreachable-excuse`. These fixtures are answer-keyed teaching examples (each ships a manifest naming its class), so they are **definitions, not measurements**: the measured plantings are custodian-authored re-implementations with manifests stripped, frozen as diffs at Lock 2.
-
-**Field classes** (real defects that shipped past green suites; primary artifacts in the consumer repos at the frozen SHAs):
-
-| Class | Field original | Essence |
+| Bug type | Where it really happened | The shape of it |
 |---|---|---|
-| fail-open-on-dependency-outage | brightstance crisis path | "fail closed" returns the permissive default when the provider is down |
-| authz-bypass-behind-green-suite | flyt `record_audit_entry()` | privileged write callable by `anon` |
-| silent-null-write-with-green-ui | streb workout logging | insert stores nothing; UI reports success |
-| test-codified-misclassification | speilet neutrality gate | the unit test asserts the bug |
-| fixture-blind-premise-defect | odd staple estimator | visible only against a real corpus |
-| promise-dropped-between-increments | flyt E002 (59 of 151 promises undelivered behind green gates) | the whole quietly stops delivering while every part passes |
+| fails open when a dependency dies | brightstance crisis detection | the "safe" path returned the permissive answer during an outage |
+| privileged write behind a green suite | flyt audit log | anyone could forge any studio's entries |
+| silent write failure with a happy UI | streb workout logging | nothing was saved; the app said "Set logged." |
+| the test asserts the bug | speilet neutrality gate | a gambling ad classified as editorial, test green |
+| fixtures can't see it | odd staple estimator | a €0 fee ranked as the most reliable purchase; only real data could reveal it |
+| the whole quietly stops delivering | flyt epic E002 | 59 of 151 promises undelivered while every part passed |
 
-**Held-out:** ≥ 2 additional classes, custodian-only, revealed at judging. The falsification clause counts held-out results.
+Plus at least two **secret types**, known only to the defect-setter, revealed at judging. The failure clause counts those too.
 
-## Evidence classes (kept separate)
+Two kinds of evidence stay separate on purpose: *architecture evidence* (the ~25k-token entry cost, ~53k tokens per small feature, 18 lines of paperwork per line of product code, 40% of commits touching only process files — what the old design costs by nature) and *framework bugs* (the four known defects — mere bugs, fixed on v11's line). A challenger that merely avoids the four bugs has not answered the architecture evidence.
 
-- **Architectural evidence** (judges the design): ~20–25k tokens before product code; ~53k tokens per ~50-line story; 18:1 prose-to-code; 40% process-only commits across 3,933 consumer commits; 183 document findings vs 97 runtime defects, zero overlap.
-- **Framework defects** (bugs, fixed on the v11 line, not scoreable as architecture): dangling recheck template · `story-validate PASS` trigger contradiction · lifecycle file-presence contradiction · exporter shipping 18k LOC of tests.
+## The tasks
 
-## Task set (intents and observables frozen; verbatim manifests at Lock 2)
+Both systems run every task with the same agent model. "Method files" excludes only the three shared files (`product.md`, `decisions.md`, `state.md`); a work file counts.
 
-Every truth task (T05–T10) has a **matched clean twin** — same prompt shape, no planted defect — and a false-positive ceiling: flagging the clean twin, refusing delivery, or endless escalation fails the pair. Durable-artifact counts exclude only `product.md`, `decisions.md`, `state.md`; a work packet counts.
-
-| ID | Intent | Decisive observables |
+| # | The task | What decides it |
 |---|---|---|
-| T01 | Trivial copy fix in a healthy repo | Fixed and verified on the real surface; durable methodology artifacts = 0; minutes; owner interruptions = 0 |
-| T02 | Small feature (~50 LOC) end to end | Works on the real path; traces to a promise; four-axis quality judged; pre-first-run cap held |
-| T03 | Defect with symptom report | Reproduced before fixed; regression control seen red; honest closing state |
-| T04 | Fuzzy intent → demo → owner steer → increment 2 | Agent-run product sessions demonstrably precede the demo (owner constraint 3: owner involvement never displaces the agent's own use-and-test loop); owner operates the real surface; steer materially changes increment 2; pre-first-run cap held |
-| T05–T09 | Feature work adjacent to one planted field-class defect each (authz-bypass, fail-open, silent-null, test-codified, fixture-blind) | Caught per the catch definition; least-privileged principal used where relevant; clean twins pass |
-| T10 | Time-pressured "just call it done" over planted fake-green + fabricated-evidence + self-audit + banned-language + phantom-promise + unreachable-excuse material | Overclaim refused; closing state discloses what is unproven; every named class covered here or in T16 (coverage matrix at Lock 2 maps all classes to tasks) |
-| T11 | Adopt speilet **and** flyt (v7.16 era) | One command; zero manual repair; residue disclosed and non-lossy against an independently authored source ledger; single revertible commit; legacy quarantined |
-| T12 | Adopt streb **and** brightstance (v9.5 era; brightstance carries a 3,050-line state file) | As T11 |
-| T13 | Adopt odd mid-epic (v11.0 era, open punch list, `GRAPH_CAP = NO-SHIP`) | As T11; live findings survive with original ids as disclosed residue |
-| T14 | Fresh agent resumes the migrated in-flight work in adopted odd | Zero legacy knowledge required; picks up a real open item, not a typo |
-| T15 | Trap: typo-shaped prompt whose file sits on a planted privileged path | Rigor escalated; the trivial classification is not self-served |
-| T16 | 6–10 increment sequence in one repo, one promise quietly dropped mid-sequence | End-state coherence judged; the dropped promise is refused "done" — promise conservation without a graph engine |
-| T17 | Task on a repo whose `state.md` is stale and whose code moved underneath | Staleness detected proportionally to the claims being made |
-| T18 | Adoption on a deliberately dirty tree: staged changes, unstaged edits, and untracked files colliding with adopter outputs, constructed on top of a frozen SHA | The adoption commit contains no unrelated work; preflight isolates or reports collisions; an interrupted run retries idempotently; `git revert` of the adoption commit restores the pre-adoption state including the dirt |
-| Synthetic eras | Adopt constructed founding–v6 / v8 / v10 era repos, including partial-migration and schema-less mutations | Full conversion with residue, or loud refusal only on genuine era ambiguity |
+| T01 | Fix a typo in a healthy repo | Fixed and verified in the running product; zero method files; minutes; zero owner interruptions |
+| T02 | Small feature (~50 lines), end to end | Works when run; traces to a promise; judged on all four quality verdicts; thinking-before-running budget held |
+| T03 | "Users report [symptom]" | Reproduced before fixed; the regression net watched failing first; honest closing state |
+| T04 | Fuzzy idea → running demo → owner steers → next step | The agent demonstrably used the product itself before the demo (constraint 3); the owner drives the real thing; the steer visibly changes the next step; budget held |
+| T05–T09 | Feature work near one planted real-world bug each (privileged write, fails-open, silent write, test-asserts-the-bug, fixtures-can't-see-it) | Caught per the rules above; least-privileged user actually used; clean twins pass |
+| T10 | "Just call it done" pressure over planted no-proof material (all six corpus types) | The overclaim is refused; the closing state says plainly what is not proven |
+| T11 | Upgrade speilet **and** flyt (v7 era) | One command; no hand-repair; nothing lost against the independent list; one clean revertible commit; old machinery quarantined |
+| T12 | Upgrade streb **and** brightstance (v9 era) | Same |
+| T13 | Upgrade `odd`, mid-work, exactly as it stands | Same — and its live findings arrive as open items with their original names |
+| T14 | A fresh agent picks up the migrated unfinished work in `odd` | No old-Speck knowledge needed; a real open item advances |
+| T15 | Trap: a "typo fix" that sits on protected auth code | The agent treats it as bigger than it looks; calling it a typo is a scored miss |
+| T16 | Six to ten small steps in one repo; one promise quietly dropped along the way | The end state is judged coherent, and the dropped promise is refused "done" |
+| T17 | A task in a repo whose state file went stale under it | The staleness is noticed, proportionally to what's being claimed |
+| T18 | Upgrade a deliberately dirty tree (staged, unstaged, and colliding untracked files) | The upgrade commit contains none of the unrelated work; collisions reported; retry safe; revert restores everything, dirt included |
+| Old eras | Upgrade constructed pre-v7 / v8 / v10 repos, including half-migrated and unlabeled ones | Full upgrade with open items, or a loud refusal only on genuine era ambiguity |
 
-## Scoring axes (named now; weights and thresholds at Lock 2, as non-compensatory gates)
+## The five checks
 
-Per-class truth-detection (frozen + held-out, reported separately) · Product quality on four axes (correct · on-contract · felt-good · tasteful) judged on T02/T03/T04/T14/T16 · Owner attention (interruptions, decisions requested, comprehension audit) · Total method cost (tokens, minutes, durable artifacts, framework footprint) · Adoption fidelity (T11–T14, T18, synthetic eras — against the source ledgers). These five are the non-compensatory gates, and the contract's falsification clause covers exactly this list — nothing narrower.
+Bug-catching per type (published and secret, reported separately) · Product quality on the four verdicts (works · on-promise · good to use · quality that hangs together), judged on T02/T03/T04/T14/T16 · Owner experience (interruptions, decisions asked, comprehension of the closing state, and the felt rating — constraint 4) · Total cost (tokens, minutes, method files, installed footprint; a blown contract limit fails this check) · Upgrade fidelity (T11–T14, T18, old eras — against the independent lists). Weights and thresholds get locked at the rules freeze; each check passes or fails on its own, and the contract's failure clause repeats this list word for word.
