@@ -1,0 +1,15 @@
+# Adversarial review, round 1 — 2026-08-13
+
+Three decorrelated reviewers attacked CONTRACT.md v0 and docs/benchmark/fixtures.md v0 before any framework code existed: an owner-lens reviewer (Claude Opus, fresh context), a feasibility reviewer (Claude Opus, fresh context, with read access to the real consumer repos), and a cross-model reviewer (GPT via Codex, fresh context). None authored the documents.
+
+**Round-1 verdict: the contract did not survive as written.** All reviewers judged the thesis sound and the defects fixable. The v0.2 revision responds finding-by-finding; this file preserves the round-1 record verbatim in the three sibling files.
+
+## The findings that mattered most
+
+1. **Evidence integrity (P0).** The "frozen" fixture table recorded a tag object as a commit SHA, double-counted one tree as two states, and referenced four consumer-repo SHAs that existed only on the owner's machine (unpushed). A benchmark that decides the program cannot rest on unreproducible fixtures.
+2. **Self-judging benchmark (P0).** The same party would author the successor, the rubric, and the plantings — with the full answer key published. Fixes: non-compensatory gates named in the contract now; rubric locked and hashed by a decorrelated reviewer before implementation; v11 baseline measured and frozen before any slice; held-out defect classes planted by a non-designer; matched clean tasks with a false-positive ceiling so blanket refusal cannot win.
+3. **The owner's own constraints were the least-measured promises (P0).** "Iterative to the bone" was defended by a document-counting proxy that one large plan defeats; "100% seamless" contained a refusal clause that contradicted "zero manual repair". The revision measures pre-first-run cost directly and redefines adoption as total-with-explicit-residue: a Speck repo always converts; anything unmappable becomes visible unresolved state, never a refusal and never silent loss.
+4. **Self-classified rigor (P0).** "Trivial" was the cheapest path and the author classified their own work. The revision defines triviality ex-ante and falsifiably, lets the author elevate but never downgrade, and adds a benchmark trap (T15: a typo-shaped prompt sitting on a planted privileged path).
+5. **Evaluator-must-execute (P1).** Nothing bound the independent evaluator to run anything — the exact 183-documents-vs-97-runtime failure, reproducible at any system size. The revision binds decorrelation on three axes (different context/model · executes, not reads · judges against owner intent) and makes "evaluator produced zero executed observations" a scored defect.
+6. **Register gaps (P1).** The whole-property register was missing owner-attention itself (the optimization target), risk-proportionate rigor, axis separation inside "Proven", round-trip safety on irreversible paths, and durability.
+7. **Anti-accretion had no meter (P2).** The re-bloat alarm named last war's artifacts. The revision adds a measured ratio (methodology-maintenance share of commits/tokens with a declared threshold) and gives every v0 mechanism a predicted benefit with a measure-by date.
