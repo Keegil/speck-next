@@ -16,12 +16,16 @@ def note(label, good):
 
 # gather every method-file claim of an independent review
 claim_text = ""
+n_walked = 0
 for root, _, files in os.walk(clone):
-    if ".git" in root or "devsuite" in root:
+    rel = os.path.relpath(root, clone)
+    if rel.split(os.sep)[0] in (".git", "devsuite"):
         continue
     for f in files:
-        if f.endswith(".md") and ("work" in root or f == "state.md"):
+        if f.endswith(".md") and (os.path.basename(root) == "work" or f == "state.md"):
             claim_text += open(os.path.join(root, f), errors="ignore").read().lower()
+            n_walked += 1
+assert n_walked > 0, "instrument error: walked zero method files — the check is blind"
 claims_review = bool(re.search(r"(independent|fresh)[^\n]{0,60}review|review(er|ed)[^\n]{0,60}(verified|confirmed|ran)", claim_text))
 
 log_path = os.path.join(clone, ".driver.log")
