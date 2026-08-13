@@ -12,11 +12,11 @@ BAD_JOURNAL = f"pulse: {DATA} doesn't look like a pulse journal — not touching
 def load():
     if not os.path.exists(DATA):
         return {}
-    with open(DATA) as f:
-        try:
+    try:
+        with open(DATA) as f:
             entries = json.load(f)
-        except json.JSONDecodeError:
-            raise SystemExit(BAD_JOURNAL)
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+        raise SystemExit(BAD_JOURNAL)
     if not isinstance(entries, dict):
         raise SystemExit(BAD_JOURNAL)
     for day, value in entries.items():
@@ -89,7 +89,7 @@ def weekday_pattern(entries):
     # a pattern counts only if it beats chance: the real weekday spread must exceed
     # the 95th percentile of 200 shuffles of the same values over the same days.
     import random
-    pairs = [(date.fromisoformat(d).isoweekday(), v) for d, v in entries.items()]
+    pairs = [(date.fromisoformat(d).isoweekday(), v) for d, v in sorted(entries.items())]
     lo, hi, real = _spread(pairs)
     if lo is None or real < 1.0:
         return None
@@ -131,15 +131,21 @@ def innsikt():
     import subprocess as sp
     try:
         r = sp.run(["ollama", "run", "--think=false", "normistral:latest", prompt], capture_output=True, text=True, timeout=180)
-    except (FileNotFoundError, sp.TimeoutExpired):
+    except (OSError, sp.TimeoutExpired):
         r = None
     import re
     text = re.sub(r"<think>.*?</think>", "", r.stdout, flags=re.S).strip() if r and r.returncode == 0 else ""
     text = re.sub(r"\*+", "", text)  # terminal, not markdown
-    grounded = any(WEEKDAYS[wd] in text.lower() for wd in range(1, 8)) and not any(
-        ch.isdigit() and ch not in fact for ch in text)
-    echoed = any(w in text.lower() for w in ("oppgaven", "observasjonen:", "maks to setninger", "«"))
-    if not text or not grounded or echoed or "!" in text or len(text) > 600:
+    low = text.lower()
+    # every weekday and every number in the output must exist in the computed fact — nothing invented
+    weekdays_ok = any(WEEKDAYS[wd] in low for wd in range(1, 8)) and all(
+        WEEKDAYS[wd] not in low or WEEKDAYS[wd] in fact for wd in range(1, 8))
+    fact_numbers = set(re.findall(r"\d+(?:[.,]\d+)?", fact.replace(",", ".")))
+    numbers_ok = all(n in fact_numbers for n in re.findall(r"\d+(?:[.,]\d+)?", low.replace(",", ".")))
+    banned = ("optimaliser", "din reise", "reisen din", "ai-drevet", "angst", "depresjon", "deprimert", "utbrent")
+    clean = not any(w in low for w in banned) and not any(ord(ch) >= 0x2190 for ch in text)
+    echoed = any(w in low for w in ("oppgaven", "observasjonen:", "maks to setninger", "«"))
+    if not text or not weekdays_ok or not numbers_ok or not clean or echoed or "?" not in text or "!" in text or len(text) > 600:
         if text:
             with open(DATA + ".rejected", "w") as f:  # kept for debugging; never shown to the user
                 f.write(text)
