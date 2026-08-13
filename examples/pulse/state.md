@@ -1,11 +1,15 @@
 # State
 
-**What's true now.** Pulse logs and charts energy: `pulse 4`, `pulse`, `pulse --date YYYY-MM-DD n`. The piece "log and view" is **Built** and carries these verdicts: **works** — every path in the work file's proof plan ran green, including the reviewer's breakers (20/20 parallel writers stored; five corrupt-journal shapes refused in the product's own voice; bad dates and `--help` answer cleanly). **Delivers the promises** — both promise-breaking findings from independent review are fixed and re-proven: overlapping runs no longer lose a logged day (write lock), and corrupted values are refused instead of drawn as bars. **Good to use** — the reviewer's product judgment: "genuinely pleasant… a lovely amount of information for one line." **Quality hangs together** — not fully judged: the fixes landed after that review, and the fixed build has not been independently re-run.
+**What's true now.** Pulse logs (`pulse 4`), charts (`pulse`), and notices (`pulse innsikt`). Two pieces are **Built**:
+
+*Log and view* — **works**: every proof-plan path green including the reviewer's breakers (20/20 parallel writers stored, five corrupt-journal shapes refused, clean errors). **Delivers the promises**: both promise-breaking review findings fixed and re-proven. **Good to use**: the reviewer's judgment, "genuinely pleasant". **Quality hangs together**: the fixed build not independently re-run — not judged yet.
+
+*Innsikt* — **works**: the proving scenario passes both ways — a planted three-week pattern gets an observation naming the real weekdays and averages plus a gentle question (~1.5 min, wait named honestly), and a patternless journal gets an instant honest "no clear patterns yet" with no model call, because a pattern only counts when it beats 200 shuffles of the user's own values (95th percentile). **Delivers the promise**: the machine counts, the model phrases; output citing anything outside the computed truth is rejected (validator watched failing red on planted generic advice and on instruction-echo); a failed model never yields a canned insight — the user gets the plainly-stated computed fact, which is real. **Good to use**: honest but plain — the phrasing is adequate, not delightful; an 11B local model restates more than it charms. **Quality hangs together**: not judged yet — awaiting independent review of this increment.
 
 **What's blocked.** Nothing.
 
-**What needs the owner.** Nothing — this exists to show the method, not to ship.
+**What needs the owner.** Nothing — Pulse exists to exercise the method.
 
-**What happens next.** If Pulse ever matters: an independent re-run of the fixed build, and the one absurd edge left open below.
+**What happens next.** Independent review of the innsikt increment. Open smaller items: viewing a journal dated near year 1 still crashes (absurd edge, accepted); model warmth is capped by the local 11B — a better local model would lift the moment without changing the design.
 
-**Evidence.** Proof runs and the reviewer's reproductions are the commands in this repo's history (2026-08-13); the independent review found two promise-breakers (concurrent-write loss at 14–17 of 20 days stored; `true`/`3.0` rendered as bars) plus tracebacks on truncated files and bad dates — all reproduced by execution, all fixed and re-proven except: viewing a journal dated near year 1 still crashes (accepted, absurd edge, open).
+**Evidence.** Proof runs in this repo's history (2026-08-13): the planted-pattern and flat-journal runs, the validator red-runs (generic advice, instruction echo), the model-down and under-five-days voices, and the permutation-test design decision recorded in [work/innsikt.md](work/innsikt.md).

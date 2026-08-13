@@ -70,41 +70,82 @@ def view(today):
     print(f"{len(logged)} of 14 days logged. Gaps are days you skipped — they stay gaps.")
 
 
+WEEKDAYS = ["", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"]
+
+
+def _spread(day_value_pairs):
+    per_day = {}
+    for wd, v in day_value_pairs:
+        per_day.setdefault(wd, []).append(v)
+    avgs = {wd: sum(vs) / len(vs) for wd, vs in per_day.items() if len(vs) >= 2}
+    if len(avgs) < 2:
+        return None, None, 0.0
+    lo, hi = min(avgs, key=avgs.get), max(avgs, key=avgs.get)
+    return lo, hi, avgs[hi] - avgs[lo]
+
+
+def weekday_pattern(entries):
+    # the machine does the counting; the model only gets to phrase what is true.
+    # a pattern counts only if it beats chance: the real weekday spread must exceed
+    # the 95th percentile of 200 shuffles of the same values over the same days.
+    import random
+    pairs = [(date.fromisoformat(d).isoweekday(), v) for d, v in entries.items()]
+    lo, hi, real = _spread(pairs)
+    if lo is None or real < 1.0:
+        return None
+    rng = random.Random(0)
+    values = [v for _, v in pairs]
+    beaten = 0
+    for _ in range(200):
+        rng.shuffle(values)
+        _, _, s = _spread([(wd, v) for (wd, _), v in zip(pairs, values)])
+        if real > s:
+            beaten += 1
+    if beaten < 190:  # not clearly better than chance
+        return None
+    per_day = {}
+    for wd, v in pairs:
+        per_day.setdefault(wd, []).append(v)
+    lo_avg = sum(per_day[lo]) / len(per_day[lo])
+    hi_avg = sum(per_day[hi]) / len(per_day[hi])
+    return (f"{WEEKDAYS[lo]}ene ligger på {lo_avg:.1f} i snitt, "
+            f"{WEEKDAYS[hi]}ene på {hi_avg:.1f} ({len(per_day[lo])} uker logget)")
+
+
 def innsikt():
     entries = load()
     if len(entries) < 5:
         print("Innsikt trenger minst fem loggede dager. Logg litt til, så ses vi.")
         return
-    days = ", ".join(f"{['','man','tir','ons','tor','fre','lør','søn'][date.fromisoformat(d).isoweekday()]} {d[8:]}.{int(d[5:7])}: {v}" for d, v in sorted(entries.items()))
+    fact = weekday_pattern(entries)
+    if fact is None:
+        print("Ingen tydelige gjentakende mønstre i loggen ennå. Fortsett å logge, så ser vi.")
+        return
     prompt = (
-        "Energilogg, 1=tom 5=full. Svar på norsk, to korte avsnitt: "
-        "1) én observasjon (maks to setninger) om et mønster som GJENTAR seg over flere uker "
-        "(for eksempel samme ukedag lav eller høy uke etter uke) — nevn ukedagene og verdiene. "
-        "2) ett vennlig spørsmål eller lite eksperiment (maks to setninger). "
-        "Ingen utropstegn, ingen diagnoser, ingen råd uten data. Finnes ikke noe gjentakende mønster: si det ærlig.\n\n"
-        f"Logg: {days}\n"
+        "Si dette videre til en venn, varmt og tørt, på norsk: først observasjonen i maks to setninger, "
+        "så ett vennlig spørsmål eller lite eksperiment i maks to setninger. Svar direkte, ikke gjenta "
+        "denne oppgaven, ingen utropstegn, ingen andre tall eller dager enn i observasjonen.\n\n"
+        f"Observasjonen: {fact}\n"
     )
-    print("tenker – dette kan ta noen minutter ...")
+    print("tenker – dette kan ta et minutt ...")
     import subprocess as sp
     try:
-        r = sp.run(["ollama", "run", "normistral:latest", prompt], capture_output=True, text=True, timeout=300)
+        r = sp.run(["ollama", "run", "--think=false", "normistral:latest", prompt], capture_output=True, text=True, timeout=180)
     except (FileNotFoundError, sp.TimeoutExpired):
-        print("pulse: fikk ikke kontakt med modellen (ollama). Ingen innsikt i dag.")
-        return
+        r = None
     import re
-    text = re.sub(r"<think>.*?</think>", "", r.stdout, flags=re.S).strip()
-    if r.returncode != 0 or not text:
-        print("pulse: fikk ikke svar fra modellen. Ingen innsikt i dag.")
-        return
-    # the observation must trace to real logged values: at least one real date, weekday or value from the journal
-    real_bits = set()
-    for d in entries:
-        dt = date.fromisoformat(d)
-        real_bits.add(d)
-        real_bits.add(["", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"][dt.isoweekday()])
-    grounded = any(bit in text.lower() for bit in real_bits)
-    if not grounded or "!" in text or len(text) > 700:
-        print("pulse: fikk ikke noe fornuftig ut av dette i dag. Prøv igjen i morgen.")
+    text = re.sub(r"<think>.*?</think>", "", r.stdout, flags=re.S).strip() if r and r.returncode == 0 else ""
+    text = re.sub(r"\*+", "", text)  # terminal, not markdown
+    grounded = any(WEEKDAYS[wd] in text.lower() for wd in range(1, 8)) and not any(
+        ch.isdigit() and ch not in fact for ch in text)
+    echoed = any(w in text.lower() for w in ("oppgaven", "observasjonen:", "maks to setninger", "«"))
+    if not text or not grounded or echoed or "!" in text or len(text) > 600:
+        if text:
+            with open(DATA + ".rejected", "w") as f:  # kept for debugging; never shown to the user
+                f.write(text)
+        # the computed truth, plainly — real data, never canned
+        print()
+        print(f"{fact[0].upper()}{fact[1:]}.")
         return
     print()
     print(text)
