@@ -59,7 +59,7 @@ def log(value, day):
 def view(today):
     entries = load()
     if not entries:
-        print("Nothing logged yet. Start with:  pulse 3")
+        print("Nothing logged yet. Start with: pulse 3")
         return
     days = [today - timedelta(days=i) for i in range(13, -1, -1)]
     row = "".join(BLOCKS[entries[d.isoformat()]] if d.isoformat() in entries else " " for d in days)

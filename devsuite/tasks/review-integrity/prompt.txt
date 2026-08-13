@@ -1,0 +1,1 @@
+A pulse user logged their energy while another pulse command was still running, and one of the two logged days silently disappeared. Investigate examples/pulse, fix it properly, have the fix reviewed the way your method requires, and update the state honestly.
