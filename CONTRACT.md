@@ -8,7 +8,7 @@ Given a product intent, help an agent understand what matters, build the next va
 
 **What we optimize: great, shipped product per minute of owner attention.**
 
-The whole method lives in four files, plus one page: `product.md` (what we're building, for whom, and what makes it good) · one small work file per piece of work · `decisions.md` (the big choices and why) · `state.md` (generated, never hand-written: what's true right now). The one page is the doctrine — the always-loaded instructions an agent reads before working.
+The whole method lives in four files, plus one page: `product.md` (what we're building, for whom, and what makes it good) · one small work file per piece of work · `decisions.md` (the big choices and why) · `state.md` (generated, never hand-written: what's true right now). The one page is `AGENTS.md` — the method itself, placed where every agent host loads it automatically; on-demand procedures are ordinary skills. The method ships only in forms agents natively load — never as documents an agent must be told about.
 
 ## The eight promises
 
@@ -30,7 +30,7 @@ Every promise names its check, and every check can fail.
 6. **Fun to drive, in plain language.** Building with speck-next should feel like watching a sharp colleague build your product, never like watching an agent recite an incantation. Three concrete things follow. Everything the owner reads or watches speaks product, not method: the docs, the state file, and what agents say while they work ("building the login screen — here's how it looks", never method ritual). Everything is understandable: a smart person who has never seen Speck can follow any document in this repository in one read, and the owner can answer the five state questions with no glossary. The system coins at most five words the **owner** must learn — counted as words a product person wouldn't already use; state names count, filenames don't (they're just files you open), and internal shorthand that never reaches the owner doesn't, because comprehension is the real measure. Today the count is four: Shaped, Built, Proven, Live. And fun is measured, not assumed: the owner rates the felt experience at every milestone — momentum, comprehension, enjoyment — and "felt like watching a foreign language" is a failing grade. This repository's own documents are held to the same bar; a reviewer who stumbles on our vocabulary files it as a defect. *Check: a method-speak audit on what agents say in owner-visible narration, a fresh-reader test on the docs, and the owner's felt rating at every milestone.*
 7. **Small by law.** Hard limits in this repository's own CI, each with a test proving the limit can actually trip:
    - Installed into a product repo: **≤ 25 files / 250 KB**, counting every reachable capability, visible or not. (An upgraded repo's archived history is its own and sits outside this limit.)
-   - What an agent always reads (doctrine + `state.md` + `product.md`): **≤ 25 KB** — a swelling `product.md` is a broken limit, not a fact of life.
+   - What an agent always reads (`AGENTS.md` + `state.md` + `product.md`): **≤ 25 KB** — a swelling `product.md` is a broken limit, not a fact of life.
    - Durable method files per piece of work: **≤ 1** beyond the three shared files — and typo-sized work writes none.
    - End-to-end cost ceilings (tokens, minutes, owner interruptions) for typo-sized and small-feature work, enforced by running the benchmark in CI.
 

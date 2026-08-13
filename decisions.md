@@ -1,0 +1,5 @@
+# Decisions
+
+**2026-08-13 · The method ships as the host's own loading surface, and this repo self-hosts.** The method page is `AGENTS.md` — the file agent hosts already load automatically — not a standalone document an agent would have to be told about; on-demand procedures are skills, the hosts' native lazy-load mechanism. Considered instead: a `kernel/doctrine.md` referenced from tooling (dead text — no host loads it; this was briefly built and reverted the same day), and a custom loader (rejected outright: the contract calls needing a loader the re-bloat alarm). Also decided: this repository runs under its own method from now on, so every development session is a live test of the thing being built — the tightest feedback loop available, and free. Reopens if a host materially changes its loading rules, or if self-hosting ever masks a difference between how the kernel treats itself and how it treats a product repo.
+
+**2026-08-13 · (pulse) Storage: one human-readable JSON file with a write lock** — moved to [examples/pulse/decisions.md](examples/pulse/decisions.md), where it belongs.

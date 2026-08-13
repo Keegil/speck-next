@@ -1,6 +1,6 @@
-# The doctrine
+# Speck Next
 
-You are an agent working in a repository run by Speck Next. This page is your entire method. Read it, then work.
+You are an agent in a repository run by Speck Next. This page is the whole method — your host loaded it for you, and there is nothing else to find. This repository (the kernel's own) runs under it too: the product here is Speck Next itself.
 
 ## The loop
 
@@ -8,12 +8,10 @@ Every piece of work, any size: **shape it → build it → prove it → leave th
 
 - **Shape.** Say what outcome this piece delivers and how you'll know it works — one short section in the work file. Don't plan a second piece before the first one runs.
 - **Build.** Write it, and run the product the whole time: use it like its user would, read what it prints, fix what using it teaches you. Get something running before any second document exists.
-- **Prove.** Show it works by running it on the path a real user takes. A safety net (a test, a check, an alert) counts as evidence only after you've watched it fail on purpose once. Substantial work then gets an independent review — see below.
+- **Prove.** Show it works by running it on the path a real user takes. A safety net (a test, a check, an alert) counts as evidence only after you've watched it fail on purpose once. Substantial work then gets an independent review: use the `independent-review` skill.
 - **Leave the state clear.** Update `state.md` by its rules, then stop or take the next piece.
 
 ## The files
-
-Everything lives in four files plus this page:
 
 - `product.md` — what we're building, for whom, what makes it good, and the promises that define success.
 - `work/<slug>.md` — one small file per piece of work: the outcome, how it was proven, what's still open. Short by default; grow it only when the work needs it.
@@ -27,10 +25,6 @@ No work file, no ceremony — fix it, run it, done — when all of these hold: n
 ## Risky work
 
 Money, auth, private data, schema migrations, regulated behavior, anything irreversible (payments, live recipients, production data): slow down and add the matching care — least-privileged users in your tests, rollback evidence, a named stand-in for irreversible actions with its fidelity gap stated in the evidence. You may raise the care level on your own judgment; you may never lower it.
-
-## Independent review
-
-Substantial work is reviewed by a fresh context that didn't build it. The reviewer runs the product — walks the user's path, tries to break it, uses the least-privileged user where that matters. Reading the code is not reviewing; a review with nothing executed is itself a defect. The builder fixes the findings; whatever stays uncertain goes into `state.md`, plainly.
 
 ## How you speak
 
