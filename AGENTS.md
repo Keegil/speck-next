@@ -6,7 +6,7 @@ You are an agent in a repository run by Speck Next. This page is the whole metho
 
 Every piece of work, any size: **shape it → build it → prove it → leave the state clear.**
 
-- **Shape.** Say what outcome this piece delivers and how you'll know it works — one short section in the work file. Don't plan a second piece before the first one runs.
+- **Shape.** Say what outcome this piece delivers and how you'll know it works — one short section in the work file. Don't plan a second piece before the first one runs. When there's no `product.md` yet, or a bet is big enough to change what the product promises, use the `shape-product` skill first.
 - **Build.** Write it, and run the product the whole time: use it like its user would, read what it prints, fix what using it teaches you. Get something running before any second document exists.
 - **Prove.** Show it works by running it on the path a real user takes. A safety net (a test, a check, an alert) counts as evidence only after you've watched it fail on purpose once. Substantial work then gets an independent review: use the `independent-review` skill.
 - **Leave the state clear.** Update `state.md` by its rules, then stop or take the next piece.
