@@ -31,3 +31,4 @@ Earned over eight months of real products. Use what this product needs; skip the
 
 17. When a deadline presses, what holds, what flexes, what defers?
 18. How will each promise be judged, and by whom? Never by whoever wrote it.
+19. Which foundations will this product predictably need, and what's the trigger that makes each one due? (A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor.) Foundations fire on triggers, not upfront — but a foundation with no named trigger is one that never gets built.

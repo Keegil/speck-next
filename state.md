@@ -6,6 +6,8 @@
 - **Proven in use, adversarially.** The dev suite: four tasks, every check watched failing red before any green counted, then 4 of 4 passed by fresh cross-vendor sessions — including `review-integrity`, where the governed agent autonomously ran a three-round nested review loop with a full receipt (reviewer identity, exact commands, per-round findings, closure at a named commit). The example product carries two increments, each broken and hardened by independent reviews that found real promise-breakers the builder missed (seven across three reviews, latest: a symlinked lock that could truncate the journal, and non-Latin/English diagnosis text slipping the guard — all ported and re-proven red-then-green).
 - **The whole arc survived four review rounds of its own**: three decorrelated attack reviews plus a closure check on the contract, the owner's language and framing rulings, a fresh-reader test, and a final adversarial v1 audit whose every blocking finding was closed the same day ([docs/reviews/](docs/reviews/)).
 
+**What's wearing out.** Nothing recorded yet — pulse is two increments old and the strain ledger is new (born from the owner's anti-spaghetti ruling, [decisions.md](decisions.md)). Odd is its first real test.
+
 **What's blocked.** Nothing.
 
 **What needs the owner.** Nothing for the kernel. The Odd reboot can start on his word.
