@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 DATA = os.path.realpath(os.environ.get("PULSE_FILE", os.path.expanduser("~/.pulse.json")))
 BLOCKS = {1: "▁", 2: "▂", 3: "▄", 4: "▆", 5: "█"}
-USAGE = "usage: pulse [1-5] | pulse | pulse --date YYYY-MM-DD [1-5]"
+USAGE = "usage: pulse [1-5] | pulse | pulse innsikt | pulse --date YYYY-MM-DD [1-5]"
 BAD_JOURNAL = f"pulse: {DATA} doesn't look like a pulse journal — not touching it."
 
 
@@ -70,9 +70,52 @@ def view(today):
     print(f"{len(logged)} of 14 days logged. Gaps are days you skipped — they stay gaps.")
 
 
+def innsikt():
+    entries = load()
+    if len(entries) < 5:
+        print("Innsikt trenger minst fem loggede dager. Logg litt til, så ses vi.")
+        return
+    days = ", ".join(f"{['','man','tir','ons','tor','fre','lør','søn'][date.fromisoformat(d).isoweekday()]} {d[8:]}.{int(d[5:7])}: {v}" for d, v in sorted(entries.items()))
+    prompt = (
+        "Energilogg, 1=tom 5=full. Svar på norsk, to korte avsnitt: "
+        "1) én observasjon (maks to setninger) om et mønster som GJENTAR seg over flere uker "
+        "(for eksempel samme ukedag lav eller høy uke etter uke) — nevn ukedagene og verdiene. "
+        "2) ett vennlig spørsmål eller lite eksperiment (maks to setninger). "
+        "Ingen utropstegn, ingen diagnoser, ingen råd uten data. Finnes ikke noe gjentakende mønster: si det ærlig.\n\n"
+        f"Logg: {days}\n"
+    )
+    print("tenker – dette kan ta noen minutter ...")
+    import subprocess as sp
+    try:
+        r = sp.run(["ollama", "run", "normistral:latest", prompt], capture_output=True, text=True, timeout=300)
+    except (FileNotFoundError, sp.TimeoutExpired):
+        print("pulse: fikk ikke kontakt med modellen (ollama). Ingen innsikt i dag.")
+        return
+    import re
+    text = re.sub(r"<think>.*?</think>", "", r.stdout, flags=re.S).strip()
+    if r.returncode != 0 or not text:
+        print("pulse: fikk ikke svar fra modellen. Ingen innsikt i dag.")
+        return
+    # the observation must trace to real logged values: at least one real date, weekday or value from the journal
+    real_bits = set()
+    for d in entries:
+        dt = date.fromisoformat(d)
+        real_bits.add(d)
+        real_bits.add(["", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"][dt.isoweekday()])
+    grounded = any(bit in text.lower() for bit in real_bits)
+    if not grounded or "!" in text or len(text) > 700:
+        print("pulse: fikk ikke noe fornuftig ut av dette i dag. Prøv igjen i morgen.")
+        return
+    print()
+    print(text)
+
+
 def main(argv):
     if len(argv) > 1 and argv[1] in ("--help", "-h", "help"):
         print(USAGE)
+        return
+    if len(argv) == 2 and argv[1] == "innsikt":
+        innsikt()
         return
     day = date.today()
     if len(argv) > 2 and argv[1] == "--date":  # for logging past days
