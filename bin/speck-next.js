@@ -63,5 +63,5 @@ if (cmd === "install") {
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
-The method itself is one page: AGENTS.md. Everything else is four skills your agent loads on demand.`);
+The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.`);
 }
