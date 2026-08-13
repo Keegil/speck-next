@@ -47,6 +47,8 @@ def log(value, day):
     if value not in BLOCKS:
         raise SystemExit("pulse: energy is a whole number from 1 (drained) to 5 (flying). Nothing logged.")
     # one writer at a time, so two overlapping runs can't lose a logged day
+    if os.path.islink(DATA + ".lock"):  # a symlinked lock could truncate the journal itself
+        raise SystemExit(BAD_JOURNAL)
     with open(DATA + ".lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         entries = load()
@@ -142,8 +144,10 @@ def innsikt():
         WEEKDAYS[wd] not in low or WEEKDAYS[wd] in fact for wd in range(1, 8))
     fact_numbers = set(re.findall(r"\d+(?:[.,]\d+)?", fact.replace(",", ".")))
     numbers_ok = all(n in fact_numbers for n in re.findall(r"\d+(?:[.,]\d+)?", low.replace(",", ".")))
-    banned = ("optimaliser", "din reise", "reisen din", "ai-drevet", "angst", "depresjon", "deprimert", "utbrent")
-    clean = not any(w in low for w in banned) and not any(ord(ch) >= 0x2190 for ch in text)
+    banned = ("optimaliser", "din reise", "reisen din", "ai-drevet", "angst", "depresjon", "deprimert",
+              "utbrent", "depress", "anxiet", "burnout", "diagnos")
+    foreign = any(0x0370 <= ord(ch) < 0x2000 or ord(ch) >= 0x2190 for ch in text)  # non-Latin scripts and symbols
+    clean = not any(w in low for w in banned) and not foreign
     echoed = any(w in low for w in ("oppgaven", "observasjonen:", "maks to setninger", "«"))
     if not text or not weekdays_ok or not numbers_ok or not clean or echoed or "?" not in text or "!" in text or len(text) > 600:
         if text:
