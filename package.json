@@ -1,0 +1,8 @@
+{
+  "name": "speck-next",
+  "version": "1.0.0",
+  "description": "A small kernel that helps an agent build great products and prove them by running them.",
+  "bin": { "speck-next": "bin/speck-next.js" },
+  "repository": "github:Keegil/speck-next",
+  "license": "MIT"
+}
