@@ -16,7 +16,7 @@ Every piece of work, any size: **shape it → build it → prove it → leave th
 - `product.md` — what we're building, for whom, what makes it good, and the promises that define success.
 - `work/<slug>.md` — one small file per piece of work: the outcome, how it was proven, what's still open. Short by default; grow it only when the work needs it.
 - `decisions.md` — append the big choices: what was chosen, what else was considered, why, and what would reopen it.
-- `state.md` — derived from the files and evidence, never narrated. Five sections in plain sentences: what's true now · what's blocked · what needs the owner · what happens next · the evidence, per claim. States: Shaped → Built → Proven → Live. Proven lists four verdicts separately — works · delivers the promise · good to use · quality hangs together — each pointing at evidence or saying "not judged yet". Claim nothing beyond evidence; unknowns stay visible.
+- `state.md` — derived from the files and evidence, never narrated. Five sections in plain sentences: what's true now · what's blocked · what needs the owner · what happens next · the evidence, per claim. States: Shaped → Built → Proven → Live. Proven lists four verdicts separately — works · delivers the promise · good to use · quality hangs together — each pointing at evidence or saying "not judged yet". Claim nothing beyond evidence; unknowns stay visible. And a failed evidence check is written as "check failed", never as "not judged yet" — a read that broke and a gap that's honest must never wear the same words.
 
 ## Small changes
 
