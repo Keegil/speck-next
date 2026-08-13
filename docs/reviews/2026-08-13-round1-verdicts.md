@@ -2,7 +2,11 @@
 
 Three decorrelated reviewers attacked CONTRACT.md v0 and docs/benchmark/fixtures.md v0 before any framework code existed: an owner-lens reviewer (Claude Opus, fresh context), a feasibility reviewer (Claude Opus, fresh context, with read access to the real consumer repos), and a cross-model reviewer (GPT via Codex, fresh context). None authored the documents.
 
-**Round-1 verdict: the contract did not survive as written.** All reviewers judged the thesis sound and the defects fixable. The v0.2 revision responds finding-by-finding; this file preserves the round-1 record verbatim in the three sibling files.
+**Round-1 verdict: the contract did not survive as written.** All reviewers judged the thesis sound and the defects fixable. The v0.2 revision responds finding-by-finding; this file preserves the round-1 record verbatim in the three sibling files. A closure check then verified 14 of 16 blocking findings genuinely closed and caught 4 more, closed in v0.3.
+
+**Round 3 was the owner's, and the docs failed it.** Reviewing v0.3, the owner ruled that the documents themselves had started speaking the dialect they ban ("you are already starting to speak in convoluted terms — absolutely not cool"). v0.4 is the plain-language rewrite; the ruling became verbatim owner constraint 4 (fun and understandability), with its own checks: a fresh-reader test on the docs, a method-speak audit on agent narration, and a felt-experience rating from the owner at every milestone. The lesson, recorded so it isn't relearned: the language a system is written in is part of the system, and jargon in the founding docs is the first symptom of the disease this project exists to cure.
+
+**Round 4 ran the new check on ourselves.** A fresh reader who had never seen Speck read all four v0.4 documents in one pass. The model transferred (their explain-it-back was accurate), most of it read as fun, and they still filed six blocking stumbles and two real inconsistencies — the sharpest: the contract and the fixtures each claimed to be the exact failure list while naming different five-check lists, and the coined-word budget had no counting rule and was already blown. All folded into the final v0.4: one reconciled check list in both documents, a counting rule (owner-facing words only; today's count is four — Shaped, Built, Proven, Live), the LARP gloss on constraint 3, the four-file model stated up front, per-axis verdicts unified at four everywhere, and a session sketch in the README, which the reader called the missing scene.
 
 ## The findings that mattered most
 
