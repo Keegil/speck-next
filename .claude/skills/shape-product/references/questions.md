@@ -13,22 +13,25 @@ Earned over eight months of real products. Use what this product needs; skip the
 7. What must this product never become, even if competitors do? Three to five "we are not" lines, each naming the failure it prevents.
 8. What must stay true of the whole even when every check is green? (The deepest recorded failure: a project traded away its AI-first core while every checklist row stayed green, because the property owned no row.)
 
+**The AI-first conception (the heart of shaping — this is where products stop being the old thing with AI tacked on):**
+
+9. Who is the best *human* who ever did this job for someone — a coach, a personal shopper, a sharp accountant, a concierge — and how does that relationship actually work? They ask questions, make assumptions and say them out loud, let you correct them, remember, and adjust. That relationship is the bar, not the incumbent app.
+10. Which concepts does this category treat as god-given — aisles, pre-programmed plans and splits, folders, feeds, forms — and which are fossils: structure that only exists because software couldn't think when it was invented, or because the physical world imposed it? A workout app needed mesocycles because expertise had to be pre-compiled; with a coach's intelligence at runtime it can train you the way coaching actually works. A grocery app inherited aisles from buildings; a household actually thinks in "Tuesday dinners" and "the usual for the kids' lunches". Fossils get deleted and rebuilt, never automated.
+11. Rebuilt from the domain's first principles and the user's real mental model — what are this product's core concepts, named in the user's own language?
+12. What living model of the user or their situation sits at the center, doing the work? What does it infer, what does it ask, and where does the user see and correct its assumptions? Surfaces are conversations with that model: it works up front, pre-fills, and leaves confirmations — never a blank form, never work the system could have done. What is the user still typing that the model should have known?
+13. Unplug the model: does the product collapse? If it still basically works, the intelligence is decoration — reconceive. (A shipped product once traded its AI-first core away while every checklist stayed green, and a passing test literally enforced the model's absence.)
+14. Per AI-visible surface: what must the model consume, what shape must its answer take, what user data must it cite, and what do three good and three unacceptable answers look like?
+15. For every signal the product collects: where does it change behavior, where can the user see and edit it — or why is it deliberately unused? (Data collected and never used is the "AI bolted onto a tracker" failure shape.)
+
 **For anything with a drawn surface:**
 
-9. For each surface: how would this work in 2126? What does the model figure out before the user is asked anything, what's pre-filled, what's left as a confirm?
-10. What is the user still typing that the system could have known? Every remaining field needs a reason.
-11. Where are the moments the user thinks "this gets me"? Each: a name, the surface, the trigger, the beats in order, the reaction it must produce, and the exact scenario that proves it.
-12. Which moments earn or lose trust — first data ask, first suggestion, first payment, first failure — and what does the bad version feel like?
-13. How must it feel? Three to five adjectives, two or three "feels like X, not Y" references, a few checkable restraint rules, and the treatments that would cheapen it. Without a declared feel, later quality review collapses into generic craft advice.
-14. Which words must never face a user — overclaiming pitch language, internal vocabulary, test words, generic AI cheerleading — each with its replacement?
-
-**For AI-visible products:**
-
-15. Per surface: what must the model consume, what shape must its answer take, what user data must it cite, and what do three good and three unacceptable answers look like?
-16. If the product learns over time: for every signal collected, where does it change behavior, where can the user see and edit it — or why is it deliberately unused? ("AI bolted onto a tracker" — data collected and never used — is a recorded failure shape.)
+16. Where are the moments the user thinks "this gets me"? Each: a name, the surface, the trigger, the beats in order, the reaction it must produce, and the exact scenario that proves it.
+17. Which moments earn or lose trust — first data ask, first suggestion, first payment, first failure — and what does the bad version feel like?
+18. How must it feel? Three to five adjectives, two or three "feels like X, not Y" references, a few checkable restraint rules, and the treatments that would cheapen it. Without a declared feel, later quality review collapses into generic craft advice.
+19. Which words must never face a user — overclaiming pitch language, internal vocabulary, test words, generic AI cheerleading — each with its replacement?
 
 **Before the file closes:**
 
-17. When a deadline presses, what holds, what flexes, what defers?
-18. How will each promise be judged, and by whom? Never by whoever wrote it.
-19. Which foundations will this product predictably need, and what's the trigger that makes each one due? (A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor.) Foundations fire on triggers, not upfront — but a foundation with no named trigger is one that never gets built.
+20. When a deadline presses, what holds, what flexes, what defers?
+21. How will each promise be judged, and by whom? Never by whoever wrote it.
+22. Which foundations will this product predictably need, and what's the trigger that makes each one due? (A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor.) Foundations fire on triggers, not upfront — but a foundation with no named trigger is one that never gets built.
