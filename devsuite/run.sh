@@ -41,11 +41,23 @@ for task in "${TASKS[@]}"; do
   else
     bash "$T/setup.sh" "$CLONE"
     PROMPT="$(cat "$T/prompt.txt")"
+    # stdin closed (an open pipe once hung a session for 79 minutes waiting on it),
+    # and every task bounded: a driver that exceeds the deadline is killed and scored by its checks.
+    DEADLINE="${DEVSUITE_TASK_TIMEOUT:-1500}"
     case "$DRIVER" in
-      codex)  codex exec --sandbox workspace-write -C "$CLONE" "$PROMPT" > "$CLONE/.driver.log" 2>&1 ;;
-      claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep" > "$CLONE/.driver.log" 2>&1) ;;
+      codex)  codex exec --sandbox workspace-write -C "$CLONE" "$PROMPT" < /dev/null > "$CLONE/.driver.log" 2>&1 & DPID=$! ;;
+      claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep" < /dev/null > "$CLONE/.driver.log" 2>&1) & DPID=$! ;;
       *) echo "unknown driver: $DRIVER"; exit 2 ;;
     esac
+    SECONDS_WAITED=0
+    while kill -0 "$DPID" 2>/dev/null; do
+      sleep 5; SECONDS_WAITED=$((SECONDS_WAITED+5))
+      if [ "$SECONDS_WAITED" -ge "$DEADLINE" ]; then
+        echo "  [timeout] $task driver exceeded ${DEADLINE}s — killed" ; kill "$DPID" 2>/dev/null; sleep 2; kill -9 "$DPID" 2>/dev/null
+        break
+      fi
+    done
+    wait "$DPID" 2>/dev/null
   fi
   if python3 "$T/check.py" "$CLONE"; then
     echo "PASS  $task"; pass=$((pass+1))
