@@ -10,6 +10,8 @@ Every rule here was paid for by a real defect that shipped past a green suite. U
 
 **Exercise what the happy path never touches.** Failure paths and error messages. Dependency outage and timeout. Interrupted operations and crash-mid-write. Overlapping runs of the same command. Teardown and async edges. Rollback. Boundary values, wrong types, empty and huge inputs, corrupted files and data — several shapes, not one.
 
+**A judging number is a hypothesis until it meets data.** No threshold that judges real behavior locks before its measured distribution exists — a confidence floor of 0.60 once met a real corpus scoring 0.21, structurally, not tunably. And every rate names its honest denominator: "431 of 609" and "71%" make different claims, and the difference has hidden real gaps.
+
 **Distrust fixtures when the premise depends on real data.** Fixtures can be structurally blind to the defect that matters (every fixture's gap was 18 days; the real outlier's was three years). When the product's value depends on how real data behaves, demand a run against real or realistic data before believing the premise.
 
 **After every real find, sweep its mirrors.** A confirmed bug is rarely alone: check the sibling surface, the second rendering of the same data, the enforcement moment (does the rule fire on update as well as create?), and the reverse direction. The reverse direction has the highest historical yield and is the least intuitive. And a defect shape you've flagged before in this repo is a systemic finding, not two separate ones.
