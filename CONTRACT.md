@@ -8,7 +8,7 @@ Given a product intent, help an agent understand what matters, build the next va
 
 **What we optimize: great, shipped product per minute of owner attention.**
 
-The whole method lives in four files, plus one page: `product.md` (what we're building, for whom, and what makes it good) · one small work file per piece of work · `decisions.md` (the big choices and why) · `state.md` (generated, never hand-written: what's true right now). The one page is `AGENTS.md` — the method itself, placed where every agent host loads it automatically; on-demand procedures are ordinary skills. The method ships only in forms agents natively load — never as documents an agent must be told about.
+The whole method lives in five files, plus one page: `product.md` (what we're building, for whom, and what makes it good) · `map.md` (the ordered build pieces, each naming what it serves and which shaped material it consumes; one live) · one small work file per piece of work · `decisions.md` (the big choices and why) · `state.md` (generated, never hand-written: what's true right now). The one page is `AGENTS.md` — the method itself, placed where every agent host loads it automatically; on-demand procedures are ordinary skills. The method ships only in forms agents natively load — never as documents an agent must be told about.
 
 ## The eight promises
 
