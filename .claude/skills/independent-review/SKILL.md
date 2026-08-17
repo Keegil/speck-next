@@ -1,6 +1,6 @@
 ---
 name: independent-review
-description: Reviews substantial work by running the product, in a fresh context that did not build it. Use after proving your own work and before updating state.
+description: Reviews substantial work in a fresh context that did not build it — by running the product, or for shaping artifacts, by refuting them against the owner's record and the wire. Use after proving your own work, and before a substantial shaping artifact reaches the owner.
 ---
 
 # independent-review
@@ -11,7 +11,7 @@ description: Reviews substantial work by running the product, in a fresh context
 
 **The receipt.** The work file records: who reviewed (which tool, model, session), the exact commands the reviewer executed, and its findings verbatim or linked. A verdict in `state.md` may only cite a review that has this receipt. No receipt, no review, no lifted verdict.
 
-**Shaping artifacts get reviewed before the owner reads them.** When the work under review is a shaping artifact — `product.md`, a domain model, journeys, a deck — there may be nothing to run yet, so the reference changes instead of the rule: refute the draft against the owner's verbatim record and the wire evidence, never against its sibling documents, because a document corpus drifts into perfect agreement with itself. Hunt especially: words in the owner's mouth he never said · claims the wire refutes · drawn elements no evidence can back · contradictions between artifacts · artifacts that went stale without a supersession line. The dispatch-and-receipt law applies unchanged.
+**Substantial shaping artifacts get this review before the owner reads them.** When the work under review is a shaping artifact — a `product.md` draft, a domain model, journeys, a deck; not every conversational round — the product may not run yet, so the *subjects* change and the rule stands: the reviewer still executes, but what it executes are probes against the wire fixtures, greps against the repo, and checks against the owner's verbatim shaping record — never a read of sibling documents against each other, because a document corpus drifts into perfect agreement with itself. Hunt especially: words in the owner's mouth he never said · claims the measured evidence refutes · drawn elements no evidence can back · contradictions between artifacts · artifacts that went stale without a supersession line. The dispatch-and-receipt law applies unchanged, and a shaping review whose transcript shows zero executed checks is discarded like any other.
 
 The reviewer:
 

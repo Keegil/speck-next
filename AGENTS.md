@@ -18,7 +18,7 @@ Every piece of work, any size: **shape it → build it → prove it → leave th
 - `decisions.md` — append the big choices: what was chosen, what else was considered, why, and what would reopen it.
 - `state.md` — derived from the files and evidence, never narrated. Six sections in plain sentences: what's true now · what's wearing out (every recorded strain, with how often it has bitten) · what's blocked · what needs the owner · what happens next · the evidence, per claim. States: Shaped → Built → Proven → Live. Proven lists four verdicts separately — works · delivers the promise · good to use · quality hangs together — each pointing at evidence or saying "not judged yet". Claim nothing beyond evidence; unknowns stay visible. And a failed evidence check is written as "check failed", never as "not judged yet" — a read that broke and a gap that's honest must never wear the same words.
 
-Where artifacts disagree, `product.md` and `decisions.md` win — and an artifact superseded by a newer one says so at its own top, the moment it's outrun.
+Where documents disagree, `product.md` and `decisions.md` win — and an artifact superseded by a newer one says so at its own top, the moment it's outrun. Where any document disagrees with measured evidence, the evidence wins and the document gets fixed.
 
 ## Small changes
 
