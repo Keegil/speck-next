@@ -11,6 +11,8 @@ description: Reviews substantial work by running the product, in a fresh context
 
 **The receipt.** The work file records: who reviewed (which tool, model, session), the exact commands the reviewer executed, and its findings verbatim or linked. A verdict in `state.md` may only cite a review that has this receipt. No receipt, no review, no lifted verdict.
 
+**Shaping artifacts get reviewed before the owner reads them.** When the work under review is a shaping artifact — `product.md`, a domain model, journeys, a deck — there may be nothing to run yet, so the reference changes instead of the rule: refute the draft against the owner's verbatim record and the wire evidence, never against its sibling documents, because a document corpus drifts into perfect agreement with itself. Hunt especially: words in the owner's mouth he never said · claims the wire refutes · drawn elements no evidence can back · contradictions between artifacts · artifacts that went stale without a supersession line. The dispatch-and-receipt law applies unchanged.
+
 The reviewer:
 
 1. **Runs the product.** Walks the path a real user takes, end to end. Reading the code is not reviewing; a review with zero executed commands is discarded. If the product has a user interface, also read `references/experience.md` and return its three verdicts — works, feels good, is crafted.
