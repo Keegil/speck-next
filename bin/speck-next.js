@@ -28,6 +28,13 @@ function copySurface() {
     JSON.stringify({ name: "speck-next", version: VERSION, commit, installedAt: new Date().toISOString() }, null, 2) + "\n");
 }
 
+function ensureMap() {
+  // v2.0.0 file-contract migration: every governed repo carries map.md; the upgrader owns this.
+  const mapPath = path.join(target, "map.md");
+  if (!fs.existsSync(mapPath))
+    fs.writeFileSync(mapPath, "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n");
+}
+
 function gitChanges() {
   try {
     return execSync("git status --short -- AGENTS.md CLAUDE.md .claude", { cwd: target }).toString().trim();
@@ -43,6 +50,7 @@ if (cmd === "install") {
         `If it's a Speck Next repo, use: npx github:Keegil/speck-next upgrade\n` +
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
   copySurface();
+  ensureMap();
   const files = execSync(`find AGENTS.md CLAUDE.md .claude -type f`, { cwd: target }).toString().trim().split("\n").length;
   console.log(`Installed Speck Next v${VERSION} into ${target} (${files} files).`);
   console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
@@ -54,6 +62,7 @@ if (cmd === "install") {
         `Old-Speck repo? Converting it is a later version's job. Nothing was touched.`);
   const prior = JSON.parse(fs.readFileSync(markerPath));
   copySurface();
+  ensureMap();
   const changes = gitChanges();
   const from = prior.commit ? `${prior.version} (${prior.commit})` : prior.version;
   console.log(`Upgraded Speck Next ${from} -> ${VERSION} in ${target}.`);
@@ -67,5 +76,5 @@ if (cmd === "install") {
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
 The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.
-Pin a version: npx -y github:Keegil/speck-next#v1.1.0 install`);
+Pin a version: npx -y github:Keegil/speck-next#v2.0.0 install`);
 }

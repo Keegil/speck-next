@@ -57,7 +57,7 @@ Two kinds of evidence stay separate on purpose: *architecture evidence* (the ~25
 
 ## The tasks
 
-Both systems run every task with the same agent model. "Method files" excludes only the three shared files (`product.md`, `decisions.md`, `state.md`); a work file counts.
+Both systems run every task with the same agent model. "Method files" excludes only the four shared files (`product.md`, `map.md`, `decisions.md`, `state.md`); a work file counts.
 
 | # | The task | What decides it |
 |---|---|---|
