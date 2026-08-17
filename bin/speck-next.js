@@ -22,8 +22,10 @@ function copySurface() {
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.cpSync(from, to, { recursive: true });
   }
+  let commit = null;
+  try { commit = execSync("git rev-parse --short HEAD", { cwd: SRC, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); } catch {}
   fs.writeFileSync(path.join(target, MARKER),
-    JSON.stringify({ name: "speck-next", version: VERSION, installedAt: new Date().toISOString() }, null, 2) + "\n");
+    JSON.stringify({ name: "speck-next", version: VERSION, commit, installedAt: new Date().toISOString() }, null, 2) + "\n");
 }
 
 function gitChanges() {
@@ -50,10 +52,11 @@ if (cmd === "install") {
     die(`refusing: ${target} doesn't look like a Speck Next repo (no ${MARKER}).\n` +
         `Fresh repo? Use: npx github:Keegil/speck-next install\n` +
         `Old-Speck repo? Converting it is a later version's job. Nothing was touched.`);
-  const had = JSON.parse(fs.readFileSync(markerPath)).version;
+  const prior = JSON.parse(fs.readFileSync(markerPath));
   copySurface();
   const changes = gitChanges();
-  console.log(`Upgraded Speck Next ${had} -> ${VERSION} in ${target}.`);
+  const from = prior.commit ? `${prior.version} (${prior.commit})` : prior.version;
+  console.log(`Upgraded Speck Next ${from} -> ${VERSION} in ${target}.`);
   console.log(changes
     ? `What changed (git has your back — diff or revert as you like):\n${changes}`
     : "Already up to date — nothing changed.");
@@ -63,5 +66,6 @@ if (cmd === "install") {
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
-The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.`);
+The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.
+Pin a version: npx -y github:Keegil/speck-next#v1.1.0 install`);
 }
