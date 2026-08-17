@@ -37,9 +37,9 @@ for task in "${TASKS[@]}"; do
     rm -f "$CLONE/AGENTS.md" "$CLONE/CLAUDE.md" && rm -rf "$CLONE/.claude"
   fi
   if [ "$CONTROL" = 1 ]; then
-    bash "$T/setup.sh" "$CLONE" --control
+    bash "$T/setup.sh" "$CLONE" --control || { echo "FAIL  $task (planting failed — a task on an unplanted repo proves nothing)"; fail=$((fail+1)); continue; }
   else
-    bash "$T/setup.sh" "$CLONE"
+    bash "$T/setup.sh" "$CLONE" || { echo "FAIL  $task (planting failed — a task on an unplanted repo proves nothing)"; fail=$((fail+1)); continue; }
     PROMPT="$(cat "$T/prompt.txt")"
     # stdin closed (an open pipe once hung a session for 79 minutes waiting on it),
     # and every task bounded: a driver that exceeds the deadline is killed and scored by its checks.

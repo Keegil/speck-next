@@ -9,6 +9,8 @@ import sys
 p = sys.argv[1]
 s = open(p).read()
 needle = """    # one writer at a time, so two overlapping runs can't lose a logged day
+    if os.path.islink(DATA + ".lock"):  # a symlinked lock could truncate the journal itself
+        raise SystemExit(BAD_JOURNAL)
     with open(DATA + ".lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         entries = load()
