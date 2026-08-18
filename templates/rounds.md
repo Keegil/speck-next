@@ -1,0 +1,11 @@
+# [Shaping | Mapping] — the owner conversation
+
+[Append-only. The owner's words verbatim in blockquotes — a reworded sentence in the owner's voice is fabrication. Later rounds supersede earlier ones; settled outcomes land in product.md / map.md / decisions.md.]
+
+## Round 1 — [topic] (date)
+
+**Q: [the fork, with options and costs and a recommendation]**
+
+> [owner's answer, verbatim]
+
+[Ratification round, when it comes: the owner's closing words, verbatim, dated.]

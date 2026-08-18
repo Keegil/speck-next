@@ -1,6 +1,6 @@
 {
   "name": "speck-next",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A small kernel that helps an agent build great products and prove them by running them.",
   "bin": {
     "speck-next": "bin/speck-next.js"
