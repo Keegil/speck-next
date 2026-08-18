@@ -51,7 +51,7 @@ if (cmd === "install") {
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
   copySurface();
   ensureMap();
-  const files = execSync(`find AGENTS.md CLAUDE.md .claude -type f`, { cwd: target }).toString().trim().split("\n").length;
+  const files = execSync(`find AGENTS.md CLAUDE.md .claude templates -type f`, { cwd: target }).toString().trim().split("\n").length;
   console.log(`Installed Speck Next v${VERSION} into ${target} (${files} files).`);
   console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
 } else if (cmd === "upgrade") {
@@ -75,6 +75,6 @@ if (cmd === "install") {
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
-The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.
+The method itself is one page: AGENTS.md. Everything else is four skills your agent loads on demand, and five file skeletons in templates/.
 Pin a version: npx -y github:Keegil/speck-next#v3.0.0 install`);
 }
