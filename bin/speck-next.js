@@ -8,7 +8,7 @@ const { execSync } = require("child_process");
 
 const SRC = path.join(__dirname, "..");
 const VERSION = require(path.join(SRC, "package.json")).version;
-const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills")];
+const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills"), "templates"];
 const MARKER = path.join(".claude", "speck-next.json");
 
 const cmd = process.argv[2];
@@ -76,5 +76,5 @@ if (cmd === "install") {
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
 The method itself is one page: AGENTS.md. Everything else is three skills your agent loads on demand.
-Pin a version: npx -y github:Keegil/speck-next#v2.0.0 install`);
+Pin a version: npx -y github:Keegil/speck-next#v3.0.0 install`);
 }
