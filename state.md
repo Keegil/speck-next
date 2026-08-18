@@ -1,19 +1,26 @@
 # State
 
-**What's true now: v1.** The kernel is complete for its job — governing the greenfield build of a real product — and every part of that claim has evidence behind it:
+## What's true now
 
-- **The method, in the form agents load.** `AGENTS.md` (~6.8 KB: the loop, five files including the build map, small changes, risky work, the round-trip rule, the structural review summons with bounded debt, the live-owner state beat, honest state, product speech) plus three skills: `shape-product` (the shaping questions with the AI-first conception at their heart, closing by cutting the map), `craft` (the build-time taste bar), and `independent-review` (dispatch with a mandatory receipt, in built and shaping forms, the attack playbook with the four git-observable loop checks, the experience reference). This repo's always-read set is ~12 KB of its 50 KB limit; kernel version 2.0.0 (the map is a file-contract change, and the upgrader carries its migration). Owner-facing coined words: four of five. The kernel has governed one full shaping campaign and one failed build day — both fed back through its own loop ([work/first-campaign-feedback.md](work/first-campaign-feedback.md), [work/build-transition.md](work/build-transition.md)).
-- **Proven in use, adversarially.** The dev suite: four tasks, every check watched failing red before any green counted, then 4 of 4 passed by fresh cross-vendor sessions — including `review-integrity`, where the governed agent autonomously ran a three-round nested review loop with a full receipt (reviewer identity, exact commands, per-round findings, closure at a named commit). The example product carries two increments, each broken and hardened by independent reviews that found real promise-breakers the builder missed (seven across three reviews, latest: a symlinked lock that could truncate the journal, and non-Latin/English diagnosis text slipping the guard — all ported and re-proven red-then-green).
-- **The whole arc survived four review rounds of its own**: three decorrelated attack reviews plus a closure check on the contract, the owner's language and framing rulings, a fresh-reader test, and a final adversarial v1 audit whose every blocking finding was closed the same day ([docs/reviews/](docs/reviews/)).
+The kernel is at **v3.0.0** — four phases with checkable exits (shape → map → build → prove), the dispatcher deriving where-we-are from exit conditions, work resolved as the piece inside build, and the conductor protocol as law in every session. `AGENTS.md` (~7.5 KB) plus four skills — `shape-product`, `map-build` (new: mapping as ratified rounds with the substrate round and the mechanical completion test), `craft`, `independent-review` (receipts open at dispatch or are void) — plus six template skeletons shipped with the surface. Built from two real campaign failures fed through the kernel's own loop: the build day that ignored the deck ([work/build-transition.md](work/build-transition.md)) and the mapping that ran as invisible authorship ([work/mapping-feedback.md](work/mapping-feedback.md)), designed in an owner interview and ratified with his amendment (shaped material is first-class). The v3 review round found five defects (substrate section contradicting the ruling, escalations dropped from the always-loaded page, the kernel unable to demonstrate its own dispatcher, a missing skeleton, an undefined enumerable mechanism) — all closed the same day.
 
-**What's wearing out.** One open strain: **the receipt law had a scope blind spot** — every adversarial pass of the Odd campaign ran receiptless because the law lived only in reviews-that-run-products; closed by the shaping-review extension, unproven until Odd's next pass shows receipts from pass one (bitten once). Resolved 2026-08-17: the read-set budget strain — the owner raised the always-read limit to 50 KB (a deeply-shaped `product.md` earned its weight in the campaign), traded against the installed-footprint limit tightening to 15 files / 100 KB.
+## What's wearing out
 
-**What's blocked.** Nothing.
+- **The receipt law, bitten twice** (shaping campaign, then the map reviewers): receipts reconstructed at closure instead of opened at dispatch. The law now demands dispatch-time capture; unproven until the next real review shows a receipt that existed before the reviewer ran (bitten twice).
+- **My own manual dispatches keep hanging on open stdin** (the suite runner is fixed; the habit isn't — bitten twice, 79 minutes and 18 minutes). The fix is mechanical (`< /dev/null`), the discipline isn't yet.
 
-**What needs the owner.** Nothing — the budget trade is settled (his call, 2026-08-17).
+## What's blocked
 
-**What happens next.** The owner's budget call above. Then Odd's build phase begins under the kernel — where the campaign-fed rules get their proving run: review receipts from pass one, the belief store built against the shaped model, the first UI increments exercising `craft` and the experience review.
+Nothing.
 
-**Open list, honestly.** CI enforcement of the size limits (numbers currently hold by measurement) · the promise-conservation check (`promise-dropped` — earns entry when a product carries enough promises to drop one silently) · the upgrader (fresh installs are covered by `install.sh`; converting existing Speck repos is promise 5's later work) · a browser-UI product under this kernel (the experience reference is harvested from real UI products but first exercises on Odd's first screen) · a truly de-confounded dev-suite arm (today's greens prove the full real stack, kernel + the owner's global agent instructions, as the suite's header states plainly) · pulse: the year-1 date edge; 11B phrasing warmth.
+## What needs the owner
 
-**Evidence.** This repository's history, all of it dated 2026-08-13: the review records under [docs/reviews/](docs/reviews/), the dev-suite runs (control red, live green, receipts inspected), the pulse proving runs and red-proven validators, and [capabilities.md](capabilities.md) — one row per capability, each with the failure it prevents and what retires it.
+The footprint trade: v3's templates put the install at **17 files against the 15-file limit** (45.6 KB against 100 KB — bytes are fine). Promise 7 says a limit moves only in an owner-approved version naming a compensating tightening. Proposed: installed files 15 → 20, traded against auto-visible capabilities 9 → 6 (four are used). Your call.
+
+## What happens next
+
+The live piece per [map.md](map.md): **v3 discipline is in prove** — its proving run is Odd's next sessions (re-map as ratified rounds, then build under the phase contracts), measured by the playbook's git checks and by the only judge that matters. Queued behind triggers: the v11 converter, CI limit enforcement, the promise-conservation check.
+
+## Evidence
+
+This repo's history, 2026-08-13 → 18: the review records under [docs/reviews/](docs/reviews/) and in the work files' receipts; the dev suite green 4-of-4 with every check watched red first (latest control: the v3 review's own run); the v3 design interview and ratification quoted in [decisions.md](decisions.md); the two campaign failure reports as primary sources.
