@@ -28,6 +28,12 @@ function copySurface() {
     JSON.stringify({ name: "speck-next", version: VERSION, commit, installedAt: new Date().toISOString() }, null, 2) + "\n");
 }
 
+function retireReplacedSkills() {
+  // v4.0.0 migration: independent-review split into the experience and judge skills; copy never deletes, so the upgrader must.
+  const old = path.join(target, ".claude", "skills", "independent-review");
+  if (fs.existsSync(old)) fs.rmSync(old, { recursive: true });
+}
+
 function ensureMap() {
   // v2.0.0 file-contract migration: every governed repo carries map.md; the upgrader owns this.
   const mapPath = path.join(target, "map.md");
@@ -62,6 +68,7 @@ if (cmd === "install") {
         `Old-Speck repo? Converting it is a later version's job. Nothing was touched.`);
   const prior = JSON.parse(fs.readFileSync(markerPath));
   copySurface();
+  retireReplacedSkills();
   ensureMap();
   const changes = gitChanges();
   const from = prior.commit ? `${prior.version} (${prior.commit})` : prior.version;
@@ -75,6 +82,6 @@ if (cmd === "install") {
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
-The method itself is one page: AGENTS.md. Everything else is four skills your agent loads on demand, and six file skeletons in templates/.
-Pin a version: npx -y github:Keegil/speck-next#v3.2.0 install`);
+The method itself is one page: AGENTS.md. Everything else is five skills your agent loads on demand, and six file skeletons in templates/.
+Pin a version: npx -y github:Keegil/speck-next#v4.0.0 install`);
 }
