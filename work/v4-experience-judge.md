@@ -44,4 +44,15 @@ All build-routed defects closed: the witness's walk rewritten to record recovery
 
 ## Re-record
 
+Returned 2026-08-19, in full: [docs/reviews/v4-rewitness-record.md](../docs/reviews/v4-rewitness-record.md). All four re-walks came back clean on the judgment's grounds — stance texts carry no witness-rules or judge-gathers instructions, the build loop read followable, receipt skeletons carry the required fields, the installer's printed count matched the witness's own count 19 = 19, and the contract's phase-exit sentence now says which phases ratify and names the open owner question. Six new small cold-read stops surfaced (care-level pointer, craft-bar pointer, "on-promise" vs the canonical field name, the five-files heading read literally, structural-call coinage vs the four-words claim, the README's small-change list missing the no-promise-rewritten condition, "extra-care packs" without contents, the upgrade command not printed and the old-Speck road overclaimed) — all fixed in the following commit.
+
+## Re-judgment receipt (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a separate fresh session — not the author, not either witness, not the first judge.
+- **Dispatched:** 2026-08-19, on both witness records, the first rulings, and the fix commits.
+- **Owner of this run:** the kernel session dispatching on 2026-08-19.
+- **If the rulings below are empty:** re-dispatch under your own named line.
+
+## Re-rulings
+
 (appended on return)
