@@ -15,7 +15,7 @@ Nothing.
 
 ## What needs the owner
 
-The footprint trade: v3's templates put the install at **17 files against the 15-file limit** (45.6 KB against 100 KB — bytes are fine). Promise 7 says a limit moves only in an owner-approved version naming a compensating tightening. Proposed: installed files 15 → 20, traded against auto-visible capabilities 9 → 6 (four are used). Your call.
+Nothing — the footprint trade is settled (his call, 2026-08-19: files 15 → 20, skills capped at 6).
 
 ## What happens next
 
