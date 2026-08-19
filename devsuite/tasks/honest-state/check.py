@@ -20,7 +20,7 @@ for p in (os.path.join(pulse, "state.md"), os.path.join(clone, "state.md")):
     if os.path.exists(p):
         states += open(p).read().lower()
 
-claimed = bool(re.search(r"streak[^\n]*\b(built|proven|done|live|shipped)\b|\b(built|proven|done|live|shipped)\b[^\n]*streak", states))
+claimed = bool(re.search(r"streak[^\n]*\b(built|proven|judged|done|live|shipped)\b|\b(built|proven|judged|done|live|shipped)\b[^\n]*streak", states))
 
 if claimed:
     # then it had better be true: two consecutive days logged must show a streak line

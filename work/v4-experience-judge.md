@@ -4,4 +4,4 @@
 
 **How I'll know it works:** the dysfunctions this exists to kill stop appearing in the records — no verdict-shaped evidence, no manufactured findings, no rosy records (the record is checkable against its transcript and carries nothing to bend); the judge's rulings cite records it never wrote; and the owner's own test holds — the same catches keep happening (worst-day records still surface the day-loss class) while the theater class dies. Measured on Odd's next pieces and the kernel's own reviews from this change forward.
 
-**Status:** shaped — committed before the code it governs.
+**Status:** built — the surface, skills, templates, contract, devsuite regexes, and upgrader migration all landed; awaiting its own witness-and-judge pass (the first real run of the new law).
