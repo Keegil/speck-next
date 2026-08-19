@@ -15,7 +15,7 @@ Nothing.
 
 ## What needs the owner
 
-**What should your sign-off mean for build, experience, and judge?** The judge's first ruling found the contract promising "every phase exits with the owner's ratification" while build and experience exit mechanically and judge exits on your felt grade — the words and the machine disagreed, and picking silently isn't mine to do. Options: **(a)** keep it as built — you ratify shaping and mapping, you grade the felt experience at judging, build/experience run without a sign-off beat (recommended: no new interruptions, matches how you actually steer); **(b)** add a sign-off to every phase including per-piece (maximum control, real attention cost — works against the owner-attention property); **(c)** drop ratification language below shaping/mapping entirely (cheapest, loses the judging-phase grade as a named exit condition). The contract carries an honest interim line until you rule.
+Nothing. The sign-off question is ruled (2026-08-19, his words: "1! But remember that the agent is supposed to experience and judge autonomously as well, not just me. A lot should be done without my involvement. After all, I will have approved the shaping at this point, so if the product matches that the agent should be able to figure that out pretty well yourself before asking for my input.") — recorded in decisions.md, contract updated.
 
 ## What happens next
 
