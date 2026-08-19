@@ -18,7 +18,7 @@ description: Dispatches fresh witnesses who live the product in personas — the
 **The personas.** A substantial piece gets the first two at least; a milestone gets all four:
 
 1. **The first-timer** — cold start: real build, fresh install or cleared storage, logged out, knows nothing. At the first screen, answer from the pixels alone: what is this, who's asking, why now? For anything with a user interface, walk `references/walk.md`.
-2. **The worker** — the real job, end to end, through the product's own surface (a harness the builder wrote is not the product), reading what it prints, proving each claimed save/send/generate by finding the mechanism — the request, the changed record, the read-back.
+2. **The worker** — the real job, end to end, through the product's own surface (a harness the builder wrote is not the product), reading what it prints, chasing each claimed save/send/generate to its mechanism — the request, the changed record, the read-back — and recording what was found or couldn't be found.
 3. **The second user** — a least-privileged real account attempting what it shouldn't reach, and a second person on the same install looking for traces of the first.
 4. **The worst day** — everything hostile and unlucky at once: `references/worst-day.md`.
 

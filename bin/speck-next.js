@@ -57,8 +57,8 @@ if (cmd === "install") {
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
   copySurface();
   ensureMap();
-  const files = execSync(`find AGENTS.md CLAUDE.md .claude templates -type f`, { cwd: target }).toString().trim().split("\n").length;
-  console.log(`Installed Speck Next v${VERSION} into ${target} (${files} files).`);
+  const files = execSync(`find AGENTS.md CLAUDE.md .claude templates map.md -type f`, { cwd: target }).toString().trim().split("\n").length;
+  console.log(`Installed Speck Next v${VERSION} into ${target} — ${files} files on disk (method files, the version marker, an empty starter map).`);
   console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
 } else if (cmd === "upgrade") {
   const markerPath = path.join(target, MARKER);
