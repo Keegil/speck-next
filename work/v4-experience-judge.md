@@ -4,7 +4,7 @@
 
 **How I'll know it works:** the dysfunctions this exists to kill stop appearing in the records — no verdict-shaped evidence, no manufactured findings, no rosy records (the record is checkable against its transcript and carries nothing to bend); the judge's rulings cite records it never wrote; and the owner's own test holds — the same catches keep happening (worst-day records still surface the day-loss class) while the theater class dies. Measured on Pilot's next pieces and the kernel's own reviews from this change forward.
 
-**Status:** judged BROKEN on first pass (2026-08-19) — routed back to build; fixes below, then a targeted re-witness and re-judge.
+**Status:** Judged (2026-08-19) — landed as v4.0.0 after the full loop below.
 
 ## Experience receipt (opened at dispatch)
 
@@ -55,4 +55,8 @@ Returned 2026-08-19, in full: [docs/reviews/v4-rewitness-record.md](../docs/revi
 
 ## Re-rulings
 
-(appended on return)
+Returned 2026-08-19, in full: [docs/reviews/v4-rejudge-rulings.md](../docs/reviews/v4-rejudge-rulings.md). **Overall: MAY LAND** — all seven triaged defects closed (the ratification contradiction closed as a contradiction, with the product decision honestly open for the owner), all four verdicts Kept on this piece, structure ruled sound again, nothing routes back. Honestly open after landing: the owner's sign-off question, and the ordered experiences (a real four-persona UI piece and a full lifecycle run — both Pilot's build — plus the promise-7 CI controls and the broader upgrade paths).
+
+## Result
+
+The piece is **Judged** — four fresh contexts deep: witness → judge (BROKEN, seven defects, one owner question) → fixes → re-witness (clean on the grounds, six new stops) → fixes → re-judge (MAY LAND). What the next agent shouldn't relearn: the first run of a stance law finds its leaks in the law's own reference files, not its headline text — the walk said "judge the recovery" while the skill above it forbade exactly that; and a targeted re-witness scoped to the judgment's grounds is enough for document-class fixes, but it will keep finding new cold-read stops each pass — fix them and stop, don't chase zero stumbles into a rewrite loop.
