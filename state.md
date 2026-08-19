@@ -2,7 +2,7 @@
 
 ## What's true now
 
-The kernel is at **v4.0.0** — five phases (shape → map → build → experience → judge) on the owner's ruling that agents sent to prove act dysfunctionally: witnesses live the product in personas and write records with no verdicts in them, and a separate judge per piece rules from records it never gathered, routing insufficient work backward by grounds. States renamed Shaped → Built → **Judged** → Live, with *proven* kept as plain speech for all-four-verdicts-on-evidence. `AGENTS.md` (~8 KB) plus five skills — `shape-product`, `map-build`, `craft`, `experience` (the witness: receipt-at-dispatch law carried over, worst-day scripts, the walk), `judge` (rules, gathers nothing, may order more walks) — plus six template skeletons. The upgrader removes the retired `independent-review` directory (copy never deletes). All of v3's discipline stands underneath.
+The kernel is at **v4.0.0** — five phases (shape → map → build → experience → judge) on the owner's ruling that agents sent to prove act dysfunctionally: witnesses live the product in personas and write records with no verdicts in them, and a separate judge per piece rules from records it never gathered, routing insufficient work backward by grounds. States renamed Shaped → Built → **Judged** → Live, with *proven* kept as plain speech for all-four-verdicts-on-evidence. `AGENTS.md` (~11 KB) plus five skills — `shape-product`, `map-build`, `craft`, `experience` (the witness: receipt-at-dispatch law carried over, worst-day scripts, the walk), `judge` (rules, gathers nothing, may order more walks) — plus six template skeletons. The upgrader removes the retired `independent-review` directory (copy never deletes). All of v3's discipline stands underneath.
 
 ## What's wearing out
 
