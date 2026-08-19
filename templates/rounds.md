@@ -10,4 +10,9 @@
 
 > [owner's answer, verbatim]
 
-[Ratification round, when it comes: the owner's closing words, verbatim, dated.]
+[Before the ratification ask, this phase's exit review — receipt opened at dispatch:]
+
+**Experience receipt**: witness [tool, model, session] · dispatched [date, commit] · probes [planned — against the owner's record, the wire, the repo; cold read] · owner of this run · if the record is empty [re-dispatch under your own named line] · record [linked — observations, no verdicts].
+**Judgment**: judge [tool, model, session] · ruled [date] · rulings [linked].
+
+[Ratification round, when it comes: the ask made on a plain rendering, and the owner's closing words, verbatim, dated.]

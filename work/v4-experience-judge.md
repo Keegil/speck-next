@@ -29,3 +29,19 @@ Returned 2026-08-19, in full: [docs/reviews/v4-witness-record.md](../docs/review
 ## Rulings
 
 Returned 2026-08-19, in full: [docs/reviews/v4-judge-rulings.md](../docs/reviews/v4-judge-rulings.md). **Overall: BROKEN — return to build.** The stance split and the owner's three calls all ruled Kept; what broke: the witness's own walk reference still ordered judgment ("Judge the recovery", "broken" in the record), the mapping questions kept a reviewer-attack role, the judge's "walk every promise" was execution-shaped, the owner-facing pages failed the one-read bar, receipt skeletons omitted mandatory fields, the README narrowed the method in its example, and the install count had an unstated boundary. One defect routed to shaping: what ratification means for build/experience/judge is an owner question. Structure: straining — exactly at the handoffs where the same law is repeated across surfaces. Three more experiences ordered (a real UI piece in all four personas; a full lifecycle run on a fresh install; the promise-7 CI controls) — the first two land in Pilot's build, the third is the queued CI piece.
+
+## Fixes (2026-08-19, same day)
+
+All build-routed defects closed: the witness's walk rewritten to record recovery instead of judging it, and the rule-observation line recast without the prohibited word (defect 1) · the worker persona chases mechanisms instead of "proving" them (1) · the mapping question names witness walks and the judge instead of a reviewer-attack (1) · the judge traces promises through records, no walking (2) · AGENTS.md re-rendered plain — the 246-word build sentence is six short steps, "re-land"/"the map ticks"/"natural beat"/"derived" all replaced with plain actions, the rendering's home named (the conversation), the history sentence de-jargoned, both phase-exit review lines name the witness and the judge (3) · README example carries all four verdicts, the persona list carries the second user, the version soup and generated-state lines rewritten (3, 6) · piece receipt gains planned commands and the four verdicts by name; the rounds skeleton gains the phase-exit receipt block (5) · the installer counts what it creates and says so; README states the 19-on-disk boundary (7). The ratification question (defect 4) is the owner's, tracked in state.md with options — the contract carries an honest interim line. Re-witness and re-judge dispatched on the fixes, receipts below.
+
+## Re-experience receipt (opened at dispatch)
+
+- **Witness:** codex exec (GPT-5.6), fresh session, clean clone — not the first witness's session, not the author's.
+- **Dispatched:** 2026-08-19, on the fix commit following the rulings.
+- **Probes planned:** exactly the judgment's grounds — re-run the stance self-test on the experience/judge/walk texts; re-run the vocabulary and consistency greps; cold-read the rewritten AGENTS.md and README in one pass; re-run the installer count.
+- **Owner of this run:** the kernel session dispatching on 2026-08-19.
+- **If the record is empty:** re-dispatch under your own named line.
+
+## Re-record
+
+(appended on return)
