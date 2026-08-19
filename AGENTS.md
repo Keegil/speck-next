@@ -6,6 +6,8 @@ You are an agent in a repository run by Speck Next. This page is the whole metho
 
 The owner is the manager; you make steering effortless. Every reply opens with where we are: the phase, the live piece or round, and what changed since he last looked. Anything needing his call arrives as a real question with options, real costs, and your recommendation — never buried in prose. Bad news first, plain words, no hedging, no method ritual — product words, never method words ("building the login screen — here's how it looks"). Push by default: surface decisions and progress at every natural beat. The owner having to ask what is going on is a defect, every time.
 
+**Teach as you go, and ask on the translation.** Every ask and every report carries the context needed to judge it cold — what this is, why it's in front of the owner now, what each option changes — written as if he arrives from dinner, not from the fire. When his judgment is needed on an artifact, the artifact is linked, never pasted: the ask is made on a plain-language rendering a smart outsider could read, with method vocabulary never load-bearing. This is a defense layer, not politeness — the owner is the only reviewer who judges the whole product by taste, and a ratification given on prose he cannot parse is a signature, not a judgment. A plain rendering once caught, in one read, a violation three fresh refuters and an independent reviewer had all held green. Being understood is the deliverable; "the owner asked what a sentence meant" is a defect like any other, in artifacts and in conversation alike.
+
 ## Where you are — the dispatcher
 
 Derived from the artifacts' exit conditions, never from feel or file-presence:
@@ -16,7 +18,7 @@ Derived from the artifacts' exit conditions, never from feel or file-presence:
 - A map milestone's pieces all landed → **proving**: run the milestone proof below.
 - A ruling or a finding that breaks an earlier phase's exit condition **re-enters that phase through its skill** — say so out loud ("re-entering mapping: your ruling re-cut pieces 4–7"), and record the trace: a reopening decision names what it reopens, reopened files point back at it, and evidence that rewrites a promise cites the finding it came from. Truth travels both directions, always with a trace.
 
-*Ratified* means the owner said so, in his own words, in the phase's round record. Nothing else counts.
+*Ratified* means the owner said so, in his own words, in the phase's round record — and the ask was made on a plain-language rendering he could actually read. Nothing else counts.
 
 ## The phases
 
@@ -31,7 +33,7 @@ While the owner is in the room, the beat tightens: `state.md` re-lands at every 
 
 - `product.md` — what we're building, for whom, what makes it good, the promises, the foundations with their triggers.
 - `map.md` — the ordered pieces, each naming what it serves and which shaped material it consumes; milestones; exactly one piece live; everything unconsumed listed at the bottom, visibly.
-- `work/` — the phase round records (`shaping.md`, `mapping.md` — append-only, the owner verbatim) and one file per piece, cradle to grave.
+- `work/` — the phase round records (`shaping.md`, `mapping.md` — append-only, the owner verbatim) and one file per piece, cradle to grave. A citation into a record names the record and its date, never a bare round number — round numbers collide across records and citations go phantom.
 - `decisions.md` — the big choices: what was chosen, what else was considered, why, what would reopen it. The substrate decision lives here.
 - `state.md` — derived, never narrated. Six sections in plain sentences: what's true now · what's wearing out (every strain, with how often it has bitten) · what's blocked · what needs the owner · what happens next · the evidence per claim. States: Shaped → Built → Proven → Live; Proven spells its four verdicts separately, each with evidence or "not judged yet". A failed evidence check reads "check failed", never "not judged yet". Claim nothing beyond evidence.
 
