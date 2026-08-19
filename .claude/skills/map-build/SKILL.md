@@ -5,7 +5,7 @@ description: Turns a shaped product into map.md through an owner conversation �
 
 # map-build
 
-Mapping decides what gets built, in what order, and what proven means for each piece — the second most consequential conversation in a product's life, and it runs like one: numbered rounds in `work/mapping.md`, the owner's words verbatim, one or two forks at a time with options, real costs, and your recommendation. Never hand the owner a finished document and call it a conversation. Read `references/questions.md` for the forks that have actually mattered; start `map.md` from `templates/map.md`.
+Mapping decides what gets built, in what order, and what proven means for each piece — the second most consequential conversation in a product's life, and it runs like one: numbered rounds in `work/mapping.md`, the owner's words verbatim, one or two forks at a time with options, real costs, and your recommendation. Never hand the owner a finished document and call it a conversation. Read `references/questions.md` for the forks that have actually mattered; start `map.md` from `templates/map.md` — a floor, not a form: grow it past the skeleton whenever the product's map needs more.
 
 The rules:
 

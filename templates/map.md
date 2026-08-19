@@ -1,5 +1,7 @@
 # Map
 
+[A floor, not a form: add sections and columns as the product's map needs them.]
+
 [Ratified: owner's ratification quote + date, or "not yet ratified". Ordering rationale in one short paragraph — what this order buys, what it costs. Substrate: one line naming what this runs on, linking its decisions.md entry.]
 
 ## Milestones

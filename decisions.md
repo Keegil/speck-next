@@ -1,5 +1,7 @@
 # Decisions
 
+**2026-08-19 · Templates are floors, never forms — owner ruling.** His words: agents must know "it is perfectly acceptable and encouraged to both expand upon templates and add new materials whenever that is appropriate, and the entire methodology and process must not shy away from this." Landed at every point it governs, per the distribution-list lesson: the method page (paired with shaped-material citizenship), both conversation skills where templates are handed out, and a floor-not-form line at the top of every skeleton — the artifact agents actually copy. The counterweight stays: expansion serves the product and the map accounts for what it creates, so the ruling licenses depth, never narration. Reopens if products start shipping skeleton-shaped because agents read the templates as forms anyway — measured the only way that matters, by what the next campaigns actually produce.
+
 **2026-08-19 · Footprint trade approved — files 15 → 20, skills capped at 6.** v3's templates put the install at 17 files against the 15-file limit; per promise 7 the raise ships with a compensating tightening, and the owner approved: installed files ≤ 20, and the skill ceiling drops to 6 (four exist — shape-product, map-build, craft, independent-review). Reopens if a fifth or sixth skill arrives without a failure record demanding it, which is the accretion pattern the ceiling exists to catch.
 
 
