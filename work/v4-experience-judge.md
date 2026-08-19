@@ -17,4 +17,15 @@
 
 ## Record
 
+Returned 2026-08-19, in full: [docs/reviews/v4-witness-record.md](../docs/reviews/v4-witness-record.md) — seven probes executed (cold read, vocabulary sweep, reference resolution, owner-record check, installer/upgrader runs, stance self-test of the new skills' own text, contract consistency), all with exact commands and output, limits recorded as untested. The witness held the stance: observations and side-by-sides only, no rulings.
+
+## Judgment receipt (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a separate fresh session that gathered none of the record — not the witness's session, not the author's.
+- **Dispatched:** 2026-08-19, on the record above plus CONTRACT.md, decisions.md, AGENTS.md, and the judge skill.
+- **Owner of this run:** the kernel session dispatching on 2026-08-19.
+- **If the rulings below are empty:** re-dispatch under your own named line; never assume the run died.
+
+## Rulings
+
 (appended on return)
