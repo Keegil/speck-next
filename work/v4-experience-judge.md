@@ -1,0 +1,7 @@
+# v4 — prove becomes experience → judge
+
+**Outcome:** the courtroom leaves the method. The loop becomes shape → map → build → experience → judge: fresh witnesses *live* the product in personas (first-timer, second household member, the worst day — the attack playbook reborn as worst-day scripts) and write experience records that carry no verdicts; a separate judge per piece gathers nothing, reads the records and evidence, may order more experiences, and rules the four verdicts. Judged replaces Proven as the state; judgment routes backward with traces — insufficient-on-shape-grounds re-enters shaping, on-map-grounds mapping, on-build-grounds the piece. "Proven" survives as plain speech for the outcome. The independent-review skill splits into `experience` and `judge` (five skills of six allowed).
+
+**How I'll know it works:** the dysfunctions this exists to kill stop appearing in the records — no verdict-shaped evidence, no manufactured findings, no rosy records (the record is checkable against its transcript and carries nothing to bend); the judge's rulings cite records it never wrote; and the owner's own test holds — the same catches keep happening (worst-day records still surface the day-loss class) while the theater class dies. Measured on Odd's next pieces and the kernel's own reviews from this change forward.
+
+**Status:** shaped — committed before the code it governs.
