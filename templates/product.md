@@ -1,5 +1,7 @@
 # [Product name]
 
+[A floor, not a form: expand any section, add sections, add whole new materials — the product decides the shape, never the skeleton.]
+
 [One sentence: what the user gets — their outcome, not our feature.]
 
 [Who it's for, what they use today, why this instead. Consumer products speak to the market; the founder's data is dev corpus, never the definition.]

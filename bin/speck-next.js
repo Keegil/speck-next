@@ -76,5 +76,5 @@ if (cmd === "install") {
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
 
 The method itself is one page: AGENTS.md. Everything else is four skills your agent loads on demand, and five file skeletons in templates/.
-Pin a version: npx -y github:Keegil/speck-next#v3.0.0 install`);
+Pin a version: npx -y github:Keegil/speck-next#v3.1.0 install`);
 }

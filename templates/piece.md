@@ -1,5 +1,7 @@
 # [Piece name]
 
+[A floor, not a form: grow this file to whatever the piece genuinely needs.]
+
 **Serves:** [job/moment/foundation from the map] · **Consumes:** [frames/sections/material]
 
 **Outcome:** [what exists and works when this piece lands — one short paragraph, committed before any of this piece's code.]
