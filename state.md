@@ -6,8 +6,8 @@ The kernel is at **v4.0.0**, tagged and Judged through its own new law — five 
 
 ## What's wearing out
 
-- **The receipt law, bitten twice** (shaping campaign, then the map reviewers): receipts reconstructed at closure instead of opened at dispatch. Carried unchanged into the witness dispatch; unproven until the next real record shows a receipt that existed before the witness ran (bitten twice).
-- **My own manual dispatches keep hanging on open stdin** (the suite runner is fixed; the habit isn't — bitten twice, 79 minutes and 18 minutes). The fix is mechanical (`< /dev/null`), the discipline isn't yet.
+- **The receipt law, bitten twice, now holding**: the v4 loop's four receipts (witness, judge, re-witness, re-judge) each existed in a pushed commit before their run started — git shows the receipt commit preceding each record. Watching one more real campaign before calling the strain retired (bitten twice, held four).
+- **Manual dispatches hanging on open stdin, bitten twice, now holding**: all four v4 dispatches carried `< /dev/null` and none hung. Same bar — one more campaign before retiring (bitten twice, held four).
 
 ## What's blocked
 
