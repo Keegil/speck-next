@@ -4,7 +4,7 @@
 
 **How I'll know it works:** the dysfunctions this exists to kill stop appearing in the records — no verdict-shaped evidence, no manufactured findings, no rosy records (the record is checkable against its transcript and carries nothing to bend); the judge's rulings cite records it never wrote; and the owner's own test holds — the same catches keep happening (worst-day records still surface the day-loss class) while the theater class dies. Measured on Pilot's next pieces and the kernel's own reviews from this change forward.
 
-**Status:** built — the surface, skills, templates, contract, devsuite regexes, and upgrader migration all landed; awaiting its own witness-and-judge pass (the first real run of the new law).
+**Status:** judged BROKEN on first pass (2026-08-19) — routed back to build; fixes below, then a targeted re-witness and re-judge.
 
 ## Experience receipt (opened at dispatch)
 
@@ -28,4 +28,4 @@ Returned 2026-08-19, in full: [docs/reviews/v4-witness-record.md](../docs/review
 
 ## Rulings
 
-(appended on return)
+Returned 2026-08-19, in full: [docs/reviews/v4-judge-rulings.md](../docs/reviews/v4-judge-rulings.md). **Overall: BROKEN — return to build.** The stance split and the owner's three calls all ruled Kept; what broke: the witness's own walk reference still ordered judgment ("Judge the recovery", "broken" in the record), the mapping questions kept a reviewer-attack role, the judge's "walk every promise" was execution-shaped, the owner-facing pages failed the one-read bar, receipt skeletons omitted mandatory fields, the README narrowed the method in its example, and the install count had an unstated boundary. One defect routed to shaping: what ratification means for build/experience/judge is an owner question. Structure: straining — exactly at the handoffs where the same law is repeated across surfaces. Three more experiences ordered (a real UI piece in all four personas; a full lifecycle run on a fresh install; the promise-7 CI controls) — the first two land in Pilot's build, the third is the queued CI piece.
