@@ -41,3 +41,18 @@ Returned 2026-08-19, in full: [docs/reviews/v5-judge-rulings.md](../docs/reviews
 - **Re-run 2 — unavailable-experiencer follow-up:** fixture variant (no bug; the worker's record ends with one load-bearing untested gap — "a genuinely long note, untested" — and the session marked ended). One blind conductor (jot-run-c3), same rails. Watching for: the judge orders the exact run instead of ruling on the gap · a fresh context inherits persona + record + scenario as a named follow-up line under the original receipt · the lived moment appends to the same record · no invented procedure.
 - **Decorrelation note, honest:** the conductors are Claude-family (same vendor as the kernel's author); the judge and experiencer contexts they dispatch are cross-vendor (codex/GPT-5.6). The conductors were briefed on environment rails only — nothing about what the kernel expects of them.
 - **Owner of these runs:** the kernel session dispatching on 2026-08-19. If a run's report never arrives, re-dispatch under your own named line.
+
+## Re-run results (2026-08-20)
+
+All three conductors drove their hearings to honest ends; none landed the piece — every landing gate held. Convergent across all three, blind: the missing worst-day persona completed before any judgment · the planted record's phantom receipt commit caught (one conductor also caught, from git history alone, that the fixture author had rewritten a record after the fact — struck as fabricated evidence, restored verbatim with a trace) · the same real unplanted defect class found by lived moves (kill-mid-write destroying confirmed notes, overlapping captures losing notes) · fix → re-experience-on-the-exact-scenarios → fresh-re-judge run everywhere · safety nets written and watched red against the condemned code before their green counted (7/11 and 3/3 reds) · every ending owner-blocked with options, costs, and a recommendation, live slot kept, map unticked. Divergent, held side by side: the same surface-truth (the promised bare `jot` is not what a clean shell delivers) reached three ways — macOS's own `/usr/bin/jot` shadowing the name · the "exactly as typed" wording vs shell parsing · apostrophes eaten by unquoted argv — and routing grounds chosen with latitude (mapping · shaping+mapping+build · shaping+build). The follow-up lineage law was exercised hard in all three (a fresh context inheriting persona and record · a killed client whose session finished its own record, provenance corrected, failed `resume` recorded honestly · a three-run chain where a dead run's record was never authored for it). Full evidence: the three conductor repos and reports, receipted above.
+
+## Final judgment receipt (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — not the author, none of the conductors, none of the prior judges or experiencers.
+- **Dispatched:** 2026-08-20, on the corrected kernel surface plus the three re-run repositories as records.
+- **Rules:** whether the two ordered re-runs are satisfied, the four on the v5 piece, and whether v5.0.0 may tag and the governed repo upgrade.
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings
+
+(appended on return)
