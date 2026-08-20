@@ -16,4 +16,15 @@
 
 ## Records and verdicts
 
+Returned 2026-08-19, both in full: [the newcomer](../docs/reviews/v5-experiencer-newcomer.md) — verdict: usable for a real build tomorrow, not yet unambiguous enough for two fresh agents to drive identically (grounded in its simulated drive and stumbles: the piece loop says six steps but prints five, Built is never explicitly landed, "Land it" reads unconditional though a hearing can route backward, hearing outputs' destinations unnamed, the judge's dispatch-back has no fallback for a non-resumable run, README says "At v4" while the CLI prints 5.0.0) — and [the worst day](../docs/reviews/v5-experiencer-worstday.md) — verdict: yes for governing a build through the installed agent surface, no for the whole published surface saying one thing yet (grounded in its probes: installed surface clean of both dead v4 stances, all references resolve, install/upgrade run at 19 files with the retired skill removed; three drifts in the outer docs — contract and one README paragraph shrink "second user" to least-privileged only, README's milestone hearing omits the second judge, README front page stale at "v4").
+
+## Judgment receipt (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — not the author, not either experiencer.
+- **Dispatched:** 2026-08-19, on both records and their verdicts, with the duty to challenge both (favorable claims hardest) and the power to order re-runs, which the dispatching session executes.
+- **Owner of this run:** the kernel session dispatching on 2026-08-19.
+- **If the rulings are empty:** re-dispatch under your own named line.
+
+## Rulings
+
 (appended on return)
