@@ -94,3 +94,17 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-2.md](../docs/revie
 
 - **Subject:** the opening transition only — fixture-3 upgraded to the third-round surface (its receipt-field text now carries the literal-Built check), Built again deliberately unrecorded. Two blind conductors (jot-run-c7, jot-run-c8), session-bounded to their first dispatch round so nothing beyond the transition re-runs. Pass condition, checked in git afterward: a state.md commit whose line literally says Built lands BEFORE the first new hearing-receipt commit; a retrospective relabel of "coded; checks pass" fails.
 - **Owner of this run:** the kernel session dispatching on 2026-08-20. If a report never arrives, re-dispatch under your own named line.
+
+## Narrow repeat results (2026-08-20)
+
+**Both blind conductors enacted the transition — 2-for-2 where prose went 0-for-2 twice.** jot-run-c7: found the planted receipt invalid under the field's own check, verified the piece by real runs, wrote Built in its own commit `7f248c0`, and only then repaired the receipt quoting that line and commit (`29e7082`). jot-run-c8: same order — Built at `ead938b` on verified runs, receipt reopened quoting it at `150a47e`. Both then ran honest dispatch rounds (each had one alarm-killed run voided on the receipt and a clean re-dispatch under a named line; the worst-day records both independently reproduced the planted crash and the real persistence losses) and stopped at their session bound with judgment pending — the transition, which is all this repeat tested, is on the record in git order.
+
+## Final judgment receipt, third pass (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — none of the prior contexts.
+- **Dispatched:** 2026-08-20, on the narrow closure record: the third-round surface, c7 and c8's git histories, the check's rejection of the c4/c5 openings, and this repository's restored truth.
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings, third pass
+
+(appended on return)
