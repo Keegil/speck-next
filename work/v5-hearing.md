@@ -53,6 +53,17 @@ All three conductors drove their hearings to honest ends; none landed the piece 
 - **Rules:** whether the two ordered re-runs are satisfied, the four on the v5 piece, and whether v5.0.0 may tag and the governed repo upgrade.
 - **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
 
-## Final rulings
+## Final rulings (first pass)
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-1.md](../docs/reviews/v5-final-rulings-1.md). **DO NOT LAND, again** — the rejection gate held twice (no conductor ever landed insufficient work), but: both blind conductors missed writing Built before their hearings (the corrected sentence failed twice — the transition needs a mechanism the conductor can't miss, not prose); the ordered judge-first follow-up scenario never actually ran (the fixture's fabricated record — rightly struck by the conductor — consumed the valid starting point, and the replacement ran before any judge ordered it); the piece-file destination silently permits two artifact shapes; and this repository's own state.md/map.md went stale mid-hearing while package.json and README claimed v5 ahead of any v5 tag — the release-atomicity fix had fixed the pin rendering, not the truth. Four routes, all to build; a repeat of both re-runs on the corrected surface; then a new fresh judge. The correction of the earlier "all three runs closed honestly" line is exactly this section.
+
+## Second-round fixes (2026-08-20)
+
+1. **Built is now a receipt field, not a sentence:** the hearing receipt's first field quotes the `state.md` line that says Built and its commit — a receipt cannot open without it, and receipts are the thing every conductor demonstrably fills.
+2. **The judge got the same continuity law as experiencers:** a judge whose session cannot stay open continues as a fresh context inheriting the judgment-so-far, the challenge list, and the receipt line — so "order the run, receive the append, then rule" is executable with one-shot sessions.
+3. **The destination is now stated openly:** receipts, verdicts-in-brief, and the operative rulings live in the piece's work file; full-length records may live beside it as linked files — one home for the truth, links for the bulk.
+4. **This repository's own truth reset:** state.md and map.md rewritten to the actual mid-hearing state; package.json set to 5.0.0-rc.1 and README's status made honest — version, status, and tag become v5.0.0 together in one release commit only after a sufficient judgment.
+
+## Re-run repeats
+
+(receipts open below as they dispatch)
