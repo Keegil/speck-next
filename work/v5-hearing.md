@@ -4,7 +4,7 @@
 
 **How I'll know it works:** the judge's challenges catch verdicts the records don't support (the LLM-unreliability this exists for), diverging persona verdicts surface real tensions instead of being merged away, rulings cite lived moments rather than paraphrase, and the arm's-length blindness the owner called ("judging only from records is too far removed") stops — measured on this change's own bootstrap hearing and then Pilot's build.
 
-**Status:** built → heard → judged DO-NOT-LAND (2026-08-19) — routed back to build; fixes and the two ordered re-runs below, then a fresh judge.
+**Status (current, 2026-08-20):** five refusals in; every mechanism ground closed and verified — the hearing model, the judge-first continuation, the one-home rule, the literal-Built gate, and the two-clone opening transition; the only remaining ground has been this repository's own truth keeping pace with its hearing, corrected surface by surface across the fourth and fifth passes. Awaiting one status-only judgment; its sufficiency opens the single release commit (5.0.0 + README + state + map + pin + tag together) and Pilot's upgrade. The full chain, oldest first, is below.
 
 ## Hearing receipt (opened at dispatch)
 
@@ -117,4 +117,4 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-3.md](../docs/revie
 
 ## Final rulings, fourth pass
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-4.md](../docs/reviews/v5-final-rulings-4.md). **DO NOT RELEASE — fifth refusal, one sentence wide.** The correction commit 214bbe5 verified atomic and every release-facing surface honestly prerelease; the sole remaining ground: this file's own top Status line still described the first refusal as the current state. The route: rewrite the Status (done — see the top of this file), append this result, and re-land state.md and map.md in the same commit; then one status-only judgment. Nothing else re-runs.
