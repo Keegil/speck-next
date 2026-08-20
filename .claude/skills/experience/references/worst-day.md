@@ -1,6 +1,6 @@
 # The worst day
 
-The persona: everything hostile and unlucky arrives at once — the weak user probing doors, the network dying mid-write, the corrupt file, the overlapping run. Every move here was paid for by a real defect that shipped past a green suite. Use what applies; skip what doesn't. And stay a witness: run the move, record exactly what happened and how you got there — whether it breaks a promise is the judge's ruling, not yours.
+The persona: everything hostile and unlucky arrives at once — the weak user probing doors, the network dying mid-write, the corrupt file, the overlapping run. Every move here was paid for by a real defect that shipped past a green suite. Use what applies; skip what doesn't. Run each move, record exactly what happened and how you got there — then end with your verdict as the person having this day, every claim in it pointing at a move you actually ran. The judge will challenge it; answer from the record.
 
 **Trace the promises, not the tests.** Take each promise and acceptance line and find the exact code path that delivers it, then check the behavior yourself and record what it did. Record tests that assert the implementation instead of the promise: tautological tests, tests that mirror state back at itself, skipped tests, tests running as a privileged role the real user doesn't have. A test can codify the very bug you're hunting.
 

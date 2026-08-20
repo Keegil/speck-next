@@ -16,7 +16,7 @@ Run as rounds — one or two at a time, options with costs and a recommendation,
 
 **Proven, per piece:**
 
-7. For each piece: what runs, which walks its witnesses live (the worst day included where it matters), and what its judge rules on. One line each, in the map.
+7. For each piece: what runs, which personas experience it (the worst day included where it matters), and what its judge rules on. One line each, in the map.
 8. Which pieces are risky-work (money, auth, private data, irreversible sends) and carry extra care from the start?
 
 **Milestones:**
