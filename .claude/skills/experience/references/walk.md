@@ -15,7 +15,7 @@ For products with a user interface. Live it as your persona, record as you go, a
 9. Run accessibility and console checks and keep the raw output: contrast, focus order, touch targets, text scaling, keyboard overlap.
 10. Live each promised moment separately and record it: did the trigger fire, did the beats play, and did it feel like the promised thing — or merely technically occur? Report the feeling as felt, in persona.
 11. Run the connoisseur pass on the same screenshots, asking a different question: not "is this clear?" but "how is this made?" — record specific observations on hierarchy, spacing, color, type, motion, copy, emotional tone, pointed at the pixels.
-12. Close with your verdicts as this persona — works, feels good, crafted — each in your own words, each pointing at the screenshots and moments behind it. A verdict pointing at nothing is void, and the judge challenges the favorable ones hardest.
+12. Close with your verdicts as this persona — works, feels good, crafted — each in your own words, each pointing at the screenshots and moments behind it. A verdict pointing at nothing is void, and the judge challenges the favorable ones hardest. These three are your testimony as one persona; the judge's four governing rulings are its own and are never satisfied by copying yours.
 
 **Ruling on feel and taste without becoming a tyrant:**
 
