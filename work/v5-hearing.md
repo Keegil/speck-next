@@ -107,4 +107,4 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-2.md](../docs/revie
 
 ## Final rulings, third pass
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-3.md](../docs/reviews/v5-final-rulings-3.md). **DO NOT RELEASE — fourth refusal, and the narrowest.** The literal-Built gate and the c7/c8 two-clone opening transition ruled CLOSED (both git orders verified; the check's watched-fail against the c4/c5 histories accepted). The single remaining ground: repository truth — `state.md` and `map.md` still described the completed narrow repeat as future while this judgment was already open. The route: append this result and rewrite state and map to the actual post-judgment truth in one commit, keep the prerelease posture, convene one new fresh judge on that truth-only correction; nothing else repeats. Only that judge's sufficiency opens the release commit.
