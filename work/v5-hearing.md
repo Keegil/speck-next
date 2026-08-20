@@ -90,6 +90,7 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-2.md](../docs/revie
 1. **The Built check now has teeth at three surfaces, with the literal-word rule:** the piece template's built field carries the check in its own bracket text ("the line must literally say Built — if it doesn't, write it first; coded-and-checks-pass is not Built"), the loop's step 4 makes the same check the action of opening a receipt, and the judge skill codifies c6's proven behavior as law — a receipt whose built quote lacks the literal word is invalid: rule nothing, order the state written and the receipt reopened. Watched failing against the two real failure histories: the rule rejects c4's 3ff144a and c5's afab9b5 openings (their quoted line, from 60e025c, contains no "Built"), and accepts c6's cd216c3.
 2. **Repository truth restored:** this correction section; state.md and map.md rewritten to the routed now; the decision entry's "Landed as v5.0.0" amended to candidate language with a visible correction note; release posture unchanged (5.0.0-rc.1, README candidate, pin v4.0.0, latest tag v4.0.0).
 
-## The narrow repeat
+## The narrow repeat (receipt opened at dispatch, 2026-08-20)
 
-(receipt opens below at dispatch)
+- **Subject:** the opening transition only — fixture-3 upgraded to the third-round surface (its receipt-field text now carries the literal-Built check), Built again deliberately unrecorded. Two blind conductors (jot-run-c7, jot-run-c8), session-bounded to their first dispatch round so nothing beyond the transition re-runs. Pass condition, checked in git afterward: a state.md commit whose line literally says Built lands BEFORE the first new hearing-receipt commit; a retrospective relabel of "coded; checks pass" fails.
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If a report never arrives, re-dispatch under your own named line.
