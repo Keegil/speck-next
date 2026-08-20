@@ -4,7 +4,7 @@
 
 **How I'll know it works:** the judge's challenges catch verdicts the records don't support (the LLM-unreliability this exists for), diverging persona verdicts surface real tensions instead of being merged away, rulings cite lived moments rather than paraphrase, and the arm's-length blindness the owner called ("judging only from records is too far removed") stops — measured on this change's own bootstrap hearing and then Pilot's build.
 
-**Status:** shaped — committed before the code it governs.
+**Status:** built → heard → judged DO-NOT-LAND (2026-08-19) — routed back to build; fixes and the two ordered re-runs below, then a fresh judge.
 
 ## Hearing receipt (opened at dispatch)
 
@@ -27,4 +27,8 @@ Returned 2026-08-19, both in full: [the newcomer](../docs/reviews/v5-experiencer
 
 ## Rulings
 
-(appended on return)
+Returned 2026-08-19, in full: [docs/reviews/v5-judge-rulings.md](../docs/reviews/v5-judge-rulings.md). **Overall: DO NOT LAND** — the hearing model is worth keeping, but this build can mis-land rejected work and its surfaces don't say one thing. The challenge worked as designed: both experiencers' favorable claims were narrowed to what their runs establish (nothing struck — all claims grounded), the divergence was held by scope, all four verdicts ruled BROKEN with record citations, structure ruled FIGHTING at the state-transition seam and the many-copies seam. Eleven defects routed to build (worst: the piece loop says six steps, prints five, never lands Built, and lands unconditionally after a hearing that may have rejected the piece). Two re-runs ordered before a fresh judge may permit landing: the failed-hearing transition (two blind conductors on a fixture), and the unavailable-experiencer follow-up. Tag and Pilot's upgrade wait.
+
+## Fixes and re-runs
+
+(appended as they land)
