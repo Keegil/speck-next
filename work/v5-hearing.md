@@ -108,3 +108,13 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-2.md](../docs/revie
 ## Final rulings, third pass
 
 Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-3.md](../docs/reviews/v5-final-rulings-3.md). **DO NOT RELEASE — fourth refusal, and the narrowest.** The literal-Built gate and the c7/c8 two-clone opening transition ruled CLOSED (both git orders verified; the check's watched-fail against the c4/c5 histories accepted). The single remaining ground: repository truth — `state.md` and `map.md` still described the completed narrow repeat as future while this judgment was already open. The route: append this result and rewrite state and map to the actual post-judgment truth in one commit, keep the prerelease posture, convene one new fresh judge on that truth-only correction; nothing else repeats. Only that judge's sufficiency opens the release commit.
+
+## Final judgment receipt, fourth pass — truth-only (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — none of the prior contexts. Scope per the third judgment's route: the repository-truth correction only; c6/c7/c8, the Built gate, and the one-home rule are closed and not re-heard.
+- **Dispatched:** 2026-08-20, at commit 214bbe5.
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings, fourth pass
+
+(appended on return)
