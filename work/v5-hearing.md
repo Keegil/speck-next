@@ -4,7 +4,7 @@
 
 **How I'll know it works:** the judge's challenges catch verdicts the records don't support (the LLM-unreliability this exists for), diverging persona verdicts surface real tensions instead of being merged away, rulings cite lived moments rather than paraphrase, and the arm's-length blindness the owner called ("judging only from records is too far removed") stops — measured on this change's own bootstrap hearing and then Odd's build.
 
-**Status (current, 2026-08-20):** every mechanism ground is closed and verified — the hearing model, the judge-first continuation, the one-home rule, the literal-Built gate, and the two-clone opening transition; the only ground that has kept refusing is this repository's own truth keeping pace with its hearing, corrected surface by surface. The judgment count and order live in the chronology below and nowhere else. Awaiting the next truth-only judgment; its sufficiency opens the single release commit (5.0.0 + README + state + map + pin + tag together) and Odd's upgrade.
+**Status (current, 2026-08-20):** every mechanism ground is closed and verified — the hearing model, the judge-first continuation, the one-home rule, the literal-Built gate, and the two-clone opening transition; the only ground that has kept refusing is this repository's own truth keeping pace with its hearing, corrected surface by surface. The judgment count and order live in the chronology below and nowhere else. The sixth judgment ruled MAY RELEASE; the release commit and tag are this piece's landing.
 
 **The chronology — the one surface that counts the judgments:**
 1. 2026-08-19 · the piece's bootstrap hearing judge — DO NOT LAND (11 routed defects; all closed).
@@ -145,4 +145,8 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-5.md](../docs/revie
 
 ## Final rulings, sixth pass
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-6.md](../docs/reviews/v5-final-rulings-6.md). **MAY RELEASE** — the chronology ruled faithful, aaa6ae2 atomic, every surface one honest prerelease story, all four verdicts sufficient. The release commit below is the one every judgment specified: package 5.0.0, README status, state, map, the CLI's released-pin example, and this result, together, tagged v5.0.0 on that exact commit — then the governed repo upgrades.
+
+## Result
+
+**Judged sufficient and released as v5.0.0 after six refusals** — the hearing model proved itself by refusing its own release five times on grounds that were each real. What the next agent shouldn't relearn: a transition that matters must live in an artifact agents demonstrably fill (the receipt field caught what two rounds of prose missed) · a judge with the continuity law can order runs across one-shot sessions · exactly one surface may count or narrate a chronology, and every other surface points at it · and the self-hosted repo's own state is part of the product — four of the six refusals were the kernel failing its own truth-telling promise, and the judges were right every time.
