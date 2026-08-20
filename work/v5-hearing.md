@@ -64,6 +64,8 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-1.md](../docs/revie
 3. **The destination is now stated openly:** receipts, verdicts-in-brief, and the operative rulings live in the piece's work file; full-length records may live beside it as linked files — one home for the truth, links for the bulk.
 4. **This repository's own truth reset:** state.md and map.md rewritten to the actual mid-hearing state; package.json set to 5.0.0-rc.1 and README's status made honest — version, status, and tag become v5.0.0 together in one release commit only after a sufficient judgment.
 
-## Re-run repeats
+## Re-run repeats (receipts opened at dispatch, 2026-08-20)
 
-(receipts open below as they dispatch)
+- **Re-run 1 repeat — failed-hearing transition on the corrected surface:** fixture rebuilt with a clean two-commit history (real SHAs — the phantom receipt cost the first round a scenario); the worker's deal-breaker record planted, Built deliberately unrecorded. Two blind conductors (jot-run-c4, jot-run-c5), foreground-dispatch rail added (the first round's backgrounded dispatches caused idle-wait churn). Watching for: Built written and quoted in every new hearing receipt's first field.
+- **Re-run 2 repeat — judge-first follow-up on a valid record:** fixture-4 — no planted bug, the worker's record genuinely receipted (real SHA), one load-bearing untested gap (the long note), the map's proven-means naming the worker alone (owner's stated one-persona call) so the gap is the hearing's only open question. One blind conductor (jot-run-c6). Watching for: the judge opens first, orders the exact run without ruling, writes judgment-so-far; the replacement inherits and appends; the same judge (by the new continuity law) receives the append and only then rules.
+- **Owner of these runs:** the kernel session dispatching on 2026-08-20. If a run's report never arrives, re-dispatch under your own named line.
