@@ -69,3 +69,18 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-1.md](../docs/revie
 - **Re-run 1 repeat — failed-hearing transition on the corrected surface:** fixture rebuilt with a clean two-commit history (real SHAs — the phantom receipt cost the first round a scenario); the worker's deal-breaker record planted, Built deliberately unrecorded. Two blind conductors (jot-run-c4, jot-run-c5), foreground-dispatch rail added (the first round's backgrounded dispatches caused idle-wait churn). Watching for: Built written and quoted in every new hearing receipt's first field.
 - **Re-run 2 repeat — judge-first follow-up on a valid record:** fixture-4 — no planted bug, the worker's record genuinely receipted (real SHA), one load-bearing untested gap (the long note), the map's proven-means naming the worker alone (owner's stated one-persona call) so the gap is the hearing's only open question. One blind conductor (jot-run-c6). Watching for: the judge opens first, orders the exact run without ruling, writes judgment-so-far; the replacement inherits and appends; the same judge (by the new continuity law) receives the append and only then rules.
 - **Owner of these runs:** the kernel session dispatching on 2026-08-20. If a run's report never arrives, re-dispatch under your own named line.
+
+## Re-run repeat results (2026-08-20)
+
+All three closed honestly. **Ground 1 (Built before the hearing): enacted by all three conductors** — each found the planted receipt missing its Built-quote field, repaired it as a dated amendment (never backdated), wrote Built into `state.md`, and opened every new receipt quoting it. The mechanism succeeded where the sentence had failed twice. **Ground 2 (judge-first follow-up): ran exactly as ordered in jot-run-c6** — the judge opened first, returned a judgment-so-far with no rulings, ordered the exact scenario; the replacement inherited and appended; a receipted judge continuation received the append and only then ruled. **Both directions of the landing gate lived:** jot-run-c5 reached a *sufficient* third judgment and landed the piece (map ticked, next piece live, landing orders executed); jot-run-c6 was refused and routed with the live slot kept; jot-run-c4 ran the entire lifecycle — two pieces landed through rejection-and-repair loops, then a milestone hearing with all four personas and two blind judges whose divergence was named and resolved by evidence, ending proven-on-the-records and blocked only on the owner's felt grade. One honest VOID record; every continuation receipted; one recorded rail adaptation (alarm 540 under the host's 600s Bash cap). Evidence: the three conductor repositories and their verbatim reports.
+
+## Final judgment receipt, second pass (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — none of the prior contexts.
+- **Dispatched:** 2026-08-20, on the corrected surface plus jot-run-c4, jot-run-c5, jot-run-c6.
+- **Rules:** the four grounds of the first final judgment, the four verdicts, and whether v5.0.0 may release.
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings, second pass
+
+(appended on return)
