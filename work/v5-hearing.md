@@ -83,4 +83,13 @@ All three closed honestly. **Ground 1 (Built before the hearing): enacted by all
 
 ## Final rulings, second pass
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-2.md](../docs/reviews/v5-final-rulings-2.md). **DO NOT RELEASE — third refusal.** Routes 2 (judge-first continuation — c6's linear six-commit chain verified exact) and 3 (one-home destination) ruled CLOSED. Route 1 STILL OPEN: the judge's git archaeology showed c4 and c5 both opened their first new receipt by retrospectively quoting the planted "coded; checks pass" sentence — neither wrote Built to state.md first; only c6 truly performed the transition, and only because its judge ordered it. Route 4 STILL OPEN: **this file's own "3-for-3" claim was the overclaim — the exact failure declared a success** — and state.md/map.md lagged while decisions.md said "Landed as v5.0.0" with no v5 tag in existence. Structure: FIGHTING, partly on this record's own honesty. The narrow route: make the Built check reject the literal c4/c5 condition (watched failing against their real histories before its green counts), repeat only the two-clone opening transition, restore this repository's truth, then one new fresh judge on that narrow record. **Correction, per the ruling: the earlier "enacted by all three conductors / 3-for-3" line in the repeat-results section above is wrong and stands corrected by this section.**
+
+## Third-round fixes (2026-08-20)
+
+1. **The Built check now has teeth at three surfaces, with the literal-word rule:** the piece template's built field carries the check in its own bracket text ("the line must literally say Built — if it doesn't, write it first; coded-and-checks-pass is not Built"), the loop's step 4 makes the same check the action of opening a receipt, and the judge skill codifies c6's proven behavior as law — a receipt whose built quote lacks the literal word is invalid: rule nothing, order the state written and the receipt reopened. Watched failing against the two real failure histories: the rule rejects c4's 3ff144a and c5's afab9b5 openings (their quoted line, from 60e025c, contains no "Built"), and accepts c6's cd216c3.
+2. **Repository truth restored:** this correction section; state.md and map.md rewritten to the routed now; the decision entry's "Landed as v5.0.0" amended to candidate language with a visible correction note; release posture unchanged (5.0.0-rc.1, README candidate, pin v4.0.0, latest tag v4.0.0).
+
+## The narrow repeat
+
+(receipt opens below at dispatch)
