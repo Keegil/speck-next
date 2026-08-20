@@ -5,3 +5,15 @@
 **How I'll know it works:** the judge's challenges catch verdicts the records don't support (the LLM-unreliability this exists for), diverging persona verdicts surface real tensions instead of being merged away, rulings cite lived moments rather than paraphrase, and the arm's-length blindness the owner called ("judging only from records is too far removed") stops — measured on this change's own bootstrap hearing and then Pilot's build.
 
 **Status:** shaped — committed before the code it governs.
+
+## Hearing receipt (opened at dispatch)
+
+- **Experiencers:** two fresh codex exec (GPT-5.6) sessions, clean clones, decorrelated from the author (Claude Fable, this session): **the newcomer** (cold-reads the method pages as a smart outsider who must drive a real build with them tomorrow; probes what a reader can; rules: could I drive this?) and **the worst day** (probes for contradictions — stale vocabulary, references that don't resolve, the hearing's own instructions fighting each other, installer/upgrader runs — and rules from what the probes found).
+- **Dispatched:** 2026-08-19, at commit e85dc09.
+- **Owner of this run:** the kernel session dispatching on 2026-08-19.
+- **If a record is empty:** re-dispatch under your own named line; never assume the run died.
+- **Judge:** a third fresh session, dispatched when both records are in — challenges both verdicts, may order re-runs (this session executes them), rules, routes.
+
+## Records and verdicts
+
+(appended on return)
