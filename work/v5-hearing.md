@@ -136,3 +136,13 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-4.md](../docs/revie
 ## Final rulings, fifth pass
 
 Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-5.md](../docs/reviews/v5-final-rulings-5.md). **DO NOT RELEASE — the sixth refusal, one ordinal wide:** 05cf9aa verified atomic and all candidate surfaces agreed, but state.md's sentence numbered two refusals wrong. The repair removes the class, not the instance: the chronology above is now the only surface that counts judgments; state and map speak count-free.
+
+## Final judgment receipt, sixth pass — truth-only (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — none of the prior contexts. Scope: whether every named surface now tells one story, with the chronology as the single counting surface. Mechanism grounds stay closed.
+- **Dispatched:** 2026-08-20, at the commit following aaa6ae2 (this receipt's own).
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings, sixth pass
+
+(appended on return)
