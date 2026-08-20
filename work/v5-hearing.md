@@ -4,7 +4,15 @@
 
 **How I'll know it works:** the judge's challenges catch verdicts the records don't support (the LLM-unreliability this exists for), diverging persona verdicts surface real tensions instead of being merged away, rulings cite lived moments rather than paraphrase, and the arm's-length blindness the owner called ("judging only from records is too far removed") stops — measured on this change's own bootstrap hearing and then Odd's build.
 
-**Status (current, 2026-08-20):** five refusals in; every mechanism ground closed and verified — the hearing model, the judge-first continuation, the one-home rule, the literal-Built gate, and the two-clone opening transition; the only remaining ground has been this repository's own truth keeping pace with its hearing, corrected surface by surface across the fourth and fifth passes. Awaiting one status-only judgment; its sufficiency opens the single release commit (5.0.0 + README + state + map + pin + tag together) and Odd's upgrade. The full chain, oldest first, is below.
+**Status (current, 2026-08-20):** every mechanism ground is closed and verified — the hearing model, the judge-first continuation, the one-home rule, the literal-Built gate, and the two-clone opening transition; the only ground that has kept refusing is this repository's own truth keeping pace with its hearing, corrected surface by surface. The judgment count and order live in the chronology below and nowhere else. Awaiting the next truth-only judgment; its sufficiency opens the single release commit (5.0.0 + README + state + map + pin + tag together) and Odd's upgrade.
+
+**The chronology — the one surface that counts the judgments:**
+1. 2026-08-19 · the piece's bootstrap hearing judge — DO NOT LAND (11 routed defects; all closed).
+2. 2026-08-20 · first final judgment — DO NOT LAND (re-runs ordered; four routes).
+3. 2026-08-20 · second final judgment — DO NOT RELEASE (Built acceptance failed in c4/c5; judge-first and one-home closed).
+4. 2026-08-20 · third final judgment — DO NOT RELEASE (Built gate and c7/c8 transition closed; state.md and map.md lagged).
+5. 2026-08-20 · fourth final judgment — DO NOT RELEASE (the work file's own top Status lagged).
+6. 2026-08-20 · fifth final judgment — DO NOT RELEASE (state.md's ordinals for two refusals were off by one — the drift class this chronology now removes: no other surface narrates counts).
 
 ## Hearing receipt (opened at dispatch)
 
@@ -127,4 +135,4 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-4.md](../docs/revie
 
 ## Final rulings, fifth pass
 
-(appended on return)
+Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-5.md](../docs/reviews/v5-final-rulings-5.md). **DO NOT RELEASE — the sixth refusal, one ordinal wide:** 05cf9aa verified atomic and all candidate surfaces agreed, but state.md's sentence numbered two refusals wrong. The repair removes the class, not the instance: the chronology above is now the only surface that counts judgments; state and map speak count-free.
