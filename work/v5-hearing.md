@@ -118,3 +118,13 @@ Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-3.md](../docs/revie
 ## Final rulings, fourth pass
 
 Returned 2026-08-20, in full: [docs/reviews/v5-final-rulings-4.md](../docs/reviews/v5-final-rulings-4.md). **DO NOT RELEASE — fifth refusal, one sentence wide.** The correction commit 214bbe5 verified atomic and every release-facing surface honestly prerelease; the sole remaining ground: this file's own top Status line still described the first refusal as the current state. The route: rewrite the Status (done — see the top of this file), append this result, and re-land state.md and map.md in the same commit; then one status-only judgment. Nothing else re-runs.
+
+## Final judgment receipt, fifth pass — status-only (opened at dispatch)
+
+- **Judge:** codex exec (GPT-5.6), a fresh session — none of the prior contexts. Scope per the fourth judgment's route: whether the status, hearing tail, state, map, decision, package, README, CLI pin, and tag now tell one story. Nothing else re-heard.
+- **Dispatched:** 2026-08-20, at the commit following 05cf9aa (this receipt's own).
+- **Owner of this run:** the kernel session dispatching on 2026-08-20. If the rulings are empty: re-dispatch under your own named line.
+
+## Final rulings, fifth pass
+
+(appended on return)
