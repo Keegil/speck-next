@@ -21,7 +21,7 @@ If the context cannot stay open while a requested run happens, write a judgment-
 
 Start with the receipt’s Built field. Read `state.md` at the cited commit. The quoted line must exist and literally say **Built**.
 
-A shaping or mapping review is different: nothing is built yet, so it has no Built line. Confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label. Then check that the receipt lists the planned probes and was committed before they ran, and go straight to the records.
+A shaping or mapping review is different: nothing is built yet, so it has no Built line. Confirm that from the repo, never from the receipt's own label. The exemption holds only when `map.md` has no live piece, or when the review's subject is `product.md` or `map.md` itself rather than built work. When in doubt, demand the Built line. Then check that the receipt lists the planned probes and was committed before they ran, and go straight to the records.
 
 A **build commit** changes the product itself, such as code, screens, or data. A commit that changes only records or state is not a build commit.
 
