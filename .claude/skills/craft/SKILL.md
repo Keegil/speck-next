@@ -17,4 +17,6 @@ The principles that separate crafted from generic, earned across real products:
 - **Color has a job.** Accents pop because they're rare; sections separate through background shifts; emphasis is deliberate. All-one-temperature is blandness, not restraint.
 - **Components have character.** A button, card, or input should feel like it belongs to this product and no other. Forms feel like conversations, not spreadsheets — and in an AI-first product, most form fields shouldn't exist at all: the model infers, pre-fills, and asks for confirmation.
 
+After any copy change, read the whole flow the change lives in as one text — hunting duplicates, orphaned references, and broken bridges — at the change, not only when the hearing later walks the flow. An owner once caught a screen still re-arguing what an earlier screen had already taught him — three elements on it, all dead duplicates of what he had just read.
+
 Before calling a surface done, look at it — actually render it and look — and ask: does it embody the declared feel, does every state hold up, would a demanding stranger call it crafted? Any "no" or "not sure" means iterate. And when a runtime renders something differently than the code suggests (a pixel bug that only shows on the real device), write the signature and safe form into the work file so the next agent greps instead of rediscovering.
