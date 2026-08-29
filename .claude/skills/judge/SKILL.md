@@ -56,7 +56,7 @@ Then rule these four separately:
 
 One cannot compensate for another. Give evidence or say “not judged yet.” A failed check says “check failed.”
 
-“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. “Good to use” is ruled from the testers’ felt moments against the feel the product declared. “Quality hangs together” rules the whole piece’s workmanship: every surface at the declared bar, with no weakness excused by strength somewhere else. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it.
+“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. “Good to use” is ruled from the testers’ felt moments against the feel the product declared. “Quality hangs together” rules the whole piece’s workmanship: every surface at the declared bar, with no weakness excused by strength somewhere else. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it. Sufficient means the piece delivers what it was shaped to deliver — you may land it with open items, never silent ones: `state.md` names each item and its destination.
 
 ### 5. Judge the whole product
 
@@ -89,7 +89,7 @@ At milestones and on risky pieces, a second judge hears the same records without
 
 ## Re-run after fixes
 
-Keep the original reproduction for every fixed finding as its control when possible. If the control is only an approximation, say so.
+Keep the original reproduction for every fixed finding as its control when possible. If the control is only an approximation, say so. When you order a fix and quote a control, the control names its whole population — every home, file, or case in the class — never only the site where the defect surfaced. The builder executes the full requirement; the quoted control is its floor, not its scope.
 
 A fix made during the review, before another tester can walk it, needs a control the judge can run against the pre-fix tree. “The builder watched it fail” is a claim, not a control.
 

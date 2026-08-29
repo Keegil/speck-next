@@ -67,6 +67,8 @@ Build a drawn screen from its screen drawing. The first run against an external 
 
 Record every workaround as a strain in `state.md`. A safety net counts only after you deliberately watched it fail. A check counts only if it can show the failure it claims to prevent; a control that cannot fail proves nothing about the product.
 
+Before changing a rule that is stated in more than one file, grep for its words and find every home. Land the same change everywhere in one commit and list the homes in the record; a one-home fix is not a fix.
+
 Checking one piece deliberately costs several fresh sessions: at least two testers and one judge, and more for risky work. The piece’s work file states the exact number and roles.
 
 ### Open the review honestly
@@ -106,9 +108,9 @@ When the owner is present, update `state.md` at every event that changes the map
 - `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
 - `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
-The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome, proof plan, and before-first-run limit, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review ruled it sufficient — a review that sends it back leaves the state where it was. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
+The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome, proof plan, and before-first-run limit, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review ruled it sufficient: the piece delivers what it was shaped to deliver, with every open item and its destination named in `state.md` — a review that sends it back leaves the state where it was. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
 
-An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence. Any claim in these files that something is fixed, closed, or done everywhere — and any measured number — carries the command that produced it and what it returned, written after the run, never from memory. A closure without runnable proof is an open item wearing a label.
+An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence. Any claim in these files that something is fixed, closed, or done everywhere — and any measured number — carries the command that produced it and what it returned, written after the run, never from memory. A closure without runnable proof is an open item wearing a label. And when a word carries a rule, define it in its first sentence or use one these pages already define — an undefined rule word is defective when written, not when a reader trips over it.
 
 Supporting material is first-class work. State its purpose when it is created, assign it to a piece or list it as unconsumed, test and judge it, and mark it superseded at the top when it is replaced. A piece whose product is a document still names runnable checks in its proof plan — greps, probes, measurements — and that is how it becomes Built like any other piece. Templates are starting floors, not limits; expand them when the product needs more.
 
