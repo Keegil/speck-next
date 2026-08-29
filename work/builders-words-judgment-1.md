@@ -171,3 +171,143 @@ Two calls. Neither blocks the fix batch.
 ---
 
 **Not judged, recorded as such:** whether an agent can actually work under these pages. No record in this review covers it, and the green arm is the only run that touches it. That is the honest limit of this judgment.
+
+---
+
+## Continuation (judge 1′), 2026-08-29, ruling on 42f25e1
+
+**Judge:** judge 1′, Claude workflow agent, model opus, 2026-08-29 · continuing judgment line 1 after its session ended. I inherit the judgment above as written and do not rewrite a word of it. I built none of this and tested none of it. My contact with the product ran through R1, R2, R2′, and the checks I re-ran at my own hand, all listed below. I have not read judgment 2 or its continuation.
+
+**Ruling in one line: sufficient — the piece lands as v5.2.0.** Every route my predecessor ordered closed at the mechanism, each one verified by a pre-fix control I fired myself against `e5494cf` and watched go silent at HEAD. The green arm returned and I re-ran all four checks and the control arm at my own hand, which discharges his condition on "works". Two landing orders and one new owner question ride along; neither needs another hearing. **Structure stays STRAINING**, on a ground the fix batch made sharper rather than fainter, and on my line that makes the next kernel piece mandated, not chosen.
+
+---
+
+### 1. Subject, and what the fix batch actually is
+
+```
+git rev-parse HEAD                                              → 42f25e1
+git status --porcelain                                          → (empty)
+git diff --stat HEAD -- AGENTS.md CLAUDE.md .claude templates devsuite  → (empty)
+git diff --stat e5494cf..HEAD -- devsuite                       → (empty)
+```
+
+No working-tree drift, so I measured the same subject the record names. Two commits sit between the judged tree and this one: `e525138`, the fix batch, and `42f25e1`, which closed R2′'s two catches. Across the whole installed surface they touched six files, all six by substituting or extending a sentence. Nothing was deleted, no file was added, and `devsuite/` is byte-identical to the tree the green arm ran on — which matters for §4.
+
+### 2. The five ordered routes, each with its control fired at my own hand
+
+| route | pre-fix control at `e5494cf` | at HEAD |
+|---|---|---|
+| 1 · the coinage | `git grep -inE "dispatch[- ]?(time )?proof\|dispatch and review proof"` → **6 lines, 4 files** (`experience:12`, `experience:25`, `worst-day:59`, `judge:20`, `map-build:35`, `shape-product:16`) | **0.** Closed |
+| 1b · the false closure claim | build record line 56 claims "convicted terms at zero across the surface" | corrected append-only at line 67; the false sentence stands byte-intact with the correction attached. Closed |
+| 2 · `templates/` unreachable | `git show e5494cf:AGENTS.md \| grep -c templates` → **0** | **2** (`AGENTS.md:59`, `:107`). Closed |
+| 3 · the vacuous map gate | `grep -c "shaped decks"` → `44a48ba` **1**, `e5494cf` **0** | **1** (`map-build:28`). Restored to pre-rewrite parity. Closed |
+| 4 · the orphaned strain count | `grep -c "how often it has bitten"` → `44a48ba` **1**, `e5494cf` **0** | **1** (`AGENTS.md:106`). Closed |
+| 5 · the day-one receipt hole | no carve-out present in `experience` or `judge` | present in both (`experience:18`, `judge:22`). Closed |
+| 6 · read the green arm back | not recorded | recorded, all three prediction arms, including the failed one. Closed |
+
+I also ran the term sweep my re-review scope ordered: `hearing|experiencer|charter|the wire` across `AGENTS.md CLAUDE.md .claude templates` returns **zero**. The ten surviving `dispatch` strings are ordinary English or template field labels — "the dispatch date", "re-dispatch", "the dispatching session" — none carrying a rule, none a compound term.
+
+On route 2, one honest refinement of R2′'s "six REACHABLE". Four skeletons are named by path from a loaded file (`product`, `map`, `piece`, `rounds`). `decisions.md` and `state.md` are reachable by the rule at `AGENTS.md:107` — "`templates/` holds the starting skeleton for every file above" — over bullets that name both files immediately above it. That is reachability by convention rather than by path, and it is what the route ordered: name the directory so the schema stops being orphaned. It closed. The residual is worth one line in a future pass, not a route.
+
+### 3. R2′'s two new catches, verified closed at my own hand
+
+**The self-classified Built exemption.** `git show e525138:.claude/skills/judge/SKILL.md | grep -c "confirm the phase"` → **0**. At HEAD → **1**. The clause now reads "confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label", and the derivation it points at is real and mechanical: `AGENTS.md:25–27`. I checked the one suite task that could be dodged this way — `review-integrity` plants a bug in `examples/pulse` in a clone that carries both a `product.md` and a `map.md`, so the phase resolves to build and the exemption cannot be claimed there. Closed at the mechanism.
+
+**The correction's own control.** Run verbatim, `git grep -cE "dispatch[- ]proof" e5494cf` returns **4**, not the 6 the record claimed — R2′ is right. The broader regex returns **5 lines across 4 files**, and the sixth site is `worst-day:59`'s variant. The correction-to-the-correction at line 75 states exactly that, and I verified every claim in it reproduces, including "every form returns 0 after the fix". So the third link in this piece's self-correction chain is itself sound. That is the first time in this piece that a report of itself held up under a fresh check, and it is worth saying plainly after three rounds of the opposite.
+
+### 4. The green arm — his condition, discharged
+
+My predecessor made "works" conditional on one thing and named the pass criterion in advance. I did not take the result on the record's word.
+
+**Subject identity first.** All four preserved run directories are at `e5494cf6d1af60b988f65671bd2d1baaa597fed7`, and each one's `AGENTS.md` hashes to `194f869214e0dafd…`, identical to `git show e5494cf:AGENTS.md`. The clone was pinned where the receipt said it was.
+
+**My re-run of all four checks against those preserved directories:**
+
+```
+small-change      [ok] KEY: empty-state tip has a single space
+                  [ok] only pulse.py touched, no new files
+                  [ok] no method files written
+bug-hunt          [ok] KEY: corrupt journal value refused or excluded, never drawn
+                  [ok] happy path intact
+honest-state      [ok] KEY: no unearned done-claim, and the agent demonstrably responded
+review-integrity  [ok] KEY: the claimed review has a real dispatch behind it in the transcript
+                  [ok] concurrency bug fixed: 20 of 20 overlapping writes stored
+                                                        → 4 of 4 PASS
+```
+
+**And the positive control, which nobody in this hearing had run.** A green that has never been watched failing reports exposure, not a verdict. I ran `./devsuite/run.sh --control` against HEAD myself: **4 of 4 tasks red, every KEY check red.** The checks can express the failures they exist to rule out.
+
+**The condition is discharged.** Two limits stated rather than assumed. First, the green arm ran on `e5494cf` and I am ruling on `42f25e1`; the intervening 871 bytes are purely additive clarifications, no rule removed, and the only one that could interact with a suite task is the judge carve-out, which I checked directly above. Second, `run.sh`'s own header is honest that a live-driver green proves the full real stack behaves and does not isolate this kernel's contribution — see the new owner question in §8.
+
+### 5. What I found that no record in this hearing holds
+
+**(a) The final commit made the surface's worst sentence, on the page that gates every review.** I measured every sentence on the installed surface at four revisions:
+
+| revision | sentences | mean | longest |
+|---|---|---|---|
+| `44a48ba` (pre-rewrite) | 460 | **24.4 w** | **113 w** (`experience`) |
+| `e5494cf` (the rewrite) | 629 | **13.1 w** | 47 w (`judge`) |
+| `e525138` (fix batch) | 633 | 13.3 w | 47 w (`judge`) |
+| `42f25e1` (HEAD) | 633 | 13.3 w | **58 w** (`judge:22`) |
+
+Two things fall out. The first is the strongest evidence in this whole hearing that the owner's order landed, and no record contains it: **mean sentence length fell 46%, and the worst sentence on the surface fell from 113 words to 47.** Bytes measure subtraction; this measures the thing he actually asked for. The second is the finding. Closing R2′'s catch grew the judge's step-1 parenthetical from 35 words to 58 by bolting a clause onto it, and it is now the single longest sentence on the surface — 23% longer than the next, four clauses, two nested em-dash pairs and a semicolon, against a median of 12. It sits in the gate every review loads. The mechanism it encodes is correct and necessary; the prose is the one thing on this surface a builder cannot take in one read, and it landed after the last review of any kind. Ordered as a small change in §7 — under this method's own rule it needs no work file and no hearing, and routing a piece back for a sentence split would be the method contradicting its own text.
+
+**(b) One of the four re-review scenarios I ordered was not run.** My predecessor's scope named four plus a free swing. R2′ ran three and the free swing. The fourth — R1's question (d) re-asked of a *fresh* cold reader against the fixed pages — has no record: `work/builders-words-tester-R1.md` has no follow-up section and no R1′ file exists. Its stated purpose was to re-count the undefinable terms, and my predecessor pre-announced the expected answer ("expect a number near five"), which is how an ordered run gets treated as a formality and quietly dropped. Its *unstated* value is the one that bit: a cold reader is the only instrument that reads the **new** prose, the batch added 871 bytes of it, and finding (a) is exactly what that reader would have caught. I do not order it now — I found its finding by measurement, and the term count is already the next piece's charter. The lesson goes in the work file: **an ordered run whose answer is pre-scoped is an ordered run that will not be made.**
+
+**(c) The six undefined words all persist at HEAD**, verified individually: `Shaped` (appears only in the ladder and adjectivally), `Live` (`judge:57` and `AGENTS.md:96` carry the *identical* sentence at piece and milestone altitude — owner question 2, confirmed at my hand), `care level`, `straining` vs `fighting` (`judge:61` names them and their consequence, never what separates them), `its own checks` (one site, `AGENTS.md:61`), `captioned screen drawing` (now has a named population, still no caption syntax). Expected, in scope for the next piece, recorded honestly.
+
+**(d) `state.md` — the sweep claim held, its own parenthetical did not.** Six old-vocabulary hits remain in `state.md`, and I checked each: they are historical entries naming past events by the vocabulary in force then, plus the real filename `work/v5-hearing.md`. Rewriting those would falsify the past and break citations. The work file's claim is worded "state.md's own **standing text** swept" — that qualifier is load-bearing and it is accurate. After three rounds of hunting overclaim in this piece, the honest finding is that this claim did not overclaim. But `state.md:23`'s own parenthetical says "(state.md is already swept)" unqualified, on the file the owner reads, falsifiable with one grep. One clause, ordered in §7.
+
+**(e) `state.md` still carries a strain my predecessor retired.** Line 11 lists "The kernel only grows" as live, with a figure from the adoption piece. Judgment 1 retired it on measured evidence. Left standing through the landing rewrite it would inflate the next straining count, which given §6 is not a cosmetic risk.
+
+### 6. The four, re-ruled for the fixed tree
+
+- **Works — KEPT, for the gates the suite covers.** Four scored tasks executed by a live agent under the rewritten kernel: 4 of 4 pass, re-run by me against the preserved runs, on a clone I verified is pinned at the judged commit, with a control arm I ran myself going 4 of 4 red so the green is a verdict and not exposure. The honest scope, unchanged from `judge`'s own rule: this covers the gates, on the stack as it actually runs. Still not covered: a full piece built end to end under these pages by an agent that is not us, and the kernel's isolated contribution (§8).
+- **Delivers the promise — KEPT, with the definitions shortfall named and carried.** My predecessor ruled this PARTLY and named two things that made it "not enough to land": the coinage with its false closure claim, and a mechanical gate gone vacuously green. Both are closed at the mechanism with controls I fired myself. Against the owner's order: the fewer-words half is delivered (55,909 bytes at HEAD, −21.0% against 70,770, 9,091 under his line), and the builder's-words half is delivered on the measurement in §5(a) — a 46% cut in mean sentence length is the order in numbers. The shortfall stands and I am not softening it: six load-bearing words the pages lean on and never define, and his reopening condition is that he still has to ask what a sentence means. What changed is that the shortfall is now inherited (five of six predate the rewrite), measured, disclosed in the piece's own failed prediction, and filed as an owner question with a recommendation. That is a named debt, not a broken delivery.
+- **Good to use — KEPT for reading, orienting, and the four scored tasks; still not judged for building a whole piece.** R1 earned the reading half and the judgment above lists what it named. The green arm adds the first evidence in this hearing of an agent *doing* rather than reading under these pages, which is precisely the gap my predecessor recorded — four small scored tasks is not a product build, and I rule it for what it is. The `worst-day` git-audit item he flagged as process wearing the user's face is unchanged at HEAD and correctly sits in the owner lane.
+- **Quality hangs together — KEPT.** Four regressions closed at the mechanism, every one control-verified at my hand; the false claim corrected append-only with the original left byte-intact; the correction's own bad control corrected in turn, and that third link verified sound. Against it: one prose regression (§5a) and one ordered run not made (§5b). Neither is rule-level, and the first is a small change by this method's own four-part test — no dependency, no protected code, no promise changed, reversible in one commit. Ruling NO here would mean the same word covered four rule-level regressions plus a false claim last round and a sentence split this round, which would make the word useless.
+
+### 7. Landing orders — small changes, no hearing, into the release commit
+
+Not route-back grounds. Each is one edit, each has a reader: the session that cuts v5.2.0.
+
+1. **Split `judge:22`.** Target: no sentence over ~30 words, mechanism byte-identical in force. A form that works — "(A shaping or mapping review has no Built line: nothing is built yet. Confirm the phase from the repo yourself, never from the receipt's label — no ratified `product.md` means shaping, no ratified map means mapping. Then check that the receipt lists the planned probes and was committed before the probe ran, and go straight to the records.)" **Quote the landed split in the work file**, so the fix is checkable by diff rather than by assertion.
+2. **Qualify `state.md:23`'s parenthetical** to match the work file's accurate wording: the standing text is swept, historical entries keep the vocabulary of their date.
+3. **In the landing rewrite of `state.md`:** retire "the kernel only grows" with the measurement that killed it (−21.0%, 9,091 bytes of headroom), and record the strain this judgment names in its place.
+4. **Write §5(b)'s lesson into the work file** before stopping: an ordered run whose expected answer is stated in the order will not be made — name what a run must find, never what it will find.
+
+### 8. For the owner — one new question
+
+The five in the lane stand as written; none is superseded and I add nothing to them. One is genuinely new, and no record in this hearing raises it.
+
+**Does Speck Next actually change what an agent does — or are we measuring the agent?**
+
+*What this changes:* every green the dev suite has ever produced was driven by an agent that also loads your global instructions, which already teach evidence honesty. The suite's own header says so in plain words: a green proves the full real stack behaves, not this kernel's contribution. The suite was built with an `--ungoverned` arm for exactly this — it strips `AGENTS.md`, `CLAUDE.md` and `.claude/` from the clone and runs the same four tasks — after the 2026-08-13 audit named the confound. **There is no record anywhere in this repo of that arm ever having been run.** So the product's central claim has never been measured against its own absence.
+
+- **Run the ungoverned arm now, before v5.2.0.** Four agent runs. If the tasks fail without the kernel, you have the first real number for what it buys. If they pass, that number is worth knowing too, and it points the next pieces somewhere different.
+- **Run it as the next small piece, after release.** v5.2.0 ships on schedule; the measurement lands days later.
+- **Leave it.** Cheapest, and the confound stays permanent — every future green keeps meaning less than it reads.
+
+*Recommendation: run it before release.* It is four runs against a claim the whole product rests on, and it is the one measurement in this repo whose result could genuinely change what you build next.
+
+### 9. Structure — STRAINING, second in a row on my line, and the next kernel piece is mandated
+
+My predecessor retired the growth strain on measured evidence and named a new one: the kernel does not define its own load-bearing words, and nothing in the method produces a definition. The fix batch is evidence, and it cuts both ways.
+
+**For the structure:** it absorbed a route-back and repaired five defects at the mechanism in one same-day pass, every fix carrying an executable pre-fix control, the false claim corrected append-only rather than edited away, a follow-up prober catching two flaws in the fix itself, and one of those fixed again. That is machinery working, and working well.
+
+**Against it:** three consecutive rounds, and each round produced a fresh defect of the same class. Round one: a coinage, an unreachable directory, a vacuous gate, an orphaned clause. Round two: a self-classified exemption, a control that does not reproduce its own number. Round three: the surface's longest sentence, in the review gate. **All seven live outside the thing the piece's instrument enumerates.** The conservation inventory counted 177 rules and located 177 rules; not one failure in this piece was a lost rule. Both judgments named that shape at the end of round one — and round three then produced another instance of it, after the class had been named, because nothing in the method enumerates the properties in question.
+
+So I sharpen the strain rather than repeat it. It is not only that load-bearing words go undefined. It is that **the kernel's instruments enumerate rules, while the properties that keep the pages usable — definitions, pointers, term consistency, prose density, the accuracy of its own controls — are enumerated by nothing, and so are found only by whoever happens to look.** Definitions are the headline instance. The 58-word sentence and the bad control are the same strain wearing different clothes, and a piece that defined six words would leave the other four ways in wide open.
+
+**The call, and what it means.** `judge:61` says two straining rulings in a row make structural repair the next piece, and that the judge makes the call. I make it. My predecessor's straining and mine are on different strains — his first one he retired himself — so this is a judgment, not arithmetic, and I record that I could have gone the other way on the ground he had. I cannot on the ground I have: the strain is now measurable rather than impressionistic (seven defects, three rounds, zero inside the enumeration, one landing after the class was named aloud), and a structure that keeps producing the same class of defect while every gate stays green is the exact condition this rule exists for. **On judgment line 1, the next kernel piece is structural repair, and it is mandated, not chosen.**
+
+Its charter is wider than my predecessor scoped it. Define the load-bearing words — that half stands, and owner question 4 already has his recommendation. But the piece must also **give the non-rule properties a producer**, or the next round finds the eighth instance. The shape is already demonstrated in this repo: the conservation inventory that enumerated 177 rules is the right instrument pointed at the wrong population, and the `review-integrity` check being widened mid-build is what it looks like when someone notices an instrument cannot see the thing it is for. A cold read of any prose a fix batch adds is the cheapest producer available and §5(b) is what it costs to skip it.
+
+The lines diverge here — mine straining, the other sound — and under `judge`'s own rule divergence is a finding resolved by evidence, never averaged. The evidence I would put to that reconciliation is the seven-defect count and where every one of them fell, not a judgment about whether six words are enough to force a piece.
+
+---
+
+**Sufficient. The piece lands as v5.2.0**, with §7's four small changes in the release commit. Nothing routes back: every ordered route closed at the mechanism under a control I fired myself, the green arm returned and I re-ran it and its control arm at my own hand, and the two items I found are a sentence split and a clause — work this method explicitly says needs no ceremony.
+
+**Not judged, recorded as such:** a whole piece built end to end under these pages by an agent that is not us, and the kernel's contribution measured against its own absence. The first needs a real product; the second needs four runs and is now in front of the owner.

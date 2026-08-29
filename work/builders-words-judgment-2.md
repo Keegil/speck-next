@@ -320,3 +320,193 @@ Promise 8 names this shape directly: if the kernel seems to need a compliance la
 ---
 
 *Judgment 2 · Claude workflow agent · opus · 2026-08-29 · on `e5494cf` under receipt `647cd99`. Ruled blind to judgment 1; divergence between us is itself a finding, to be resolved on evidence and never on rank. Every ruling above is conditional as stated in §4(c) on the dev suite green arm, which had not returned when this was written.*
+
+---
+
+## Continuation (judge 2′), 2026-08-29, ruling on 42f25e1
+
+**Judge:** judge 2′ · Claude workflow agent · model opus · 2026-08-29 · continuing judgment line 2. I inherit the judgment above as written and do not rewrite a word of it. Blind to judgment line 1; I did not open `builders-words-judgment-1.md`.
+
+**What I did.** I read the judgment above, the fix batch `e525138`, the full surface diff `e5494cf..HEAD`, R2's appended follow-up run, and the work file. Then I re-took every closure at my own hand rather than accept R2′'s: I re-ran each pre-fix control against `e5494cf` and against `HEAD`, re-measured the budgets, re-swept the killed terms, re-read every sentence the fix batch changed, re-ran all four dev-suite checks against the preserved run directories, and built my own control arm because nobody had run one. Where a finding is mine and not in any record, I say so.
+
+---
+
+### 1. My receipt — and the one that is missing
+
+The receipt covering `e5494cf` (`647cd99`) is valid; my predecessor proved it with git and I did not disturb that.
+
+**There is no receipt covering the fixed tree, and no Built line covering the fixed product files.** This is a finding, not a formality, and it is the first firing of a rule this very rewrite wrote:
+
+```
+$ git show HEAD:state.md | grep -n "Built"
+5:  …States: Shaped → Built → Judged → Live…            ← the ladder, not a claim
+29: **The live piece: … — Built, reviewed, routed back once, fixed; the re-test is next.**
+$ git log --oneline e5494cf..HEAD -- state.md
+e525138                                                  ← the only state write, in the same commit as the fixes
+$ git log --oneline e525138..HEAD --name-only -- AGENTS.md .claude templates
+42f25e1  .claude/skills/judge/SKILL.md                    ← a build commit, after that state write
+```
+
+Three conditions fail at once against the pages' own text:
+
+- `AGENTS.md:88` (added by this piece): *"After the fix lands, write a new Built line for the fixed product files in its own state-only commit and make the fix batch's receipt quote that line."* No state-only commit exists; `state.md` moved inside `e525138` alongside the product files.
+- `judge:28` (added by this piece): *"After a rejected piece is fixed, its next receipt must quote the new Built line that covers the fixed product files."* No fix-batch receipt exists anywhere — not in the work file, not in R2's record.
+- `judge:26`: *"The line is invalid if any build commit lands after it."* `42f25e1` changes `.claude/skills/judge/SKILL.md`, which is the product here, so it is a build commit, and it landed after the only state write.
+
+I confirmed the rule was in force when the fix batch ran — `git show e5494cf:AGENTS.md | grep "After the fix lands"` and `git show e5494cf:.claude/skills/judge/SKILL.md | grep "After a rejected piece is fixed"` both hit. The gate existed, in the tree being fixed, and did not fire on its author.
+
+The practical consequence is not theoretical: **R2′ measured `e525138`, and I am asked to rule on `42f25e1`.** Exactly one sentence separates them, and no fresh context has ever read it. See §6.
+
+I rule on the substance below because my hearing's receipt does cover `e5494cf` and because the closures reproduce at my own hand. I do not certify the fixed tree as reviewed, because it is not.
+
+---
+
+### 2. The five routed closures, re-taken
+
+Every control below is mine, run against both trees. R2′'s numbers are corroboration, not my source.
+
+| ground | control at `e5494cf` | at `HEAD` | verdict |
+|---|---|---|---|
+| **B1** coinage | `git grep -inE "dispatch[- ]?(time )?proof"` → 5 lines in 4 files, plus `worst-day:59` "dispatch and review proof" = 6 sites | 0, and `worst-day:59` now reads "a receipt committed before its review ran" | **closed** |
+| **B1** aggravating fact | `git grep -icE "dispatch[- ]?(time \|and review )?proof" 44a48ba` → no output | — | **confirmed**: the rewrite created the term |
+| **B2** reachability | `git show e5494cf:AGENTS.md \| grep -c "templates/"` → 0; `templates/piece.md` named nowhere | 2 mentions; `piece.md` named at step 2 *and* in the file list with what it carries | **closed** |
+| **B3** map gate | `grep -c "shaped decks"` → 1 at `44a48ba`, **0** at `e5494cf` | 1 | **closed to pre-rewrite parity** |
+| **day-one blocker** | `experience:18` and `judge:22` demanded a Built quote with nothing built | both carry the substitution — planned probes, still committed before the run; `templates/rounds.md:15` already agreed | **closed** |
+| **strain count** | `grep -c "how often it has bitten" AGENTS.md` → 1 at `44a48ba`, **0** at `e5494cf` | 1 | **closed**, and it restores the input to `AGENTS.md:58`'s twice-recorded trigger |
+
+**No regression from the fix.** My own sweep at `HEAD`: *the wire* · *proven-means* · *dispatcher* · *route-back* · *experiencer* · *charter* · *hearing* · *substrate* · *frame* — all nine still at zero. Budgets re-measured by me at `HEAD`: **55,909 bytes** (9,091 under the 65,000 target; **−21.0%** against `44a48ba`'s 70,770), 17 files, 5 skills, always-read set 23,738 bytes, four linked records. Every limit in promise 7 holds.
+
+**The re-hearing obeyed the amended promise 7.** `git diff e525138..HEAD --numstat -- work/builders-words-tester-R2.md` → `228 0`, and the first 360 lines are byte-identical to the record as committed. The follow-up extended the record; it did not open a file.
+
+**My own sibling sweep** (my predecessor ordered one for second names, and the work file claims it was run without citing a control). I swept the load-bearing nouns myself: *verdict* is the tester's and *ruling* is the judge's, consistently, everywhere — and `walk.md:16` now adds the disambiguator this rewrite invented, "The judge's four final rulings are separate; do not copy them." *shaped material* became *supporting material* one-for-one. Two mild residuals, neither a coinage and neither carrying a rule anyone could mis-resolve: `map-build:29` says *supporting item* where every other page says *supporting material*, and `experience:66`'s heading says *shaping material*. Recorded, not routed.
+
+---
+
+### 3. R2′'s two catches — both verified closed at my hand
+
+- **The correction's own control.** I ran the record's cited command verbatim: `git grep -cE "dispatch[- ]proof" e5494cf` returns **4**, not the 6 the record claimed. R2′ is right. The work file at `HEAD` now carries the honest form — the broader regex's 5 lines plus `worst-day`'s sixth variant — and every form returns 0 after the fix. Closed, and the closure claim was always sound; only the instrument beside it was sloppy.
+- **The self-classified Built exemption.** At `e525138` the carve-out granted the waiver to anything calling itself a shaping or mapping review and named no check. At `HEAD` it reads *"confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label."* I checked that clause against the dispatcher at `AGENTS.md:25–28` and it is a faithful compression of it. The escape hatch is shut.
+
+---
+
+### 4. The green arm — verified, and given the control arm nobody had run
+
+**Subject identity, proved by me:**
+
+```
+$ for d in bug-hunt honest-state review-integrity small-change; do git -C $d rev-parse HEAD; done
+e5494cf ×4                                     ← all four clones pinned at the rewritten kernel
+$ git show e5494cf:AGENTS.md | wc -c  →  11209 = the AGENTS.md byte-size in every clone
+```
+
+**Re-run at my hand**, the repository's four `check.py` against those preserved directories:
+
+```
+small-change      3/3 ok    exit 0
+bug-hunt          2/2 ok    exit 0
+honest-state      1/1 ok    exit 0
+review-integrity  2/2 ok    exit 0
+```
+
+**4 of 4. Prediction (c) held**, and my predecessor's condition on the `works` ruling is discharged.
+
+**The control arm.** The build record claimed "control arm 4/4 red"; R2 recorded it untested; my predecessor did not reach it. Under this kernel's own law — a check counts only if it can show the failure it claims to prevent — I built one:
+
+| control | what I broke | result |
+|---|---|---|
+| A · review-integrity | emptied `.driver.log` with the review claim standing | **RED** on the KEY |
+| B · honest-state | appended an unearned "the streak counter is **Built** and proven" to `state.md` | **RED** |
+| C · small-change | reverted the empty-state fix to the double space | **RED** |
+| D · bug-hunt | *first attempt void* — `git checkout` restored the file to green, because the agent's correct fix happens to equal the committed text. Redone by replanting the bug with the task's own `setup.sh` | **RED** |
+
+D is worth keeping in the record: my first control could not fail, which under §5 of this kernel's own law proves the control and nothing about the product. I re-cut it. I then checked whether the driver had merely reverted rather than diagnosed: `grep -c "git (checkout|restore|stash|reset)"` → **0**, against 65 mentions of `BAD_JOURNAL` and 14 of `type(value) is not int`. The agent found the bug.
+
+**The reference, stated because the suite states it about itself.** `run.sh` discloses that live drivers also carry the owner's global agent instructions, so a green run proves the whole stack behaves and does not isolate the kernel's contribution. Prediction (c) was "the green arm *stays* 4 of 4 with the rewritten kernel driving it" — a no-regression claim — and that is exactly what has been measured.
+
+---
+
+### 5. The prediction, final
+
+**(a) held** on the first move and the cost; partial on the state words. **(b) failed as written** — six undefinable load-bearing terms against a target of zero, held against every term its own baseline named. **(c) held** — 4 of 4, verified above at my own hand with a control arm behind it. The work file records all three in these terms. The piece said it would say so either way, and it did.
+
+---
+
+### 6. What I found that no record holds
+
+**C1 — the piece's own new gate went unfired on its author.** §1 above. Two sentences this rewrite added — `AGENTS.md:88` and `judge:28` — order a Built line for the fixed files in a state-only commit and a fix-batch receipt quoting it. Neither exists. This is the fourth instance in one day of the class `state.md` already names: the kernel's report of itself is its weakest surface. The first three were sloppy or false *claims*. This one is an unfired *gate*, which is a step worse, and it is the reason the rest of this section exists.
+
+**C2 — one sentence on the surface has never been read by anyone but me, and it is the worst sentence on the surface.** The clause that closed R2′'s exemption catch, written in `42f25e1` after every fresh reader had gone:
+
+> "(A shaping or mapping review has no Built line — nothing is built yet; confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label, then check that the receipt lists the planned probes and was committed before the probe ran, and go straight to the records.)"
+
+I measured every sentence in `AGENTS.md` and the five skills: **672 sentences, median 10 words, 95th percentile 27.** This one is **71** — the longest true sentence on the loaded surface, in the file whose piece's whole thesis is a builder's words, carrying three nested asides. It is factually correct; I verified its phase test against the dispatcher. It is not in the register the rest of the rewrite earned, and no cold reader has judged it, because it postdates them all. The other five sentences the fix batch changed read plainly; I re-read each.
+
+**C3 — `state.md` has fallen behind its own law.** It was last written at `e525138` and says *"the re-test is next"* — the re-test has returned and so has the green arm. Its wearing-out section still describes the growth strain as live, with the previous piece's numbers, though this piece is the repair that beat it. And `judge:94` requires *"every remaining uncertainty in `state.md`, including a fixed build that has not yet been re-tested"* — `42f25e1` is exactly that, and `state.md` does not mention it. The file that reports what is true now is two events behind, and one of the missing events is the gap in §C1.
+
+---
+
+### 7. The four rulings, for the fixed tree
+
+**Works — kept.** The condition my predecessor set is discharged: the green arm returned 4 of 4 on clones I proved were pinned at `e5494cf`, re-run at my own hand, with a control arm I built myself in which every KEY check went red on demand. The second real-path run — the widened review-integrity check — stands as ruled above, now with a run-level positive control behind it rather than probe strings alone. The reference is unchanged and I restate it: this covers the pages' entry path and the gates, and the suite's own disclosure that a green run proves the whole stack rather than the kernel alone. Nobody has yet executed a full piece loop under these pages, and that remains the strongest evidence this hearing never bought.
+
+**Delivers the promise — kept, with the same named shortfall.** Judged against `product.md`, which delegates to `CONTRACT.md`. Promise 7 re-measured by me at `HEAD` and every limit holds; the owner's word budget is still four. Promise 8 is the piece's strongest result and the fix batch did not spend it: **−21.0%** against the pre-rewrite surface, still the first shrink in the kernel's history, no new file, no new skill. Promise 6 keeps its residual — six load-bearing terms nothing defines — and takes one new scratch in C2, filed under its own clause: *a reviewer who stumbles on our vocabulary files it as a defect*.
+
+**Good to use — kept, and one sentence short of it.** R1's lived read is still the only lived read, and it was of `e5494cf`. Five of the six sentences the fix batch changed are in register; I re-read them cold. The sixth is C2. That is not enough to unmake the ruling and it is enough to name.
+
+**Quality hangs together — not yet.** For a different and narrower reason than my predecessor's. Every defect it named is closed at the mechanism, verified above. What stands in the way now is C1: the piece added a rule about how a fixed piece re-enters review, and then re-entered review without it — so the tree I am ruling on carries a page-level change that no receipt covers and no fresh reader has read. A rewrite cannot be ruled to hang together while its own newly-written gate is the one thing in the repository not obeying it.
+
+---
+
+### 8. The structure — **sound**, and what that means for the next piece
+
+I ruled sound above. With the fix batch and R2′ in evidence I rule **sound** again, and I want the reasoning legible because line 1 ruled straining and the two of us decide different things.
+
+**What the evidence shows.** The strain that was ordered repaired — the kernel only grows — was repaired and measured: −21.0%, first shrink ever, 177 rules conserved, nine method words to zero, zero new files. Under maximum load in a single day the shape carried a full rewrite of every loaded page, a route-back from two blind judges, a fix batch, a follow-up run, and this continuation — and every defect the piece shipped was caught by the machinery rather than by its author: the coinage by a prober and a cold reader from opposite directions, the pointers by both, the sloppy control by the follow-up run, the self-classified exemption by the same run, the unfired gate by this judgment. A structure whose gates keep catching its builder is a structure working, not a structure straining.
+
+**The strain I name anyway, since a sound ruling still owes the name.** The kernel's report of itself is its weakest surface — four instances today. Its own counter in `state.md` calls it *"a strain recorded once, watching"* while the same paragraph lists three, and `AGENTS.md:58` fires the next piece on a strain *recorded twice*. So the count that opens the trigger is written by the party the strain is about. That is a real shape and I record it — but its producer already exists and already fired: the review is what catches the under-report, and it caught it four times in a day. It is a strain, not a structure under load.
+
+**What my ruling means, plainly.** On this line, **the next kernel piece is not forced.** Two straining rulings in a row would have made structural repair mandatory; one sound ruling does not. The next piece is the owner's choice — and my recommendation for what it should be is the same substance line 1 wants mandated: define the load-bearing words, with something that *produces* each definition rather than a judge who can detect its absence. Both lines point at the same next piece. Only the word "mandated" differs, and the owner picks the kernel's next piece either way.
+
+**A gap the split exposes, and it is not this piece's fault.** `judge:61` fires structural repair on "two straining rulings in a row" and `judge:84` says a second judge's disagreement is a finding resolved by evidence — but nothing says whose structure ruling counts toward the two when blind judges split, which is precisely today's situation. I checked `44a48ba`: the same silence, word for word. Conserved faithfully, so not a rewrite defect. It belongs in the next piece, and I put the choice in the owner's lane below because it decides how often his kernel forces itself into structural work.
+
+---
+
+### 9. Ruling: **route back to build** — one commit and one read
+
+**On the substance I find the piece sufficient.** All five routed grounds are closed at the mechanism, re-taken at my hand with controls that fire on the pre-fix tree and go silent on the fixed one. The prediction is measured and recorded honestly, including its failure. The green arm returned 4 of 4 with a control arm behind it. Budgets hold with room. This is a good piece.
+
+**It cannot land on this tree**, for grounds that are narrower than any my predecessor named:
+
+**C1 — Give the fix batch the Built line and receipt its own new rule requires.** Write **Built** in `state.md` for the fixed product files in a commit containing nothing else, then open the fix batch's receipt in the work file quoting that line and commit. This is `AGENTS.md:88` and `judge:28`, both authored by this piece.
+*Pre-fix control, judge-executable:* `git log --oneline e525138..HEAD --name-only -- AGENTS.md .claude templates` → `42f25e1 .claude/skills/judge/SKILL.md`, a build commit after the last `state.md` write; and `git log --oneline e5494cf..HEAD -- state.md` → one commit, `e525138`, which also changed six product files. Post-fix: a state-only commit is the last write to `state.md`, no build commit follows it, and the receipt quotes it.
+
+**C2 — Fix the 71-word sentence, and have it read.** Break `judge:22`'s parenthetical into plain sentences at the surface's own scale. Keep every condition it states; I verified them all correct. Then it needs one cold read, because nothing else on the surface has gone unread.
+*Pre-fix control:* the sentence measures 71 words against a surface median of 10 and a 95th percentile of 27 — the longest on the loaded surface. Post-fix: no sentence in `judge` over roughly 30 words.
+*Re-run scenario:* R1's persona, or its continuation, reads `judge` §1 cold and answers one question — what must I check before I rule, and what changes when nothing is built yet — with no second pass.
+
+**C3 — Bring `state.md` up to what is true now.** It says the re-test is next; the re-test and the green arm have both returned. Its wearing-out list still carries the growth strain with the previous piece's numbers, though this piece repaired it — record the measured shrink there. Record the report-of-itself strain's real count, and record `42f25e1` as a fixed build not yet re-tested until C2's read closes it, per `judge:94`.
+
+**Sibling sweep before re-testing:** C1 is an unfired-gate defect, so sweep the other rules this rewrite newly added and ask of each whether it has been obeyed once by the work that wrote it. C2 is a register defect introduced after the readers left, so sweep every sentence written after `e5494cf` — there are six — and read them as a builder, not as their author.
+
+**Re-testing is one run.** The surface delta between `e525138` (which R2′ measured in full) and the fixed tree is one sentence. The re-test is C2's cold read plus C1's control, appended to the existing records under the amended promise 7.
+
+**Nothing re-enters shape or map.** The promises are right and the piece-space is right. This stays in build.
+
+---
+
+### 10. Owner question — one new, and only one
+
+The lane already holds five and they still stand. This one is genuinely new: it arrived today, when the two judges split.
+
+**Q6 — When two judges disagree about whether the method is straining, does the kernel force itself to stop and repair?**
+
+*What it changes:* how often your kernel spends a whole piece on fixing its own shape instead of building the thing you asked for.
+
+The method says two "straining" rulings in a row make structural repair the next piece — a real cost, paid out of your build time, and deliberately taken out of the builder's hands because a builder protects momentum. Today the two blind judges split: one ruled straining (which would make it the second in a row and force the repair), one ruled sound (which would not). The pages have never said which counts, and they didn't say it before this rewrite either — I checked.
+
+**Options.** (1) A split counts as straining — the cautious reading; the kernel stops and repairs whenever any judge says the shape is under load. (2) A split counts as sound — repair is forced only when both judges agree; a lone straining ruling still gets recorded and still gets named to you. (3) A split goes to you as a question, with both judgments' reasoning, and you call it.
+**Recommendation:** (2), with the disagreement always surfaced to you by name. Forcing a structural piece on one judge's ruling hands a single reviewer a veto over what gets built next; requiring both keeps the mandate meaningful, and nothing stops you choosing the repair anyway. Worth saying plainly: on this piece the two lines disagree only about the word "mandated" — both recommend the same next piece, defining the load-bearing words.
+
+---
+
+*Continuation of judgment 2 · Claude workflow agent · opus · 2026-08-29 · on `42f25e1`, extending the record above rather than replacing it, per the amended promise 7. Ruled blind to judgment line 1. Every control cited was executed by me against both trees; the four dev-suite checks and the four controls that break them were run at my own hand.*
