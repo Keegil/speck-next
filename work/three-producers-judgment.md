@@ -253,3 +253,200 @@ I did not order one. The findings are all mechanically checkable and I re-took e
 None of that is an argument against the sentences. T1's judgment stands and I adopt it: these are good sentences, a fresh reader condemned both planted fixtures quoting them verbatim, and one of them let a stranger rule a real landing case from the pages alone. Nothing here needs rewriting. The work left is reach — nine controls, every one of them a paste or a line, and the biggest is a question for the owner.
 
 **For the next builder, so it is not relearned:** a rule is not landed when it is written, it is landed when it can be found. Every one of the nine failures above is the same missing question — *which surface must now carry this?* — and rule 1, the sentence written to ask it, asks only which surfaces already do. That gap is the strain, and closing it is worth more than a fifth sentence.
+
+---
+
+## Final ruling, 2026-08-29, on 7bcaf95
+
+**Same judge, same line.** Claude Code · Opus 5 (`claude-opus-5[1m]`) · session `d6f7954a-06b5-4a3f-a8d2-b18233750afd`. Built and tested none of it. Blind to the second judge I ordered in §8 — this line is taken independently, and divergence between the two is itself a finding to settle with evidence, not by seniority.
+
+**Under judgment:** the piece at `7bcaf95` (fix batch `684e359`, state-only Built `8e9140e`, receipt `7bcaf95`), with the re-run record at `ebad884`. Every command below was run by me in this session and its return is quoted. Every page was read from disk at the commit under test.
+
+**Ruling in one line: sufficient — the piece lands and releases as v5.4.0, on the conditions in §F inside the landing commit.** The four sentences deliver what the piece was shaped to deliver, and for the first time there is positive evidence that they *produce*: rule 1's grep now returns the home it could not find, rule 3 visibly changed how a fresh tester ran, rule 4 is the sentence I am executing to write this, and all four ship into a real installed product. What remains is reach residue of the same class — paste-sized, fully enumerated, and none of it a defect in any sentence. Structure is **straining** for the second consecutive ruling on this line, which fires `judge:63`: the next piece is the structural repair, and that is where the class goes.
+
+---
+
+## A. The re-entry chain — valid
+
+Checked with git, not from the receipt's label.
+
+| Check | Command | Return |
+|---|---|---|
+| Fix batch is one commit | `git show --stat 684e359` | 9 files; the five product files (`AGENTS.md`, `judge`, `experience`, both templates) plus `decisions.md`, `map.md`, `state.md`, the work file |
+| Built line is state-only | `git show --stat 8e9140e` | `state.md` only, 2 insertions 1 deletion |
+| The quote literally says **Built** | `git show 8e9140e:state.md \| grep -c 'the fixed pages are Built as of this commit'` | `1` |
+| Receipt quotes that wording token for token | `git show 7bcaf95:work/three-producers.md \| grep -o 'says: "[^"]*"'` | `says: "the fixed pages are Built as of this commit"` |
+| Order is a straight line | `git log --format='%h parent=%p'` | `ebad884←7bcaf95←8e9140e←684e359←99ac32a` |
+| No product commit after the Built line | `git log 8e9140e..HEAD -- AGENTS.md .claude/skills templates bin CLAUDE.md README.md` | empty |
+| Receipt before the re-run | `7bcaf95` 19:42:34 · `ebad884` 19:51:45 | ✓ |
+
+The §1 hygiene note was not taken: `8e9140e`'s wording is again "as of **this** commit", which at HEAD resolves to a records-only commit. The receipt names `8e9140e`, so the check passes on the letter. Quote the wording you intend to keep — third time asked, not a finding.
+
+## B. The nine routes, re-fired at my own hand
+
+Not adopted from T2′. Every cell below is a command I ran at `HEAD` in this session.
+
+| Route | Command | at `def1677` | at `HEAD` | |
+|---|---|---|---|---|
+| R1 | `diff <(git show cca7841:state.md \| sed -n 5p) <(git show HEAD:state.md \| sed -n 5p)` | identical | **DIFFERS** | green |
+| R2 | `grep -c "Land + name" / "Keep the wide wall" / "Run it now" decisions.md` | 0 / 0 / 0 | **1 / 1 / 1** | green |
+| R3 | `grep -ni "sufficient" .claude/skills/judge/SKILL.md` | 3, 73 (line 59 invisible) | **3, 59, 73** | green |
+| R4 | `grep -c "population\|floor, not its scope" AGENTS.md` | 0 | **0** | **red on the floor** |
+| R5 | `grep -c destination templates/state.md` ; `grep -c homes templates/piece.md` | 0 ; 0 | **1 ; 0** | half |
+| R6 | `grep -ci "three producers" map.md` | 0 | **2** — row 7, sole `[live` marker, rows renumbered to 10 | green |
+| R7 | `grep -c grep work/three-producers.md` | 0 (`$ grep`) | **6**, four of them quoted claims | green on the letter |
+| R8 | `git ls-files work/three-producers-{T1,T2,judgment}.md` | T1 untracked | **all three tracked** | green |
+| R9 | `grep -n preload state.md` | 0 | **line 13**, with the fix named | green |
+
+**R3 in full, by rule 1's own prescribed procedure** — distinctive phrase, case-insensitive, over `AGENTS.md .claude/skills templates README.md state.md map.md`:
+
+```
+"one-home fix is not a fix"              → AGENTS.md
+"grep for its distinctive phrase"        → AGENTS.md
+"define it in its first sentence"        → AGENTS.md
+"in the sense you mean"                  → AGENTS.md
+"names its whole population"             → .claude/skills/judge/SKILL.md
+"floor, not its scope"                   → .claude/skills/judge/SKILL.md
+"as its floor"                           → AGENTS.md
+"delivers what it was shaped to deliver" → AGENTS.md · judge/SKILL.md · state.md
+```
+
+The `sufficient` home was recovered by sharpening the rule, not by lowercasing the home — the harder and better of the two routes T2 offered. Fixture 1 is no longer reproduced by the sentence written to condemn it.
+
+**Budgets, re-measured** (`git cat-file -s` summed over the installer's `SURFACE` list at `bin/speck-next.js:11`; always-read per `CONTRACT.md:34` = `AGENTS.md + state.md + product.md + map.md`):
+
+```
+ebb9fb5 56,039   caf557f 58,648   def1677 59,596   7bcaf95 60,210
+installed:   17 files of 20 · 60,210 of 102,400 (58.8%)
+always-read: 27,206 of 51,200 (53.1%)   [def1677: 25,738]
+fix batch +614 B · the piece to date +1,562 B (+2.66% on caf557f)
+```
+
+`./devsuite/run.sh --control` → `control mode: 4 of 4 tasks went red (want: all)`. The instrument can still fail.
+
+**R4 and R5, ruled rather than scored.** R4's quoted control is red and the requirement above it is met: `AGENTS.md:90` now reads *"executing the full requirement each states, with any quoted control as its floor"* — rule 3's builder half, on the builder's page, in different words. By the very sentence under judgment, the control is the floor and the requirement is the scope, so I rule the requirement met and the floor's redness a wording artifact — **except at `AGENTS.md:62`**, which was named in the original R4 alongside `:90`, was never touched (`git diff 99ac32a 7bcaf95 -- AGENTS.md | grep -c 'exact test scenarios'` → `0`), and still tells the builder to *"repeat the exact test scenarios."* That is step 5 of the numbered build loop — the line a builder reads first — and the word `exact` is the one the rule exists to correct. R5 closed rule 4's obligation into both skeletons (`templates/state.md` gained "destination"; `templates/piece.md`'s Result line gained "where each open item went") and closed rule 1's record obligation into neither (`grep -rniI home templates/` → `0`).
+
+## C. Three free attacks of my own
+
+Not T2′'s. Run because `AGENTS.md:90` now requires one and because a judge who only re-scores the routed list is grading his own homework.
+
+**Attack 1 — a real-path run against the real dependency: install the product.** No tester on this piece has ever run the installer; both read the source tree. I installed `7bcaf95` into a fresh `git init` directory with `bin/speck-next.js install`.
+
+```
+Installed Speck Next v5.3.0 … 19 files on disk
+all four sentences present in the installed tree:
+  "one-home fix is not a fix"            → AGENTS.md
+  "grep for its distinctive phrase"      → AGENTS.md
+  "in the sense you mean"                → AGENTS.md
+  "floor, not its scope"                 → .claude/skills/judge/SKILL.md
+  "as its floor"                         → AGENTS.md
+  "delivers what it was shaped to deliver" → AGENTS.md · judge/SKILL.md
+  "where each open item went"            → templates/piece.md
+  "from disk at the commit under test"   → .claude/skills/experience/SKILL.md
+```
+
+**Nothing was lost in transit, and 19 files is inside the 20-file limit.** This is the piece's first real-path run and it passes. It also catches one landing chore: the marker still writes `v5.3.0`, so `package.json` and `README.md:44` must be bumped in the landing commit or every installed product reports the wrong version.
+
+**Attack 2 — rule 2 applied to the fix batch's own additions**, the same test the piece ran on its first build. Word-diff over `684e359`'s additions to the loaded surface, minus the full pre-image vocabulary at `def1677`, yields sixteen genuinely new tokens: `carrying · case-insensitively · disk · distinctive · executing · figure · host · keyword · mean · older · phrase · preload · sense · theirs · untouched · way`. Of these, one is rule-carrying: **"distinctive phrase"**, the grep key rule 1 now prescribes. It is glossed only by a negation ("not one keyword") and never says what makes a phrase distinctive. Census delta: **zero undefined, one thin.** Rule 2 survives its own sharpening — narrowly.
+
+**Attack 3 — rule 1's *record* clause, applied to the fix batch's own record.** `AGENTS.md:70`, landed in `684e359`, requires: *"the record carries the grep and everything it returned, each home marked changed or untouched."* The same commit edited rule 3, which is stated in two places (`judge:92` and `AGENTS.md:90`).
+
+```
+$ grep -c untouched work/three-producers.md
+0
+$ grep -o 'grep [^·]*' work/three-producers.md | tail -4
+grep -c "grep for its distinctive phrase" AGENTS.md` → 1
+grep -c "in the sense you mean" AGENTS.md` → 1
+grep -c "floor, not its scope" .claude/skills/judge/SKILL.md` → 1
+grep -ci "delivers what it was shaped to deliver" AGENTS.md .claude/skills/judge/SKILL.md` → both files
+```
+
+Four single-file counts. None returns a home set; none marks a home changed or untouched; and rule 3's coverage claim names only `judge/SKILL.md` while the same commit created its second home at `AGENTS.md:90`. **The fix batch broke the record clause of the rule it was landing, on the rule it was editing.** This is the piece's own subject failing inside the piece for the second time, and it is the sharpest finding in this ruling.
+
+**Two findings against myself, disclosed because they are evidence.** Looking for the definition of *ratified*, I ran `grep -n "Ratified means\|ratified" AGENTS.md` and got nothing at line 36 — the line reads `*Ratified* means`, and my keys missed it on an italic asterisk and a capital letter. Then, writing condition 2 of §F, I drafted `grep -c "eight bites" state.md map.md` and fired it: `map.md:1 state.md:0`, because `state.md:11` reads "**E**ight bites" — a control written by the judge naming this defect, in the ruling that names it, missing one of the two homes it was aimed at. That makes **four** independent instances in this review of a keyword grep missing a home it was pointed straight at (T1 returned three of four; T2′'s free attack returned three of four; mine returned zero of one and then one of two). It is the strongest evidence available that "distinctive phrase" needs a real definition, and half of it comes from the judge, unprompted, against himself.
+
+## D. The owner's transcription — it answers the question, honestly
+
+`decisions.md` now carries, as its newest entry:
+
+> **2026-08-29 (post-v5.3.0) · Three owner calls, made by selecting from options put to him in the session (recorded here because a judge rightly refused to trust a citation to this file that this file did not carry).** … he selected **"Land + name what's open (Recommended)"** — the option text he was shown: *"A judge may land a piece while writing everything that stays open into state.md — where it went, who owns it. Both judgment lines recommend this…"* … **these are selections of drafted options, not his own phrasing, and are recorded as exactly that. Reopens if he re-words any of the three.**
+
+`grep -c` on each of the three answer keys returns `1 / 1 / 1`; at `def1677` all three returned `0`. **Option 1 of §7 was taken, and executed better than I specified.** I asked for the words with a date; the entry gives the mechanism, the verbatim option text so the provenance is auditable end to end, the explicit limitation in its own voice, and a reopening condition. It does not launder a judges' recommendation as an owner's word — it quotes the option that says the judges recommended it, so any reader can see the chain: judges recommended → drafted as an option with costs → owner selected. That is the opposite of the failure I filed.
+
+**The fourth sentence keeps its authority.** One reservation, and it is not this piece's fault: `AGENTS.md:36` says *"Ratified means the owner agreed in their own words in that phase's dated record… Nothing else counts,"* and a selection is not, literally, his own words. But the method's own conductor law requires asks to arrive as options with costs and a recommendation, and every decision entry in this repository records a selection — the v5.2.1 entry says so in as many words ("His picks on the judges' filed questions, verbatim from the answer sheet"). Those two sentences cannot both be satisfied by any real session. That is a defect in `AGENTS.md:36`, not in this transcription, which is the most honest entry in the file. It goes to the owner as one question (§G) and blocks nothing.
+
+**What does remain is a label that outruns its record.** `work/three-producers.md:3` still says *"the owner's 2026-08-29 **ratifications**"* and `state.md:5` says *"the owner's **ruling** closed it"*, against a record that says "selections, not his own phrasing." The citation resolves and the reader is corrected on arrival, so this is an overclaim of one word in two places, not a false citation. Two word-swaps, in the landing commit.
+
+## E. The four rulings, re-taken
+
+**Works — kept.** At `def1677` this was check failed because two of four rules could not fire at their source. Both are now reachable and one is demonstrably firing. Evidence, all mine: the install round-trip above (first real-path run this piece has had); `grep -ni sufficient judge/SKILL.md` → `59` where it was invisible; the eight-phrase sweep in §B returning every home for seven of eight keys; control arm 4/4 red. And the behavioural evidence, which matters more than any grep: **T2′ ran the re-entry by executing full requirements over quoted controls and appending a free attack, said so in those words, and that manner produced nine findings the quoted controls could not have surfaced** — including G1's reasoning that "the requirement above the floor is arguably met while the floor itself stays red," which is rule 3's own distinction used as a live analytical tool by a context that had just read it. Honest caveat: my §6 ordered the free attack before `AGENTS.md:90` landed the same requirement, so the attack itself is over-determined; the *manner* is not.
+
+**Delivers the promise — broken on promise 4, kept on 6 and 7.** Promise 6: the fix batch's additions read in one pass and the sharpenings T1 asked for landed. Promise 7: 17 files of 20, 60,210 B of 102,400, always-read 27,206 of 51,200 — all measured above. **Promise 4 is broken at HEAD on two counts, both fresh, both the strain biting again:**
+
+- `state.md:11` and `map.md:16` both freeze the report-of-itself strain at **"eight bites"**. My own judgment confirmed at least three further bites of that exact strain (the false census line, the citation to a record that did not hold it, the uncommanded coverage claims), and T2′ found more. `AGENTS.md:108` requires how often each strain has bitten and `AGENTS.md:58` keys the twice-rule on that count. A measured number left standing through a rewrite that made it stale, in two homes, on the strain the piece exists to repair — this is fixture 1 and the strain's signature at once, and neither I nor T2 caught it in the first round.
+- `state.md:27` claims the rules now reach their readers *"found by a case-insensitive grep the record carries."* The record carries no such grep (attack 3). The sentence claims exactly the thing rule 1 requires and the record does not do.
+
+Both close in the landing commit, which rewrites `state.md` anyway. They are conditions, not open items.
+
+**Good to use — kept.** Every sharpening I named landed: the `destination` collision I hit on first execution is closed by "in the sense you mean" at `AGENTS.md:113`; `judge:92`'s population triad is glossed into three concrete kinds ("every home of a rule, every file carrying a figure, every case of a defect's class"), which is the two-word gloss asked for, delivered as nine. The `AGENTS.md:62` forward pointer was recommended, not required, and was not taken — it is now part of a condition for a different reason.
+
+**Quality hangs together — check failed.** Six of the seven workmanship defects from `def1677` are closed and verified above. What fails is not the count but the kind: **the piece's own subject failed inside its own fix batch, twice.** Rule 1's record clause was broken by the record of the commit that landed it (attack 3), and rule 3 landed in one of the two builder-page homes the judgment named, leaving `AGENTS.md:62`'s "exact" standing — a one-home fix inside the batch that closed the one-sided-edit fixture. Also open: `templates/piece.md` still carries no home-marking obligation, so every product installed from `templates/` starts without it; the fix batch's `+614 B` is recorded nowhere against promise 8; the stale-page law sits only on the tester's page while the judge was one of its three recorded bites, and its wording says "two testers on two pieces" against a strain line saying three and a fourth bite in `ebad884`. Strength elsewhere does not excuse this, and I am not grading on trend.
+
+## F. Result — sufficient, and what the landing commit must carry
+
+**Sufficient. The piece lands, `map.md` row 7 ticks, and the release goes out as v5.4.0.** Ruled on the sentence the piece itself wrote and I am bound by: *sufficient means the piece delivers what it was shaped to deliver — you may land it with open items, never silent ones.* It was shaped to land four sentences that stop three defect classes at their source. All four are on their named homes, all four ship into a real installed product, three of them have now been observed changing behaviour in a fresh context, and the fourth is the rule producing this ruling. The residue is real and none of it is a defect in a sentence.
+
+I want the reason for landing rather than routing back a second time stated plainly, because it is a judgment and not an arithmetic: **routing back would be declining to execute the rule the piece landed, on the first piece where it applies.** A judge who will not use "land with open items named" when the open items are paste-sized, fully enumerated, and none of them touches the artifact under judgment has decided the sentence is decoration. That is precisely the failure this piece exists to stop.
+
+**Conditions — inside the landing commit, each with its control.**
+
+1. **`AGENTS.md:62` gets rule 3's builder half.** Control: `git diff <landing>^ <landing> -- AGENTS.md | grep -c 'exact test scenarios'` ≥ 1, and the new line does not contain the word "exact" as the scope of the re-run.
+2. **The strain's bite count is true in both homes.** `state.md:11` and `map.md:16` carry the real count with the fresh bites named. Control: `grep -ci "eight bites" state.md map.md` → `0 0`. **I wrote this control case-sensitively first and fired it:** `grep -c "eight bites" state.md map.md` → `map.md:1 state.md:0`, because `state.md:11` reads "**E**ight bites". One of the two homes was invisible to a control written, in this ruling, by the judge naming that exact defect — the **fourth** instance in this review, and the second at my own hand. Rule 1's case-insensitivity clause is the only reason the corrected control works, which is the clearest evidence available that the clause was worth its bytes and that "distinctive phrase" still is not defined.
+3. **`state.md:27`'s grep claim becomes true or goes away.** Either the record carries a home-set grep with each home marked changed or untouched, or the sentence stops claiming it. Control: `grep -c untouched work/three-producers.md` → ≥ 1, **or** the claim is gone from `state.md`.
+4. **The record obeys rule 1's record clause.** The coverage claims in `work/three-producers.md` carry the distinctive-phrase grep and everything it returned, each home marked — including rule 3's second home at `AGENTS.md:90`, which the current record omits.
+5. **`templates/piece.md` gains rule 1's record obligation** — one clause, so an installed product starts with it. Control: `grep -rniI "home" templates/` → ≥ 1.
+6. **The label matches the record.** `work/three-producers.md:3` "ratifications" → "selections"; `state.md:5` "ruling" → "selection".
+7. **The stale-page law's count is corrected** ("two testers on two pieces" → the true count, four bites including `ebad884`). Its placement is an open item, not a condition — see below.
+8. **`state.md` lists the four Judged rulings separately**, per `AGENTS.md:111` and `:113`: works kept · delivers the promise broken on promise 4 (with the two conditions above marked closed) · good to use kept · quality hangs together check failed. Control: `grep -c "check failed" state.md` → ≥ 1.
+9. **The costs are recorded** against promise 8: fix batch +614 B, piece total +1,562 B (+2.66%), installed 60,210 of 102,400, always-read 27,206 of 51,200 — each with the command that produced it.
+10. **Version bumped to 5.4.0** in `package.json` and `README.md:44`, or the installer writes a false marker into every product.
+11. **The release entry names what it considered deleting**, per promise 8.
+
+**Open items — named in `state.md` with their destinations, per the sentence this piece landed.**
+
+- **Rule 1 returns an incomplete home set on paraphrased homes.** Three independent demonstrations in this review (T1's three-of-four, T2′'s three-of-four on the receipt rule, my zero-of-one on `*Ratified*`), plus the case the fix batch minted itself: rule 3's two homes now read "floor, not its scope" and "as its floor" and share no distinctive phrase, so rule 1 cannot find both homes of the rule it landed beside. **Destination: the next piece** (below). Not a word-swap — it is the method question.
+- **"Distinctive phrase" is glossed only by a negation.** **Destination: the next piece.**
+- **The stale-page law lives only on the tester's page** while the judge was one of its recorded bites and `judge:10` licenses judges to re-run checks. **Destination: the next piece** — deciding which surfaces a new rule must reach is exactly the missing step, and doing it ad hoc here would be the behaviour under repair.
+- **Fixture 1's gloss under-counts its own corpus** — "one home of three" against the receipt rule's four homes (`AGENTS.md:78 · judge:22 · templates/piece.md:15 · experience:18`). **Destination: the next piece's shaping**, since changing a committed control changes the control.
+- **`AGENTS.md:36` vs. every decision entry in the repo.** **Destination: the owner** (§G).
+- **The v5-era ordered runs on Pilot's build** — a real four-persona piece with a user interface, a full fresh-install lifecycle with one deliberately insufficient judgment sent back. Standing, unchanged.
+
+## G. Structure — straining, twice in a row, and the trigger fires
+
+`judge:63`: *"Two straining rulings in a row, or one fighting ruling, makes structural repair the next piece. The judge makes that call because the builder has momentum to protect."*
+
+At `def1677` I ruled **straining** and named the strain: *the method has no step that makes a new rule reach the surfaces it must govern.* At `7bcaf95` the strain is unchanged and better evidenced — every remaining open item above is the same unasked question, and this time it was asked and missed *inside the fix for it*. Nothing was forced wrong and no workaround was needed, so it is straining and not fighting. That is two on this line, and I make the call: **structural repair is the next piece.**
+
+In §5 I refused to manufacture this trigger from the previous piece's split lines. I do not have to now — it fires cleanly on this piece's own line, and it is the right answer for a reason `judge:63` anticipates: three consecutive fix batches on this piece would keep producing the same residue, because the missing step is not in this piece's scope. Promise 8 still forbids a fifth sentence. The repair is a step in the loop, not more law: when a rule changes or is minted, the record answers *which surfaces must now carry this* — which audience's page, which templates, which map row, which record field — and rule 1 already asks the near half of that question. Shaping owns the rest.
+
+## H. For the owner — one question
+
+**What this changes for you:** last round I could not find your words for the sentence that now decides when work is finished. That is fixed — `decisions.md` carries all three of your calls, the exact options you were shown, and an honest note that they were selections from drafted options rather than your own phrasing. Nothing is waiting on you for this piece to land.
+
+**What I found while checking it.** The method page says a decision counts only when you agree *"in their own words. Nothing else counts."* But the method also requires us to bring you real options with costs and a recommendation — which is how you actually decide, and how every decision in this repository was made. Those two sentences contradict each other, and if the strict one is taken literally, half the decision record is unauthorized. That is a defect in the method page, not in any of your calls.
+
+**Your options:**
+
+1. **A selection counts (recommended).** The method page says so explicitly: a decision is ratified when you choose from options put to you in plain language, and the record keeps the option text you saw. Costs nothing, matches what already happens, and keeps the record honest about what a selection is. Every existing decision stays standing.
+2. **Only your own wording counts.** The method page stays as it is, and we stop calling a selection a ratification anywhere — decisions get recorded as "the owner selected", and anything that must be *ratified* comes back to you for a sentence in your words. More friction on you, sharper authority on the few things that carry it.
+3. **Split it.** Selections count for ordinary calls; the things that become law on the pages — like the `sufficient` sentence — need your own wording. Most decisions stay frictionless; the load-bearing ones cost you a sentence each.
+
+## I. The second judge
+
+Ordered in §8 and running blind to this line, for the reason given there: this piece edits the judge's own skill, and the sentence I executed to reach this ruling was written by the piece I am ruling on. That arrangement is exactly what a second, independent hearing exists to check. **If the second line rules differently on the Result, the divergence is a finding and it is settled with evidence, not by which line was written first** — and the specific place to look is whether landing with a "quality hangs together: check failed" ruling is faithful to the `sufficient` sentence or a judge stretching it. I have given my reason in §F in the plainest terms I can, so it can be attacked directly.
+
+## Result
+
+**Sufficient.** The piece lands and releases as **v5.4.0**, with the eleven conditions of §F carried inside the landing commit and the six open items of §F named in `state.md` with their destinations — the sentence this piece landed, executed to the letter on the first piece it governs. Structure: **straining**, twice on this line, so structural repair is the next piece.
+
+**For the next builder, so it is not relearned:** the producers work — a rule reached a fresh tester and visibly changed how they ran, which is more than any of the last three pieces could show. What they cannot do is tell you where a rule must go, and a grep cannot find a home that was paraphrased or capitalised differently. Every failure left in this piece is that one gap, including the four separate greps in this review — two of them the judge's own, one of them inside the sentence naming the defect — that each missed a home they were pointed straight at.
