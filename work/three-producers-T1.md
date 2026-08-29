@@ -195,3 +195,151 @@ I would build under these four sentences. I would want two things fixed first, a
 2. **The `destination` collision** — one clause on rule 2 ("in the sense you mean") turns a rule that cannot express its own most likely failure into one that can.
 
 Finding 2 is a sentence-sized sharpening. Finding 3 is not the piece's fault and needs an owner for it anyway.
+
+---
+
+## Follow-up run (E1), 2026-08-29, on 39cdbd8
+
+**Tester:** E1, fresh cold reader. Never seen this piece, never seen this method. A builder deciding whether to run a real product under these pages.
+**Identity:** Claude Code · Opus 5 (`claude-opus-5[1m]`) · session `d6f7954a` · 2026-08-29. (The repo's commit trailer reads *Claude Fable 5* by host convention; this line is the model that actually ran, and the two disagree.)
+**Subject:** `~/Code/speck-next` at commit `39cdbd8` (fix builds `684e359` then `0f30c51`, plus the truth commits).
+**Ordered by:** the third re-entry receipt in `work/three-producers.md`.
+
+**Disclosure — my host preloaded a stale `AGENTS.md`, third reader in a row.** The copy handed to me in context opens "You are an agent in a repository run by Speck Next. This page is the whole method — your host loaded it for you" and carries a section titled "The conductor — law in every session." No such file exists at `39cdbd8`. `git log -S "your host loaded it for you" -- AGENTS.md` returns `b7bb41c` and `e5494cf` — the loaded copy is the version `e5494cf` replaced. Every reading below is from `Read` against disk. The tester law now on the `experience` page and at `judge:10` is what made me check before reading a word; it worked, and the strain is real — three readers, three pieces, three preloads.
+
+---
+
+### Job 1 — the changed sentences, one pass each, cold
+
+Read in file order, without the work file open.
+
+**`AGENTS.md:61` — step 4, Mark it Built. One pass.** The dash clause offers two placements ("in the build's final commit, or right after it in a commit that changes nothing else") and I had to hold both, but it read once. **What it buys a builder:** it takes "its own checks" away from the builder's discretion at Built time and pins it to the proof plan, which was committed at Shaped before any code. Then the last clause closes the obvious dodge: *"a plan naming none leaves nothing to pass, so the piece cannot become Built."* The cheapest route to Built — name no checks — is the one route explicitly barred. That is a producer, not a detector: it makes the gaming move impossible rather than catchable.
+
+**`AGENTS.md:62` — step 5. One pass, with one stumble I am charging.** *"If not, fix the named problem, then execute the judge's full requirements — a quoted control is a floor, not the scope — plus the required fresh challenge."* **What it buys:** the floor rule now sits on the builder's page, at the exact moment a builder reads after a route-back. Before, it lived only where the judge writes controls, not where the builder executes them; a builder could obey their whole page and still do the one-site fix. That gap is closed and I can see it closed.
+
+**Stumble — `fresh challenge` is an undefined rule word, and it is minted by this batch.**
+
+```
+grep -rn "fresh challenge" AGENTS.md .claude/skills templates   -> AGENTS.md:62 only
+grep -rniE "free skeptical attack|free attack" AGENTS.md .claude/skills templates
+   -> AGENTS.md:90 · .claude/skills/judge/SKILL.md:96
+```
+
+The obligation is named "one free skeptical attack of the tester's own choosing, reported either way" in both places that state it. Step 5 calls it "the required fresh challenge" — a third name, defined nowhere, and *required* by nothing the sentence names. I could reconstruct the referent, but reconstruction is the bar rule 2 exists to raise:
+
+> `AGENTS.md:113` — "when a word carries a rule, define it in its first sentence or use one these pages already define **in the sense you mean** — an undefined rule word is defective when written, not when a reader trips over it."
+
+The phrase carries a rule (it is one of two things step 5 orders after a route-back), it is not defined in its first sentence, and the pages do not define it. Rule 2 condemns the sentence that landed beside it. **Repair:** use the name the pages already carry — *"plus one free skeptical attack, reported either way."* Same length, zero new words.
+
+**`AGENTS.md:70` — the same-edit rule. One pass, dense but clean.** **What it buys:** three upgrades I can name against the version this one replaced. (a) *"Before landing a new rule or changing one"* — it now fires when a rule is **born**, which is the case that most needs it and the one a change-only trigger can never reach. (b) *"or must now carry it"* — it reaches files that do not yet state the rule but now owe it, which is how a template gets swept in. (c) *"grep case-insensitively, trying several keys from widest to narrowest, and report the set you used"* — the anti-tautology clause, and the sharpest thing in the delta. A single narrow key returns only the file you just edited; the rule now says so procedurally instead of hoping. `home` is still defined only by apposition — sentence 1's "every place that states it" is the whole definition — but it held on one pass.
+
+**`AGENTS.md:90` — the send-back paragraph. One pass, at the edge.** The closing sentence carries three obligations in one breath (execute the full requirement over its whole population · any quoted control is a floor · one free attack, reported either way). I read it once; a tired builder would read it twice. **What it buys:** it is the entire re-entry procedure in one place — new Built line in its own state-only commit, receipt quoting it, scenarios re-run at full population, free attack. It is the procedure I executed to produce this record, and I assembled it from this paragraph alone. *"reported either way"* is the load-bearing half: it removes the reason to bury an attack that found something.
+
+**`AGENTS.md:111` — the states ladder. One pass to understand, two to locate.** Six sentences in one paragraph; the sufficient definition arrives as a colon clause with a dash clause inside it, mid-paragraph. My predecessor filed exactly this ("not to understand it, but to find it") and it is still true. **What it buys, and it is more than I expected:** it is the only place that says *"the first three states belong to each piece; Live belongs to the milestone."* Before reading it I would have marked a piece Live. It also lets a builder self-test for sufficient before spending a judge.
+
+**`AGENTS.md:113` — the claims/numbers/new-words producers. One pass.** **What it buys:** *"carries the command that produced it and what it returned, written after the run, never from memory"* is the most mechanically useful sentence on the page — it converts every coverage claim into a one-command test, which is exactly what my free attack below is. *"A closure without runnable proof is an open item wearing a label"* is the best-written line in the delta. Locating complaint, not a reading one: four unrelated rules stacked under no heading.
+
+**`judge/SKILL.md:92` — the population sentence. One pass now; my predecessor needed two.** The triad is glossed in place — *"every home of a rule, every file carrying a figure, every case of a defect's class"* — so the three members read as three kinds of population for three kinds of defect instead of three synonyms. That is a measured improvement in the thing that was measured. **What it buys:** it tells a judge how to size a control **before** writing it, and tells the builder the control is a floor.
+
+**`judge/SKILL.md:59` — the sufficient sentence. One pass, cleanest of all four homes.** **What it buys:** it makes landing with open items legal and landing with silent ones illegal. That single distinction is what lets a judge land real work instead of route-backing forever, and it names where the item goes.
+
+**Job 1 verdict:** eight sentences, eight one-pass reads, one at the edge (`:90`), one locating problem (`:111`), and one charged stumble — `fresh challenge` at `:62`.
+
+---
+
+### Job 2 — both planted fixtures, re-run against the fixed pages
+
+**Fixture 1 — the one-sided rule edit: "Fixed the receipt rule in AGENTS.md."**
+
+Premise re-checked at the corrected gloss:
+
+```
+grep -rnilE "literally say|Built line that covers" AGENTS.md .claude/skills templates
+   -> AGENTS.md · .claude/skills/experience/SKILL.md · .claude/skills/judge/SKILL.md · templates/piece.md
+```
+
+Four homes. The edit names one.
+
+**CONDEMNED**, `AGENTS.md:70`, at its current wording:
+
+> "Before landing a new rule or changing one, find every place that states it or must now carry it: grep case-insensitively, trying several keys from widest to narrowest, and report the set you used. Land the same change in every home in one commit; the record carries the greps and everything they returned, each home marked changed or untouched. **A one-home fix is not a fix.**"
+
+Four clauses fire independently: no grep reported, no key set reported, the change did not land in every home in one commit, and the record marks nothing. The last sentence condemns the line without interpretation. Second, weaker condemnation from `AGENTS.md:113` — the word *Fixed* is a closure claim carrying no command — which condemns the sentence at review, one round after `:70` condemns the edit.
+
+**Fixture 2 — the site-scoped control: "Control: `grep -c 'stale figure' state.md` returns 0."**
+
+**CONDEMNED**, `judge/SKILL.md:92`, at its current wording:
+
+> "When you order a fix and quote a control, the control names its whole population — every home of a rule, **every file carrying a figure**, every case of a defect's class — **never only the site where the defect surfaced.** The builder executes the full requirement; the quoted control is its floor, not its scope."
+
+The figure lives in three files; the control names the one it surfaced at. The middle clause condemns it verbatim, and the triad now names *"every file carrying a figure"* explicitly — a stale figure is not a rule, so the old `home`-only wording would have reached it only by stretch. It reaches it directly now.
+
+**And the fixture is now defanged on the builder's side too**, which is the reach fix I was sent to confirm. Even with the bad control quoted, the builder is bound by `AGENTS.md:62` ("a quoted control is a floor, not the scope") and `AGENTS.md:90` ("executing the full requirement each states over its whole population, with any quoted control as its floor"). Two independent builder-page statements. The defect can no longer travel from a lazy judge into a one-file fix.
+
+**Both fixtures condemned, each by a sentence quotable verbatim. Both arms of the piece's falsifiable prediction hold.**
+
+---
+
+### Job 3 — free skeptical attack: run the coverage record's own greps
+
+**Chosen because** the union batch's commit message advertises *"the coverage record finally obeys the rule it certifies."* `AGENTS.md:113` gives me a one-command test for that claim: a coverage claim "carries the command that produced it and what it returned, written after the run, never from memory." So I ran the four commands the record quotes and compared to what it says they returned.
+
+**FINDING — `work/three-producers.md:58` states a returned home that its own quoted command does not return.** *(should-fix)*
+
+The record says:
+
+> "- Rule 3 (`grep -rnilE "floor, not the scope|as its floor"`) → AGENTS.md — changed (both builder statements, step 5 and the send-back paragraph) · **judge/SKILL.md — changed (the population sentence)**."
+
+under a header that fixes the meaning: *"each grep over AGENTS.md, all skills, and templates; every returned home listed and marked."* Run verbatim:
+
+```
+grep -rnilE "floor, not the scope|as its floor" AGENTS.md .claude/skills templates
+   -> AGENTS.md
+```
+
+`judge/SKILL.md` is not returned. **The cause is a one-word drift the record papered over:** rule 3 has three homes in three phrasings — `AGENTS.md:62` "a floor, not **the** scope", `AGENTS.md:90` "as its floor", `judge:92` "its floor, not **its** scope". The record's key matched the two AGENTS.md wordings and missed the judge's by the article, then listed the judge's file anyway. Written from memory of the edit, not from the run. That is precisely what `AGENTS.md:113` forbids: *"carries the command that produced it and what it returned, written after the run, never from memory."*
+
+**And the same record fails the discovery clause of the rule it certifies.** All four keys are strings this piece authored:
+
+```
+"one-home fix is not a fix"              -> AGENTS.md          (written by 77628d1)
+"in the sense you mean"                  -> AGENTS.md          (written by 684e359)
+"floor, not the scope|as its floor"      -> AGENTS.md
+"delivers what it was shaped to deliver" -> AGENTS.md · judge/SKILL.md
+```
+
+A grep for the fix can only ever return files that already carry the fix. It cannot return an untouched home, so it cannot fail — and `AGENTS.md:68` already rules on that: *"A check counts only if it can show the failure it claims to prevent; a control that cannot fail proves nothing about the product."* Four coverage claims, four controls that cannot fail, zero homes marked untouched, and no wider key attempted — against a rule whose text says *"trying several keys from widest to narrowest, and report the set you used"* and *"each home marked changed or untouched."*
+
+**Material consequence, not just form.** Running the rule as written surfaces a home the narrow keys hid:
+
+```
+grep -rniE "undefined|jargon|defines? it" AGENTS.md .claude/skills templates
+   -> AGENTS.md:113 · .claude/skills/judge/SKILL.md:67
+```
+
+`judge:67` states the same rule in the judge's operative voice — "Undefined jargon that carries a rule is a defect" — without the sense-collision clause rule 2 was sharpened to add. I am **not** charging that judge:67 must change: the defect is committed by the author, and the builder's page is the right home for authoring discipline. I am charging that rule 1 requires this home to be **listed and marked untouched, with the reason**, and the narrow key meant nobody had to decide. That is the whole value of the widest-first clause, unclaimed by the record that certifies it.
+
+**Why this matters more than its size.** This is the third consecutive round in which this piece's own record fails this piece's own rule — the sentence claiming coverage is the sentence that most needs the coverage discipline, and it has now been rewritten twice and failed twice. The repair is not another sentence; `AGENTS.md:70` already says everything needed. The repair is running it. **Repair:** re-run all four coverage claims widest-key-first, paste what each command actually returned, mark every returned home changed or untouched — including `judge:67` under rule 2 and all three phrasings under rule 3 — and fix rule 3's key to something that matches all three homes, e.g. `-iE "floor, not (the|its) scope|as its floor"`.
+
+### Checked and clean
+
+- **Step 5 and `:90` do not contradict each other.** Different wordings of the floor rule, same content; no builder could obey one and violate the other.
+- **The `sufficient` definition is now findable by the grep its own rule prescribes.** `grep -ni "sufficient" .claude/skills/judge/SKILL.md` returns `:59`; the capital letter that hid it is neutralised by the case-insensitive clause at `:70`. The defect that routed the previous round is closed by the sentence written to close it.
+- **The templates carry the new obligations.** `templates/state.md:17` — "Open items from landed pieces, each named with its destination." `templates/piece.md:31` — the Homes touched slot, "The greps used, every home they returned, each marked changed or untouched." The gap my predecessor filed as Finding 1 is closed at both files.
+- **The fixture-1 gloss now tells its true corpus.** Four homes, verified by the command the gloss quotes.
+- **Rule 1 reaches Fixture 1 and not Fixture 2; `judge:92` reaches both.** Correct division, unchanged from the first run, and the triad gloss is what earns it.
+
+---
+
+### Verdict (E1)
+
+**Sufficient, with one should-fix and one small stumble.**
+
+Eight changed sentences, eight one-pass reads, and each one buys a builder something I could name without the work file open. The two planted fixtures are condemned at the current wording by sentences I quoted verbatim without interpretation, and Fixture 2 is now condemned on the builder's side as well as the judge's — the reach failure that routed the last two rounds is closed where I can see it closed.
+
+What I would fix before landing, both against the batch rather than the sentences:
+
+1. **The coverage record at `work/three-producers.md:55–59`** states a home its quoted command does not return, and certifies four rules with four controls that cannot fail. The rule that condemns this is the rule the record is certifying. This is the third round of the same recursion, and the sentences are not the problem — the running is.
+2. **`fresh challenge` at `AGENTS.md:62`** is an undefined rule word minted in the same batch that landed the rule against undefined rule words. One-word repair to the name the pages already carry.
+
+I would build under these eight sentences.
