@@ -25,7 +25,7 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 
 6. **Run the completion test.** Do not assert it. Check that:
    - every `job:`, `moment:`, `claim:`, and foundation in `product.md` belongs to a piece;
-   - every captioned screen drawing belongs to exactly one piece — the population is the captions in the shaped decks and journeys themselves: grep them, count them, match them against the pieces;
+   - every screen in the shaped decks and journeys belongs to exactly one piece — grep their captions, report the count even when it is zero, and match each caption to one piece;
    - every supporting item belongs to a piece or appears as unconsumed;
    - every piece has a proof plan; and
    - milestones cover every piece.

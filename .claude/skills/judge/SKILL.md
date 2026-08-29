@@ -25,7 +25,7 @@ A shaping or mapping review is different: nothing is built yet, so it has no Bui
 
 A **build commit** changes the product itself, such as code, screens, or data. A commit that changes only records or state is not a build commit.
 
-Use git to prove that the Built line covers the exact product files under review. It may ride in the build's final commit, or in a records-only commit just after it. The line is invalid if any build commit lands after it, or if it was written after the receipt opened. An old Built quote cannot cover later work.
+Use git to prove that the Built line covers the exact product files under review. It may ride in the build's final commit, or in a records-only commit just after it. The line is invalid if any build commit lands after it, or if it was written after the receipt opened. An old Built quote cannot cover later work. One exception: a fix landed as a build commit during the review does not invalidate the Built line for the tree the review already ran — the fix answers to the re-run rules instead, including its own pre-fix control.
 
 If the check fails, rule nothing. Order a new Built line in a commit containing nothing else, then order a new receipt. After a rejected piece is fixed, its next receipt must quote the new Built line that covers the fixed product files.
 
@@ -60,7 +60,7 @@ One cannot compensate for another. Give evidence or say “not judged yet.” A 
 
 ### 5. Judge the whole product
 
-Rule the structure **sound**, **straining** with the strain named, or **fighting**. Two straining rulings in a row, or one fighting ruling, makes structural repair the next piece. The judge makes that call because the builder has momentum to protect.
+Rule the structure **sound**, **straining** with the strain named, or **fighting**. Straining means the shape made the work slower or riskier, but the piece still landed honestly; fighting means the shape made the work wrong or forced a workaround before it could land. Two straining rulings in a row, or one fighting ruling, makes structural repair the next piece. The judge makes that call because the builder has momentum to protect.
 
 Read the piece’s work file against standing decisions and the whole-product properties in `product.md`. A piece plan can allow exactly what a standing decision forbids while checks stay green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
 

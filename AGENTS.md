@@ -58,7 +58,7 @@ A ratified map has exactly one live piece.
 1. **Check what is wearing out.** Read `state.md` and the foundations in `product.md`. A strain recorded twice, or a foundation whose trigger fired, becomes the next piece by re-cutting the map. Otherwise defer it where the owner can see it.
 2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
 3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
-4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts.
+4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts. Its own checks are the checks named in the piece’s proof plan; a plan naming none leaves nothing to pass, so the piece cannot become Built.
 5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem and repeat the exact test scenarios plus the required fresh challenge.
 
 While building, use the product’s own surface as soon as it exists; a test harness you wrote is not the product. Until a user surface exists, say so in `state.md`.
@@ -106,9 +106,9 @@ When the owner is present, update `state.md` at every event that changes the map
 - `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
 - `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
-The four states are **Shaped → Built → Judged → Live**. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.” Judged is a piece’s ceiling: work goes Live only when its whole milestone is proven and the owner has graded it.
+The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome and proof plan, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review has ruled. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
 
-An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence.
+An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence. Any claim in these files that something is fixed, closed, or done everywhere carries the command that proves it and what it returned — written after the run, never from memory. A closure without runnable proof is an open item wearing a label.
 
 Supporting material is first-class work. State its purpose when it is created, assign it to a piece or list it as unconsumed, test and judge it, and mark it superseded at the top when it is replaced. Templates are starting floors, not limits; expand them when the product needs more.
 
@@ -120,6 +120,6 @@ A change is small only if it adds no dependency, touches no auth, money, privacy
 
 Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
 
-For money, auth, private data, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. You may raise the care level. You may never lower it.
+For money, auth, private data, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. The care level is which of these protections are on, plus a second judge; raising it means adding protections — there is no separate scale. You may raise the care level. You may never lower it.
 
 Before stopping, write anything a future builder should not have to relearn into the piece’s work file.
