@@ -263,3 +263,237 @@ Three of the four are comprehension problems. One is not. `protected code` decid
 - **The installed surface is defined in code, not in prose** — `bin/speck-next.js:12`. Measure against that list and the number is arguable by anyone; measure against a remembered list and you get three different answers for the same commit, which is what the previous piece's records contain.
 - **Rule the two undefined heads before complaining about them.** I had to invent a mapping for `good to use` and `quality hangs together` to do my own job, and I had to classify a fix against `protected code` to route it. Two of the four findings bit the instrument. Write the mapping down when you rule, so the next judge argues with it instead of inventing a different one.
 - **A prediction is only as good as the population it ranges over.** Detectors find what is on the list. Nothing on this page produces the list.
+
+---
+
+## Continuation (judge 1′), 2026-08-29, on 980e188
+
+**Judge:** judge 1′ · Claude Code · model opus · fresh context, built none of it and tested none of it · continuing judgment line 1 · blind to line 2. Ruling on the fixed tree `980e188` (fix build `c53704e`, pre-fix `ac7e688`).
+
+**Ruling in one line: not sufficient — the piece routes back to build a second time, on three items, and the worst of them is the one flagged for the owner.** Eleven fixes landed at their anchors and I re-fired the controls myself. But the protected-code definition is not the widening its record tells the owner it is: it drops data-integrity code, contradicts the contract that the promise it serves is written in, and the owner note offers him two options, neither of which is the one he would want. That is not a flag. That is a wrong sentence wearing a flag.
+
+Read this before the rest: **the fix batch is good work and most of it lands.** The route-back is three clauses wide, the re-run is narrow, and the census the batch built found a defect that a rewrite, a cold reader, two blind judges and an eleven-item fix batch had all walked past. The mechanism I ordered worked on first use. The piece still cannot land in this state.
+
+---
+
+### 1. The re-entry receipt — valid
+
+| Check | Evidence, at my hand |
+|---|---|
+| Built line literally says **Built** | `git show 38d9070:state.md` line 26: *"the fixed pages are **Built** as of this commit"* |
+| Its own commit, nothing else | `git show --name-only 38d9070` → `state.md` alone |
+| Ordered build → Built → receipt | `c53704e` 18:04:43 → `38d9070` 18:04:58 → `980e188` 18:05:12 |
+| Receipt commit touches only a record | `git show --name-only 980e188` → `work/name-the-words.md` alone |
+| Covers the product files under review | `git diff ac7e688..c53704e` touches `AGENTS.md`, `judge`, `map-build`, `templates/piece.md`, `README.md`, `state.md` — all in the tree `38d9070` describes |
+
+`AGENTS.md:88`'s route-back rule — *"write a new Built line for the fixed product files in its own state-only commit and make the fix batch's receipt quote that line"* — is obeyed exactly. The gap I recorded in section 8 last round is now closed **by execution**: the missing case exists in git and the next hand can copy it.
+
+---
+
+### 2. What I re-took at my own hand
+
+Not inherited from either tester.
+
+**Controls.** Null control `zzqqxx` over the 17 installed files → **0**. Positive control `\bpiece\b` → **88**. Both arms available, so the greps below can express a hit and a miss.
+
+**The ordered fixes, re-fired.** `review ruled it sufficient` → `AGENTS.md:109` ✓ · `before-first-run limit` → `:109` ✓ · `any measured number` → `:111` ✓ · `Either can be ruled` → `judge:63` ✓ · `checks that must pass` → `map-build:18` and `templates/piece.md:11` ✓, and **nowhere else** (see §4).
+
+**Byte measures, two independent methods** (`git cat-file -s` summed, then `git show | wc -c` summed) over the installer's own list at `bin/speck-next.js:11`:
+
+```
+ebb9fb5 56,039   4a70e03 56,176   48283c7 57,348
+ac7e688 57,348   c53704e 58,431   980e188 58,431
+```
+
+Both methods agree at all six commits. **58,431 of 100,000 · 17 files of 20 · 5 skills of 6 · always-read 24,083 of 50,000.** Every budget passes. `state.md`'s corrected 56,039 at `ebb9fb5` reproduces — **O5 is honestly closed**, and it is the first number in this file's history that survives a second method.
+
+**Control arm.** `./devsuite/run.sh --control` at my hand: `control mode: 4 of 4 tasks went red (want: all)`. Every key check still expresses its own failure after eleven edits.
+
+**The producer's fixture, re-executed.** It is committed now (`work/name-the-words.md:28–29`), so I could run what I could not run last round. Against the rule at both trees:
+
+| Entry | `ac7e688` | `980e188` |
+|---|---|---|
+| A — "fixed everywhere", carries `grep -rn 'parseDate(' src/` → 3 sites and `npm test` → 41 passing | accepted | accepted |
+| B — "fixed everywhere … I went through all the call sites" | **condemned** | **condemned** |
+| New arm — "the surface is now 57,348 bytes", no command | clean | **condemned** |
+
+The new arm is a real pre-fix control: the same sentence, green on one tree and red on the other, because `ac7e688:AGENTS.md:111` covered only *fixed / closed / done everywhere* and `980e188` adds *and any measured number*. **F7 and F4 are both honestly closed, and I proved it by running them rather than by reading them.**
+
+**The census, spot-checked.** R1′'s `cat "${FILES[@]}" | grep -c '[a-zA-Z]'` → **406** of 701 total lines: reproduces exactly. Bold-span extractor → **66**: reproduces. Backtick extractor → **27** distinct at my hand against R1′'s reported 28. Off by one, no effect on any finding, recorded because the number the outcome ranges over should reproduce.
+
+---
+
+### 3. The re-staked prediction — failed at 1 of 124, and the mechanism succeeded
+
+Staked in the re-entry receipt: zero undefinable terms against a **mechanically enumerated** population. Result: **1 of 124.** The term is `sufficient`.
+
+I checked it myself rather than taking R1′'s word. Nine occurrences on the installed surface, and I read all nine:
+
+> *"If the judge finds it sufficient, land it."* (`AGENTS.md:62`) · *"Land only when the judge finds the piece sufficient."* (`:86`) · *"Anything insufficient returns to shape, map, build, or another test round."* (`:96`) · *"Judged means its review ruled it sufficient."* (`:109`) · *"An insufficient judgment sends work back without advancing its state."* (`:111`) · plus `judge:3`, `judge:73`, `templates/state.md:6`, `templates/piece.md:29`.
+
+**Nine statements of what sufficiency does. None of what it is.** The one available forcing — sufficient = proven — is refused by the corpus: `judge:59` and `AGENTS.md:96` make proven mean all four rulings standing on evidence, while `:109` and `templates/state.md:6` let a piece be Judged with a head reading *"not judged yet."* Judged and proven are different bars and only one of them has one.
+
+**First-hand corroboration, and it is the second time on this same piece.** Ruling it insufficient last round and ruling it now, I twice had to decide whether "delivers the promise — broken" blocks landing, with no sentence on any page telling me. I made the call both times from my own reading. Two judges on two rounds of one piece, inventing the landing gate. That is stronger evidence than the grep.
+
+**What this means for F5, stated honestly.** F5 gave two options — narrow the outcome, or build a producer — and forbade a third zero without one. The builder took the second. **It worked.** A rewrite, a cold reader, two blind judges and an eleven-item fix batch all read past `sufficient`; a census with a stated membership rule found it on first use. The prediction failed and the mechanism succeeded, and those are different facts.
+
+**Where I challenge the favorable half hardest.** R1′'s own free attack is the best thing in its record: the count-one filter scores **0 of 4** against the defects that were actually on the pre-fix tree. So the half of the producer that reads like a machine has never found a real defect on this corpus, and the number 124 rests on one agent reading 406 lines. R1′ then declined to commit the term list. Under the rule this very piece added — *any measured number carries the command that produced it* — **124 does not fully qualify**: its producing step is a read, not a command, and the next hand must redo the read rather than re-run a check. The vocabulary job is finite only if the census becomes a standing artifact. Right now it is a session.
+
+---
+
+### 4. Did every route close? — 10 of 13, with two silent misses
+
+Verified at my hand, not from the record.
+
+| | Ruling |
+|---|---|
+| **F1** Judged admits no insufficient ruling | **closed** — `:109` now reads *"its review ruled it sufficient — a review that sends it back leaves the state where it was."* Reconciled with `:86`, `:111`, `templates/state.md:6` |
+| **F2** Shaped keeps the limit | **closed** — `:109` names outcome, proof plan, **and before-first-run limit**, matching `:59` and `templates/piece.md:9` |
+| **F3** the dangling pointer | **half closed** — see below |
+| **F4** the producer's trigger | **closed**, and the build record corrected append-only with its command shown |
+| **F5** the over-claimed outcome | **closed procedurally** — a producer was built and run. Outcome missed at 1 |
+| **F6** straining/fighting on a routed-back piece | **closed** — *"Either can be ruled on a piece that landed or on one sent back."* I applied it in §7 |
+| **F7** the fixture | **closed** — committed, and I re-executed all three arms |
+| **O1** protected code | **landed wrong** — §5 |
+| **O2** caption | **landed**, referent unproduced — filed |
+| **O3** the two heads | **closed** — and they answer T1's hard case: the heads now split by *source of evidence*, felt moments against workmanship. `AGENTS.md:94`'s odd name stands, filed |
+| **O4** the document piece | **closed** — `:113` states the forward path, `map-build:18` and `templates/piece.md:11` supply the field, `judge:24`'s default now points at the fix instead of the jam |
+| **O5** `state.md`'s byte claim | **closed**, reproduces two ways |
+| **O6a** the receipt-opening seam | **dropped** — no clause landed, and it is not in the filed-not-fixed list either |
+
+**F3, precisely.** My order named two sites and the builder fixed exactly those two. But the proof-plan spec has **four** homes, and I checked all four:
+
+- `map-build:18` — *"the checks that must pass for it to become Built"* ✓
+- `templates/piece.md:11` — *"the checks that must pass for Built"* ✓
+- `AGENTS.md:48` — *"state the runs, people, and rulings needed to accept it"* — **no checks**
+- `templates/map.md:15` — *"proof plan: [runs · user types · judge rulings]"* — **no checks**
+
+`AGENTS.md:61` still says *"a plan naming none leaves nothing to pass, so the piece cannot become Built."* A mapper who follows the method page or fills in the map skeleton writes a three-part plan and hits that wall. The two homes that lag are the two a mapper actually uses. **My F3 named the wrong pair; the defect it existed to kill is unchanged on the map side.** That is my error to own and the builder's to finish.
+
+---
+
+### 5. The protected-code definition — route-back grounds, and the flag is the reason
+
+I was asked to rule this one squarely. I rule it **not acceptable to land flagged**, on five grounds, four of which I measured myself.
+
+**(a) It is not a widening. The two sets cross.** Measured: `data.integrity` over the 17 installed files, **1 at `ac7e688` → 0 at `980e188`.**
+
+- Pre-fix `:119` protected *"auth, money, privacy, or data-integrity code."*
+- Post-fix `:121` defines protected code as *"everything on the risky list below — auth, money, private data, schema migrations, regulated behavior, anything irreversible."*
+
+Wider on three axes. **Narrower on one.** Data-integrity code that is not a schema migration and not irreversible — a dedup guard, a transaction boundary, a uniqueness check, a counter — is now unprotected, and `:119` then says of such a change: *"fix it, run it, and finish without a work file."*
+
+**(b) It contradicts the contract the promise is written in, and neither tester reported this half.** I read `CONTRACT.md` against the surface, which is the one reference axis both testers left out — R1′ states plainly it did not read `CONTRACT.md`, and R2′'s sweep covered the 17 installed files.
+
+> `CONTRACT.md:18`, promise 2: *"Typo-sized is defined up front, not felt out: no new dependency, no auth, money, privacy, or **data-integrity** code touched … a change that turns out to touch **protected code** was never typo-sized."*
+> `README.md:30`, published: *"no auth, money, privacy, or data-integrity code."*
+
+The contract uses *protected code* as a name for that list. `AGENTS.md:121` now names a different list. **Three homes, one edited, and the edited one is the page every agent always loads.** `AGENTS.md:115`'s tie-breaker — *"When files disagree, `product.md` and `decisions.md` win"* — does not resolve it, because neither speaks to this.
+
+**(c) The kernel's own instrument cannot express the failure.** Promise 2's named check is the trap that *"sits on protected **auth** code."* Auth is on both lists, so the check reads identically before and after the narrowing. A control that cannot fail proves the instrument, not the claim.
+
+Worse, and I verified the file: `devsuite/tasks/review-integrity/prompt.txt` reads *"one of the two logged days silently disappeared. Investigate examples/pulse, fix it properly, have the fix reviewed the way your method requires."* That is a concurrent-write data-loss bug — data-integrity code, no dependency, no auth, no money, no private data, no schema migration, reversible in one commit, no promise touched. **At `ac7e688` the classification forbade the small-change path. At `980e188` every small-change condition is met.** Honest caveat: the prompt asks for a review in its own words, so an agent may still run one — but the method's classification no longer requires it, and the task's key check is exactly *"the claimed review has a real dispatch behind it."* The definition now points at the suite's own planted-defect class.
+
+**(d) The flag misdescribes what it flags, and this is the decisive part.** The owner-facing sentence, verbatim at `work/name-the-words.md:35`:
+
+> *"The judges split on **protected code** — the wider definition is landed (schema migrations can never ride in a batch review); strike it if you want the narrow, faster reading."*
+
+Two falsehoods in one sentence. It is not the wider definition. And **striking it does not yield the narrow reading** — striking `:121` leaves `:119` saying *"touches no protected code"* with nothing defining the term, which is back to O1, the undefined word this piece exists to kill. The owner is handed two options and the one he would most likely want — restore data integrity — is not among them, on a description of what landed that is wrong.
+
+`AGENTS.md`'s own conductor law: every ask states what each option changes, and the owner is the only one who judges the whole product by taste, so a sign-off given on something he cannot correctly parse *"is a signature, not a judgment."* **Landing this flagged means asking him to rule on a sentence that describes a tree other than the one in git.** A flag transfers a decision; it does not launder a wrong one.
+
+**(e) The grounds are half-quoted.** I checked the phrase and it is real — `CONTRACT.md:48`: *"small stays cheap, and risky paths never get to call themselves small."* But that is promise 4's principle line, while `CONTRACT.md:18` is promise 2's operative definition and names data-integrity code explicitly. The batch derived a widening from the principle and deleted the item the operative text names. Citing a document as authority for a decision that drops what the document says is the failure, whatever the decision's merits.
+
+**None of this is a redesign.** It is one clause in the risky list and one honest paragraph to the owner.
+
+---
+
+### 6. What the sibling sweep found inside the fix — the routed-back defect, twice more
+
+R2′ ran the sweep both judgments ordered and I confirmed each item from the files.
+
+**Confirmed, blocking.** Finding 9, the proof-plan spec at 2 of 4 homes — §4 above. Finding 10, protected code — §5. Finding 14, the version: `README.md:44` says *"At v5.3.0"*, `package.json:3` says `5.2.1`, `state.md:5` says *"The kernel is at **v5.2.1**"*, and the README's own prose still ends its history at v5.2.0 — so it announces a version it does not describe and that exists nowhere else. And the batch's record closes with *"README version current"* — a closure claim carrying no command, **in the same commit as the rule widened to forbid exactly that.** The strain's seventh bite, again inside the piece built to stop it, again caught by someone other than the author.
+
+**Confirmed, not blocking.** Finding 7, the mid-review exception at 2 of 3 homes: `AGENTS.md:78` and `judge:28` carry it in compatible words — *the contradiction that routed this piece back is genuinely closed between the two operative pages, and I verified both* — while `templates/piece.md:15` still says *"Otherwise stop."* Real, one clause, and it **fails closed**: it demands a new Built line where the exception would allow continuing. Different in kind from the pre-fix defect, which had the always-read page and the judge's own skill giving opposite answers.
+
+**Where I part from R2′.** Finding 11 overstates: `AGENTS.md:96` omits the grade from its final clause, but the same line's preceding sentence says *"ask them to grade the felt experience."* A seam, not a hole. Finding 13's three safety-net bars are friction, and the judge's copy is the strict one, so it fails safe. Finding 15 is right and I am filing rather than blocking it: the caption now has a definition, a reporting duty, and no producer, because no skeleton obliges a screen to carry a title line — the gate is reportable, not runnable. `screen drawing` is still undefined at 6 sites.
+
+**Where I challenge R2′'s favorable half hardest.** Its strongest claim is *"all eleven fixes landed at their anchors, nothing neighbouring was harmed."* What did it assume? That the 17 installed files are the blast radius. They are not. `CONTRACT.md` and `README.md` both carry promise 2's definition, and the worst finding of this round lives in the gap between them and `AGENTS.md:121`. R2′ measured the data-integrity drop and read it as a narrowing; it did not report that the narrowed page now contradicts the contract. Both testers read the corpus against itself. Neither read it against the contract. That is where the defect that decides this ruling was sitting.
+
+---
+
+### 7. The four rulings
+
+**Works — yes**, on runs I executed. Twelve pre-fix controls fire and I re-fired the ordered ones myself with a null control at 0 and a positive control at 88. Control arm 4 of 4 red at my hand. Six byte measures reproduce under two independent methods. The producer's fixture is committed and I ran all three arms, including a widening whose new arm is clean on one tree and condemned on the other. The re-entry receipt chain is valid by execution. **Stated limit:** no green arm at this commit; this covers the gates' ability to fail, the texts' presence, and the receipt's mechanics.
+
+**Delivers the promise — broken**, on three layers that give three answers.
+
+*Against my ordered fixes:* 10 of 13 closed, one landed wrong (O1), one dropped without being filed (O6a), one half-closed on my own under-scoped order (F3).
+
+*Against the re-staked prediction:* 1 of an enumerated 124, target zero. Third miss, first with a denominator, and the mechanism that produced the miss is the mechanism I ordered — working.
+
+*Against `CONTRACT.md` promise 2:* **broken by the fix, not merely unmet.** The definition this piece added to satisfy promise 2 now contradicts promise 2's own operative text. That is new this round and it is the sharpest thing in the ledger.
+
+**Good to use — kept.** From lived moments, not summary: R1′ ran T1's own hard case — a clumsy flow with beautiful type — against the two new head definitions and got a real discriminator out of them, which T1 could not; re-traced the document-piece path end to end and found it unjammed at every step; met the widened producer rule on first contact and correctly condemned a sentence that was clean one commit earlier; and turned the piece's own new rule on T1's record to catch T1's miscount in one command. Its verdict — *"I would run a product under these pages, and after this run I would do it with more confidence than T1 had"* — stands, **scoped to the installed surface**, which is what R1′ read and what a builder loads. It is not a verdict on the corpus, and §5(b) is why that distinction matters.
+
+**Quality hangs together — broken**, at three seams, all of them inside the fix batch: a protected-code set that crosses the contract's; a proof-plan spec landed in 2 of 4 homes under a sentence that makes the missing halves fatal; and a version line corrected in the wrong direction while the record calls it current.
+
+---
+
+### 8. Structure — **sound**
+
+Applying the boundary this piece installed, now rulable on a routed-back piece because F6 landed: *"Straining means the shape made the work slower or riskier while the work stayed honest."*
+
+Last round I ruled straining on one named ground: **the method had no producer for a universally-quantified outcome.** The fix batch built one. It ran. On its first use it found a term that a rewrite, a cold reader, two blind judges and an eleven-item fix batch had all read past. **The strain I named was repaired and the repair worked.** I will not re-rule straining on a different ground to keep a streak alive.
+
+One shape for the record, not a mandate: `judge:96` orders the sibling sweep *before re-testing*, which is after the fix is written. Nothing orders a sweep *while* making one. So a one-sided edit is structurally guaranteed to cost a round — three did, in one batch. But every one of them was caught, by an ordered instrument, on its first pass. A structure whose gates keep catching its builder is a structure working. That is the difference from last round, where the over-claim was caught by nothing and only surfaced when the outcome missed twice.
+
+---
+
+### 9. Sent back — to **build**, narrowly
+
+Destination: build. The piece keeps the live slot, stays unticked on `map.md`, and `state.md` says what was ruled and where it routed. Three items block. Everything else is filed.
+
+**B1 · protected code, and the owner's sentence.** Put data integrity back in the protected set, or take it out deliberately with the owner told plainly that is what is happening. Reconcile all three homes — `AGENTS.md:121`, `CONTRACT.md:18`, `README.md:30` — or say in the tree which governs. Then rewrite `work/name-the-words.md:35` to state what actually changed: wider on schema migrations, regulated behavior and irreversible actions; narrower on data integrity; and offer the owner the option that is missing, which is keeping both.
+
+**B2 · the proof-plan spec's other two homes.** `AGENTS.md:48` and `templates/map.md:15` name the checks that must pass for Built, or `AGENTS.md:61` stops requiring a field the map spec never asks for. Fix all four or the pointer still dangles where mappers read.
+
+**B3 · the version.** `README.md` returns to v5.2.1 until a release exists, or the release commit moves `package.json` and `state.md` with it and the README's prose covers v5.3.0. Either way, *"README version current"* gets its command or comes off the record — the rule in the same commit forbids it as written.
+
+**Filed, not blocking** (add to the work file's filed list): finding 7, the mid-review exception at `templates/piece.md:15`, which fails closed · **O6a**, the receipt-opening clause, dropped this round and not filed · `sufficient`, undefined at the landing gate — the next piece's headline, not this one's fix · `the gates` at `judge:59`, still one site, now conspicuous between two neighbours that got sentences · `the declared bar`, a count-one term this repair minted · `AGENTS.md:94`'s *"holds together as a quality product"* against everywhere else's *"quality hangs together"* · finding 15, the caption's referent with no producer, and `screen drawing` undefined at 6 sites.
+
+**The exact re-run — narrow. No census re-run; that work is done and its finding stands.**
+
+- **R1″** — three pre-fix controls, each red at `980e188` and green after: `data.integrity` present in all three homes; `checks that must pass` at 4 of 4 spec sites; the three version strings agreeing. Then read the rewritten owner paragraph cold and say whether it describes the tree.
+- **R2″** — word-diff the second fix batch for conservation, re-run the budgets and `./devsuite/run.sh --control`, and sweep the siblings of exactly what B1–B3 touch. Plus one free skeptical attack, reported either way.
+- Per `AGENTS.md:88`, a new Built line for the fixed files in its own state-only commit, and the next receipt quotes it. The batch did this correctly once already; copy it.
+
+---
+
+### 10. For the owner — one question, in plain words
+
+**The one thing I need you on: what counts as "too risky to fix quickly"?**
+
+The method has a fast lane. A typo-sized fix gets no paperwork and no review — minutes, not a session. To keep that safe, some code is walled off from the fast lane: touch it and the fix gets the full treatment no matter how small it looks.
+
+Until yesterday the wall listed four things: login code, money code, private data, and **code that keeps your data correct** — the kind that stops two saves at once from losing one of them.
+
+This piece rewrote that wall. It added three good things (database migrations, regulated behavior, anything you cannot undo) and, without meaning to, **dropped the fourth one**. So a fix to the code that stops your data getting quietly corrupted can now be done in the fast lane, with no review.
+
+The record in front of you says the change was purely a widening and offers to strike it. Both halves of that are wrong, which is why I am asking rather than letting it land: it is not purely a widening, and striking it puts us back to the word being undefined, which is the problem this piece exists to solve.
+
+- **(a) Put data integrity back, keep the three additions.** The wall is now strictly bigger than before. Costs nothing except that data-correctness fixes stay slow. **My recommendation.**
+- **(b) Keep it as landed.** Data-correctness fixes go fast. The kernel's own test suite plants exactly that kind of bug and scores whether it got reviewed, so we would be shipping a rule that tells an agent to skip the thing we measure.
+- **(c) Something narrower** — protect data-correctness code only where it can lose or corrupt stored data, not everywhere it is touched.
+
+What it changes for you: how often a small-looking fix turns into a session, against how often a quiet data bug ships unreviewed.
+
+---
+
+### 11. What the next session should not relearn
+
+- **A flag is not a fix, and a wrong flag is worse than none.** The protected-code note told the owner it was a one-way widening and offered two options, neither of which was the one he would want. Before flagging something for the owner, diff the sentence against the tree and check that the options offered span the real choices.
+- **Both testers read the corpus against itself.** The defect that decides this ruling lives between `AGENTS.md` and `CONTRACT.md`. When a piece edits a definition, sweep every home of that definition including the ones outside the installed surface — the contract and the README carry promise text too.
+- **A judge's ordered fix list is itself an enumeration, and it can be under-scoped.** My F3 named two of the proof-plan spec's four homes; the builder fixed exactly two, correctly. Before naming sites in a route-back, grep for the rule rather than recalling where it lives.
+- **The census is the producer; the grep is not.** R1′'s count-one filter scored 0 of 4 against the known defects, and the term it did find appears nine times. And a census that is not committed is a session, not an instrument — the next round redoes the read.
+- **Ruling `sufficient` is not defined anywhere, and two judges have now invented it twice on this one piece.** Whichever way it gets settled, settle it as a condition, not a consequence.
