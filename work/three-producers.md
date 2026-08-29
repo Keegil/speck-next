@@ -14,4 +14,27 @@
 
 **Review receipt** *(committed before the testers run)*: built — `state.md` at fc33a7b says: "The live piece "Three producers" is Built as of this commit" — after the build (77628d1), before this receipt · deltas from `caf557f..HEAD`: the four sentences (AGENTS.md ×3 sites, judge ×2 sites), the state writes · testers: T1 the cold reader (census delta on the additions + the two planted fixtures — each must be condemned citing the new sentences) and T2 the conservation prober (word-diff, budgets with commands, sibling sweep of every home the sentences touch), fresh contexts, model opus · judge: one, fresh, after both return — it may order a second · run owner: this session · empty record: re-dispatch under a named line · records: [T1](three-producers-T1.md) · [T2](three-producers-T2.md) · [judgment](three-producers-judgment.md)
 
-**Result:** [pending]
+**Judgment** *(fresh context, built and tested none of it)*: Claude Code · Opus 5 (`claude-opus-5[1m]`) · session `d6f7954a` · 2026-08-29 · piece "Three producers" at `def1677` (build `77628d1`). Full ruling: [three-producers-judgment.md](three-producers-judgment.md).
+
+- **Receipt:** valid. Built line at `fc33a7b` literal, build-only commit before it, no build commit after, receipt opened after. `6c22d89` is state-only and invalidates nothing.
+- **Works:** check failed. Rule 2 works; rule 4 works where reachable (T1 ruled a live case from it, and so did this judgment). Rules 1 and 3 do not fire at their source — `grep -n "sufficient" judge/SKILL.md` cannot find the definition it landed beside, and `grep -c "population" AGENTS.md` → 0.
+- **Delivers the promise:** broken. Promise 6 kept (T1 read all four in one pass and could say what each buys); promise 7 kept (59,596 B of 102,400; 25,738 of 51,200). **Promise 4 broken:** `state.md:5` is byte-identical to `cca7841` and now false, and `state.md:22` cites `decisions.md` for an owner ruling that file does not contain.
+- **Good to use:** kept, with two sharpenings — `judge:92` costs a second pass; the `destination` collision fits a landed piece's open items badly.
+- **Quality hangs together:** check failed. Seven workmanship defects, six of them the piece's own subject matter.
+- **Structure:** straining. The method has no step that makes a new rule reach the surfaces it must govern. The arithmetic does not fire `judge:63` cleanly (line 1 ruled sound, line 2 straining on the previous piece), and I did not manufacture it. The repair is reach, not a fifth sentence — promise 8 forbids the latter.
+- **Sent back to build**, nine controls (R1–R9), each quoted with its whole population. Second judge ordered for the re-judgment, not for this one — reasons in §8.
+
+**For the owner — one question, and it decides how the fourth sentence lands.**
+
+*What this changes for you:* the sentence defining when work is finished — *sufficient* — is now law on two pages, and every future judgment runs on it. The record says you ratified it last night. Your words are not anywhere in the repository, so I cannot tell whether the record describes something you said or something the judges recommended.
+
+*What I found:* `state.md` says your two answers are "his calls in `decisions.md`". `decisions.md` has neither, and was last written half an hour before this piece started (`cca7841`, 18:50:49 vs `caf557f`, 19:19:14). The sentence that landed is nearly word-for-word what both of the previous piece's judges had already recommended. Most likely you answered in the session and nobody wrote it down — but "wrote it down" is the thing being claimed, so the files cannot settle it.
+
+*Your options:*
+1. **You said it — transcribe it.** Your actual words for both answers go into `decisions.md` with the date, like every other call of yours, and `state.md`'s citation becomes true. The sentence stays; this is a records fix inside the batch already ordered.
+2. **You didn't say it, or not in those words.** The fourth sentence has no owner behind it and returns to shaping to be asked properly, on a plain rendering, before it governs anything. The other three are unaffected.
+3. **You said something different.** Tell us what, and it is rewritten to match — same route as 2, shorter.
+
+Nothing else in the review waits on you.
+
+**Result:** Routed back to build on 2026-08-29. The piece keeps the live slot; the map stays unticked (it never got ticked — the piece is absent from `map.md`, finding J2). The four sentences themselves need no rewriting: a fresh cold reader condemned both planted fixtures quoting them verbatim and the falsifiable prediction held on both arms. What failed is reach. **For the next builder:** a rule is not landed when it is written, it is landed when it can be found — and rule 1, the sentence written to ask which surfaces carry a rule, asks only which ones already do.
