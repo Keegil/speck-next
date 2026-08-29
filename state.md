@@ -19,16 +19,11 @@ Nothing.
 
 ## What needs the owner
 
-Two questions, filed by both of the definitions piece's judgment lines with full context in [work/name-the-words.md](work/name-the-words.md):
-
-1. **Protected code — how wide is the wall?** Keep the wide list (every schema change and irreversible action reviewed on its own — both lines recommend it), narrow back to the old four, or judge 1's middle (protect data-correctness code only where it can lose or corrupt stored records).
-2. **What makes a judgment "sufficient"?** The one undefined word left, and it decides whether work ships. Both lines recommend: the judge may land a piece while naming, in this file, everything that stays open and where it went.
-
-Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing waiting — both of the definitions piece's questions were answered the same night (his calls in decisions.md): the protected-code wall stays wide, and *sufficient* means the piece delivers what it was shaped to deliver with every open item named here with its destination. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-**The live piece "Three producers" is Built as of this commit; "Name the words" is landed — both judgment lines closed sufficient after two obeyed route-backs ([work/name-the-words.md](work/name-the-words.md)).** Ten definitions across three rounds, the self-report producer in law (claims and measured numbers carry their commands), the document-piece deadlock gone, the review-admission gate failing closed on a verified anchor, and the mid-review rules agreeing in all three homes. **No piece is live.** The next kernel piece, converged by both judgment lines and all four tester runs, is **three producers** — the same edit lands in every home a rule lives in · a new load-bearing word gets its sentence when written · a judge's control names its population, never just the site the defect surfaced at — and it waits on the owner's word, alongside his two questions below.
+**The live piece "Three producers" is Built as of commit fc33a7b ([work/three-producers.md](work/three-producers.md))** — the owner said run it now, and its four sentences are on the pages: a rule change lands in every home it lives in · a new rule-carrying word defines at birth · a judge's control names its population, never just the defect's site · and his ratified sentence for *sufficient*, in both its homes. Its review is next: two fresh testers against the planted fixtures in the work file, then a judge. Behind it, "Name the words" is landed ([work/name-the-words.md](work/name-the-words.md)): ten definitions across three rounds, the self-report producer in law, the document-piece deadlock gone, the 124-term census leaving nothing undefined now that his sentence landed.
 
 Then: the milestone's proving continues on Pilot's build — which still carries the open ordered runs from the v5 era: a real four-persona piece with a user interface, and a full fresh-install lifecycle with one deliberately insufficient judgment sent back. Queued behind their triggers: the v11 converter · CI limit enforcement · the promise-conservation check.
 
