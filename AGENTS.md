@@ -59,7 +59,7 @@ A ratified map has exactly one live piece.
 2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
 3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
 4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts. Its own checks are the checks named in the piece’s proof plan; a plan naming none leaves nothing to pass, so the piece cannot become Built.
-5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem, then execute the judge’s full requirements — a quoted control is a floor, not the scope — plus the required fresh challenge.
+5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem, then execute the judge’s full requirements — a quoted control is a floor, not the scope — plus one free skeptical attack, reported either way.
 
 While building, use the product’s own surface as soon as it exists; a test harness you wrote is not the product. Until a user surface exists, say so in `state.md`.
 
