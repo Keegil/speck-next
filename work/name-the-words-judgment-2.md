@@ -398,3 +398,143 @@ My recommendation is the second, with the requirement that anything still open i
 - **When you answer the owner's question yourself, the flag you leave has to be true.** The protected-code note said "wider" about a change that crossed. A wrong flag is worse than no flag, because it spends the owner's trust to skip his judgment.
 - **Widen first, then ask.** Restoring a protection needs no permission (`AGENTS.md:123`). Removing one needs the owner. When a definition swap does both, land the widening and ask about the narrowing — never ship the pair as one "widening".
 - **A gate word explains itself well enough to keep reading, which is how it stays undefined.** `sufficient` survived a rewrite, a cold reader, two blind judges, an eleven-item fix batch and two follow-up runs. Meanwhile `ratified` and `substantial` both carry condition sentences. Sweep the words that decide whether work moves, and demand a condition for each, not a consequence.
+
+---
+
+## Final ruling (judge 2″), 2026-08-29, on b8e2ce9
+
+**Judge 2″ · Claude Code · model opus · closing judgment line 2.** Built and tested none of it. Blind to line 1. I read judgment 2 and its continuation, R″'s follow-up, the second fix batch (`980e188..f3e7a62`), and the work file's second-batch and owner sections. Every number below has a command behind it that I ran at this hand.
+
+**Ruling in one line: sufficient. The piece lands, and releases as v5.3.0 — on four conditions that live inside the landing commit itself.** All four clauses I ordered are closed, and I fired every one of them on both trees. The free attack found a real eighth bite of the report-of-itself strain, and I am not routing back for it: the number it found is inherited rather than minted here, the method's own small-change rule says its repair needs no ceremony, and the release commit this ruling authorizes is the one commit that touches all four of its homes. A third route-back for three line-edits is the grind I said had already failed twice.
+
+---
+
+### 0. The chain, and my own instrument
+
+**Second re-entry receipt: valid.** `f3e7a62` (build, 18:28:18 — `AGENTS.md`, `README.md`, `state.md`, two templates, the work file) → `03d8b10` (parent `f3e7a62`, **`state.md` only**, 1 file / 1 insertion / 1 deletion, line 26: *"the re-fixed pages are **Built** as of this commit"*) → `b8e2ce9` (parent `03d8b10`, work file only, 3 insertions). The quote literally says Built. `git diff --stat 03d8b10..HEAD` returns two work files and nothing else, so no build commit lands after the Built line. Working tree clean.
+
+**My instrument, before its zeros count.** Over the 17 installed files on both trees: `zzqqxx` → **0**, `piece` → **116**. It expresses a hit and a miss.
+
+**And it lied to me once first, in the way R″ warned about.** My first sweep for *privacy* and *private data* used `git grep -ionE "\bprivacy\b|..."` and returned **0 and 0 on both trees** — a clean, quiet, wrong answer, because `\b` is not a word boundary in POSIX ERE and git grep defaults to ERE. The text is plainly there. Re-run with `-P` and both controls, it reads 2/2 at `ac7e688` and 1/3 at `b8e2ce9`. Recorded because it is the third false zero this piece has produced from a shell detail, and because a zero I could have filed is exactly what my own §7 asks me to catch before it counts.
+
+**Budgets and control arm, at my hand at `b8e2ce9`.** Installed surface **58,636 bytes** of 100,000 across **17 files** and **5 skills**; always-read set 13,133 + 5,972 + 596 + 4,600 = **24,301** of 50,000. `tot ebb9fb5` → **56,039**, so the figure the batch installed reproduces. `./devsuite/run.sh --control` → **4 of 4 tasks red**. Every key check still expresses the failure it claims to prevent.
+
+---
+
+### 1. The four ordered clauses, fired on both trees
+
+| # | What it had to show | `980e188` | `b8e2ce9` |
+|---|---|---|---|
+| **M1** | *data integrity* on the protected and risky lists | **0** | **2** — `AGENTS.md:121` and `:123` |
+| **M2** | the proof plan names its checks in all four homes | **2 of 4** | **4 of 4** |
+| **M3** | the mid-review exception in `templates/piece.md` | **0** | **1** |
+| **M4a** | the three version strings agree | **no** (5.3.0 / 5.2.1 / 5.2.1) | **yes** (5.2.1 ×3) |
+| **M4b** | no surviving *assertion* of 55,157 in `state.md` | **3** | **1**, and it is the disclaimer |
+
+**M1 — closed, and the protection actually routes.** I traced it rather than counting it: `AGENTS.md:119` conditions a small change on *"touches no protected code"*, `:121` defines protected code as the risky list **including data integrity**, and `:123` carries the same term into the care rule. A de-duplication routine now fails the small-change test through a live pointer, not a hopeful one. This was the single fact that blocked the piece, and it is gone.
+
+**M2 — closed on every side.** All four spec homes now list the same four parts in the same order: `AGENTS.md:48`, `map-build:18`, `templates/map.md:15`, `templates/piece.md:11`. `AGENTS.md:61` — *"Its own checks are the checks named in the piece's proof plan; a plan naming none leaves nothing to pass"* — now points at a field that exists wherever a mapper might be standing. The dangling pointer is closed, which is more than I asked for: I asked for four homes, and what landed is four homes that agree word for word.
+
+**M3 — closed.** The exception is in all three homes in compatible words. Note for the record that R2′'s pattern (`one exception`) reads **0** in the template on *both* trees and would have filed a false red; on a pattern that can fire (`during the review`) it reads **0 → 1**. R″ caught that and reported it as an instrument fault rather than a finding. Correct handling.
+
+**M4a — closed, and the version they agree on is real.** `git tag -l` lists `v5.2.1`. The previous state announced a release that existed nowhere; this one does not.
+
+**M4b — closed on the condition I actually wrote.** My clause was *"no surviving assertion of 55,157"*. The one survivor at `state.md:7` does not assert it — it disclaims it (*"the earlier recorded 55,157 was a working-tree read at the wrong moment, corrected under the measured-numbers rule"*), which is the site my continuation blessed by name. Lines 14 and 32, the two I condemned — one certifying a retired strain, one inside **Evidence** — both now carry the pinned reproducible measure. A correction that erased its own provenance would have been worse.
+
+**Conservation, checked myself.** `git diff --word-diff` over the method pages, `980e188..f3e7a62`: **zero deletions**. Across the whole batch including `README.md` and `state.md`, six deleted tokens, all digits (`5.3.0`→`5.2.1`, `55,157`→`56,039` twice). Every page edit is a pure insertion into an otherwise byte-identical line. No new coined word. **+205 bytes.** This is the first batch in the piece whose product-page edits delete nothing.
+
+**No regression on what I had already closed.** `AGENTS.md` still reads *"ruled it sufficient"* and still carries the before-first-run limit in Shaped; `judge:63` still reads *"landed or on one sent back"*; the planted-claims fixture is still in the work file; the admission gate is in all three homes.
+
+---
+
+### 2. The free attack, taken seriously — and why it does not route the piece back
+
+R″ pointed its free attack at the fifth family, the one my own re-test order named in as many words (*"also sweep for surviving copies of any number the batch corrected"*). I re-took all of it:
+
+- `decisions.md:5` still asserts **70,770 → 55,157 (−22%)**, while `state.md:7` says 56,039. Two files disagree about one measurement, and `AGENTS.md:115` hands the win to `decisions.md`.
+- The derived percentage survives in **three** homes: `README.md:44`, `decisions.md:5`, `map.md:14`. The truth is **−20.82%**; 55,157 implies **−22.06%**.
+- Both are uncommanded measured numbers under `AGENTS.md:111` **as this very piece widened it**.
+
+The finding is real, it is the strain's eighth bite, and it is aggravated exactly as R″ says: the surviving copy sits in the file the method page says wins, and the sweep that would have found it was written into the order the batch was executing. The batch ran the quoted control (`grep -c "55,157" state.md`) instead of the requirement above it.
+
+**I am still not routing back, and the reasons are structural rather than merciful.**
+
+1. **The batch did not mint this number; it made the tree more truthful.** Before `f3e7a62` the figure was wrong in four places and consistent. After, it is right in the three places the batch touched and wrong in one authoritative file. That is a defect *created* — the disagreement is new — but the falsehood is inherited from the v5.2.0 landing.
+2. **The method classifies the repair as needing no ceremony.** Correcting three sentences adds no dependency, touches no protected code, changes no promise, and is reversible in one commit — a small change by `AGENTS.md:119`. Routing a piece back to *build* for work the kernel says needs no work file, no receipt, no tester and no judge would be the method contradicting itself in front of me.
+3. **The obligation already binds without my ruling.** `AGENTS.md:115`'s second sentence — *"Measured evidence beats every document, so fix the losing document and cite the finding"* — fires on R″'s measurement, not on my verdict.
+4. **The occasion that consumes it is the next commit.** A v5.3.0 release moves `README.md`, `package.json` and `state.md` together, adds a `decisions.md` entry, and ticks the piece on `map.md`. That commit touches every home of the wrong figure. This is not a promise with no reader; it is a correction landing in the commit this ruling authorizes.
+5. **The shape I would be repeating has failed twice.** My continuation ruled that grinding one item at a time is the failed shape and the repair is a producer. A third route-back for three line-edits is that shape again.
+
+So it lands as a **condition on the landing commit**, not as a route-back and not as a filing. §6 states it with its check.
+
+---
+
+### 3. Privacy — one word, found late, and it goes in the same commit
+
+R″'s finding 18, re-measured at my hand with `-P` after my own false zero: the pre-first-batch small-change rule read *"auth, money, **privacy**, or data-integrity code"* (`ac7e688:AGENTS.md:119`). The landed protected list reads *"auth, money, **private data**, data integrity, …"*. `privacy` now appears nowhere in `AGENTS.md`; its only site in the installed set is `map-build/references/questions.md:28`, an unrelated sentence.
+
+On a literal reading that narrows. Consent capture, a retention-policy toggle, a telemetry opt-out are privacy work without being private-data work. It is a far smaller crossing than the one I blocked on — *regulated behavior* and *private data*, both added, cover most of the ground, where data integrity had no covering term at all — and it was introduced by the **first** batch, was live when I ruled last round, and I did not name it. It is not in my ordered set and it does not re-block.
+
+But it makes one clause of the owner paragraph false: *"the old four **plus** … — **nothing lost**, three things added."* Three of the old four survive; the fourth was swapped. That is the exact phrase whose falsity routed this piece back, in the same sentence position, now wrong by one term.
+
+The repair needs no owner and costs one word: put *privacy* back on `AGENTS.md:121`. A strict widening is permitted unilaterally by `:123`, and it makes the sentence true rather than requiring the sentence to be softened. Condition C3.
+
+---
+
+### 4. The four rulings
+
+Each stands on its own; none rescues another.
+
+**Works — YES.** Fresh non-builder contexts read these pages and acted on them: R1′'s 124-term census with a measured recall control, R2′'s twelve pre-fix controls, R″'s combined final run with its instrument rebuilt after three false zeros. Beside that, at my own hand: the receipt chain proved with git, the term greps with both controls over 17 files, the budgets, the control arm 4 of 4 red, all four ordered clauses fired on both trees, and the protected-code pointer traced from `:119` through `:121` to a term that is actually there.
+
+**Delivers the promise — YES, with the one remaining word named and routed to the owner.** I ruled this head BROKEN twice, and I am flipping it on the closure of the grounds I actually routed on, not on softened standards. My continuation routed on two things: the piece's own outcome missed by one word, and a protected-code record that told the owner the opposite of what the tree did. The second is repaired and verified. The first is `sufficient`, which my continuation filed **to the owner, not to build** — *"the owner's or the kernel's to close, not the builder's"* (`judge:79`) — and a head cannot stay broken on an item the builder is forbidden to fix. Against the owner's actual call, *"Define the words"*: ten words defined and each tested against a hard case, a mechanically enumerated population of 124 where there was no denominator at all, a producer for self-reports that condemned a planted claim on first contact, and a measured recall control proving the cheap half of the instrument worthless. That is delivered.
+
+**Good to use — YES.** The pages got more usable in the places a builder actually stands: a mapper filling any of four homes now writes a plan the Built gate accepts; a builder holding only the piece template answers the mid-review question the same as the judge; the protected list is a strict superset on every substantive element. Zero deletions, no coinage, +205 bytes. The owner paragraph is the weak surface — it never lists the four terms it asks him to choose between, and it drops one of judge 1's three options — but that is a defect in the **ask**, and the ask has not been made yet. It is a landing condition (§6), not a property of the pages.
+
+**Quality hangs together — YES, and the condition is what makes that honest.** At the sentence level this is the cleanest batch in the piece: zero deletions on the method pages, six digit tokens in the whole diff, no new term of art. At the corpus level, on the four families the batch was ordered to sweep it reached **every home** — the first time that is true in this piece. Against it, one family reached one home of four: the corrected figure, surviving in the file the tie-break favours. I will not call that head broken on an inherited number that the piece's own new rule is what condemns, and I will not call it whole while the number stands. So it is ruled on the landing commit: **the corrections in §6 are part of the commit I am ruling sufficient.** A landing commit without them is not the commit I ruled on, and the head is broken until it carries them.
+
+---
+
+### 5. Structure — **STRAINING**, and the strain has a sharper name than "one-sided edits"
+
+Nothing was worked around, and nothing was hidden. The batch's own record names the strain's seventh bite against itself. R″ reported its own three false zeros before any of its numbers, and reported against its dispatcher. The work stayed honest. **Straining.**
+
+**The strain, named precisely: the quoted control becomes the requirement.** My re-test order gave both a requirement (*"No surviving assertion of 55,157"*) and a control scoped to where the defect was found (`grep -c "55,157" state.md`). The batch executed the control. This is not carelessness and it is not a second instance of "a rule fixed in one home" — it is the mechanism *behind* that pattern, and it is created by the judge, not the builder. A judge writes a control by pointing at the site where the finding surfaced; the builder reads the control as the specification, because the control is the executable thing and the requirement is prose. Every one-sided edit in this piece has this shape.
+
+That has a repair, and it belongs with the two producers already converged on: **a judge's control names its population, not its site.** Had mine read `git grep -inF "55,157" -- ':!work/'` instead of `grep -c "55,157" state.md`, the batch would have swept `decisions.md` while executing the control literally.
+
+**Arithmetic, stated honestly.** On this line the previous piece ruled *sound*, and this closes judgment 2's ruling on the same piece rather than adding a second — one straining ruling, not three. `judge:63`'s trigger does **not** fire mechanically, and I will not manufacture it. But both judgment lines and all four tester runs have now converged on the same next piece, so I will say it plainly: the next kernel piece is **producers, not another list** — one that makes a rule's other homes get the same edit when it is written, one that makes a new load-bearing word get its sentence when it is introduced, and now a third, cheapest of the three: a control carries the population it must be true over.
+
+---
+
+### 6. The landing commit — four conditions, each with its check
+
+Sufficient is granted **on this commit**. Each condition is mechanically checkable, and a landing commit that omits one is not the commit this ruling covers.
+
+| # | Condition | Check that must pass at the landing commit |
+|---|---|---|
+| **C1** | `decisions.md:5` carries the reproducible figure — 70,770 → **56,039** — with the pinned command, citing this finding, per `AGENTS.md:115`'s own second sentence. | `git grep -inF "55,157" HEAD -- ':!work/' ':!docs/'` returns **only** `state.md:7`, the corrected-from disclaimer. |
+| **C2** | The derived percentage is corrected in all three homes — `README.md:44`, `decisions.md:5`, `map.md:14` — to **−20.8%**. | `git grep -inE "22%" HEAD -- ':!work/' ':!docs/'` → **0**. Pre-fix at `b8e2ce9`: **3**. |
+| **C3** | *privacy* is back on `AGENTS.md:121`'s protected list — a strict widening, permitted by `:123` without the owner — and the owner paragraph's *"nothing lost"* is true. | `git grep -icP "privacy" HEAD -- AGENTS.md` → **1**. Pre-fix at `b8e2ce9`: **0**. |
+| **C4** | `state.md` is rewritten from the evidence at landing, per step 5: the report-of-itself strain reads **eight** bites, and the two judge-filed owner questions (`sufficient`; wide-or-narrow protected code) move out of *"Nothing waiting"* into **What needs the owner**. | `grep -c "Nothing waiting" state.md` → **0**. Pre-fix at `b8e2ce9`: **1**, while two owner questions stood filed by both lines. |
+
+C1 and C2 are the free attack's findings 16 and 17; C3 is finding 18; C4 is step 5's own obligation, which the current file does not meet. All four are one line each, all four land in the release commit that moves the version strings together, and none needs a tester or a judge under `AGENTS.md:119`.
+
+**And a note to the conductor, not a condition, because it governs the ask rather than the tree.** When the owner is asked, `sufficient` arrives as its own question with options and a recommendation — the text exists at §8 of this document — and the protected-code question names the four terms it asks him to choose between and carries judge 1's third option. Right now `sufficient` sits as item 1 of a ten-item filed list under a paragraph that opens *"two things."* A question that decides whether work ships, buried in a list, is the shape the conductor law names as a defect.
+
+---
+
+### 7. For the owner — the same two questions, both now answerable
+
+**1. Should a change to data-correctness code get its own review?** The block is lifted: the protection that had quietly dropped off — *the correctness of stored data* — is back on the list, so nothing is lost any more and three things are added (database schema changes, regulated behaviour, anything you cannot undo). Your real question stands, and it is a risk-appetite call, not a wording one: keep the **wide** wall, where every schema change gets its own review — slower, safer — or narrow it back to the original four, which is faster and lets a schema change ride along with ordinary work. My recommendation is wide, because this is the one place in the method where being slow is the product. Judge 1 offers a third option worth hearing: protect data-correctness code only where it can actually lose or corrupt stored records.
+
+**2. What makes work good enough to ship?** Unchanged from my last judgment, and I hit it again ruling this piece. The pages never say what *sufficient* means; every mention says what happens after an insufficient ruling, none says what makes one. I took the reading that a judge may land a piece while naming what stays open — and you can see me doing exactly that above, landing this piece with four named conditions. The other honest reading is that any broken part blocks. Two careful judges, the same evidence, opposite decisions about whether your product ships this week. My recommendation is the first, with the requirement that anything still open is written into `state.md` before landing. It costs one sentence and it is the sentence the whole loop turns on.
+
+---
+
+## What the next builder should not have to relearn
+
+- **A control names its population, not the site where the defect was found.** Every one-sided edit in this piece traces to a builder executing the judge's quoted control literally when the control was scoped narrower than the requirement above it. That is the judge's fault, not the builder's, and it is fixed on the judge's side for one grep flag.
+- **Correcting a number where you were caught is not correcting the number.** Three rounds running, the same shape. The sweep is `git grep` over the whole tree with `':!work/'`, not `grep` over the file the finding named.
+- **A widening needs no permission, so take it before asking anything.** *privacy* went back on the list in the same commit as the piece landed, because restoring a protection is always allowed and always makes the owner's question cleaner.
+- **Check your own instrument in the shell you are actually in.** `\b` is not a word boundary in git grep's default ERE, and it returns a clean, silent, wrong zero. That is three false zeros in this piece from three different shell details, and every one of them would have been a filed finding.
