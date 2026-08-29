@@ -200,3 +200,108 @@ The four sentences landed exactly as the record says — five sites, pure insert
 What I do find is the session's own records failing two of the rules the session landed. `state.md:5` still tells the owner that `sufficient` is undefined and owed by him, hours after he wrote it and it shipped — the fact's third home, missed by the rewrite that claimed to tell tonight's truth. And every coverage claim this piece makes about itself is uncommanded, in a kernel that requires commands for exactly those claims. Both are the strain this piece exists to repair, biting inside the repair. Neither is expensive: one sentence rewritten, four greps pasted.
 
 I do not rule; that is the judge's. My reading is that F1 and F2 are the piece's real test — the sentences are sound, and the evidence that they change behaviour is currently negative in their own author's hands.
+
+---
+
+## Follow-up run (T2′), 2026-08-29, on 7bcaf95
+
+**Subject:** speck-next at `7bcaf95` (fix batch `684e359`, Built line `8e9140e`, pre-fix `def1677`, judgment `99ac32a`). Fresh context; built none of it. Every page read from disk at the commit under test — **my host preloaded a v5.0-era `AGENTS.md`** ("## The conductor — law in every session"), a section that does not exist in the 127-line file on disk. That is the fourth bite of the strain `state.md:13` records as three, and it happened to the tester the new law was written for.
+
+**Re-entry receipt — valid, checked with git.** `git show 8e9140e:state.md | grep -c "the fixed pages are Built as of this commit"` → `1` (literal, says **Built**) · `git show --stat 8e9140e` → `state.md` only · `git log 8e9140e..HEAD -- AGENTS.md .claude/skills templates bin CLAUDE.md` → empty · `7bcaf95` touches `work/three-producers.md` only, and is `8e9140e`'s child.
+
+### 1. The nine routes, each run
+
+| Route | Command | pre-fix | at 7bcaf95 |
+|---|---|---|---|
+| R1 | `diff <(git show cca7841:state.md \| sed -n 5p) <(git show HEAD:state.md \| sed -n 5p)` | identical | **DIFFERS** ✅ |
+| R2 | `grep -c "Land + name" / "Keep the wide wall" / "Run it now" decisions.md` | 0 / 0 / 0 | **1 / 1 / 1** ✅ |
+| R3 | `grep -rni "delivers what it was shaped to deliver"` | judge home invisible | **AGENTS.md:111 · judge:59 · state.md:23** ✅ |
+| R4 | `grep -c "population\|floor, not its scope" AGENTS.md` | 0 | **0 — still red** ❌ |
+| R5 | `grep -c "destination" templates/state.md` ; `grep -c "homes" templates/piece.md` | 0 ; 0 | **1 ; 0 — half red** ❌ |
+| R6 | `grep -ci "three producers" map.md` | 0 | **2**, row 7 `[live]`, sole live marker ✅ |
+| R7 | `grep -c 'grep' work/three-producers.md` | 3 | **6**, and all four quoted greps verify ✅ |
+| R8 | `git ls-files work/three-producers-{T1,T2,judgment}.md` | T1 empty | **all three tracked** ✅ |
+| R9 | `grep -c "preload" state.md` | 0 | **1** ✅ |
+
+**R3 in full, by rule 1's own prescribed procedure** (case-insensitive distinctive phrase — run, returns shown):
+
+```
+"one-home fix is not a fix"              → AGENTS.md:70
+"grep for its distinctive phrase"        → AGENTS.md:70
+"define it in its first sentence"        → AGENTS.md:113
+"in the sense you mean"                  → AGENTS.md:113
+"names its whole population"             → judge/SKILL.md:92
+"floor, not its scope"                   → judge/SKILL.md:92
+"as its floor"                           → AGENTS.md:90
+"delivers what it was shaped to deliver" → AGENTS.md:111 · judge/SKILL.md:59 · state.md:23
+grep -ni "sufficient" judge/SKILL.md     → 3, 59, 73   (pre-fix: 3, 73 — line 59 was invisible)
+```
+
+The judge's `sufficient` home is reachable again — closed by sharpening the rule, not by lowercasing the home. Fixture 1 is no longer reproduced by the sentence written to condemn it.
+
+**Budgets, pinned** (`git cat-file -s` summed over the installer's list, `bin/speck-next.js:11`):
+
+```
+ebb9fb5 56,039   cca7841/caf557f 58,648   def1677 59,596   7bcaf95 60,210
+installed:  17 files of 20 · 60,210 of 102,400 (58.8%)
+always-read: 27,206 of 51,200 (53.1%)   [def1677: 25,738]
+fix batch: +614 B · the piece to date: +1,562 B (+2.66% on caf557f)
+```
+
+`./devsuite/run.sh --control` → `control mode: 4 of 4 tasks went red (want: all)`.
+
+### 2. Sibling sweep first — where the family still disagrees
+
+**G1 · CONFIRMED · R4's quoted control never went green.** `grep -c "population\|floor, not its scope" AGENTS.md` → `0`. The concept did reach the builder's page — `AGENTS.md:90` now says "with any quoted control as its floor" — so the requirement above the floor is arguably met while the floor itself stays red. The judge's own sentence is *floor*, i.e. a minimum.
+
+**G2 · CONFIRMED · the other builder-page home was left untouched.** The judgment named two scope-shaped sites: `AGENTS.md:62` and `:90`. Only `:90` was fixed.
+
+```
+git diff 99ac32a 7bcaf95 -- AGENTS.md | grep -c '^[+-].*exact test scenarios'  → 0
+AGENTS.md:62 (byte-identical pre and post): "...fix the named problem and repeat the
+exact test scenarios plus the required fresh challenge."
+```
+
+Line 62 is step 5 of the numbered build loop — the summary a builder reads first. Rule 3's builder half landed in one of two homes on the builder's own page: fixture 1's exact class, inside the batch that closed fixture 1.
+
+**G3 · CONFIRMED · the newest rule in the batch breaks R4 itself.** The stale-page law landed only at `experience/SKILL.md:14`; `grep -rni "from disk" .claude/skills/judge/SKILL.md` → nothing. The judgment's own J4 records the judge as one of the three bites ("I am the third"), and `judge:10` licenses judges to re-run checks themselves. The rule does not sit on the page whose reader committed the defect. Its wording under-counts too — "two testers on two pieces" against the three bites `state.md:13` records — and I am the fourth bite.
+
+**G4 · CONFIRMED · R5's control is half red.** `grep -c "destination" templates/state.md` → `1` (green); `grep -c "homes" templates/piece.md` → `0`; `grep -rni "home" templates/` → nothing. Rule 4's open-items obligation reached both skeletons. Rule 1's record obligation did not — and the batch *widened* it ("the record carries the grep and everything it returned, each home marked changed or untouched"), so the skeleton gap is larger than when the judge measured it. Every product installed from `templates/` still starts without it.
+
+**G5 · CONFIRMED · the strain's bite count is frozen at eight, in two homes.** `state.md:11` is byte-identical to `def1677`; `map.md:16` repeats "eight bites". The judgment recorded at least three fresh bites of that exact strain (the false census line, the citation to a record that did not hold it, the uncommanded coverage claims). `AGENTS.md:108` and `templates/state.md:9` require how often each strain has bitten, and the twice-rule at `AGENTS.md:58` keys on the count. A stale count left standing through a rewrite that made it stale is the strain's own signature — and with two homes it is also a rule 1 case.
+
+**G6 · CONFIRMED · "ratifications" survives where the record it now cites says "selections".** The transcription is honest and says so itself: *"these are selections of drafted options, not his own phrasing."* `AGENTS.md:36` defines *ratified* as "the owner agreed in **their own words**". Yet `work/three-producers.md:3` still reads "the owner's 2026-08-29 **ratifications**", and `state.md:5` "the owner's **ruling** closed it". The citation resolves — R2 is genuinely green — but the label outruns the text it resolves to, on the one sentence whose authority the judgment turned on.
+
+**G7 · PLAUSIBLE · the owner's question was closed without an owner record.** §7 offered three options and said the answer decides whether the fourth sentence returns to shaping. Option 1 was taken and the entry written by the builder; no owner response exists anywhere in the tree, and `state.md:23` now reads "Nothing waiting". Defensible — the fixing session held the selections and labelled them honestly — but the closure is asserted, not evidenced. This is the second judge's call, not a tester's.
+
+**G8 · CONFIRMED · `state.md` carries no four-ruling line for the live piece.** `grep -ni "check failed\|not judged yet" state.md` → nothing, against `AGENTS.md:111` ("lists the four Judged rulings separately with evidence or 'not judged yet'") and `:113` ("A failed evidence check says 'check failed'"). A judgment exists with *works: check failed · delivers: broken · quality: check failed*. `state.md:27` renders all of it as "reviewed, routed back once, fixed", which reads better than the record does.
+
+**G9 · CONFIRMED · the fix batch's own cost is recorded nowhere.** +614 B measured above; the first build's +948 was recorded by two contexts, the second build's by none. Promise 8 forbids quiet growth and the byte-measurement strain is live.
+
+**G11 · minor · the record does not carry the grep rule 1 now demands.** The four coverage greps in the work file are single-file counts; none returns a full home set and no home is marked changed or untouched. Rule 3's coverage grep names only `judge/SKILL.md`, so the builder-page home it just created is absent from its own coverage claim.
+
+**G12 · minor · "Built as of this commit" reused verbatim after the judge's hygiene note** (§1: *"Quote the wording you intend to keep"*). At HEAD the phrase resolves to `7bcaf95`, a records-only commit; the receipt saves it by naming `8e9140e`.
+
+**G13 · minor · `work/three-producers.md:31` reads false in the present tense** — "`decisions.md` has neither" — inside the preserved §7 block, unmarked. Context carries it; the shape is the piece's own subject.
+
+### 3. Free skeptical attack — the producers against a rule they did not author
+
+I ran rule 1's own procedure on the **receipt/Built rule** — the rule fixture 1 uses as its example, and one the piece never edited. Distinctive phrase, case-insensitive:
+
+```
+grep -rni "literally say" AGENTS.md .claude/skills templates
+  AGENTS.md:78 · judge/SKILL.md:22 · templates/piece.md:15        → 3 homes
+```
+
+The fourth home is `experience/SKILL.md:18` — *"Quote the `state.md` Built line that covers these product files"* — the same rule in different words, invisible to the grep. **Two results, both findings:**
+
+1. **Fixture 1 under-counts the corpus it cites.** Its gloss reads "the edit touched one home of three", naming `AGENTS.md`, the experience skill and the piece template. The receipt rule has **four** homes; the missing one is `judge/SKILL.md:22–30`, which the judgment itself cited as a home (at `:28`). The piece's committed, re-runnable control mis-states the rule it controls for — the same under-count T1 made and the judge called the sharpest evidence for the defect.
+2. **The sharpened rule 1 fixes the instance, not the class.** Case-insensitivity closed the capital-*S* miss. It does nothing for a home phrased differently — and the fix batch minted a fresh one: rule 3's two homes now read "the quoted control is its **floor, not its scope**" (`judge:92`) and "with any quoted control **as its floor**" (`AGENTS.md:90`), sharing no distinctive phrase. `grep -rni "floor, not its scope"` returns one home of two. The rule written to stop one-home fixes cannot, at HEAD, find both homes of the rule it was landed beside.
+
+### Verdict (T2′)
+
+**Nine routes: six closed clean, two half-closed, one never went green.** R1, R2, R3, R6, R8, R9 are green at my hand with commands and returns. R7 is green on the letter and thin on the spirit (G11). R5 closed one of its two quoted clauses (G4). R4's quoted control is still `0` (G1), its second builder-page home was never touched (G2), and the batch's own newest rule commits R4's defect a third time by living only on the tester's page (G3).
+
+The batch is real work and most of it landed. What did not change is the thing the judgment named as the strain: *nothing in the method asks which surfaces must now carry a rule.* Three of my findings are that same missing question, asked and missed again inside the fix for it, and my free attack shows rule 1 still returns an incomplete home set on the first real corpus rule I pointed it at. The `sufficient` sentence's authority is now honestly recorded — and the honest record says "selections, not his own phrasing", which the work file still calls ratifications and which `AGENTS.md:36` says is not ratification (G6, G7).
+
+I do not rule. My reading: the sentences are sound and now mostly reachable; the machinery around them is closer than at `def1677` and not yet finished, and the reach failures that remain are the piece's own subject, in its own hands, for the second time.
