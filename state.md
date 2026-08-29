@@ -20,7 +20,7 @@ Nothing.
 
 ## What needs the owner
 
-One question, filed by both of the producers piece's judges with the same recommendation: **does selecting a drafted option count as "ratified"?** The method page says ratified means "the owner agreed in their own words"; every real decision here is made by the owner picking an option we drafted, quoted and dated. Recommended: a selection counts, the record keeps the option text shown, and the two labels that overclaimed it are already downgraded. (His three selections themselves are recorded honestly in decisions.md and stand either way.) Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing waiting — the ratified-word question is answered (his selection in decisions.md: a pick counts, recorded as a selection with the option text kept; both homes of the definition updated). Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 

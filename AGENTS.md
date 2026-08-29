@@ -33,7 +33,7 @@ A wrong promise goes back to shape. Badly cut pieces go back to map.
 
 A bad build stays in build. Thin evidence calls for another test run, not a ruling on a gap.
 
-*Ratified* means the owner agreed in their own words in that phase’s dated record, after seeing a plain-language explanation. Nothing else counts.
+*Ratified* means the owner agreed in that phase’s dated record, after seeing a plain-language explanation — in their own words, or by selecting a drafted option, with the option text they saw kept in the record and labeled as a selection. Nothing else counts.
 
 ## Shape
 

@@ -32,7 +32,7 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 
 Grep, count, and match the named sets. Report every population and result to the owner.
 
-7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules — both with receipts committed before they ran. Finally, the owner ratifies the order in their own words.
+7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules — both with receipts committed before they ran. Finally, the owner ratifies the order — in their own words, or by a recorded selection of a drafted option.
 
 8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
 
