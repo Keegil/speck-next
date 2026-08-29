@@ -2,7 +2,7 @@
 
 ## What's true now
 
-The kernel is at **v5.2.0**. Every page an agent loads is written in a builder's words: the method page (`AGENTS.md`), five skills — `shape-product`, `map-build`, `craft`, `experience`, `judge` — with four references, six template skeletons, and the installer. The method's shape: five phases, shape → map → build → experience → judge, where the last two are one review — fresh testers use the product and decide as users do, and a judge who built and tested nothing challenges every verdict before it counts. States: Shaped → Built → Judged → Live, with *proven* as plain speech for all four rulings standing on evidence.
+The kernel is at **v5.2.1**. Every page an agent loads is written in a builder's words: the method page (`AGENTS.md`), five skills — `shape-product`, `map-build`, `craft`, `experience`, `judge` — with four references, six template skeletons, and the installer. The method's shape: five phases, shape → map → build → experience → judge, where the last two are one review — fresh testers use the product and decide as users do, and a judge who built and tested nothing challenges every verdict before it counts. States: Shaped → Built → Judged → Live, with *proven* as plain speech for all four rulings standing on evidence.
 
 The rewrite piece ("A builder's words, and fewer of them") is **landed**: the installed surface went from 70,770 bytes to 55,157 (measured at ebb9fb5, −22%), mean sentence length from 24.4 to 13.3 words, all 177 operative rules conserved and verified by executed probes, nine old method words at zero, and the sentences the last piece's judges ordered are in: the thinking cap, the honest cost line, the three receipt-gate fixes. The contract stands at v0.7 (hearing records counted separately, capped at six per review, re-hearings extend records). A cold reader who had never seen Speck ruled the pages "buildable, and I would want to build under it," computed the full review cost unaided, and named `craft` the plainest file in the set.
 
@@ -19,23 +19,13 @@ Nothing.
 
 ## What needs the owner
 
-Seven questions, filed with full context in [work/builders-words.md](work/builders-words.md) and [work/campaign-adoption.md](work/campaign-adoption.md) — none blocked landing:
-
-1. **The next kernel piece** — both judgment lines recommend the same thing: define the six load-bearing words nothing defines (Shaped · Live's boundary · care level · straining-vs-fighting · captioned screen drawing · "its own checks") and give the non-rule properties a producer. They split only on whether it is mandated (line 1: structure straining, second in a row) or your choice (line 2: sound) — which is itself question 6: when blind judges split on straining, what counts?
-2. **Does a finished piece go Live alone, or only with its proven milestone?** The pages say both; a real shipping-cadence fork. Judges recommend: per milestone.
-3. **The war stories** — every slow sentence in the cold reads was a compressed scar; one was cut entirely (the plain-rendering catch — your catch). Restore that one, keep the rest?
-4. **The repo's own README and docs still speak the old vocabulary** — sweep now or as the next small piece? (This file is swept; historical records keep their original words.)
-5. **The worst-day tester currently audits our own build loop** — move the git audit to the judge, threshold the staleness count, or drop it?
-6. *(folded into 1.)*
-7. **What does the kernel actually buy?** The dev suite's `--ungoverned` arm — same tasks, method pages stripped — had never been run in the repo's history; it is running now, and its result lands in the work file as the first measurement of the kernel against its own absence.
-
-Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing waiting. All seven questions from the two reviews were answered the same day (his calls verbatim in decisions.md, 2026-08-29 night): the next piece defines the words · Live is per milestone · the war stories stay with his scar restored · README and docs swept · the git audit moved to the judge · the kernel-versus-nothing measurement was run rather than queued (3 of 4 without the pages, 4 of 4 with — the miss was scope sprawl on a typo-sized fix). Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-The next kernel piece is the owner's call (question 1 above). Two method items are filed for it so they cannot expire silently: the judge's phase-exemption second clause ("the review's subject is `product.md` or `map.md` itself") has never been run by anyone; and judge's receipt-coverage rule and mid-review-fix rule are silent about which governs a build commit landing mid-review (inherited silence, resolved once on the record by judgment 2″'s reading: coverage governs the tree the review ran against, the fix rule governs the fix).
+**The live piece: "Name the words" — shaped, build not started ([work/name-the-words.md](work/name-the-words.md)).** Four words get one-sentence definitions (Shaped · care level · straining versus fighting · "its own checks"), two resolve by ruling or deletion (Live's boundary is ruled; "captioned screen drawing" is the deletion candidate), and self-reports get a producer: a closure claim carries the runnable command that proves it. It consumes the two inherited method items (the never-run exemption clause; the mid-review-fix silence, resolved once on the record).
 
-Then: Pilot upgrades to v5.2.0, and the milestone's proving continues on Pilot's build — which still carries the open ordered runs from the v5 era: a real four-persona piece with a user interface, and a full fresh-install lifecycle with one deliberately insufficient judgment sent back. Queued behind their triggers: the v11 converter · CI limit enforcement · the promise-conservation check.
+Then: the milestone's proving continues on Pilot's build — which still carries the open ordered runs from the v5 era: a real four-persona piece with a user interface, and a full fresh-install lifecycle with one deliberately insufficient judgment sent back. Queued behind their triggers: the v11 converter · CI limit enforcement · the promise-conservation check.
 
 ## Evidence
 

@@ -56,7 +56,7 @@ Then rule these four separately:
 
 One cannot compensate for another. Give evidence or say “not judged yet.” A failed check says “check failed.”
 
-“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. When all four rulings stand on evidence, the work is proven and may become Live.
+“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it.
 
 ### 5. Judge the whole product
 
@@ -67,6 +67,8 @@ Read the piece’s work file against standing decisions and the whole-product pr
 Use cold-reader testimony on owner-facing prose. Undefined jargon that carries a rule is a defect because the owner cannot judge what they cannot understand.
 
 Judge behavior against the promises, not the test suite. A safety net counts only if a record shows it failing on purpose. Trace each promise through the records and ask what delivers it now; passing parts do not prove that the whole delivers.
+
+Git answers three cheap questions that have each caught a real day going off the rails. Was each work file committed before its product code (`git log --diff-filter=A -1 -- work/<file>.md` against the first product commit — the same commit means the file documented work instead of shaping it)? Does every piece past Built have a receipt committed before its review ran? Does `map.md` match reality — its live piece the work actually being built, every shaped item accounted for?
 
 ### 6. Send insufficient work back
 

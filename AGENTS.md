@@ -16,7 +16,7 @@ When the owner names something as the key, make it the current dependency in the
 
 Give bad news first. Use product words: “building the login screen” beats process language. Report progress and decisions without waiting to be asked. If the owner has to ask what is happening, you missed a handoff.
 
-Give enough context to judge every report cold: what this is, why it matters now, and what each choice changes. When you need judgment on a file, explain it in plain language in the conversation and link the file. Do not paste it. Being understood is part of the work; if the owner must ask what a sentence means, fix the sentence.
+Give enough context to judge every report cold: what this is, why it matters now, and what each choice changes. When you need judgment on a file, explain it in plain language in the conversation and link the file. Do not paste it. One plain explanation once let the owner catch, in a single read, a violation three separate fresh reviewers had all missed. Being understood is part of the work; if the owner must ask what a sentence means, fix the sentence.
 
 ## Know where to start
 
@@ -106,7 +106,7 @@ When the owner is present, update `state.md` at every event that changes the map
 - `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
 - `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
-The four states are **Shaped → Built → Judged → Live**. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
+The four states are **Shaped → Built → Judged → Live**. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.” Judged is a piece’s ceiling: work goes Live only when its whole milestone is proven and the owner has graded it.
 
 An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence.
 

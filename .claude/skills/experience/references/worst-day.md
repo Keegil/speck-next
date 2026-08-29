@@ -50,15 +50,6 @@ First use it as a newcomer who does not know the intended path. Then act as a ho
 
 Trust examined screenshots over tools. Automated accessibility and lint checks do not understand visual containment; real overflows have clipped content for months behind perfect scores. When accounts exist, use two real accounts concurrently because caches, queues, and push tokens can leak across sign-out even when requests authorize correctly.
 
-## Check whether the team followed the build loop
-
-Git can answer four cheap questions that have each caught a real day going off the rails:
-
-1. Was each work file committed before its product code? Compare `git log --diff-filter=A -1 -- work/<file>.md` with the first product commit. The same commit means the file documented work instead of shaping it.
-2. How stale is `state.md`? Run `git rev-list --count $(git log -1 --format=%H -- state.md)..HEAD`.
-3. Does every piece past Built have a receipt committed before its review ran?
-4. Does `map.md` match reality? Check that its live piece is the work being built and that every used or unused shaped item is accounted for.
-
 ## Keep limits honest
 
 Record every move you could not run as untested. Never turn it into a pass or omit it.
