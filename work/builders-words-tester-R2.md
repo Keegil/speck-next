@@ -358,3 +358,231 @@ Low-cost fix: restore the directory name to the files section, e.g. "The skeleto
 **One defect found.** Merge correction (iii) is refuted: **"dispatch proof" survives at six sites across five skill files** — `shape-product:16`, `map-build:35`, `experience:12`, `experience:25`, `judge:20` (a section heading), `worst-day:59` — undefined at every one of them, used before the definition of `receipt` in its own file, and carrying a phase exit condition in two of them. The correction reached `AGENTS.md` and stopped there. Both the build record's "replaced with the defined word receipt" and the receipt's "convicted terms at zero across the surface" overclaim against the text as committed. Judge J11 names this class directly: undefined jargon that carries a rule is a defect.
 
 **Not tested by me, recorded as untested:** the dev suite's control arm (claimed 4/4 red) and green arm (pending in the receipt). I probed the review-integrity check's regex by hand and it behaves as claimed; I did not execute the suite.
+
+---
+
+## Follow-up run (R2′), 2026-08-29, on e525138, ordered by both judgments
+
+**Persona:** conservation prober, continued. The original run above is untouched; this section is appended. Same discipline — every claim below points at a command I ran and its output.
+
+**Subject-identity proof:**
+
+```
+$ git rev-parse HEAD
+e5251386c7527bc503beed59237d4b87e007cc83
+$ git diff --stat HEAD -- AGENTS.md CLAUDE.md .claude/skills templates devsuite
+(empty)
+$ git status --porcelain
+(empty)
+```
+
+I am measuring `e525138` itself, with no working-tree drift. The fix batch touched six installed-surface files (`git show e525138 -- AGENTS.md .claude/skills templates`): experience, worst-day, judge, map-build, shape-product, AGENTS.md. Nothing else on the surface moved.
+
+---
+
+### 1. The coinage — CLOSED at the mechanism
+
+```
+$ git grep -icE "dispatch[- ]?(time )?proof" e5494cf -- AGENTS.md .claude/skills templates
+e5494cf:.claude/skills/experience/SKILL.md:2
+e5494cf:.claude/skills/judge/SKILL.md:1
+e5494cf:.claude/skills/map-build/SKILL.md:1
+e5494cf:.claude/skills/shape-product/SKILL.md:1
+                                          → 5 matching lines, 4 files
+
+$ git grep -icE "dispatch[- ]?(time )?proof" HEAD -- AGENTS.md .claude/skills templates
+(no output, exit 1)                       → 0
+```
+
+A note on the expected number: this regex yields **5**, not 6. The sixth site is `worst-day.md:59`, which read "dispatch and review proof" — the near-variant my first run flagged separately because the exact-phrase grep misses it. Confirmed dead at HEAD:
+
+```
+$ git show HEAD:.claude/skills/experience/references/worst-day.md | sed -n '59p'
+3. Does every piece past Built have a receipt committed before its review ran?
+```
+
+All six sites now read `receipt`. The remaining `dispatch` strings on the surface (`git grep -in dispatch HEAD`) are ten ordinary-English uses — "the dispatch date", "re-dispatch", "the dispatching session" — none carrying a rule, none a compound term.
+
+**Judge §1's heading now names what its body uses.** Heading: `### 1. Check the receipt`. First sentence of the body: "Start with the receipt's Built field." Same word, same thing. Pre-fix the heading said "Check the dispatch proof" over a body that said "receipt".
+
+**Can a reader meeting "receipt" at a phase exit reach its definition?** Yes, on two independent routes. `AGENTS.md:74` — the page the host always loads — defines it in the open: "Its **receipt** is the written proof, committed before review starts, of who was asked to review what." And `experience:16` defines it again in bold where the run is actually ordered: "commit a **receipt**: written proof of who was asked to test what," followed by the six fields. The two exit sentences now use the term self-describingly rather than as a bare label:
+
+> `shape-product:16` — "Shaping ends when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both under receipts committed before they ran, and the owner has ratified it in the record."
+> `map-build:35` — "…then a separate judge challenges and rules — both under receipts committed before they ran."
+
+The phrase carries its own definition in place. An agent that loads only `shape-product` meets a condition it can satisfy without a lookup, and can find the field list in `experience` or `templates/rounds.md`. The defect is closed at the mechanism, not papered over.
+
+---
+
+### 2. Reachability — CLOSED at the mechanism
+
+```
+$ git show e5494cf:AGENTS.md | grep -c "templates/"    → 0
+$ git show HEAD:AGENTS.md    | grep -c "templates/"    → 2
+$ git show HEAD:AGENTS.md | grep -n "templates/"
+59:2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit…
+107:- `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
+```
+
+**From `AGENTS.md` alone, without guessing:** step 2 of the build loop names `templates/piece.md` as the thing you start a work file from, and the files section names it again and says what it carries — "the piece work file's receipt and judgment fields." That is the exact schema my first run found orphaned. A builder now meets the pointer at the moment of need (step 2) and again in the file inventory. No directory guessing required.
+
+The other five skeletons are reachable by the rule "the starting skeleton for every file above" over bullets that name `product.md`, `map.md`, `decisions.md`, `state.md`, plus per-file pointers in `shape-product` (`templates/product.md`, `templates/rounds.md`) and `map-build` (`templates/map.md`).
+
+**Residual, pre-existing, not a regression:** no bullet names a file called `rounds.md`, so `work/mapping.md`'s skeleton is reachable only by inference plus the one explicit pointer in `shape-product:8`. `map-build:8` says "Run numbered rounds in `work/mapping.md`" and never names a skeleton — and `git show 44a48ba:.claude/skills/map-build/SKILL.md | grep -n "templates/"` shows the same gap pre-rewrite. Parity restored; the gap predates this piece.
+
+---
+
+### 3. The map gate — CLOSED, to pre-rewrite parity
+
+```
+$ git show 44a48ba:.claude/skills/map-build/SKILL.md | grep -c "shaped decks"  → 1
+$ git show e5494cf:.claude/skills/map-build/SKILL.md | grep -c "shaped decks"  → 0
+$ git show HEAD:.claude/skills/map-build/SKILL.md    | grep -c "shaped decks"  → 1
+```
+
+The restored bullet:
+
+> "every captioned screen drawing belongs to exactly one piece — the population is the captions in the shaped decks and journeys themselves: grep them, count them, match them against the pieces;"
+
+**Attempting R1's S2 from the pages alone** — name the population the completion test counts, and how to enumerate it. Five bullets, five populations:
+
+| bullet | population | how I would enumerate it from the pages |
+|---|---|---|
+| promises | the `job:`, `moment:`, `claim:` slugs and the Foundations entries in `product.md` | grep those three literal prefixes; `templates/product.md` lines 10/13/22/31 establish the slug convention, so the grep is real |
+| screen drawings | **the captions in the shaped decks and journeys** | grep the decks/journeys, count captions, match against `map.md`'s per-piece `consumes:` field (`templates/map.md:15`) |
+| supporting items | everything `shape-product:10` told the agent to create with a stated purpose | match against `map.md`'s `## Unconsumed material` section (`templates/map.md:17`) |
+| proof plans | one per piece | the `proof plan:` field on each numbered piece line, `templates/map.md:15` |
+| milestones | `milestone:` entries and their `pieces:` lists | `templates/map.md:9`, matched against the piece list |
+
+Four of five are mechanically greppable against a stated convention. The fifth — captions — now has a **named source** (the decks and journeys themselves) where at `e5494cf` it had none, which is exactly what was routed back. **Residual:** no caption *syntax* is specified anywhere on the surface, so "grep them" is directionally executable rather than a literal pattern. That residual is identical at `44a48ba` ("the frames' own captions in the shaped decks"), so it is conserved, not introduced. The gate is no longer vacuous.
+
+I also checked whether the restored phrase smuggled in a new coinage, since that is the failure this very piece was routed back for. It did not: `deck` and `journey` are both introduced as ordinary material kinds at `shape-product:10` ("such as a domain model, journey, or deck") and used at `shape-product:46` and `experience:68`. Both also appear at `44a48ba` in the same undefined-but-ordinary register. No new term entered the surface with the fix.
+
+---
+
+### 4. The day-one blocker — CLOSED at the mechanism
+
+The two carve-out sentences, quoted:
+
+> `experience:18` — "Quote the `state.md` Built line that covers these product files. **(Build reviews only: a shaping or mapping review has nothing built yet — its receipt lists the planned probes instead.)**"
+> `judge:22` — "The quoted line must exist and literally say **Built**. **(A shaping or mapping review has no Built line — nothing is built yet; check that its receipt lists the planned probes and was committed before the probe ran, then go straight to the records.)**"
+
+**Can a shaping review now open a legal receipt with nothing built? Yes.** The obligation is substituted, not waived: the Built field is replaced by the planned probes, and the before-the-run commit requirement stays. `templates/rounds.md:15` — untouched by the fix batch — already carried exactly that form: "tester [tool, model, session] · dispatched [date, commit] · **probes [planned against owner record, repo, fixtures, or real behavior; plus cold read]** · run owner · empty record · record and verdict." So all three surfaces an agent reads now agree.
+
+`AGENTS.md` needed no carve-out and got none: its absolute sentence — "A review starts only on Built work… No valid quote means no review" (lines 74–78) — sits under `### Open the review honestly`, a subsection of `## Build one piece`. The Shape and Map sections state their own exits with receipts and no Built requirement (lines 42, 52). The scoping is structural, and it holds.
+
+**NEW, minor: the exemption is self-classified.** Nothing tells the judge to verify the phase claim. `judge:22` grants the Built waiver to anything calling itself "a shaping or mapping review," and the judge skill contains no other mention of `shaping`, `mapping`, `phase`, or `ratified` (`git grep -n` over the file returns that one line only). The phase *is* mechanically derivable — `AGENTS.md:25–27` derives it from a ratified `product.md`, a ratified `map.md`, and a live piece — so a build review mislabelled to dodge the one gate the method calls non-negotiable is checkable, but no page asks anyone to check. Narrow (a shaping review's records would be probes against `product.md`, not product walks, so the mislabel is visible to a reading judge), and one clause closes it. Reported because the fix created the exemption; it did not exist at `e5494cf`.
+
+---
+
+### 5. The strain count — CLOSED, and it closes a loop
+
+```
+$ git show e5494cf:AGENTS.md | grep -c "how often it has bitten"  → 0
+$ git show HEAD:AGENTS.md    | grep -c "how often it has bitten"  → 1
+$ git show 44a48ba:AGENTS.md | grep -c "how often it has bitten"  → 1
+```
+
+> `AGENTS.md:106` — "`state.md` reports what is true now, what is wearing out **(every strain, and how often it has bitten)**, what is blocked, what needs the owner, what happens next, and the evidence for each claim."
+
+This is more than a restored phrase. `AGENTS.md:58` fires the next piece on "**a strain recorded twice**" — a trigger that needs the count to exist in the record. `templates/state.md:9` already said "Every strain and its count. Twice means next piece or visible deferral." At `e5494cf` the always-loaded page was the only one of the three that had dropped the count, leaving a trigger whose input no loaded page required. The loop is closed.
+
+---
+
+### 6. The record corrections — append-only and plain, with one flaw in the correction itself
+
+`git show e525138 -- work/builders-words.md` is **+15 / −0**. The original build record at line 56 is byte-intact, false claim included ("Convicted terms at zero across the surface"). The correction appends below it and names what was false in the owner's kind of words:
+
+> "correction (3) claimed 'dispatch proof' was replaced with `receipt` — that was true only in AGENTS.md; six sites in the skills kept the coinage, and the receipt's 'convicted terms at zero across the surface' was therefore false at e5494cf. Worse in kind than in size: the piece's own staked property was 'no new coinage,' and 'dispatch proof' appears zero times pre-rewrite — the rewrite *created* it."
+
+That is a correction, not a rewrite: the false claim still stands where it was written, with the correction attached. It states plainly what was false, where, and why it was worse in kind than in size. This is the right shape.
+
+**NEW finding, inside the correction paragraph.** The correction cites its own pre-fix control, and the control does not reproduce its number. Run verbatim:
+
+```
+$ git grep -cE "dispatch[- ]proof" e5494cf -- AGENTS.md .claude/skills templates
+e5494cf:.claude/skills/experience/SKILL.md:1
+e5494cf:.claude/skills/judge/SKILL.md:1
+e5494cf:.claude/skills/map-build/SKILL.md:1
+e5494cf:.claude/skills/shape-product/SKILL.md:1
+                                          → 4
+```
+
+The record says this command yields **6**. It yields **4**: that regex misses `experience:25`'s "dispatch-**time** proof" and `worst-day:59`'s "dispatch **and review** proof". No single grep in the record produces 6 — the true figure is the union of a broader regex (5 lines) and a human read of the semantic variant (1). The direction is right and "after the fix → 0" is true under every form I ran, so the closure claim itself is sound. But the paragraph whose whole job is correcting a false claim about a grep attaches a control that does not reproduce its own cited number. Same class, one turn later, inside the sentence that names the strain. The record's "second bite" is really a third.
+
+Cheapest honest repair: cite the control as the judges' broader regex (5 lines across 4 files) plus the named sixth site, or restate as "six sites, of which five match `dispatch[- ]?(time )?proof`."
+
+---
+
+### 7. Budgets, re-measured at HEAD
+
+```
+$ find AGENTS.md CLAUDE.md .claude/skills templates -type f | sort | xargs wc -c
+    2720 .claude/skills/craft/SKILL.md
+    5891 .claude/skills/experience/SKILL.md
+    3555 .claude/skills/experience/references/walk.md
+    4462 .claude/skills/experience/references/worst-day.md
+    6562 .claude/skills/judge/SKILL.md
+    3782 .claude/skills/map-build/SKILL.md
+    2007 .claude/skills/map-build/references/questions.md
+    4432 .claude/skills/shape-product/SKILL.md
+    4497 .claude/skills/shape-product/references/questions.md
+   11432 AGENTS.md
+      11 CLAUDE.md
+     391 templates/decisions.md
+     698 templates/map.md
+    2330 templates/piece.md
+    1247 templates/product.md
+    1025 templates/rounds.md
+     733 templates/state.md
+   55775 total
+$ find … -type f | wc -l   → 17
+$ ls .claude/skills        → craft experience judge map-build shape-product  (5)
+```
+
+| claim | measured | verdict |
+|---|---|---|
+| ≤ 65,000 | **55,775** — 9,225 bytes of headroom | **holds** |
+| file count still 17 | 17 | **holds** |
+| skills still 5 | 5 | **holds** |
+| no new file in the installed surface | six files edited, none added | **holds** |
+
+The fix cost **+737 bytes** over `e5494cf`'s 55,038. Per-file deltas: AGENTS +223 · judge +188 · map-build +156 · experience +134 · shape-product +20 · worst-day +16. Sum = 737, to the byte, and it accounts for every changed file — no unaccounted growth anywhere on the surface. Against `44a48ba`'s 70,770 the rewrite still stands at **−21.2%**.
+
+---
+
+### 8. Free swing — does every path the surface names actually resolve?
+
+I chose this because the fix batch's entire job was pointers, so the thing it could newly break is a pointer to nothing — a phantom path is strictly worse than the orphan it replaced, since an orphan is silent and a phantom sends an agent to a file that isn't there.
+
+```
+$ grep -rhoE '`[A-Za-z0-9_./-]+\.(md|py|json)`|`templates/`|`references/[a-z-]+\.md`' \
+    AGENTS.md CLAUDE.md .claude/skills templates | tr -d '`' | sort -u | (resolve each)
+  RESOLVES  decisions.md · map.md · product.md · state.md
+  RESOLVES  references/questions.md · references/walk.md · references/worst-day.md
+  RESOLVES  templates/ · templates/map.md · templates/piece.md · templates/product.md · templates/rounds.md
+  PHANTOM?  work/mapping.md · work/shaping.md
+```
+
+**Twelve of twelve asset paths resolve, including all three the fix added.** The two non-resolving strings are product-repo *output* paths — files the method tells an agent to create, not files the kernel ships — and their absence in a kernel repo is correct, not a defect. No phantom introduced.
+
+---
+
+## Follow-up verdict — the conservation prober
+
+**Are the routed defects closed at the mechanism?** Yes, all five, each verified by a pre-fix control that fires against `e5494cf` and goes silent at `HEAD`.
+
+1. **Coinage** — 6 sites → 0, heading and body now name the same thing, and `receipt` is defined on the always-loaded page and again where runs are ordered. Closed at the mechanism; the term is not merely swapped, it now carries its meaning at each exit.
+2. **Reachability** — `templates/` 0 → 2 mentions; `templates/piece.md` named at the point of need and again in the file inventory, with what it carries stated. The receipt schema is no longer guessable-only.
+3. **Map gate** — the population is back, restoring `44a48ba` parity; four of the five completion-test populations are mechanically greppable from stated conventions and the fifth now names its source. No new term entered with the fix.
+4. **Day-one blocker** — a shaping review can open a legal receipt with the Built field *substituted*, not waived, and `experience`, `judge`, and `templates/rounds.md` agree on the substitute. `AGENTS.md` is scoped structurally and needed no change.
+5. **Strain count** — restored, and it reconnects `AGENTS.md:58`'s twice-recorded trigger to the record format that supplies its input.
+
+**Did the fixes introduce anything new?** Two things, both minor, neither blocking, and I would not route the piece back for either:
+
+- **The Built exemption is self-classified.** Nothing asks the judge to check the phase claim against the dispatcher's own mechanical test, so the one gate the method calls non-negotiable now has an escape hatch keyed on a label. Narrow and cheap to close; reported because the exemption did not exist before this batch.
+- **The correction's cited control does not reproduce its number** — `git grep -cE "dispatch[- ]proof"` at `e5494cf` returns 4, not the 6 the record claims. The closure is real; the instrument beside it is off. This is the third consecutive instance of the piece's report of itself being its weakest surface, and it is now inside the paragraph that names that strain.
+
+**Budgets hold** at 55,775 bytes, 17 files, 5 skills, +737 accounted to the byte across exactly the six edited files. **No collateral**: `git show e525138` touches nothing on the surface beyond those six, and every path the surface names resolves.
+
+**Still untested by me, recorded as untested** (unchanged from my first run): the dev suite's control arm and green arm. I probed the review-integrity regex by hand and it behaves as claimed; I did not execute the suite, then or now.
