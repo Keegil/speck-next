@@ -45,7 +45,7 @@ This phase produces `product.md`, `work/shaping.md`, and any supporting material
 
 Map after shaping, or when the set or order of pieces changes. Use `map-build` to cut pieces from the promises and supporting material. Give the owner real ordering choices and costs.
 
-For every piece, state the runs, people, and rulings needed to accept it. Name milestones and say when the first real user surface appears.
+For every piece, state the runs, the checks that must pass, the people who will test it, and the rulings needed to accept it. Name milestones and say when the first real user surface appears.
 
 Close mapping by choosing what the product runs on from the pieces’ actual needs. Record the owner’s chosen care level and the decision in `decisions.md`; a weekend product and a regulated product need different care.
 
@@ -118,8 +118,8 @@ When files disagree, `product.md` and `decisions.md` win. Measured evidence beat
 
 A change is small only if it adds no dependency, touches no protected code, changes no promise, and is reversible in one commit. Then fix it, run it, and finish without a work file.
 
-**Protected code** is everything on the risky list below — auth, money, private data, schema migrations, regulated behavior, anything irreversible. Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
+**Protected code** is everything on the risky list below — auth, money, private data, data integrity, schema migrations, regulated behavior, anything irreversible. Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
 
-For money, auth, private data, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. The care level is which of these protections are on, plus a second judge; raising it means adding protections — there is no separate scale. You may raise the care level. You may never lower it.
+For money, auth, private data, data integrity, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. The care level is which of these protections are on, plus a second judge; raising it means adding protections — there is no separate scale. You may raise the care level. You may never lower it.
 
 Before stopping, write anything a future builder should not have to relearn into the piece’s work file.

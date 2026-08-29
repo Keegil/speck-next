@@ -12,7 +12,7 @@
 
 **Review receipt** *(commit before any tester runs)*:
 
-- Built: [Quote the `state.md` line and its commit. It must literally say **Built** and cover the exact product files — written in the build's final commit, or in a records-only commit just after it. No build commit may land after it, and the receipt must open after the Built line was written. Otherwise stop, write Built in a new state-only commit, and open a new receipt. A build commit changes product code, screens, or data, not only records or state. After a rejected piece is fixed, quote a new Built line covering the fixed product files.]
+- Built: [Quote the `state.md` line and its commit. It must literally say **Built** and cover the exact product files — written in the build's final commit, or in a records-only commit just after it. No build commit may land after it — except a fix landed during the review, which answers to the judge's re-run rules instead — and the receipt must open after the Built line was written. Otherwise stop, write Built in a new state-only commit, and open a new receipt. A build commit changes product code, screens, or data, not only records or state. After a rejected piece is fixed, quote a new Built line covering the fixed product files.]
 - Testers: [For each: persona, tool, model, session.]
 - Dispatched: [Date and product commit under test.]
 - Planned walks and commands: [List. For a batch, enumerate changes from the commit range.]

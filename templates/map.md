@@ -12,7 +12,7 @@
 
 [Order these and keep exactly one live.]
 
-1. **[piece]** [LIVE/next/done] — serves: [job/moment/foundation] · consumes: [screen drawings/model sections/material] · proof plan: [runs · user types · judge rulings] · risky: [care needed/no]
+1. **[piece]** [LIVE/next/done] — serves: [job/moment/foundation] · consumes: [screen drawings/model sections/material] · proof plan: [runs · checks that must pass · user types · judge rulings] · risky: [care needed/no]
 
 ## Unconsumed material
 
