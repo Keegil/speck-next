@@ -23,7 +23,7 @@ Nothing waiting. All seven questions from the two reviews were answered the same
 
 ## What happens next
 
-**The live piece: "Name the words" — Built ([work/name-the-words.md](work/name-the-words.md)).** Four words get one-sentence definitions (Shaped · care level · straining versus fighting · "its own checks"), two resolve by ruling or deletion (Live's boundary is ruled; "captioned screen drawing" is the deletion candidate), and self-reports get a producer: a closure claim carries the runnable command that proves it. It consumes the two inherited method items (the never-run exemption clause; the mid-review-fix silence, resolved once on the record).
+**The live piece: "Name the words" — routed back once, fixed; the fixed pages are Built as of this commit ([work/name-the-words.md](work/name-the-words.md)).** Four words get one-sentence definitions (Shaped · care level · straining versus fighting · "its own checks"), two resolve by ruling or deletion (Live's boundary is ruled; "captioned screen drawing" is the deletion candidate), and self-reports get a producer: a closure claim carries the runnable command that proves it. It consumes the two inherited method items (the never-run exemption clause; the mid-review-fix silence, resolved once on the record).
 
 Then: the milestone's proving continues on Pilot's build — which still carries the open ordered runs from the v5 era: a real four-persona piece with a user interface, and a full fresh-install lifecycle with one deliberately insufficient judgment sent back. Queued behind their triggers: the v11 converter · CI limit enforcement · the promise-conservation check.
 
