@@ -11,7 +11,7 @@ A tester decides as a user would, after using the product. Every verdict points 
 
 Use a separate context. A walk done by the builder is void. Claiming fresh users without a committed receipt is fabricated evidence.
 
-Run the tester in a clean clone, never the builder’s working tree. Give them the product files, the promises from `product.md`, and this skill with its references. Do not give them the builder’s summary.
+Run the tester in a clean clone, never the builder’s working tree. Give them the product files, the promises from `product.md`, and this skill with its references. Do not give them the builder’s summary. Testers read every page from disk at the commit under test — a host may preload an older copy, and two testers on two pieces have caught theirs doing exactly that.
 
 Before the run starts, commit a **receipt**: written proof of who was asked to test what. Record:
 

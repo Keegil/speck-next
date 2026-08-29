@@ -89,7 +89,7 @@ At milestones and on risky pieces, a second judge hears the same records without
 
 ## Re-run after fixes
 
-Keep the original reproduction for every fixed finding as its control when possible. If the control is only an approximation, say so. When you order a fix and quote a control, the control names its whole population — every home, file, or case in the class — never only the site where the defect surfaced. The builder executes the full requirement; the quoted control is its floor, not its scope.
+Keep the original reproduction for every fixed finding as its control when possible. If the control is only an approximation, say so. When you order a fix and quote a control, the control names its whole population — every home of a rule, every file carrying a figure, every case of a defect’s class — never only the site where the defect surfaced. The builder executes the full requirement; the quoted control is its floor, not its scope.
 
 A fix made during the review, before another tester can walk it, needs a control the judge can run against the pre-fix tree. “The builder watched it fail” is a claim, not a control.
 

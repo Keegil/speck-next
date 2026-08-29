@@ -14,7 +14,7 @@
 [Choices, costs, and recommendation.]
 
 ## What happens next
-[Live piece by map name, then the map order.]
+[Live piece by map name, then the map order. Open items from landed pieces, each named with its destination.]
 
 ## Evidence
 [For each claim: run, receipt, commit.]

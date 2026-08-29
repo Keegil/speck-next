@@ -28,4 +28,4 @@
 - Second judge: [Required for milestones and risky pieces; rulings and disagreement.]
 - Sent back: [Anything insufficient returns to shape, map, build, or more testing, with the trace.]
 
-**Result:** [What happened, what review changed, what remains open, and what the next builder should not relearn.]
+**Result:** [What happened, what review changed, what remains open and where each open item went, and what the next builder should not relearn.]
