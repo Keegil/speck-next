@@ -25,14 +25,14 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 
 6. **Run the completion test.** Do not assert it. Check that:
    - every `job:`, `moment:`, `claim:`, and foundation in `product.md` belongs to a piece;
-   - every captioned screen drawing belongs to exactly one piece;
+   - every captioned screen drawing belongs to exactly one piece — the population is the captions in the shaped decks and journeys themselves: grep them, count them, match them against the pieces;
    - every supporting item belongs to a piece or appears as unconsumed;
    - every piece has a proof plan; and
    - milestones cover every piece.
 
 Grep, count, and match the named sets. Report every population and result to the owner.
 
-7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules; dispatch proof must exist. Finally, the owner ratifies the order in their own words.
+7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules — both under receipts committed before they ran. Finally, the owner ratifies the order in their own words.
 
 8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
 

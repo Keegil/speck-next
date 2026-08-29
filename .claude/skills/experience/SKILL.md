@@ -9,20 +9,20 @@ A tester decides as a user would, after using the product. Every verdict points 
 
 ## Send a genuinely fresh tester
 
-Use a separate context. A walk done by the builder is void. Claiming fresh users without written dispatch proof is fabricated evidence.
+Use a separate context. A walk done by the builder is void. Claiming fresh users without a committed receipt is fabricated evidence.
 
 Run the tester in a clean clone, never the builder’s working tree. Give them the product files, the promises from `product.md`, and this skill with its references. Do not give them the builder’s summary.
 
 Before the run starts, commit a **receipt**: written proof of who was asked to test what. Record:
 
-- Quote the `state.md` Built line that covers these product files.
+- Quote the `state.md` Built line that covers these product files. (Build reviews only: a shaping or mapping review has nothing built yet — its receipt lists the planned probes instead.)
 - Name the persona, tool, model, and session.
 - Give the dispatch date and commit.
 - List the planned walks and commands.
 - Name the session that owns this run.
 - Tell a later session finding an empty record to re-dispatch under its own named line rather than guess what happened — two runs once executed one dispatch in parallel, neither knowing of the other.
 
-Append or link the returned record. A receipt reconstructed at closure is exactly what a builder writes when nothing forced the capture — it does not count, twice proven. Without dispatch-time proof, there is no record for the judge.
+Append or link the returned record. A receipt reconstructed at closure is exactly what a builder writes when nothing forced the capture — it does not count, twice proven. Without a receipt committed before the run, there is no record for the judge.
 
 Runs sharing one browser, device, or live environment run one at a time, each on its own subject, and the dispatching session keeps its hands off that shared environment while a run is live. Two rounds were once destroyed in a day: the dispatching session measuring inside a live run, then two parallel runs walking each other's subjects.
 

@@ -56,7 +56,7 @@ Mapping ends only when its mechanical completion test passes, the running platfo
 A ratified map has exactly one live piece.
 
 1. **Check what is wearing out.** Read `state.md` and the foundations in `product.md`. A strain recorded twice, or a foundation whose trigger fired, becomes the next piece by re-cutting the map. Otherwise defer it where the owner can see it.
-2. **Set up the piece.** Before product code, commit its work file with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
+2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
 3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
 4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts.
 5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem and repeat the exact test scenarios plus the required fresh challenge.
@@ -103,7 +103,8 @@ When the owner is present, update `state.md` at every event that changes the map
 - `map.md` orders the pieces, says what each serves and consumes, names milestones, keeps exactly one piece live, and lists all unconsumed material.
 - `work/shaping.md` and `work/mapping.md` are append-only owner conversations. One work file follows each piece from setup through judgment. Cite a record by its name and date, never by a bare round number.
 - `decisions.md` keeps consequential choices, alternatives, reasons, and reopening conditions. It includes the decision about what the product runs on.
-- `state.md` reports what is true now, what is wearing out, what is blocked, what needs the owner, what happens next, and the evidence for each claim.
+- `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
+- `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
 The four states are **Shaped → Built → Judged → Live**. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
 

@@ -56,7 +56,7 @@ Git can answer four cheap questions that have each caught a real day going off t
 
 1. Was each work file committed before its product code? Compare `git log --diff-filter=A -1 -- work/<file>.md` with the first product commit. The same commit means the file documented work instead of shaping it.
 2. How stale is `state.md`? Run `git rev-list --count $(git log -1 --format=%H -- state.md)..HEAD`.
-3. Does every piece past Built have dispatch and review proof?
+3. Does every piece past Built have a receipt committed before its review ran?
 4. Does `map.md` match reality? Check that its live piece is the work being built and that every used or unused shaped item is accounted for.
 
 ## Keep limits honest

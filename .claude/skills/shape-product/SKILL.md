@@ -13,7 +13,7 @@ Start `product.md` from `templates/product.md`. The template is a floor. Add sec
 
 Keep shaping while open product questions need real evidence, and let the first increment gather it through runs, probes, or measurements. If no open shaping question remains, move on. Shaping with nothing running kills products on paper; shaping after the questions close only delays the build.
 
-Shaping ends when `product.md` meets its template, a fresh tester has probed it with dispatch proof, a separate judge has ruled on the probe, and the owner has ratified it in the record. Then use `map-build`.
+Shaping ends when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both under receipts committed before they ran, and the owner has ratified it in the record. Then use `map-build`.
 
 ## Rules
 

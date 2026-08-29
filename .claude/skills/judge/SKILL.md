@@ -17,9 +17,9 @@ If the context cannot stay open while a requested run happens, write a judgment-
 
 ## Hear the evidence in order
 
-### 1. Check the dispatch proof
+### 1. Check the receipt
 
-Start with the receipt’s Built field. Read `state.md` at the cited commit. The quoted line must exist and literally say **Built**.
+Start with the receipt’s Built field. Read `state.md` at the cited commit. The quoted line must exist and literally say **Built**. (A shaping or mapping review has no Built line — nothing is built yet; check that its receipt lists the planned probes and was committed before the probe ran, then go straight to the records.)
 
 A **build commit** changes the product itself, such as code, screens, or data. A commit that changes only records or state is not a build commit.
 
