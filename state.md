@@ -20,20 +20,11 @@ Nothing.
 
 ## What needs the owner
 
-Four questions from the adoption hearing's judges, filed in [work/campaign-adoption.md](work/campaign-adoption.md) — none blocks the piece:
-
-1. **Subtraction** — every kernel page grows and none has shrunk; the judges recommend the next kernel piece be a subtraction pass with a numeric target, paying out of it for one sentence AGENTS.md currently lacks: the contract's thinking-before-running cap, which today lives in no file an agent loads.
-2. **The contract vs. the hearing's paper** — promise 7 says ≤ 1 durable method file per piece; a hearing writes linked records beside the work file. The two binding documents disagree, and moving a limit needs a named tightening in exchange, by the contract's own rule.
-3. **The dormant candidate-discipline ruling** — decisions.md (2026-08-13) orders a predicted effect written per method change and measured back; no piece has ever done it. Enforce, scope it down, or retire it honestly.
-4. **Two costs no page states** — why only one hearing may be open at a time, and what a substantial piece really costs in fresh contexts. State them, change them, or keep-and-say-so.
-5. **The hearing's cost has no honest sentence** (new, from re-judge 1) — a cold reader can compute "at least three fresh contexts, realistically five, unbounded above" and no more, because the roster is delegated to each piece's file. Recommended: one sentence saying the cost is per-piece by design, paid for out of the subtraction pass.
-6. **Is a slow win a win?** (new, from re-judge 2) — a dev-suite task that hit its 25-minute deadline still passed on the work it had done; the suite scores outcome, never cost, while the promise most lacking a producer is entirely about cost. Recommended: record elapsed time per task beside the verdict, merged into question 1.
-
-Standing from the v5 fixture era, non-blocking: the fixture milestone's felt-grade (a fixture-owner call, listed for completeness in [work/v5-hearing.md](work/v5-hearing.md)).
+Nothing blocking. The adoption's question lane was answered 2026-08-29 (his calls in decisions.md): subtraction pass with a target, contract amended with a named tightening, predictions scoped to one per piece — and his grade on the report itself re-chartered the pass: the kernel gets rewritten in a builder's words, not just fewer of them. Standing from the v5 fixture era, non-blocking: the fixture milestone's felt-grade (a fixture-owner call, listed in [work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-**The adoption piece is landed; no piece is live.** The next kernel piece is the owner's call, and both benches' convergent structural signal points one way: a subtraction pass with a numeric target (owner question 1), which would also pay for the thinking-cap sentence and the hearing-cost sentence. Three kernel-text items are deferred to that next piece by the re-judges' explicit ruling — define "build commit" in the receipt gate; make the retrospective-relabel case detectable; a route-back's fix batch re-quotes the built field — listed here so they cannot expire silently.
+**The live piece: "A builder's words, and fewer of them" — owner-ordered.** One job with two halves: shrink the loaded pages to ~65 KB installed, and rewrite them so a person building a product understands every sentence in one read — method names kept only where they earn their keep. Inside the savings it lands the sentences the hearing found missing (the thinking cap, an honest line about what checking a piece costs) and executes his contract call (hearing records counted separately, paid with a cap on records per hearing) and the scoped prediction rule (one predicted effect per piece, measured on the dev suite). It also carries the three deferred receipt-gate fixes — define "build commit"; make the relabel case detectable; a route-back re-quotes the built field — listed here so they cannot expire silently.
 
 Then: the pilot product upgrades to v5.1.0, and the milestone's proving continues on Pilot's build — which still carries the open ordered experiences from the v5 re-judge: a real four-persona UI piece, and a full fresh-install lifecycle with one deliberately insufficient judgment routed backward. Queued behind their triggers: the v11 converter · CI limit enforcement · the promise-conservation check. The owner's 2026-08-29 brief stays pinned in the work file as the standing adversarial reference.
 
