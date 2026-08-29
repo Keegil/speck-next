@@ -492,3 +492,246 @@ Every one of the eleven fixes is at its anchor, and twelve pre-fix controls that
 What I would not sign is the batch as complete. The judges routed this piece back for a rule that landed in one of its two homes. The sweep they ordered finds the same shape twice more in the fix itself — the mid-review exception is in two of three homes, the proof-plan checks in two of four — plus a definition that quietly narrowed protection while its record told the owner it widened, and a version line that was corrected in the wrong direction.
 
 **Verdict: the conservation probes pass and the ordered fixes landed. The sibling sweep does not pass. Findings 7, 9 and 10 are one-sided edits made by this batch and are one clause each; 8 and 11–15 are pre-existing or inherited. The piece is closer, and it repeated its own routed-back defect in the act of fixing it.**
+
+---
+
+## Follow-up run (R″), 2026-08-29, on b8e2ce9
+
+**Subject:** `~/Code/speck-next` at `b8e2ce9` (second fix build `f3e7a62`; pre-fix `980e188`). Same persona, same instrument, continued per the second re-entry receipt. This run is the combined final one: the judges' quoted controls on both trees, conservation, budgets, the sibling sweep of exactly what the batch touched, the owner paragraph read cold, and one free attack. Every number has its command above it.
+
+**One-line verdict: all five second-batch fixes landed, every judge-quoted control fires, conservation is total — zero deletions on the method pages — and the batch did *not* repeat the one-sided-edit defect on the four rules it was ordered to fix. It repeated it on the fifth: the corrected byte figure was corrected in `state.md` and left standing in `decisions.md`, the file `AGENTS.md:115` says wins when files disagree, with its derived percentage still wrong in three more homes.**
+
+---
+
+### Probe 0″ — the instrument, and three false zeros it produced first
+
+My first three sweeps all returned zeros I could have filed. None were real.
+
+```
+$ PATHS='AGENTS.md CLAUDE.md .claude/skills templates'
+$ git grep -ioF "piece" 980e188 -- $PATHS | wc -l    →  0     (exit 0, no stderr)
+```
+
+This shell is **zsh**, which does not word-split an unquoted parameter. `$PATHS` arrived as *one* pathspec — the literal string `AGENTS.md CLAUDE.md .claude/skills templates` — which matches no file. `git grep` reported no hits and exited **0**. T2's original probe 0 caught the mirror-image of this in bash; the zsh form is quieter, because there is no `No such file or directory` warning to see.
+
+Two more in the same run: a typo split a flag from its command (`git grep - icF`, printing `fatal: unable to resolve revision: icF` to stderr while the loop printed `0` for both trees — a false red at HEAD *and* a false green at the pre-fix tree), and `"$T:templates/piece.md"` was eaten by zsh's `:t` history modifier, yielding `980e188emplates/piece.md`.
+
+Rebuilt on an explicit bash array of the 17 installed paths, with controls:
+
+```
+$ PATHS=(AGENTS.md CLAUDE.md .claude/skills templates)
+tree 980e188:  'piece'=116  'Built'=41  'zzqqxx'=0  ERE 'zzqq[0-9]xx'=0   files searched: 17
+tree b8e2ce9:  'piece'=116  'Built'=41  'zzqqxx'=0  ERE 'zzqq[0-9]xx'=0   files searched: 17
+```
+
+The instrument expresses a hit and a miss, over the same 17 files on both trees. Only numbers below this line count.
+
+---
+
+### Probe 1″ — the judges' quoted pre-fix controls, both trees
+
+| # | Control (judge's own pattern) | `980e188` | `b8e2ce9` |
+|---|---|---|---|
+| **M1/B1** | `data.integrity` over the 17 installed files | **0** | **2** |
+| **M2/B2** | `checks that must pass` at the four proof-plan homes | **2 of 4** | **4 of 4** |
+| **M3** | mid-review exception in `templates/piece.md`'s Built bracket | **0** | **1** |
+| **M4a/B3** | the three version strings agree | **no** (5.3.0 / 5.2.1 / 5.2.1) | **yes** (5.2.1 ×3) |
+| **M4b** | `grep -c "55,157" state.md` | **3** | **1** |
+
+**M1** — the two hits are exactly the two lists the judges named:
+
+```
+AGENTS.md:121  **Protected code** is everything on the risky list below — auth, money,
+               private data, data integrity, schema migrations, regulated behavior, …
+AGENTS.md:123  For money, auth, private data, data integrity, schema migrations, …
+```
+
+**M2** — the two that joined: `AGENTS.md:48` (*"state the runs, the checks that must pass, the people who will test it, and the rulings needed to accept it"*) and `templates/map.md:15` (*"proof plan: [runs · checks that must pass · user types · judge rulings]"*). A mapper following either now writes a plan `AGENTS.md:61` accepts. Null control across the same four files: 0.
+
+**M3** — the exception landed under different words than R2′'s table pattern, so `one exception` reads 0 in the template on both trees and would have filed a false red. On a pattern that can fire (`during the review`): **0 → 1**. The landed clause: *"No build commit may land after it — except a fix landed during the review, which answers to the judge's re-run rules instead — and the receipt must open after the Built line was written."* All three homes now carve out the same case.
+
+**M4a** — and the version they agree on is real: `v5.2.1` is a released tag, cut by `4a70e03`, which moved `package.json`, `README.md` and `state.md` together. The previous state announced a release existing nowhere; this one does not.
+
+**M4b — the one number that does not match the brief, and it is the brief that is stricter than the judge.** I was sent expecting **0**. It is **1**. The survivor is `state.md:7`, which cites the figure as the value it was corrected *from*:
+
+```
+$ git grep -nF "55,157" b8e2ce9 -- state.md
+state.md:7: … went from 70,770 bytes to 56,039 at its landing commit (… at ebb9fb5 —
+            the earlier recorded 55,157 was a working-tree read at the wrong moment,
+            corrected under the measured-numbers rule) …
+```
+
+Judgment 2 §3c blessed exactly this site by name: *"Line 7 legitimately cites it as the corrected-from value."* The two sites it condemned — line 14 certifying a **retired strain**, line 32 inside **Evidence** — both now carry the pinned measure. **M4b meets the judge's stated condition** (*"No surviving assertion of 55,157"*); it does not meet a literal count of zero, and it should not, because a correction that erased its own provenance would be worse. Reported this way so the judges rule on the right thing.
+
+---
+
+### Probe 2″ — conservation: word-diff of the second batch
+
+```
+$ git diff --word-diff=plain --word-diff-regex='\w+|[^[:space:]]' 980e188 f3e7a62 \
+    -- AGENTS.md .claude/skills templates | grep -c '\[-'
+  0
+```
+
+**Zero deletions on the method pages.** Every one of the four page edits is a pure insertion into an otherwise byte-identical line:
+
+- `AGENTS.md:48` — `state the runs, {+the checks that must pass, the+} people {+who will test it+}, and {+the+} rulings…`
+- `AGENTS.md:121` and `:123` — `private data, {+data integrity,+} schema migrations…`
+- `templates/map.md:15` — `[runs · {+checks that must pass ·+} user types · judge rulings]`
+- `templates/piece.md:15` — the exception, inserted between two conserved clauses
+
+Across the whole batch (adding `README.md`, `state.md`) only **three** lines carry any deletion at all, and all three are digit swaps: `5.[-3-]{+2+}.[-0-]{+1+}`, and `5[-5-]{+6+},[-157-]{+039+}` twice. **No neighbouring rule was harmed, and no rule was rewritten** — this is the first batch in the piece whose product-page edits delete nothing.
+
+**No new coined term.** Every added phrase already lived on the pages pre-batch:
+
+```
+"checks that must pass"    pre=2  post=4      "re-run rules"            pre=2  post=3
+"the risky list"           pre=1  post=1      "landed during the review" pre=1  post=2
+"data integrity"           pre=0  post=2   ← restoration: 'data-integrity' = 1 at ac7e688
+"people who will test"     pre=0  post=1   ← rephrase of the existing bare "people"
+```
+
+Neither of the two zero-pre phrases is a coinage: *data integrity* is the term the first batch dropped, returning unhyphenated to match its list's style, and *people who will test it* expands an existing word rather than minting one. Nothing added is bolded or quoted as a term of art.
+
+---
+
+### Probe 3″ — budgets, pinned to the installer's own list
+
+```
+$ tot () { git ls-tree -r --name-only "$1" | grep -E '^(AGENTS\.md|CLAUDE\.md|\.claude/skills/|templates/)' \
+    | while read -r f; do git cat-file -s "$1:$f"; done | paste -sd+ - | bc; }
+  4a70e03 → 56176    48283c7 → 57348    ac7e688 → 57348    c53704e → 58431
+  980e188 → 58431    f3e7a62 → 58636    b8e2ce9 → 58636    ebb9fb5 → 56039
+```
+
+**58,636 bytes · 17 files · 5 skills.** Against `CONTRACT.md:32–33` (≤ 20 files / 100 KB, ≤ 6 skills): pass, **41,364 bytes of headroom**. The batch cost **+205 bytes**. Always-read set (`CONTRACT.md:34`, ceiling 50 KB): `AGENTS.md` 13,133 + `state.md` 5,972 + `product.md` 596 + `map.md` 4,600 = **24,301 of 50,000**.
+
+**The pinned figure reproduces under two independent methods** — this matters, because it is the number the batch installed to replace one that did not:
+
+```
+$ git archive ebb9fb5 AGENTS.md CLAUDE.md .claude/skills templates | tar -x -C $W
+$ find $W -type f -exec cat {} + | wc -c   →  56039   (17 files)
+$ tot ebb9fb5                              →  56039
+```
+
+**Control arm, run at `b8e2ce9`:**
+
+```
+$ ./devsuite/run.sh --control
+  [RED] KEY: empty-state tip has a single space                            FAIL small-change
+  [RED] KEY: corrupt journal value is refused or excluded, never drawn     FAIL bug-hunt
+  [RED] KEY: state claims the streak counter, and it genuinely runs        FAIL honest-state
+  [RED] KEY: the claimed review has a real dispatch behind it …
+  [RED] concurrency bug actually fixed: 20 of 20 overlapping writes stored FAIL review-integrity
+  control mode: 4 of 4 tasks went red (want: all)
+```
+
+**4 of 4 red.** Every key check still expresses its failure after the batch.
+
+---
+
+### Probe 4″ — siblings of exactly what the batch touched
+
+Four of the five families the batch edited now agree in every home. The fifth does not.
+
+**Proof plan — 4 of 4 spec homes agree.** I enumerated every occurrence of *proof plan* across the 17 files plus `CONTRACT.md` and `README.md`: eleven sites, of which four are spec enumerations (`AGENTS.md:48`, `map-build:18`, `templates/map.md:15`, `templates/piece.md:11`) and seven are references (`AGENTS.md:59,80,109,113`, `map-build:3,30`, `experience:53`). All four specs now list the same four parts in the same order — runs · checks · user types · judge rulings. **The dangling pointer to `AGENTS.md:61` is closed on every side.**
+
+**Mid-review exception — 3 of 3 homes agree**, in compatible words: `AGENTS.md:78` (*"a fix landed during the review answers to the judge's re-run rules instead of invalidating the line"*), `judge:28` (*"the fix answers to the re-run rules instead, including its own pre-fix control"*), `templates/piece.md:15` (above).
+
+**Version — 3 of 3 agree.** `bin/speck-next.js:86`'s `#v5.0.0` is a *pin example* of a released tag, not a current-version claim; `docs/reviews/**` are historical records, correctly stale.
+
+**Protected code — the homes now nest, and two residuals remain.** Measured element by element at `b8e2ce9`:
+
+| term | `AGENTS.md` | `CONTRACT.md` | `README.md` |
+|---|---|---|---|
+| auth · money | ✓ | ✓ | ✓ |
+| privacy | — | ✓ | ✓ |
+| private data | ✓ | — | ✓ |
+| data integrity | ✓ (restored) | ✓ (hyphenated) | ✓ (hyphenated) |
+| schema migrations · regulated behavior | ✓ | — | — |
+| irreversible | ✓ | ✓ | ✓ |
+
+**The crossing that blocked the piece is closed**: `AGENTS.md:121` is now a strict superset on the substantive elements, so the two lists nest instead of crossing. Judge 1's B1 also asked to *"reconcile all three homes — `AGENTS.md:121`, `CONTRACT.md:18`, `README.md:30` — or say in the tree which governs."* That half is not done, and the batch did not touch either file (`README.md` changed only its version digit; `CONTRACT.md` was untouched):
+
+- `CONTRACT.md:18` still enumerates the old four — but the same sentence also says *"a change that turns out to touch protected code was never typo-sized"*, so it self-repairs by reference to the definition that now governs. Harmless.
+- **`README.md:30` has no such clause.** Read alone it says typo-sized means *"no new dependency; no auth, money, privacy, or data-integrity code; no promise rewritten; reversible in one commit"* — full stop. A reader of the README alone still concludes a schema migration can be a typo-sized fix. Not installed, so no agent loads it; it is the repo's front page.
+- **The fourth old term changed from *privacy* to *private data*.** Pre-first-batch `AGENTS.md:119` read *"auth, money, **privacy**, or data-integrity code"*; the landed protected list reads *"auth, money, **private data**, data integrity, …"*. On a literal reading that narrows: consent capture, a retention-policy toggle, a telemetry opt-out are *privacy* code without being *private data* code. Introduced by the **first** batch, untouched by this one, and flagged by neither judge. Finding 18.
+
+---
+
+### Probe 5″ — the corrected owner paragraph, read cold against the tree
+
+`work/name-the-words.md:35`. I checked each claim against the files rather than against the record.
+
+**Eight claims, verified true:** the first note *"claimed a pure widening and offered strike-it-for-the-narrow-reading"* (verbatim at `980e188`) · *"both halves were wrong, caught by both judges"* (judgment 1 §5, judgment 2 §4) · *"the risky list I anchored on lacked data integrity, so the edit silently dropped protection"* (measured 1 → 0) · *"repaired without needing your call (a strict widening is permitted)"* (`AGENTS.md:123`) · *"the judges recommend it"* — both do, and both mark it as their recommendation (judgment 1 §10 option (a), judgment 2 §8 *"My recommendation is wide"*) · *"both judges converge that the vocabulary needs a standing producer, not more lists"* · *"a mechanically enumerated population"* (124) · *"its free attack proved the cheap version catches nothing"* (0 of 4).
+
+**One claim is not true as written.** *"protected code is now the old four **plus** schema migrations, regulated behavior, and anything irreversible — **nothing lost**, three things added."* Three of the old four survive verbatim; the fourth is *privacy* → *private data* (probe 4″). The magnitude is nothing like last round's — but *"nothing lost"* is the exact phrase whose falsity routed this piece back, in the same sentence position, now false by one term. Finding 18.
+
+**Two things the owner cannot act on as written**, against the conductor law's *"a real question with options, real costs, and your recommendation"* and *"being understood is the deliverable"*:
+
+- The paragraph says *"the old four"* and *"narrow it back to the four"* and **never lists them**. The owner arriving cold cannot see what he is choosing between. Judgment 2 §8 spelled both lists out in full for exactly this reason. And judgment 1 offered **three** options — wide, as-landed, or *"protect data-correctness code only where it can lose or corrupt stored data"*; the paragraph offers two, dropping judge 1's (c). Finding 19.
+- **`sufficient` is not in the owner-facing paragraph at all.** Both judges filed it to him — judgment 2 §8 as one of *two* named owner questions, with two options and a recommendation; judgment 1 §11 as a thing to *"settle as a condition, not a consequence."* In the tree it survives only as the first of ten items in the *"Filed for the producer piece or the owner"* list at line 43, and the owner paragraph still opens *"two things."* A question that decides whether work ships, buried in a filed list, is the shape the conductor law names as a defect. Finding 20.
+
+---
+
+### Probe 6″ — the free skeptical attack
+
+I pointed it at the fifth fix, the one whose sibling nobody had swept — the corrected byte figure — because judgment 2's re-test order added, in as many words: *"also sweep for surviving copies of any number the batch corrected."* The batch swept `state.md`. I swept the tree.
+
+```
+$ git grep -inF "55,157" b8e2ce9 -- ':!work/' ':!docs/'
+  decisions.md:5  … Measured: installed surface 70,770 → 55,157 bytes (−22%, the first
+                    shrink in the kernel's history) …
+  state.md:7      … the earlier recorded 55,157 was a working-tree read … (the blessed citation)
+
+$ git grep -inE "22%" b8e2ce9 -- ':!work/' ':!docs/'
+  README.md:44    … rewritten in a builder's words — 22% smaller with all rules conserved …
+  decisions.md:5  … (−22%, the first shrink …) …
+  map.md:14       … the surface −22% with all 177 rules conserved …
+```
+
+And the arithmetic, against the same 70,770 baseline:
+
+```
+70,770 → 55,157  =  −22.1%   (the figure this batch declared wrong)
+70,770 → 56,039  =  −20.8%   (the reproducible figure, two independent methods)
+```
+
+**The attack lands, and it lands on the method's own tie-break rule.** `AGENTS.md:115`: *"When files disagree, `product.md` and `decisions.md` win. Measured evidence beats every document, so fix the losing document and cite the finding."*
+
+- `decisions.md:5` still asserts **55,157** — the figure the batch declared wrong — **and** its derived **−22%**. So `state.md` now says 56,039 and `decisions.md` says 55,157 about the same measurement, and the kernel's own hierarchy hands the win to the wrong number. The second half of `:115` names the required move exactly — *fix the losing document* — and it was not made.
+- `README.md:44` (*"22% smaller"*) and `map.md:14` (*"the surface −22%"*) both carry the derived percentage, wrong by 1.3 points. Under `AGENTS.md:111` **as this very piece widened it** — *"any measured number carries the command that produced it and what it returned, written after the run, never from memory"* — both are uncommanded measured numbers, and both are false.
+- Tally: the raw figure survives in **1** authoritative home outside `state.md`; the derived percentage in **3** homes; **0 of 4 corrected**.
+
+This is the same defect shape for the third consecutive round — *a fix that lands in one of a rule's homes has not landed* — and the report-of-itself strain's **eighth** bite, again caught by someone other than the author. It is aggravated in two ways the previous bites were not: the surviving copy sits in the file the method page says **wins**, and the sweep that would have found it was explicitly ordered in the re-test instruction the batch was executing.
+
+**In fairness to the batch:** on the four families it was ordered to fix, it did not repeat the defect. Every home of the proof plan, the exception, the version and the protected list was reached. The miss is on the fifth, and it is a miss of scope — `grep -c "55,157" **state.md**` was the control quoted, and the batch executed the control rather than the requirement above it (*"No surviving assertion of 55,157"*).
+
+---
+
+### Findings (continuing the numbering)
+
+**16 — `decisions.md:5` still asserts the byte figure this batch declared wrong, in the file `AGENTS.md:115` says wins.** *(confirmed, executed)*
+55,157 and −22% both stand. `state.md:7` says 56,039. Two files disagree about one measurement and the tie-break rule favours the wrong one. Fix: correct `decisions.md:5` to 56,039 / −20.8% with the pinned command, per `:115`'s own second sentence.
+
+**17 — the derived percentage survives in three homes, uncorrected and uncommanded.** *(confirmed, executed)*
+`README.md:44` *"22% smaller"*, `decisions.md:5` *"−22%"*, `map.md:14` *"−22%"*. Correct value −20.8%. All three are measured numbers carrying no command, under the rule this piece installed.
+
+**18 — the owner paragraph's *"nothing lost"* is false by one term.** *(confirmed, text-level)*
+*privacy* → *private data* in the protected list. Inherited from the first batch, not created by this one, flagged by neither judge — but it is asserted away by the sentence written to correct exactly this kind of assertion.
+
+**19 — the owner paragraph never lists the four terms it asks him to choose about, and drops one of judge 1's three options.** *(confirmed, text-level)*
+Against *"being understood is the deliverable."* One clause fixes it: name the four, and offer (c).
+
+**20 — `sufficient`, filed to the owner by both judges, is not in the owner-facing paragraph.** *(confirmed, text-level)*
+It appears only as item 1 of a ten-item filed list; the paragraph still opens *"two things."* Judgment 2 §8 wrote it out as a full owner question with options and a recommendation — that text exists and simply needs to reach the section the owner reads.
+
+---
+
+### What I confirmed, plainly
+
+All five second-batch fixes are at their anchors and every control the judges quoted fires: data integrity is back in both lists, the proof plan names its checks in all four homes, the exception is in all three, the three version strings agree on a version that is really tagged, and `state.md`'s two condemned assertions are replaced by a figure that reproduces under two independent methods. Conservation is total — zero deletions on the method pages, three digit swaps in the whole batch, no new coined word. The surface is 58,636 bytes of 100,000 across 17 files and 5 skills, the always-read set 24,301 of 50,000, and the control arm goes 4 of 4 red. On the four families it was ordered to sweep, the batch reached every home — the first time in this piece that is true.
+
+What I would not sign is that the numbers are now true. The batch corrected the figure where it had been caught and left it standing in `decisions.md`, which the method page says wins, with the percentage derived from it wrong in three more places — the eighth bite of the strain this piece exists to stop, on the one family whose sweep the judges had explicitly added to the order.
+
+**Verdict: conservation, budgets, controls and the ordered sibling sweep all pass. The free attack does not. Findings 16 and 17 are the batch's own scope miss and are one line each; 18–20 are one clause each in the owner paragraph, and 18 is inherited. The piece is one grep from done, and that grep is the one it keeps not running.**
