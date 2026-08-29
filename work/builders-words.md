@@ -1,0 +1,22 @@
+# A builder's words, and fewer of them
+
+**Serves:** promise 6 (plain language), promise 8 (no quiet growth), the owner's standing brief. · **Consumes:** the adoption hearing's density findings and cold-read stumble list (private record set), the owner's three ratified calls (2026-08-29, decisions.md), the three deferred receipt-gate fixes.
+
+**The owner's order, verbatim (2026-08-29, on the v5.1.0 landing report):** "Bro, the subtraction pass needs also be a 'turn Speck Next into actual product building language' instead of fucking methodology lingo. This is ridiculous. I don't understand jack shit of what you're saying. WTF?!" — and, from the same conversation's brief: collaborate with Codex GPT‑5.6 Sol at extra-high effort, which "tends to get much less convoluted."
+
+**Outcome:** every file an agent loads — the method page, five skills with their references, six templates — rewritten so a person building a product understands every sentence in one read and can say what each rule buys the product; the whole installed surface at or under **65,000 bytes** (from 70,770); and inside the savings, the sentences the adoption hearing found missing land: the thinking-before-running cap, an honest line on what checking a piece costs, and the three deferred receipt-gate fixes (define "build commit" · make the stale-relabel case detectable · a route-back re-quotes the built field). The contract's promise 7 is amended per the owner's call: hearing records counted separately from the one-file limit, paid with a named tightening (a cap on linked records per hearing).
+
+**Whole-properties this piece must not trade** (could a rewrite quietly violate this while every check stays green?):
+1. **Meaning is conserved.** A rewrite is the perfect place to lose a law silently. The instrument: a numbered inventory of every operative rule in the current pages, written before any drafting; every entry either survives into the rewrite (mapped to its new sentence) or is cut deliberately with the reason written here. No third state.
+2. **Builder's words.** The reader is someone building a product. Method names survive only where they earn their keep; the four state words (Shaped, Built, Judged, Live) and the five skill names stay. No new coinage — the owner's word budget stays 4 of 5.
+3. **Scars stay true.** The compressed scar lines keep saying only what their primary records earned — the previous piece paid twice for stretching one.
+
+**Predicted effect** *(the first piece under the scoped prediction rule — one falsifiable prediction, measured)*: the hearing's fresh cold reader — who has never seen Speck — will (a) correctly answer, from the pages alone: what do I do first in a fresh repo · what does checking one piece cost · what each of the four state words means; (b) flag **zero** load-bearing terms they cannot define from the page (the adoption hearing's baseline: three — "the wire", "charter", "frame" — plus an uncomputable cost); and (c) the dev suite's green arm stays 4 of 4 with the rewritten kernel driving it. Any of the three failing = the rewrite failed its own point, and this file says so.
+
+**The lane, named before any drafting:** GPT‑5.6 Sol (Codex CLI, reasoning effort xhigh) drafts the rewrites in an **isolated clone** — never this working tree; one driver per instrument is this kernel's own law — receiving the inventory as a conservation contract and per-file byte budgets. I (the conductor) build the inventory, judge every draft against it and against the craft bar, and merge; Sol's edits are treated as an untrusted patch, reviewed line by line. The hearing's roster is decorrelated from both drafters: Claude Opus fresh contexts.
+
+**Proven means:** the inventory exists before the first draft (committed) · every inventory entry mapped or deliberately cut · installed surface measured ≤ 65,000 bytes · dev suite control arm 4/4 red and green arm 4/4 pass on the rewritten kernel · the hearing: a cold reader (the predicted-effect questions, plus their own read), a conservation prober (executed diffs against the inventory), two blind judges — rewriting `AGENTS.md` changes the governor, full loop and independent review by standing rule, second judge as raised care.
+
+**Hearing receipt** *(opens at dispatch when the build is done and Built is written — with its deltas enumerated from the commit range, per the law the last piece paid for)*: [pending]
+
+**Result:** [pending]
