@@ -247,3 +247,136 @@ Everything else earns its place. The parts I expected to resent — receipts, fr
 ---
 
 *Written by R1, a first-time reader, from the sixteen files listed at the top and nothing else.*
+
+---
+
+## Follow-up run (R1′), 2026-08-29, on 714b0fe, ordered by judgment 2's continuation
+
+Same builder, same persona, new session. Nothing above this line is edited.
+
+**What I read this time:** `.claude/skills/judge/SKILL.md` cold; then the diff `e5494cf..HEAD` over `AGENTS.md`, `.claude/skills`, `templates` (added lines only); then, for the free pass, `AGENTS.md`, `.claude/skills/shape-product/SKILL.md`, and this repo's own `product.md`, `map.md`, `state.md`, `decisions.md`, `work/`. I ran two measurements and four greps. Every quote below is copied, not paraphrased.
+
+---
+
+### 1. The cold read of `judge` — one pass, both answers
+
+**(a) What must a judge check before ruling anything?**
+
+The receipt, and specifically its Built field. Three sentences carry it:
+
+> "Start with the receipt's Built field. Read `state.md` at the cited commit. The quoted line must exist and literally say **Built**."
+
+> "Use git to prove that the Built line covers the exact product files under review. It may ride in the build's final commit, or in a records-only commit just after it. The line is invalid if any build commit lands after it, or if it was written after the receipt opened."
+
+> "If the check fails, rule nothing. Order a new Built line in a commit containing nothing else, then order a new receipt."
+
+Then, before any ruling: read the records. *"Now read every tester's record in full and its verdict last. Every verdict claim must point to a moment in that record. Strike any claim that does not."*
+
+One pass. I did not have to reread anything.
+
+**(b) What changes when nothing is built yet, and how does the judge know that's true rather than a label?**
+
+Both halves are answered in one paragraph, the one added by this diff:
+
+> "A shaping or mapping review is different: nothing is built yet, so it has no Built line. Confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label. Then check that the receipt lists the planned probes and was committed before they ran, and go straight to the records."
+
+So: the Built check is skipped, the committed-before-it-ran check is not, and the trust anchor is the repo rather than the receipt. The second sentence is the whole answer to "how does the judge know" — it names the attack (a receipt labelling itself a shaping review to skip the Built check) and closes it without naming it, which is the right length.
+
+This is the direct fix for **S1**, the one stumble I said would have stopped me on day one. As a *reading*, it is closed: I now have a sentence that says the Built field is build-only, in prose, in the file that enforces it. It also reuses the dispatcher's own vocabulary — *"Without a ratified `product.md`, use `shape-product`"* — so I already owned the test.
+
+One thing the paragraph does not tell me, and I had to fetch from `AGENTS.md`: *how* to confirm a ratification. The answer is there — *"**Ratified** means the owner agreed in their own words in that phase's dated record"* — and `AGENTS.md` names those records as `work/shaping.md` and `work/mapping.md`. That's a one-hop lookup on a page I always have loaded, so I don't count it as a stumble. But see §3: when I actually *ran* this instruction, it failed.
+
+---
+
+### 2. Every sentence changed since `e5494cf`, read as a builder
+
+Twelve added lines. Ten land in one pass. One needs a second. One is heavy but survivable.
+
+**One pass, and each better than what it replaced:**
+
+- *"Claiming fresh users without a committed receipt is fabricated evidence."* — the coinage "dispatch proof" is gone. I checked all six sites: `grep -rn "dispatch"` now returns only ordinary English (dispatch date, dispatching session, re-dispatch). One word for one thing.
+- *"Quote the `state.md` Built line that covers these product files. (Build reviews only: a shaping or mapping review has nothing built yet — its receipt lists the planned probes instead.)"* — this is the better half of the S1 fix, because it lands in the *receipt spec itself*, not only in the judge who checks it. The exception now exists where the artifact is authored, not just where it's policed.
+- *"Does every piece past Built have a receipt committed before its review ran?"* — replaces "dispatch and review proof". The old form asked a question with no test in it; this one names the test, so the answer is checkable instead of impressionistic.
+- *"`templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields."* and *"commit its work file (start from `templates/piece.md`)"* — this closes **S17** outright. Three templates were unreachable from the prose; the richest of them is now named twice, once at the exact step where I need it.
+- *"A fresh tester probes the map ... then a separate judge challenges and rules — both under receipts committed before they ran."* — clean, dash closed by a full stop.
+
+**The one that needs a second pass — and it's a sibling miss:**
+
+> "Shaping ends when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both under receipts committed before they ran, and the owner has ratified it in the record."
+
+Thirty-six words, and the em dash never closes. So "and the owner has ratified it in the record" reads two ways: a third item of the "Shaping ends when" list, or a continuation of the dashed aside about receipts. The meaning is recoverable — obviously the owner's ratification is a separate exit condition — but I had to decide that, and deciding is a second pass.
+
+What makes it a finding rather than a nit is that the same edit was made at three sites and only this one broke. The other two are correct:
+
+> `AGENTS.md`: "a fresh tester has probed it and a separate judge has ruled — **both with receipts committed before they ran —** and the owner has ratified it."
+
+> `map-build`: "a separate judge challenges and rules — both under receipts committed before they ran. **Finally,** the owner ratifies the order in their own words."
+
+`AGENTS.md` closes the dash pair; `map-build` closes with a period and starts a new sentence; `shape-product` comma-splices out of an open dash. The fix's own skill — *"search for the same problem in sibling fields, checks, screens, and repeated copy"* — is the one that catches this. Repairing it costs one character: close the dash before "and the owner".
+
+(Minor, same family: the three sites say "with receipts", "under receipts", "under receipts". Cosmetic, not worth a commit on its own.)
+
+**The heavy one:**
+
+> "every captioned screen drawing belongs to exactly one piece — the population is the captions in the shaped decks and journeys themselves: grep them, count them, match them against the pieces;"
+
+Thirty-one words, and it is now by some margin the longest of the five bullets in a list whose whole virtue is that it is mechanical. It carries a rule, a definition of the population, a location, and three imperatives in one bullet. I could execute it on one pass, so I am not calling it a defect — but the population sentence is doing different work from the check, and the four sibling bullets stay one clause each.
+
+**The measurement — `judge/SKILL.md`, sentence lengths:**
+
+83 sentences. **Zero over 30 words.** The longest five:
+
+| words | sentence |
+|---|---|
+| 29 | "Name the reason and destination: a wrong promise returns to shape; badly cut pieces return to map; a bad build returns to build; and thin evidence returns to experience." (renders as a stem plus four bullets) |
+| 28 | "'Delivers the promise' is judged against the jobs and promises in `product.md`; the piece's work file may narrow the work under review but cannot replace the product promise." |
+| 25 | "If the context cannot stay open while a requested run happens, write a judgment-so-far with what was heard, each challenge, and the exact runs ordered." |
+| 23 | "A fix made during the review, before another tester can walk it, needs a control the judge can run against the pre-fix tree." |
+| 22 | "Confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label." |
+
+The 71-word sentence judgment 2 routed the piece back on is gone; the paragraph that replaced it runs 17 / 22 / 21. That order held.
+
+Two sentences added by this diff *outside* `judge` do cross 30: the `shape-product` exit at 36 (above), and `AGENTS.md`'s `state.md` bullet at 34 — *"`state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim."* That one is a six-item list in sentence form and reads fine; it grew from 26 words to restore a rule that had been dropped, which is a trade I'd take.
+
+---
+
+### 3. Free skeptical pass: I ran the new phase test instead of reading it — it misfires on this repo
+
+I picked the sentence I had just praised, because it is the newest load-bearing instruction on the surface and it had only ever been *read*. So I executed it, as a judge would, against the repository I was standing in:
+
+> "Confirm the phase yourself from the repo — no ratified `product.md`, or no ratified map — never from the receipt's own label."
+
+What the repo answers:
+
+- `product.md` is 5 lines. It contains no ratification, no owner quote, no date. (`grep -in "ratif" product.md` → nothing.)
+- There is no `work/shaping.md` and no `work/mapping.md` — the two dated records `AGENTS.md` names as where ratification lives. (`ls` → No such file or directory, both.)
+- So by the definition I was sent to — *"the owner agreed in their own words in that phase's dated record"* — **`product.md` is not ratified.**
+- The first disjunct fires. The instruction returns: **shaping review. No Built line required. Skip the check.**
+
+And the truth: `map.md` piece 5 is marked `[live — owner-ordered 2026-08-29 …]`, `state.md` says *"The fixed pages are Built as of this commit"*, and the receipt this very run belongs to quotes that Built line. This is a build review in the middle of its second fix batch. The test that exists to stop a receipt from talking its way out of the Built check hands a judge the exemption for free, on the kernel's own repo, with no receipt label involved at all.
+
+Two honest caveats. First, a judge would probably smell it — `state.md` and `map.md` are loud. Second, the misroute is inherited: `AGENTS.md`'s dispatcher runs the identical test (*"Without a ratified `product.md`, use `shape-product`"*) and misroutes here too. That part isn't new. What *is* new is that this diff promoted a routing hint into a security check, and a routing hint that fails safe (an agent shrugs and reads on) fails open when it becomes a gate.
+
+The failure has a shape I'd name for whoever fixes it: **the test is negative.** It asks what is *missing*, so anything missing for an unrelated reason — a thin `product.md`, a repo whose records are named differently, a half-migrated tree — opens the gate. A positive test can't be opened by an absence. The anchor is already in the artifacts: **a review is a build review if `map.md` has a live piece; only a repo with no live piece can be a shaping or mapping review.** I ran that one too — `map.md` piece 5, `[live — …]` — and it returns *build review* on this repo, correctly, in one grep.
+
+I'd also note the shape of how this got through: the fix was validated by re-reading the page. Reading it, it's a good sentence — I said so in §1 and I stand by that. It only fails when someone stands in a repo and does what it says.
+
+**Secondary, reported because I checked it and it isn't clean:** the S2 fix is *partially* closed. The gate now tells me where the population lives — *"the captions in the shaped decks and journeys themselves"* — and I can grep it, which I could not before. But nothing yet says a deck or journey must *contain* captioned screen drawings, so a product with screens can leave shaping with zero drawings and the gate stays green by being empty. Smaller residue than before, and a different one.
+
+**A correction to my own R1 record.** My S2 said screen drawings were "never commissioned by any step." That was too strong, and it was wrong when I wrote it, not because of this diff. `shape-product` rule 11 already read — at `e5494cf`, which is what I reviewed — *"Check every journey, deck, and screen drawing against the domain model, repo, fixtures, or real behavior."* I read that file and missed the clause. Shaping does presume screen drawings exist. What stands from S2 is that the term is never *defined* and never *required*; what falls is "never commissioned."
+
+---
+
+### Verdict, as this builder — R1′
+
+**The pages got better, and the two stumbles I ranked highest are the two that moved.** S1 is closed as prose, in both files that needed it — and closed at the receipt spec, not only at the judge, which is the version that actually reaches an author. S17 is closed outright: `templates/piece.md` is now named at the step where I'd reach for it. S2 is closed halfway, which I'd rather have than the coinage-shaped fix that would have looked complete.
+
+**One sentence needs a second pass:** the `shape-product` exit, 36 words with an unclosed dash, and it's the one site of three where the same edit broke. One character fixes it.
+
+**One new instruction is wrong when executed**, and that's the finding I'd want acted on: the judge's phase check returns "shaping review — skip the Built check" on this repository, today, because `product.md` carries no ratification and no shaping record exists. It reads well and runs wrong, which is exactly the pair a cold read cannot separate. A positive anchor — a live piece in `map.md` — returns the right answer on the same repo in one grep.
+
+**On the ordered measurement:** zero sentences in `judge/SKILL.md` exceed 30 words, longest 29, and the 71-word sentence is gone. That order was carried out.
+
+Would I build a product under these pages? Still yes, and more comfortably than three days ago — the day-one blocker is gone. What I'd want before landing is the dash, and a judge whose phase test can't be opened by something that simply isn't there.
+
+*Written by R1′, the same first-time builder, from the files and the repository named above.*
