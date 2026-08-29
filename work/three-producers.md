@@ -12,6 +12,6 @@
 > Fixture 1 — a work-file line: "Fixed the receipt rule in AGENTS.md." (The receipt rule also lives in the experience skill and the piece template; the edit touched one home of three.)
 > Fixture 2 — a judge's route: "Control: `grep -c 'stale figure' state.md` returns 0." (The figure also lives in decisions.md and README; the control names one file.)
 
-**Review receipt:** [opens after Built, in its own commit]
+**Review receipt** *(committed before the testers run)*: built — `state.md` at fc33a7b says: "The live piece "Three producers" is Built as of this commit" — after the build (77628d1), before this receipt · deltas from `caf557f..HEAD`: the four sentences (AGENTS.md ×3 sites, judge ×2 sites), the state writes · testers: T1 the cold reader (census delta on the additions + the two planted fixtures — each must be condemned citing the new sentences) and T2 the conservation prober (word-diff, budgets with commands, sibling sweep of every home the sentences touch), fresh contexts, model opus · judge: one, fresh, after both return — it may order a second · run owner: this session · empty record: re-dispatch under a named line · records: [T1](three-producers-T1.md) · [T2](three-producers-T2.md) · [judgment](three-producers-judgment.md)
 
 **Result:** [pending]
