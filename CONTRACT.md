@@ -1,6 +1,6 @@
 # speck-next · Product contract
 
-The promises Speck Next makes, each with the check that can fail it. (v0.6 — how this document has been attacked and revised lives in [docs/reviews/](docs/reviews/).)
+The promises Speck Next makes, each with the check that can fail it. (v0.7 — how this document has been attacked and revised lives in [docs/reviews/](docs/reviews/).)
 
 ## The job
 
@@ -32,7 +32,7 @@ Every promise names its check, and every check can fail.
    - Installed into a product repo: **≤ 20 files / 100 KB**, counting every reachable capability, visible or not. (An upgraded repo's archived history is its own and sits outside this limit. Raised from 15 files when v3's templates arrived, traded against the skill ceiling below — owner-approved, 2026-08-19.)
    - Skills the agent can load: **≤ 6** (five exist) — the compensating tightening for the file raise, owner-approved 2026-08-19.
    - What an agent always reads (`AGENTS.md` + `state.md` + `product.md` + `map.md`): **≤ 50 KB** — raised from 25 KB by the owner after the first real campaign showed a deeply-shaped `product.md` earning its weight (the shaping process benefited from the context). The budget bounds drag, not thinking: a `product.md` full of shaped decisions is inside the spirit; one full of narration is not, at any size.
-   - Durable method files per piece of work: **≤ 1** beyond the four shared files (`product.md`, `map.md`, `decisions.md`, `state.md`) — and typo-sized work writes none.
+   - Durable method files per piece of work: **≤ 1** beyond the four shared files (`product.md`, `map.md`, `decisions.md`, `state.md`) — the piece's own work file — and typo-sized work writes none. A hearing's linked records (tester records, judgments) sit outside that limit and inside their own, the compensating tightening for counting them separately (owner-approved 2026-08-29): **≤ 6 linked records per hearing**, and a re-hearing extends the existing records — a follow-up run appends to its record, a continued judgment appends to its judgment — rather than opening new files.
    - End-to-end cost ceilings (tokens, minutes, owner interruptions) for typo-sized and small-feature work, enforced by running the benchmark in CI.
 
    A limit moves only in a new owner-approved version of this contract that names another limit tightening in exchange — and moving a limit can never rescue an experiment that already failed.
