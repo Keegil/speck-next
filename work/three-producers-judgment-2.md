@@ -212,3 +212,144 @@ What held, at my own hand: both receipt chains valid under git; conservation cle
 What routed it: the previous judgment named two sites and the batch swept one. Around that, six more instances of the same class — a quoted floor left red, a control that misstates its own corpus, a record obligation the record does not meet, a skeleton set with no slot for it, strain counts frozen in three homes while the strain kept biting, and a stale-page law living on one page while the judge it has now bitten twice reads a different one.
 
 **For the next builder:** rule 1 is a better sentence than this review nearly concluded — its procedure finds every home when the key is chosen well, and I proved that after two contexts had concluded otherwise. What it lacks is a way to choose the key, and its own prohibition on single keywords is what hid the sibling this batch missed. Fix the sentence, not the reputation. And the one thing no sentence here does yet: nothing in the method asks, when a rule is *born*, which pages' readers must obey it — rule 1 only asks which pages already do.
+
+---
+
+## Final word, 2026-08-29, on 39cdbd8
+
+**Receipt line.** Claude Code · Opus 5 (`claude-opus-5[1m]`) · fresh context, built none of it and tested none of it · 2026-08-29 · piece "Three producers", union fix batch `0f30c51`+`d60e66d`, Built line `2eea8d4`, third re-entry receipt `39cdbd8`, E1's record `e613577`. Still blind: I have not opened `work/three-producers-judgment.md` or its continuation. Where the work file quotes line 1, I read the quote and formed my own view.
+
+**Disclosure — the stale-page trap fired on me again, and this time the law caught it.** My host preloaded an `AGENTS.md` opening "You are an agent in a repository run by Speck Next … your host loaded it for you," with a section called "The conductor — law in every session." `grep -c "The conductor — law in every session" AGENTS.md` → **0**; `git log -S` returns `e5494cf` and `5d67cac`. The file at HEAD opens "You are building a product with Speck Next." Last round I recorded that `judge/SKILL.md` said nothing about this and I was uncovered. This round `judge/SKILL.md:10` says *"Read every page from disk at the commit under judgment — hosts preload stale copies, and judges have been bitten too,"* landed by the batch under review, and it is why I checked before reading a word. **B7's sentence produced the behaviour it was written to produce, on the judge it was written for, in the first session after it landed.** Everything below is read from disk at HEAD.
+
+---
+
+### 1. The third re-entry chain — valid, proved with git
+
+| Commit | Touches | Class |
+|---|---|---|
+| `0f30c51` | `AGENTS.md`, `judge`, `experience`, `templates/piece.md` + work file | **build** (mixed) |
+| `d60e66d` | `map.md`, `state.md`, work file | records |
+| `2eea8d4` | `state.md` only | Built line |
+| `39cdbd8` | `work/three-producers.md` only | receipt |
+| `e613577` | `work/three-producers-T1.md` only | the run |
+
+`git show 2eea8d4:state.md | grep -c "the re-fixed pages are \*\*Built\*\* as of this commit"` → **1**, literal, says **Built**. `git log --oneline 2eea8d4..HEAD -- AGENTS.md .claude/skills templates bin CLAUDE.md` → **empty**: no build commit lands after the line. `map.md` carries exactly one `[live` marker, row 7.
+
+**On the question put to me about the receipt commit: I checked rather than accepted it.** `git show --name-only 39cdbd8` returns `work/three-producers.md` and nothing else — three inserted lines, the receipt. E1's record is a separate commit, `e613577`, touching only `work/three-producers-T1.md`. The receipt was committed **before** the run it orders, not alongside it. The chain is clean and the suggestion that it was not is false. **Valid.**
+
+### 2. My eight controls, re-fired at my own hand
+
+| | Pre-fix | At HEAD | Ruling |
+|---|---|---|---|
+| **B1** floor `grep -c "as its floor\|floor, not its scope" AGENTS.md` | 1 | **1** | requirement **met**, floor literally red — see below |
+| **B1** population `grep -c "population" AGENTS.md` | 0 | **1** (`:90`) | **closed** |
+| **B2** `grep -n "not one keyword" AGENTS.md` | 1 | **0** | **closed** |
+| **B3** `grep -c "landing or changing\|Before landing" AGENTS.md` | 0 | **1** (`:70`) | **closed** |
+| **B4** `grep -c "one home of three" work/three-producers.md` | 1 | **1** | **substance closed, form open** |
+| **B5** four coverage claims returning a marked home set | 0 of 4 | **4 of 4 present, 1 mark false** | **half closed** |
+| **B6** `grep -rci "home" templates/` | 0 across six | **1** (`templates/piece.md:31`) | **closed** |
+| **B7** `grep -rciI "from disk" .claude/skills/judge/SKILL.md` | 0 | **1** (`:10`) | **closed** |
+| **B8** `grep -ci "check failed\|not judged yet" state.md` | 0 | **1** (`:27`) | **closed but for the cost figure** |
+
+**B1's floor is red on a word, not on the work, and I rule it green on the requirement — which is what rule 3 tells me to do.** `AGENTS.md:62` now reads "a quoted control is a floor, not **the** scope"; my quoted key said "not **its** scope", the phrasing `judge:92` uses. Both builder-page statements carry the floor rule; the population language landed at `:90`, taking that control from 0 to 1. Rule 3's own sentence — the control is the floor, the requirement is the scope — is what separates a genuine miss from my key being one article too narrow. It is the second consecutive judgment in which this sentence changed my ruling, and this time it protected the builder rather than convicting them.
+
+**B4.** The corrected corpus is now in the file with the command that produced it, and I re-ran it: `grep -rnilE "literally say|Built line that covers" AGENTS.md .claude/skills templates` → four files, exactly as claimed. What did not happen is the fix at the point of use: `work/three-producers.md:12`, inside the committed **Planted fixtures** block, still reads "the edit touched one home of three" with no marker pointing forward to the correction 41 lines below. `AGENTS.md`'s own supersession rule — a superseded artifact says so at its own top the moment it is outrun — is unmet at line 12. Substance right, form wrong, one clause to fix.
+
+**B8.** Both overclaiming sentences came down rather than acquiring commands — `grep -n "case-insensitive grep the record carries\|reach the readers who commit" state.md` → **empty**. Eight bites moved to eleven in both `state.md:11` and `map.md:16`; three bites moved to five at `state.md:13`; "Nothing waiting" became the ratified-word question carrying my recommendation. The cost line is the residue: `state.md:27` says "Piece cost so far, commanded: +1,562 bytes … caf557f 58,648 → 7bcaf95 60,210" while sitting in a file that describes the surface at `2eea8d4`. Measured at my hand over the installer's own `SURFACE` list at `bin/speck-next.js:11`:
+
+```
+ebb9fb5 56,039 · caf557f 58,648 · 7bcaf95 60,210 · HEAD 60,591
+installed:   60,591 of 102,400  (59.2%)
+always-read: 28,313 of  51,200  (55.3%)   [AGENTS+state+product+map, per CONTRACT.md:34]
+union batch  7bcaf95 → HEAD  +381 B
+piece to date caf557f → HEAD  +1,943 B  (+3.31%)
+```
+
+The v5.2.0 pin of 56,039 reproduces for the third time, and my own 7bcaf95 always-read figure of 27,206 reproduces exactly — the measured-numbers convention is holding across five commits and four hands. `grep -rn "60,591\|+381" state.md work/three-producers.md decisions.md` → **nothing**. The union batch's cost is recorded nowhere. This is the same narrow defect I charged last round on the previous batch's +614 B; it has now happened twice.
+
+### 3. E1 — the route is satisfied, and exceeded
+
+My E1 scenario named six sentences from disk at the re-fixed commit, one pass each, what each buys a builder, then both fixtures re-run, then a free attack. E1 read all six plus `AGENTS.md:61` and `:62`, returned a one-pass verdict and a named benefit for each, re-condemned both fixtures quoting the current wording verbatim, and ran a free attack it chose *because* `AGENTS.md:113` gave it a one-command test. It disclosed its own stale preload before reading a word, and disclosed that its commit trailer names a different model than the one that ran. **The route is closed.**
+
+What I could not verify from git is freshness itself — E1's identity line carries a session id matching this workflow's. What I can weigh is that E1's central finding condemns the very claim the batch's own commit message advertises, that it charged the builder rather than clearing them, and that I reproduced the finding independently. A record written to flatter its author does not do those things.
+
+**Struck, one claim, on its inference and not its evidence.** E1 charged `fresh challenge` at `AGENTS.md:62` as "an undefined rule word minted in the same batch that landed the rule against undefined rule words." It was not minted here. `git show caf557f:AGENTS.md | grep -c "fresh challenge"` → **1**, before this piece existed; `git log -S"fresh challenge" -- AGENTS.md` → `e5494cf`, the rewrite piece. The batch rewrote step 5 around the phrase and kept it. Rule 2 fires on the **first** writing of a word, so it condemns `e5494cf`, not `0f30c51`. **The observation is right and useful; the attribution is wrong.** It is an inherited defect on the product surface, and it routes as an open item, not as this piece's failure. This is the same discipline I applied to T2′ last round, applied now to a tester whose verdict favours the piece.
+
+**Confirmed at my hand — E1's finding stands, and it is the real one.** The record at `work/three-producers.md:58` states a returned home its own quoted command does not return:
+
+```
+grep -rnilE "floor, not the scope|as its floor" AGENTS.md .claude/skills templates
+  → AGENTS.md                                    (judge/SKILL.md is NOT returned)
+```
+
+The record lists `judge/SKILL.md — changed`, under a header promising "every returned home listed and marked." Rule 3 does live there — `judge:92` says "its floor, not **its** scope" — so the mark is true about the world and false about the command, which is exactly what `AGENTS.md:113` forbids: *written after the run, never from memory*. The key that actually finds all three homes is `-iE "floor, not (the|its) scope|as its floor"` → `AGENTS.md:62`, `:90`, `judge:92`, and I ran it.
+
+E1's structural half is also correct and I verify it: all four coverage keys are strings this piece authored, so no key can return an untouched home, so no control can fail — `AGENTS.md:68` rules on that directly. And it has a material consequence, not just a formal one. Running rule 1 as written surfaces a home the narrow keys hid:
+
+```
+grep -rniE "undefined|jargon|defines? it" AGENTS.md .claude/skills templates
+  → AGENTS.md:113 · .claude/skills/judge/SKILL.md:67
+```
+
+`judge:67` — "Undefined jargon that carries a rule is a defect" — is a second home of rule 2's subject, and the record never had to decide about it. E1 correctly declined to charge that `judge:67` must change; the charge is that rule 1 requires it be listed and marked. Right on both halves.
+
+### 4. My own probe — rule 2 turned on this batch
+
+Nobody had run the piece's own census rule against the union batch. I did it mechanically: pre-image vocabulary over `AGENTS.md`, all skills and templates at `7bcaf95` (1,571 words), subtracted from the batch's additions.
+
+> execute · homes · hosts · keys · landing · narrowest · night · touched · used · widest
+
+Ten new tokens. `homes`, `landing`, `touched`, `execute`, `used` are inflections of words the pages already carry. `hosts` and `night` are plain English in non-rule positions. `keys`, `widest`, `narrowest` are glossed by the verb of their own sentence — "grep case-insensitively, trying several keys from widest to narrowest" — and E1 read that clause in one pass and called it the sharpest thing in the delta. **Zero new undefined rule-carrying words.** The piece's rule 2 passes on the piece's own repair batch, at a hand that did not write it.
+
+### 5. A finding of my own that neither line has made
+
+**A strain count baked into an installed page is a number guaranteed to go stale, in a file where it was never true for the reader.** `experience/SKILL.md:14` now ships the sentence "five reviewers in one night caught theirs doing exactly that." E1 was the sixth, disclosed at `e613577` — one commit after the number landed. My host preloaded again in this context, making at least seven disclosed instances. The count was stale inside the same night, in the same session, by the next commit.
+
+Worse than staleness: `experience/SKILL.md` **installs**. Every product that runs `npx speck-next install` receives a sentence about this repository's own review history, in their page, about reviewers they never had. That is this repo's strain narrated on the product surface. The law itself — *read every page from disk at the commit under test* — is right and belongs there. The tally does not. It belongs in `state.md`, where the strain is counted and where `state.md:11` already names the mechanism that would end the argument: a computed check. Two of this file's live strains intersect here — the report-of-itself and byte-exact self-measurement — and the answer to both is the same, and it is not another sentence.
+
+### 6. The four
+
+**Works — kept.** Verified by execution, not reading. Rule 3 changed a judge's ruling for the second consecutive round, this time in the builder's favour (§2, B1). `judge:10`'s from-disk law caught my own stale preload before I read a word, the first session after landing. `AGENTS.md:113` chose E1's free attack, and the attack found a real defect. Rule 1's widest-first clause, executed by a fresh reader, surfaced `judge:67` — a home the record's narrow keys hid. Both fixtures condemned at current wording by a fresh reader quoting them verbatim, and fixture 2 now condemned on the **builder's** side as well as the judge's, by two independent builder-page statements — the exact reach failure that routed the last two rounds, closed where a cold reader can see it closed. Census delta zero at my own hand. `./devsuite/run.sh --control` → **4 of 4 tasks went red**, run by me: the suite can still express failure.
+
+**Delivers the promise — kept, with two open items.** Judged against `product.md` and `CONTRACT.md`. Promise 3 kept: three fresh non-builder contexts, receipts committed before every run, two judgment lines, this one blind. Promise 4 kept as of `2eea8d4`: every overclaim I charged either acquired its command or came down, and the file now carries its own rulings in the judgment's words. Promise 6 kept — see below. Promise 7 kept and measured: 59.2% and 55.3%, every pinned figure reproducing. **Promise 8 — broken again, narrowly, and for the second batch running:** +381 B recorded nowhere, in a piece whose live strain is byte-exact self-measurement. One command fixes it and it is a landing condition, not an open item. Noted not charged, unchanged from last round: `capabilities.md:7` pins `AGENTS.md` at "~11.4 KB, measured at v5.2.0" against 14,096 B at HEAD — pinned, so honest, but the instrument reports a smaller kernel than exists.
+
+The shaped outcome — "each stopping a defect class at its source instead of catching it a round later" — I rule delivered, and I say precisely how far. It was not stopped at its source: the record committed the class a third time. It was caught **inside the round, by the piece's own rule, executed by a fresh reader, before any judge saw it.** Last round I caught it a round later. This round the rule caught it in the round. That is the sentence doing its work at one remove from the claim, and I will not pretend it is the full claim.
+
+**Good to use — kept.** The half I refused to rule last round is now judged on testimony rather than my own reading. E1 read eight sentences cold, one pass each, and named what each buys a builder without the work file open — including the two nobody had read, rule 1 as rewritten and `AGENTS.md:90`. `judge:92` improved from two passes to one against a measured predecessor. Filed and not fatal: one charged stumble (`fresh challenge` at `:62`, inherited) and one locating complaint (`:111`, four unrelated rules stacked under no heading, filed by both readers).
+
+**Quality hangs together — kept, on three named defects and no strength excusing them.** Last round I listed nine, seven of them the piece's own subject matter. Three remain, all in the record and none in the installed product: the false coverage mark, four fix-keyed controls that cannot fail, and the unmarked superseded gloss at line 12. I am not excusing them by pointing at the count. I am ruling that three record defects, all cheap, all caught inside the round by the mechanism, and all corrected by the landing conditions below, do not break the workmanship of a piece that arrived here with nine.
+
+### 7. Sufficient — the piece lands and releases as v5.4.0
+
+**Sufficient.** Ruled by the piece's own definition, which binds me: *the piece delivers what it was shaped to deliver and everything still open is named in `state.md` with where it went — a judge may land a piece with open items, never with silent ones.*
+
+The deciding fact last round was that a judgment named two sites and the batch swept one. **That did not repeat.** Eight build orders named, eight executed; the experience order delivered in full and exceeded; the two homes I named both carry the rule; the prohibition that hid the sibling is gone; the trigger fires on birth; the templates carry the slot; the judge's page carries the law and it caught me.
+
+I tested the case for a fourth round and rejected it, and the reason is E1's and I verified it: *the repair is not another sentence — `AGENTS.md:70` already says everything needed; the repair is running it.* A route-back orders more writing for a defect whose sentence exists and works. What changed this round is that the mechanism ran and caught the residue itself. Routing the author back a third time is not the repair for an author who is the weak link; naming the open items with their destinations is what rule 4 was written to permit, and applying it to its own piece is the honest test of whether it is a rule or a wish.
+
+**Landing conditions.** These are records corrections and one number; none touches a product file, so none requires a new Built line, and the map tick is the gate.
+
+- **C1 · The coverage record obeys the rule it certifies, once.** Re-run all four claims with keys aimed at the **rule**, not at the fix; paste what each command returned; mark every returned home changed or untouched. Rule 3's key becomes `-iE "floor, not (the|its) scope|as its floor"` (→ `AGENTS.md:62`, `:90`, `judge:92`); rule 2 lists `judge:67` marked untouched with the reason. The false mark — `judge/SKILL.md` listed under a command that does not return it — comes out. **The piece does not land carrying a false statement about what a command returned.**
+- **C2 · The batch's cost is commanded.** `state.md:27` carries the current figure: `git cat-file -s` summed over `bin/speck-next.js:11`'s list — caf557f 58,648 → HEAD 60,591, **+1,943 B piece to date, +381 B this batch**; installed 59.2%, always-read 28,313 of 51,200.
+- **C3 · Line 12 says it is superseded.** One clause on the fixture block pointing at the corrected gloss, per the kernel's own supersession rule.
+- **C4 · `state.md` is rewritten at the landing to match reality** — these four rulings, E1's run done, and the open items below each with its destination.
+
+**Open items, landed with destinations named (rule 4's own bar).**
+
+1. **`fresh challenge` at `AGENTS.md:62`** — an undefined rule word for an obligation the pages name twice as "one free skeptical attack, reported either way." Inherited from `e5494cf`, not minted here. *Destination:* a small change after the tick — no new dependency, no promise touched, one commit to revert.
+2. **The bite count on an installed page** (`experience/SKILL.md:14`, "five reviewers in one night") — already stale by at least two, and it ships this repo's history into every installed product. *Destination:* the next kernel piece. The law stays; the tally moves to `state.md`. This is the more valuable of the two and it is where the report-of-itself strain and the self-measurement strain meet.
+3. **`AGENTS.md:111`** — four unrelated rules stacked under no heading; two independent cold readers filed the same locating complaint. *Destination:* the next kernel piece, with the density work.
+4. **`capabilities.md:7`'s pinned `AGENTS.md` cost**, 23.6% below the file it describes. *Destination:* a computed check, which `state.md:11` already names as the retirement of the self-measurement strain.
+5. **The ratified-word question**, unchanged and still the owner's. Filed by both judgment lines with the same recommendation, carried at `state.md:23`. Non-blocking; the piece lands either way.
+
+**Release.** `package.json` reads 5.3.0 and the tags run to `v5.3.0`. On the conditions above executed, the piece ticks on `map.md`, `state.md` is rewritten, and the kernel releases as **v5.4.0** with every release-facing surface in the landing commit.
+
+### 8. For the next builder
+
+Two things, and neither is a sentence to write.
+
+**The record's failure is a running failure, not a writing one.** Three consecutive rounds rewrote the coverage block and three failed it, while the rule they were certifying stayed correct throughout and caught the third failure itself. The tell is mechanical and cheap to check: **if your coverage grep is keyed on the text you just wrote, it cannot return an untouched home, so it cannot fail, so it proves nothing** — `AGENTS.md:68` was already on the page saying so. Key on the rule, not on the fix.
+
+**And the thing rule 1 still does not ask.** Last round I wrote that nothing in the method asks, when a rule is born, which pages' readers must obey it. `AGENTS.md:70` now says "or must now carry it," which is the words for it — and this round the same batch shipped a strain tally into an installing page, which is the mistake in the opposite direction: not a rule that failed to reach a page, but a fact about this repository that reached every future one. The question rule 1 answers is *which pages carry this*. The question it still does not ask is *whose page is this, and is this true for them*.
+
+**Result: sufficient, 2026-08-29, on `39cdbd8` plus `e613577`.** The piece lands and releases as **v5.4.0** on the four conditions in §7; five open items named with destinations; the owner's one question open and non-blocking. Both judgment lines now close sufficient, from different evidence and by different routes, and the divergence that opened at `15fdaad` is resolved by the batch that answered it rather than by rank.
