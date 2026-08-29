@@ -510,3 +510,154 @@ The method says two "straining" rulings in a row make structural repair the next
 ---
 
 *Continuation of judgment 2 · Claude workflow agent · opus · 2026-08-29 · on `42f25e1`, extending the record above rather than replacing it, per the amended promise 7. Ruled blind to judgment line 1. Every control cited was executed by me against both trees; the four dev-suite checks and the four controls that break them were run at my own hand.*
+
+---
+
+## Final ruling (judge 2″), 2026-08-29, on ebb9fb5
+
+**Judge:** judge 2″ · Claude workflow agent · model opus · 2026-08-29 · closing judgment line 2 on `ebb9fb5`. I inherit both sections above as written and change nothing in them. Blind to judgment line 1; I did not open `builders-words-judgment-1.md`.
+
+**Scope.** Narrow: did my line's three route-back grounds close. I re-took each at my own hand with git and my own measurements. Where I found something no record holds, I say so and I say whether it routes.
+
+---
+
+### 1. C1 — the Built chain
+
+**The chain, proved with git, not read from the receipt:**
+
+```
+$ git log --oneline --reverse 42f25e1..HEAD
+769aebc  build: judge §1 split, state.md, records      ← the build
+c4ec242  state.md | 2 +-   (1 file, 1 line)            ← Built, nothing else in it
+714b0fe  work/builders-words.md | 2 +-                 ← the receipt, records-only
+4ad4bfa  work/builders-words-tester-R1.md | 133 +      ← the ordered read runs
+ebb9fb5  3 skill files | 3 +-                          ← a fix from that read
+```
+
+Every condition my predecessor named holds. `c4ec242` changes one file and one line — it is state-only in the strict sense, not merely state-mostly. Its line literally says **Built** and covers the right subject: *"The fixed pages are Built as of this commit."* The receipt at `714b0fe` quotes that line verbatim and opens after it, in a commit touching only records. The review ran after the receipt. **C1's own defect — the piece's re-entry rule unfired on its author — is closed.**
+
+**Then `ebb9fb5`, and I was asked to rule on it honestly rather than wave it through.**
+
+It is a build commit. `.claude/skills/*.md` is the product here, and `judge:26`'s words are plain: *"The line is invalid if any build commit lands after it."* Read alone, that sentence invalidates `c4ec242`.
+
+It does not stand alone. `judge:92`, in the same file: *"A fix made during the review, before another tester can walk it, needs a control the judge can run against the pre-fix tree."* That sentence exists for precisely this event — a fix landing after the tester ran and before the judge rules — and it prescribes a control, not a new Built line.
+
+The two rules cannot both be read strictly, and the reason is mechanical: if every mid-review fix invalidated the Built line, then `judge:92` could never be executed. Each fix would demand a new Built line and a new receipt; the next reader's findings would demand another; the loop would never reach a ruling. I checked whether this piece created the collision — `git show 44a48ba:.claude/skills/judge/SKILL.md` carries both rules, in the older wording, with the same silence between them. **Conserved faithfully. Not a rewrite defect.** It belongs to the next piece, and I name it in §4.
+
+So I rule the reading that lets both stand: `judge:26` governs whether the Built line covered the tree the review actually ran against — it did, `ebb9fb5` postdates `4ad4bfa` — and `judge:92` governs the fix that came out of that review. `judge:92`'s condition is a control I can run against the pre-fix tree. I ran both:
+
+| control | pre-fix tree (`4ad4bfa`) | `HEAD` |
+|---|---|---|
+| **the phase test, executed against this repo** | `product.md` has no ratification (`grep -ci ratif` → 0), no `work/shaping.md` → the negative test's first disjunct fires → *"shaping review, skip the Built check"* on a repo mid-build-review. **MISFIRE** | `map.md` has a live piece (`grep -c "\[live —"` → 1) → exemption denied → **demand the Built line**. Fails closed. |
+| **the unclosed em dash** | `— both under receipts committed before they ran, and` — dash never closes | `— both with receipts committed before they ran — and` — closed, and the three sibling sites now read alike |
+
+Both fire on the pre-fix tree and go silent on the fixed one, at my hand.
+
+**The classification, which is the part the builder got wrong.**
+
+The four conditions are: no new dependency · no auth, money, privacy, or data-integrity code · no promise rewritten · reversible in one commit.
+
+*The dash and the phrasing* (`shape-product`, `map-build`) meet all four cleanly. Small. No argument.
+
+*The phase exemption* does not. This product has no auth and no money; its nearest thing to data-integrity code is the gate that decides whether a review may open at all — and that gate is exactly what this edit rewrites. `CONTRACT.md` promise 2 is not ambiguous about who calls it: *"a change that turns out to touch protected code was never typo-sized... When the call is genuinely unclear, the judge makes it, not the builder."* `AGENTS.md:121` says the same. **The builder classified its own edit under a rule that names the judge as the classifier.** That is a real finding and I record it.
+
+What saves the substance is that everything the classification would have bought already exists:
+
+- **A judge-executable control** — `judge:92`'s requirement, satisfied and re-run above.
+- **The replacement was verified by running, by a fresh non-builder, before it shipped.** R1′ did not merely report the misfire; it wrote and ran the anchor the fix adopts: *"I ran that one too — `map.md` piece 5, `[live — …]` — and it returns build review on this repo, correctly, in one grep."* The fix is a fresh reader's own tested answer, not the builder's invention.
+- **`AGENTS.md:98`** — *"review protected-code changes before shipping"* — is satisfied by this judgment, which lands before v5.2.0 does.
+
+So: **misclassified label, sound substance, controls intact.** The gate fired late rather than not at all. That routes nothing, and it goes in the wearing-out list, because it is the same shape as the strain already recorded there.
+
+**C1: closed.**
+
+---
+
+### 2. C2 — the sentence, spot-verified
+
+I wrote my own splitter rather than reuse R1′'s numbers. First attempt was wrong — it merged sentences across headings and bullet stems and reported five over thirty. That is a measurement that cannot fail honestly, so I re-cut it line-aware and re-ran:
+
+```
+.claude/skills/judge/SKILL.md — 90 sentences · median 11 words · over 30 words: 0
+longest: 28  "Delivers the promise" is judged against the jobs and promises in product.md…
+         25  If the context cannot stay open while a requested run happens…
+         24  The exemption holds only when map.md has no live piece…
+```
+
+**Zero over thirty. The 71-word sentence is gone from the whole surface** (`grep -rn "never from the receipt's own label, then check"` → no hits). R1′ counted 83 sentences and a longest of 29; I count 90 and 28. The split differs, the claim reproduces exactly.
+
+Worth stating because it is not obvious: `ebb9fb5` rewrote the very paragraph R1′ measured, after the measurement. Its new clause runs 24 words — the third-longest in the file, inside the band, and it did not break the order. I checked rather than assumed.
+
+Both ordered questions were answered in one pass. R1′'s record on the first: *"One pass. I did not have to reread anything."* On the second, the reading it recorded is a faithful account of the paragraph as it then stood.
+
+**C2: closed.**
+
+---
+
+### 3. C3 — `state.md`
+
+**Not closed.** I read it end to end. It was last written at `c4ec242` and it is two events behind:
+
+- *"one ordered cold read remains before landing as v5.2.0"* — it ran, at `4ad4bfa`, and returned sufficient.
+- *"the ordered cold read of the changed sentences is the one run left before landing"* — same sentence, same problem.
+- `ebb9fb5` appears nowhere, and `judge:94` asks for exactly this: *"Write every remaining uncertainty in `state.md`, including a fixed build that has not yet been re-tested."*
+
+Two things keep this small. First, it **understates** — it claims less progress than the evidence supports, so it breaks currency, not honesty; `state.md`'s own law is claim nothing beyond evidence, and it doesn't. Second, its only remedy is a records-only commit that `AGENTS.md:86` already requires at landing: *"Land only when the judge finds the piece sufficient. Then update `state.md`…"*
+
+I will not route the piece back for it, and I want the reasoning on the record rather than assumed. `state.md` is written by the builder and read by a judge who rules afterwards. Every ruling therefore postdates the file it reads. My predecessor routed on this exact ground; the rewrite came at `769aebc`; it went stale again within four commits. Routing again buys a file that will be stale again by the next ruling. It becomes a landing order instead, spelled out in §5.
+
+The rest of the file is honest. The wearing-out list is accurate as written, the blocked section is right, the evidence section cites real records. Its two byte figures (55,038 at the live-piece paragraph, 55,909 in the retired-strain line) are the same surface at two different commits, which the file's own second strain predicts and asks to be pinned — neither is pinned. Minor, pre-existing from `769aebc`, named not routed.
+
+**Budgets re-measured by me, since a build commit landed after the last measurement.** `ebb9fb5` is 3 insertions and 3 deletions: **+119 bytes** across the 21-file set I counted (117,561 → 117,680), against thousands of bytes of headroom on every limit. The always-read set is byte-identical at `c4ec242` and `HEAD` (24,198). Five skills, six templates, unchanged. Promise 7 holds; the shrink stands.
+
+---
+
+### 4. What I found that no record holds
+
+**One residue in the shipped sentence.** The fix went past the anchor R1′ verified. R1′ ran and confirmed one test: a live piece in `map.md` means a build review. The shipped clause adds a second door — *"or when the review's subject is `product.md` or `map.md` itself rather than built work"* — and nobody has run that one. It is weaker than the first, because a subject is partly asserted by the receipt, and this whole paragraph exists to stop a receipt asserting its way past the gate.
+
+I decided against routing on it, on the evidence. The demonstrated hole — the one a fresh reader actually opened, on this repo, with no receipt label involved at all — is closed and I proved it closed. The paragraph also now carries a fail-closed default that has never existed in this kernel before: *"When in doubt, demand the Built line."* The gate is stronger than at any point in this piece's history and stronger than what it inherited. Routing a fourth round on a hypothetical that is harder to run than the one already fixed would spend a whole cycle to make a strictly-improved gate marginally better. It goes to the next piece.
+
+**The general shape underneath it, which is worth more than the instance.** My predecessor routed on a sentence written after the readers left. The fix for that sentence produced another sentence written after the readers left. If the answer is always "send it back for a cold read," there is no bottom — the reader's finding produces a fix that needs a reader. The method already has the answer and it is `judge:92`: a mid-review fix rides on a control the judge can execute, not on another round. That is the rule that ends the regress, and this piece is the first work to run it.
+
+**The strain takes its fourth and fifth bites.** `state.md` records three for this piece. Add: the builder classifying a protected-gate edit as small when both the contract and `AGENTS.md` give that call to a judge, and `state.md` going stale again inside four commits of being rewritten for going stale. All five were caught by a fresh context or a judge; none by the author. That is the machinery working — and five in one piece is well past the twice-recorded trigger.
+
+It also sharpens what both judgment lines already want from the next piece. The strain is not that the reports are wrong. It is that **every producer of a self-claim is the author, and every check on it is a detector downstream.** Self-classification and self-report need something that *makes* them true, not one more reviewer who can tell when they aren't.
+
+**The rule collision from §1, for the record.** `judge:26` (a build commit after the Built line invalidates it) and `judge:92` (a mid-review fix carries a control) are both right and neither says which governs a mid-review build commit. Present at `44a48ba` word for word, so it is inherited, not introduced. It is cheap to fix — one sentence saying a mid-review fix under `judge:92` does not invalidate the line for the review already run — and it belongs with the other definition work the next piece is already pointed at.
+
+---
+
+### 5. Ruling: **sufficient** — the piece lands as v5.2.0
+
+All three grounds my line routed on are answered. C1 and C2 are closed at the mechanism, re-taken at my own hand with controls that fire on the pre-fix tree and go silent on the fixed one. C3 is a currency defect in a records file whose only honest remedy is the rewrite that landing itself performs.
+
+The four rulings, for this tree:
+
+- **Works — kept.** Unchanged from the continuation above: the green arm 4 of 4 on clones proved pinned, with a control arm behind it. `ebb9fb5` adds two controls I ran on both trees. Same reference as before: this covers the pages' entry path and the gates. Nobody has yet executed a full piece loop under these pages, and that is still the strongest evidence this hearing never bought.
+- **Delivers the promise — kept, same named shortfall.** Promise 7 re-measured by me at `HEAD`; every limit holds with room. Promise 8 is untouched by the fix batch — +119 bytes against thousands of headroom, the shrink intact and still the first in the kernel's history. Promise 6 keeps its residual of six undefined load-bearing terms. Promise 2 takes the scratch in §1: the builder made a call the promise gives to a judge.
+- **Good to use — kept.** The sentence C2 routed on is gone and the file measures clean at my hand. R1′ read the changed sentences cold and answered both ordered questions in one pass, and its own verdict was that the day-one blocker is closed and it would build under these pages more comfortably than before.
+- **Quality hangs together — yes.** My predecessor's reason for withholding this was that the piece's own new re-entry gate had gone unfired on its author. It has now fired: state-only Built line, receipt quoting it, review after. What stands is a stale records file and one unrun clause, both named, neither hiding anything.
+
+**Structure — sound**, on the same reasoning as the continuation, which the evidence has not moved. The ordered strain was repaired and measured, and the shape kept catching its builder — five times in one piece, every time by the machinery rather than the author.
+
+### Landing orders
+
+These are the landing step's own work under `AGENTS.md:86`, not a route-back. No fresh context and no new receipt.
+
+1. **Rewrite `state.md` to what is true now.** The ordered read ran and returned; its two findings closed in `ebb9fb5`; the piece is judged sufficient on both lines and lands as v5.2.0. Record `ebb9fb5` and the classification finding. Pin every byte figure to the commit it was measured at, per the file's own second strain.
+2. **Record the strain's fourth and fifth bites** in the wearing-out list, with the sharpening: the next piece owes a *producer* for self-classification and self-report, not another detector.
+3. **File two items for the next piece**, both cheap and both inherited rather than introduced: the unrun second disjunct in `judge` §1, and the silence between `judge:26` and `judge:92` on a mid-review build commit.
+4. **Nothing re-enters shape or map.** The promises are right and the piece-space is right.
+
+---
+
+### 6. What the next builder should not relearn
+
+**A fix found by a reader cannot always be answered by another reader.** The reader's finding produces a fix, and the fix is a sentence no reader has read. Sending it back forever is not rigour, it is a loop with no exit. The kernel already answers this — a mid-review fix rides on a control a judge can execute against the pre-fix tree — and the answer only works if the control is *executable*, which means the finding has to be written as a test, not as an opinion. R1′ did that: it did not say the sentence read badly, it ran the sentence and showed what it returned. That is why its fix could land without another round.
+
+**When a rule says the judge classifies, asking afterwards still counts — but only because someone asked.** Nothing in the repository summoned me to make the small-change call; an orchestrator did. A classification rule whose only trigger is the builder deciding it is unsure has no trigger at all. If the next piece gives one thing a producer, this is a good candidate: any change touching the review-admission gate is protected by name, so the classification never depends on the builder feeling uncertain.
+
+---
+
+*Final ruling of judgment line 2 · Claude workflow agent · opus · 2026-08-29 · on `ebb9fb5`, extending the record above rather than replacing it. Ruled blind to judgment line 1. Every control cited was executed by me against both trees; the sentence measurement was re-cut after my first splitter proved unable to fail honestly.*
