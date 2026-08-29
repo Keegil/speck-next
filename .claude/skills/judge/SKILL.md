@@ -56,11 +56,11 @@ Then rule these four separately:
 
 One cannot compensate for another. Give evidence or say “not judged yet.” A failed check says “check failed.”
 
-“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it.
+“Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. “Good to use” is ruled from the testers’ felt moments against the feel the product declared. “Quality hangs together” rules the whole piece’s workmanship: every surface at the declared bar, with no weakness excused by strength somewhere else. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it.
 
 ### 5. Judge the whole product
 
-Rule the structure **sound**, **straining** with the strain named, or **fighting**. Straining means the shape made the work slower or riskier, but the piece still landed honestly; fighting means the shape made the work wrong or forced a workaround before it could land. Two straining rulings in a row, or one fighting ruling, makes structural repair the next piece. The judge makes that call because the builder has momentum to protect.
+Rule the structure **sound**, **straining** with the strain named, or **fighting**. Straining means the shape made the work slower or riskier while the work stayed honest; fighting means the shape forced the work wrong, or forced a workaround before anything could proceed. Either can be ruled on a piece that landed or on one sent back. Two straining rulings in a row, or one fighting ruling, makes structural repair the next piece. The judge makes that call because the builder has momentum to protect.
 
 Read the piece’s work file against standing decisions and the whole-product properties in `product.md`. A piece plan can allow exactly what a standing decision forbids while checks stay green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
 

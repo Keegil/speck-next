@@ -8,7 +8,7 @@
 
 **Before first run:** [Hard limit on planning time, tokens, and files read.]
 
-**Proof plan and review cost:** [Runs · exact user types and number of fresh testers, at least two · judge, plus second judge when risky or at a milestone · what each rules on. A safety net counts only after it has failed on purpose.]
+**Proof plan and review cost:** [Runs · the checks that must pass for Built · exact user types and number of fresh testers, at least two · judge, plus second judge when risky or at a milestone · what each rules on. A safety net counts only after it has failed on purpose.]
 
 **Review receipt** *(commit before any tester runs)*:
 

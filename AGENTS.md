@@ -75,7 +75,7 @@ A review starts only on Built work. Its **receipt** is the written proof, commit
 
 The first receipt field quotes the `state.md` Built line and the commit that wrote it. The quote must literally say **Built**. A “build commit” changes the product itself, such as code, screens, or data; commits that change only records or state are not build commits.
 
-The Built line must cover the exact product files under review. It fails if any build commit lands after it, or if it was written after the receipt opened. Repair it by writing Built in a new commit containing nothing else, then open a new receipt. No valid quote means no review.
+The Built line must cover the exact product files under review. It fails if any build commit lands after it, or if it was written after the receipt opened — with one exception: a fix landed during the review answers to the judge's re-run rules instead of invalidating the line for the tree the review already ran. Repair a failed line by writing Built in a new commit containing nothing else, then open a new receipt. No valid quote means no review.
 
 Fresh testers must not include the builder. Use the people named in the piece’s proof plan; every verdict must point to something that person actually experienced.
 
@@ -106,19 +106,19 @@ When the owner is present, update `state.md` at every event that changes the map
 - `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
 - `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
-The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome and proof plan, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review has ruled. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
+The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome, proof plan, and before-first-run limit, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review ruled it sufficient — a review that sends it back leaves the state where it was. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
 
-An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence. Any claim in these files that something is fixed, closed, or done everywhere carries the command that proves it and what it returned — written after the run, never from memory. A closure without runnable proof is an open item wearing a label.
+An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence. Any claim in these files that something is fixed, closed, or done everywhere — and any measured number — carries the command that produced it and what it returned, written after the run, never from memory. A closure without runnable proof is an open item wearing a label.
 
-Supporting material is first-class work. State its purpose when it is created, assign it to a piece or list it as unconsumed, test and judge it, and mark it superseded at the top when it is replaced. Templates are starting floors, not limits; expand them when the product needs more.
+Supporting material is first-class work. State its purpose when it is created, assign it to a piece or list it as unconsumed, test and judge it, and mark it superseded at the top when it is replaced. A piece whose product is a document still names runnable checks in its proof plan — greps, probes, measurements — and that is how it becomes Built like any other piece. Templates are starting floors, not limits; expand them when the product needs more.
 
 When files disagree, `product.md` and `decisions.md` win. Measured evidence beats every document, so fix the losing document and cite the finding.
 
 ## Small and risky changes
 
-A change is small only if it adds no dependency, touches no auth, money, privacy, or data-integrity code, changes no promise, and is reversible in one commit. Then fix it, run it, and finish without a work file.
+A change is small only if it adds no dependency, touches no protected code, changes no promise, and is reversible in one commit. Then fix it, run it, and finish without a work file.
 
-Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
+**Protected code** is everything on the risky list below — auth, money, private data, schema migrations, regulated behavior, anything irreversible. Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
 
 For money, auth, private data, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. The care level is which of these protections are on, plus a second judge; raising it means adding protections — there is no separate scale. You may raise the care level. You may never lower it.
 

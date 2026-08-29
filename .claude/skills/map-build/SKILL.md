@@ -15,7 +15,7 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 
 2. **Let the owner choose the order.** Present real choices: visible surface first or machinery first, which moment appears first, and what unlocks the users or data later pieces need. Record options, costs, recommendation, and the owner’s exact answer. Put the reason for the chosen order in the map so future changes show what they disturb.
 
-3. **Write each piece’s proof plan before it goes live.** Name the runs, the user types who will test it, and what the judge must rule on.
+3. **Write each piece’s proof plan before it goes live.** Name the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on.
 
 4. **Name milestones.** Each is the smallest group of pieces that proves a real increment end to end. Say when the first real user surface appears. If it appears late, put that cost in the map and get the owner’s agreement.
 
@@ -25,7 +25,7 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 
 6. **Run the completion test.** Do not assert it. Check that:
    - every `job:`, `moment:`, `claim:`, and foundation in `product.md` belongs to a piece;
-   - every screen in the shaped decks and journeys belongs to exactly one piece — grep their captions, report the count even when it is zero, and match each caption to one piece;
+   - every screen in the shaped decks and journeys belongs to exactly one piece — a caption is the screen’s title line, and the mapping record states the exact pattern it grepped; report the count even when it is zero, and match each caption to one piece;
    - every supporting item belongs to a piece or appears as unconsumed;
    - every piece has a proof plan; and
    - milestones cover every piece.
