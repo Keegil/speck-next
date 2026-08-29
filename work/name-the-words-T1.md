@@ -259,3 +259,192 @@ The four undefinable terms have a shared shape worth naming: **every one of them
 - The `AGENTS.md` a host loads into context may not be the `AGENTS.md` on disk. Check before quoting line numbers.
 - Sweep for terms that appear *once*. All four failures here appear once or only as list items. Frequency is the cheapest defect detector in a prose corpus: `grep -c` every term that carries a rule, and read every hit with a count of 1.
 - The completion test's first bullet (`job:`, `moment:`, `claim:`) is the model the second bullet (screens) should copy: a named token, an example in the template, and a grep that anyone can run.
+
+---
+
+## Follow-up run (R1′), 2026-08-29, on 980e188, ordered by both judgments
+
+**Tester:** R1′, a fresh cold reader continuing T1. Never seen Speck. Same stance: a builder about to run a real product under these pages.
+**Subject:** `~/Code/speck-next` at `980e188` (fix build `c53704e`, pre-fix tree `ac7e688`).
+**Ordered:** enumerate the population before staking a number · re-run the terms test against it, with the four pre-fix controls verified · re-run the planted-claims fixture plus a new arm · re-trace the document-piece deadlock · one free attack.
+
+**Disclosure.** My host loaded an older `AGENTS.md` into context alongside the repo — the same hazard T1 recorded, still live one commit later. Everything below is judged against the file on disk at `980e188`. I read `work/name-the-words.md` and this file, because I was ordered to inherit them; I did not read the other testers' or judges' records, `state.md`, `product.md`, or `map.md`.
+
+---
+
+### Job 1 — the population, before anything was staked
+
+T1's zero would have been a number without a denominator. The judges ordered a producer instead. Here it is, and it is reproducible.
+
+**Membership rule.** A term joins the population when both hold: (1) it is a word or phrase appearing in at least one sentence that carries an obligation or a definition, and (2) two plausible readings of it would make an agent *do* different things, not merely say them. File names (`product.md`, `judge`) are addresses, not terms, and are excluded. Section headings are excluded unless the heading is itself the term.
+
+**Extraction.** Three passes over the seventeen installed files:
+
+1. A full read of every non-blank line. `cat "${FILES[@]}" | grep -c '[a-zA-Z]'` → **406** non-blank lines of 701 total. I read all 406, which is what makes the population a census rather than a sample.
+2. Two mechanical extractors, as a check on the read: `grep -oh '\*\*[^*]*\*\*'` → 66 distinct bold spans; `grep -oh '`[^`]*`'` → 28 distinct backticked spans. Every item either sits in the population already or is a file address, a template field label whose term is in the population, or an imperative rule heading. **The extractors found nothing the read had missed** — that is the coverage check, and it is the only reason I will put a number on the read.
+3. An occurrence count for every term, one `grep -ohE` per term across all seventeen files.
+
+**Population: 124 rule-carrying terms.** Counts run from 1 (`gates`, `fidelity gap`, `accounting summary`, `threshold`, `we are not`, and 17 others) to 114 (`piece`). **Twenty-two terms appear exactly once, and I read every one of those sites in full**, as ordered. None of the twenty-two is undefinable; five are wobbles, listed under Hazards below.
+
+The term list, the regexes and the counts are reproducible from the procedure above; I have not committed the scratch list, because a list that ages in the repo is worse than a procedure anyone can re-run.
+
+---
+
+### Job 2 — the terms test against the population
+
+#### The four pre-fix controls
+
+All four define now. Quoting the new sentences:
+
+**1. `protected code` — DEFINED.**
+> "**Protected code** is everything on the risky list below — auth, money, private data, schema migrations, regulated behavior, anything irreversible." (`AGENTS.md:121`)
+
+This resolves T1's exact fork in the direction T1 said it mattered: a schema migration is protected code, so it can never ride in a batched review under `AGENTS.md:98`. The definition sits two lines after its use at `:119` and twenty-three after `:98`, so both uses are forward references — legible on one page, but the first reader meets the word before the sentence that gives it meaning.
+
+**2. `caption` — DEFINED, and the check is now runnable.**
+> "a caption is the screen's title line, and the mapping record states the exact pattern it grepped" (`map-build:28`)
+
+The repair is better than a token convention would have been. A screen's title line is product-specific, so no fixed grep could have worked; requiring the mapping record to state the pattern it actually ran makes the check both executable and auditable. The collision with `craft:12`'s typographic caption survives (three sites total, two senses), but it no longer bites, because the definition now sits at the point of use and nobody needs to grep for it.
+
+**3. `good to use` — DEFINED.**
+> "'Good to use' is ruled from the testers' felt moments against the feel the product declared." (`judge:59`)
+
+**4. `quality hangs together` — DEFINED.**
+> "'Quality hangs together' rules the whole piece's workmanship: every surface at the declared bar, with no weakness excused by strength somewhere else." (`judge:59`)
+
+I ran T1's own hard case against these two: *a clumsy flow with beautiful type — which head breaks?* The new sentences separate the heads by **source of evidence**, not by subject matter. Good to use is ruled from what testers *felt*; quality hangs together is ruled from *workmanship inspection*. So the clumsy flow breaks good to use, and the beautiful type cannot rescue quality hangs together if any surface sits below the bar — a clause that also restates non-compensation inside the head itself. That is a real discriminator and it answers the question T1 could not.
+
+One residue the repair left: `AGENTS.md:94` still calls this head "holds together as a quality product" while `judge:55`, `templates/piece.md:27` and `templates/state.md:6` all call it "quality hangs together". The definition exists; the name does not agree across pages. T1 flagged this and the fix batch defined the head without renaming its odd sibling.
+
+#### The rest of the 124 — one undefinable term
+
+**`sufficient` — UNDEFINABLE.** Nine occurrences, and it is the landing gate.
+
+T1 filed this as hazard H10 and kept it out of the count on a near-forcing. I ran the forcing and it fails, so I am overturning that call on new evidence rather than re-litigating it.
+
+Every site states what an insufficient judgment *does*, never what makes one:
+> "Land only when the judge finds the piece sufficient." (`AGENTS.md:86`)
+> "Judged means its review ruled it sufficient — a review that sends it back leaves the state where it was." (`AGENTS.md:109`)
+> "An insufficient judgment sends work back without advancing its state." (`AGENTS.md:111`)
+> "Anything insufficient returns to shape, map, build, or another test round with a trace." (`AGENTS.md:96`)
+
+Consequence in four places, condition in none.
+
+The one available forcing is *sufficient = proven*, and the corpus blocks it. `judge:59` says "When all four rulings stand on evidence, the work is proven," while `judge:57` permits a head to read "not judged yet" and `AGENTS.md:109` requires `state.md` to list the four Judged rulings "with evidence or 'not judged yet.'" So a piece can be Judged — and therefore, by `:109`, ruled sufficient — with heads not yet judged, which is precisely *not* proven. Sufficient and proven are different words for different bars, and only one of them has a bar.
+
+That leaves two live readings and they land the piece differently:
+
+- **(i) sufficient = no negative ruling stands.** A promise ruled *broken* keeps the live slot.
+- **(ii) sufficient = the judge's holistic call.** The judge may land the piece and route the broken promise onward as a finding.
+
+Reading (ii) is not a stretch. `judge:59` explicitly lets "the piece's work file narrow the work under review", so a scoped-narrow piece can deliver its own promise while a product promise stands broken — and nothing ties the promise axis at `judge:48` to the landing gate at `AGENTS.md:86`. Two competent judges, same records, opposite decisions about who holds the live slot.
+
+This is the sharpest thing the population producer bought. `sufficient` appears **nine** times, so no frequency filter would ever have surfaced it. It survived a rewrite, a cold reader, two blind judges and an eleven-item fix batch — because everyone who met the word understood it well enough to keep reading, which is exactly how a gate word goes undefined.
+
+The repair is one sentence beside `AGENTS.md:109`, and it is a decision, not a wording choice: either a broken promise blocks landing, or the judge may land over it with the finding routed. The pages should say which.
+
+**Count against the enumerated population of 124: 1 undefinable term.** Target was zero.
+
+#### Hazards — defined or derivable, but a second reader may act differently
+
+T1's H1 is **closed**: `map-build:18` and `templates/piece.md:11` now both say "the checks that must pass" for Built, so the pointer at `AGENTS.md:61` lands. H2, H3, H5, H6, H7, H8 stand as T1 wrote them, and the piece record files them as known-unfixed. New from this run:
+
+**H11 · `the gates` still has one site and no gloss** (`judge:59`). The fix batch defined `good to use` and `quality hangs together` in that very sentence and walked past the undefined word sitting between them. It is the escape hatch on the strictest ruling in the method: "'Works' cites at least one real-path run against the real dependency, or states that it covers only the gates." Kept out of the count because every plausible reading still forces the judge to write the same thing — a works ruling with its limit stated — but a word that exempts the strictest gate deserves a gloss.
+
+**H12 · `the declared bar` is a new count-one term the repair introduced** (`judge:59`). It resolves only by hopping to `walk.md:5`: "If no feel was declared, say that your craft verdict can use only general craft." So the bar is the declared feel, and general craft when none was declared. Derivable across files, unglossed at its only site. Worth naming because the pattern is the one T1 diagnosed: the pass that defines terms also mints them.
+
+**H13 · `current dependency` is one word doing a fourth job** (`AGENTS.md:15`). "When the owner names something as the key, make it the current dependency in the same session." The corpus already uses *dependency* for an external system (`:66`), a package (`:119`), and the real service a works ruling cites (`judge:59`). The action survives, because the next sentence resolves it — "Say how you changed the order, or ask whether it should replace the live work" separates re-ordering from replacing. But this is the owner-facing sentence in the method's most owner-facing section, and it is carrying the corpus's most overloaded noun.
+
+**H14 · `fidelity gap` and `accounting summary`** each appear once, unglossed, with one sensible reading apiece. `fidelity gap` sits at the risky-work site where the care level is defined; `accounting summary` (`map-build:39`) presupposes a section that `templates/map.md` does not contain, so a builder cannot tell whether the map must grow one.
+
+---
+
+### Job 3 — the planted claims, with the new arm
+
+The rule changed under the fix batch. Pre-fix and post-fix, verified with the command:
+
+```
+git show ac7e688:AGENTS.md | grep -c "measured number"   → 0
+grep -c "measured number" AGENTS.md                      → 1
+```
+
+The rule now reads:
+> "Any claim in these files that something is fixed, closed, or done everywhere — **and any measured number** — carries the command that produced it and what it returned, written after the run, never from memory." (`AGENTS.md:111`)
+
+**Both original arms still resolve correctly, and the widening did not disturb either.**
+
+**Entry B — condemned.** "fixed everywhere", no command, and "I went through all the call sites" is memory, which the rule excludes by name. Unchanged by the widening.
+
+**Entry A — accepted as a claim.** It carries `grep -rn 'parseDate(' src/` with its return and `npm test` with its return. The widening actually *strengthens* the pass: Entry A's two measured numbers (3 sites, 41 passing) each already carry the command that produced them, so the new clause bites on the same sentence and finds it clean. And T1's layering holds — accepted as a claim, still open as a closure until a control that fails on the pre-fix tree exists and `judge:96`'s sibling sweep has run.
+
+**The new arm — CONDEMNED.** A work-file sentence reading *"the surface is now 57,348 bytes"* with no command.
+
+It is not a closure claim; nothing is fixed, closed, or done everywhere. Pre-fix, that sentence was **clean** — the rule at `ac7e688` covered only fixed/closed/done-everywhere. Post-fix it fails, because bytes are measured, not planned or chosen, and no command or return sits beside it. So the fixture now has a genuine pre-fix control: the same sentence, red on one tree and green on the other, which is what `AGENTS.md:68` demands of any check ("a control that cannot fail proves nothing about the product").
+
+I checked the one scoping question this arm turns on. `AGENTS.md:111` says "these files", and it sits inside "Keep these files true", whose bullet list at `:104` includes the piece work files. So a work-file sentence is in scope under the section's own reading. No fork.
+
+---
+
+### Job 4 — the document-piece deadlock, re-traced
+
+**It is gone, and it was fixed at the right end.** The trace on the fixed pages:
+
+1. Still a piece — `AGENTS.md:113`, unchanged in that respect.
+2. Still substantial — no middle class, `AGENTS.md:90`.
+3. **Can it become Built? Yes, and the page now says so before I need it:**
+   > "A piece whose product is a document still names runnable checks in its proof plan — greps, probes, measurements — and that is how it becomes Built like any other piece." (`AGENTS.md:113`)
+4. The proof plan can carry those checks, because `map-build:18` and `templates/piece.md:11` now name checks as a required field. The escape T1 had to derive backwards from a deadlock is now the stated forward path, and the field it needs exists.
+5. `judge:24`'s exemption is no longer the trap it was. Its default — "When in doubt, demand the Built line" — is now the *correct* answer for a document piece, because the Built line is obtainable. The clause that used to point an unsure judge into the deadlock now points them at the fix.
+6. The seam T1 found between `experience:17`'s classification by subject and `judge:24`'s by live-piece has closed in practice, and I checked both ends. Material probed during shaping: no map, therefore no live piece, therefore exemption granted, receipt lists planned probes. A document piece in build: live piece exists, Built line demanded, Built line available. The two classifications now agree on both cases.
+
+**One residue, and I want it on the record rather than waved through.** `AGENTS.md:61` still says "When the piece runs and its own checks pass" — the phrase that created the jam. It was not amended. A document does not run, so `:61` and `:113` are reconciled only by specificity: `:113` is the rule for this case and says "like any other piece", which is a direct instruction about how `:61` applies. That reconciliation is available to any careful reader and I made it without strain. It is a seam, not a jam, and it is the last one on this path.
+
+---
+
+### Job 5 — free attack: a positive control on the producer itself
+
+I turned the method's own rule on the instrument this run stakes its number on. `AGENTS.md:68`: "A check counts only if it can show the failure it claims to prevent." My population producer is a check. So: run it against a tree where the answer is known.
+
+I rebuilt the pre-fix corpus and ran the count-one filter against it:
+
+```
+git archive ac7e688 | tar -x -C <tmp>
+grep -ohiE "<term>" <the 17 files> | wc -l
+  protected.code           2   caught by the count-one filter? NO
+  caption                  3   caught?  NO
+  good to use              4   caught?  NO
+  quality hangs together   3   caught?  NO
+```
+
+**The count-one filter catches zero of the four defects that were actually there.** Recall on the known-true set is 0/4. The half of the producer that reads like a producer — grep every term, read every count-one hit — has, on this corpus, never once found a real undefinable term. It surfaced five wobbles this run and no defects. My zero-but-one does not rest on it at all; it rests on the census: 124 terms, a stated membership rule, and a read of all 406 non-blank lines.
+
+This matters for the owner's question in the piece record — *is the vocabulary job finite?* It is, but the finite thing is the census, not the grep. A standing producer built on frequency would run green forever while `sufficient` sat undefined at nine occurrences.
+
+**Two more things the control turned up.**
+
+**T1's own grep was wrong, and the rule this piece added would have caught it.** T1 wrote that `protected code` "appears exactly once in the whole corpus (verified by grep across `AGENTS.md`, all five skills, both reference sets, all six templates)". At `ac7e688` it appears **twice** — `AGENTS.md:98` hyphenated as "protected-code" and `AGENTS.md:121` capitalised as "Protected code". T1's grep almost certainly missed one form. The verdict is untouched: both sites *use* the term and neither *defines* it, so T1 was right about the defect and wrong about the count. But "verified by grep" with no command and no return is exactly the sentence `AGENTS.md:111` now forbids — a measured number written from memory. The piece's own producer rule, applied to the piece's own tester record, catches its one factual error. That is the strongest evidence I found all run that the rule is worth its words.
+
+**And the reason the count-one filter missed everything is structural, not accidental.** A term used twice in two senses (`caption`), or used in four places and defined in none (`good to use`), is *more* dangerous than a term used once, because repetition reads as familiarity. Frequency detects rarity. Undefinedness is not rarity.
+
+---
+
+### Verdict — as the cold builder who has to run this
+
+**I would run a product under these pages, and after this run I would do it with more confidence than T1 had.** Eleven fixes landed, four of them the exact terms T1 named, and each one defines under a hard test rather than merely appearing. The two heads that were undefined now separate by source of evidence, which is a better repair than the mapping T1 had to construct for himself. The document piece can become Built by naming greps as its checks, which unjams the one path T1 found blocked end to end. The producer rule now covers measured numbers, and I watched that widening condemn a sentence that was clean one commit earlier.
+
+What I would fix before running something regulated, in order:
+
+1. **`sufficient`** — the landing gate, nine occurrences, no threshold, two readings that hold the live slot differently. One sentence, and it is the owner's or the kernel's call, not a wording tidy-up.
+2. **`the gates`** — the exemption on the strictest ruling, still one site, still unglossed, now conspicuous because its two neighbours in the same sentence got sentences.
+3. **The name mismatch on the fourth head** — `AGENTS.md:94` says "holds together as a quality product"; everywhere else says "quality hangs together". A citation problem waiting to happen.
+4. **`the declared bar` and `current dependency`** — one new unglossed term the repair minted, and one overloaded noun in the most owner-facing sentence on the page.
+
+**Count of undefinable rule-carrying terms: 1, against an enumerated population of 124.** Target was zero. The gap is one word, and it is the word the whole build loop turns on.
+
+### What the next reader should not have to relearn
+
+- **Frequency does not detect undefinedness.** The count-one filter scored 0/4 against the pre-fix tree, and the one term I found this run appears nine times. Read the census; keep the grep as a cheap extra, never as the producer.
+- **The pass that defines terms also mints them.** `the declared bar` arrived in the same sentence that defined two heads. Any definition round should end by re-running the extractors on its own diff.
+- **A gate word explains itself well enough to keep reading, which is how it stays undefined.** `sufficient` survived a rewrite, a cold reader, two blind judges and an eleven-item fix batch. Sweep the gate words specifically — the words that decide whether work moves — and demand a condition sentence for each, not a consequence sentence.
+- **T1's `AGENTS.md` hazard is still live.** My host loaded a stale copy one commit later. Check which copy you were handed before quoting a line number.
+- Applying the producer rule to a tester's own record is cheap and it works. It caught T1's miscount in one command.
