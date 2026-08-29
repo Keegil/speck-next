@@ -1,22 +1,28 @@
 ---
 name: craft
-description: The taste bar while building anything a user sees. Use during the build step for every screen, component, or user-visible surface.
+description: Sets the quality bar for anything a user sees. Use while building every screen, component, and user-visible surface.
 ---
 
 # craft
 
-**Functionally correct is not done. It's done when it's crafted.** Before building any user-visible surface, get the product's declared feel from `product.md` in your head — the adjectives, the "feels like X, not Y" lines, the restraint rules, the named cheapeners. That declaration is the taste anchor; everything below adapts to it, never overrides it.
+Correct is not finished until it is crafted. Before building a visible surface, read the declared feel in `product.md`: its adjectives, “feels like X, not Y” lines, restraint rules, and named cheapeners. That feel anchors every choice below.
 
-The principles that separate crafted from generic, earned across real products:
+## Build with character
 
-- **Typography carries the screen.** Real hierarchy — display, heading, body, caption — built from size, weight, spacing, and case, used deliberately. A headline has presence; if all text is one size and weight, the screen is flat and it shows.
-- **Whitespace is a design element.** Group the related tightly, separate the unrelated generously, let things breathe. Cramped reads as cheap; generous reads as considered.
-- **Every state is designed.** Hover, focus, pressed, disabled, loading, empty, error — all of them, not just the default. Loading gets a skeleton, never a blank; an empty state is an opportunity, not an afterthought; an error is designed, not just red text. Focus is visible and custom, never the browser default.
-- **Motion follows the product's philosophy.** Calm products move minimally and instantly; playful ones choreograph. Never animate "because" — motion communicates or it goes. Always respect reduced-motion preferences.
-- **Depth over deadness.** Flat single-color everything feels generic; subtle gradients, layered shadows, and surface texture read as quality — in the amount the declared feel allows, which for a calm product is very little.
-- **Color has a job.** Accents pop because they're rare; sections separate through background shifts; emphasis is deliberate. All-one-temperature is blandness, not restraint.
-- **Components have character.** A button, card, or input should feel like it belongs to this product and no other. Forms feel like conversations, not spreadsheets — and in an AI-first product, most form fields shouldn't exist at all: the model infers, pre-fills, and asks for confirmation.
+- **Typography carries the screen.** Create clear display, heading, body, and caption levels through size, weight, spacing, and case. A headline needs presence. One size and weight makes a flat screen.
+- **Whitespace shows relationships.** Keep related things close, separate unrelated things, and leave room to breathe. Cramped looks cheap; considered space guides the eye.
+- **Design every state.** Cover hover, focus, pressed, disabled, loading, empty, error, and success. Use a skeleton instead of a blank loading screen. Make empty and error states useful. Give focus a visible treatment that belongs to the product.
+- **Let motion serve the feel.** Calm products move little and quickly; playful products may choreograph. Motion must communicate something, and reduced-motion preferences always win.
+- **Use depth without noise.** Gradients, layered shadows, and texture can add quality, but only in the amount the declared feel allows. Calm products may need almost none.
+- **Give color a job.** Keep accents rare enough to matter. Use background shifts to separate sections and color to create deliberate emphasis. One temperature everywhere is bland, not restrained.
+- **Make components belong here.** Buttons, cards, and inputs should feel specific to this product. Forms should feel like conversations rather than spreadsheets. In an AI-first product, let the model infer, pre-fill, and ask for confirmation instead of showing fields it can replace.
 
-After any copy change, read the whole flow the change lives in as one text — hunting duplicates, orphaned references, and broken bridges — at the change, not only when the hearing later walks the flow. An owner once caught a screen still re-arguing what an earlier screen had already taught him — three elements on it, all dead duplicates of what he had just read.
+## Read the whole flow
 
-Before calling a surface done, look at it — actually render it and look — and ask: does it embody the declared feel, does every state hold up, would a demanding stranger call it crafted? Any "no" or "not sure" means iterate. And when a runtime renders something differently than the code suggests (a pixel bug that only shows on the real device), write the signature and safe form into the work file so the next agent greps instead of rediscovering.
+After changing copy, read its entire flow as one text. Find repeated ideas, references that no longer point anywhere, and broken transitions at the time of change. An owner once caught a screen still re-arguing what an earlier screen had already taught him — three elements on it, all dead duplicates of what he had just read.
+
+## Look before calling it done
+
+Render the surface and inspect it. Ask whether it embodies the declared feel, whether every state holds up, and whether a demanding stranger would call it crafted. Iterate on every “no” or “not sure.”
+
+When the real runtime renders differently from the code, write the defect’s recognizable signature and the safe pattern into the piece’s work file. The next builder should be able to search for it instead of rediscovering it.

@@ -1,33 +1,74 @@
 ---
 name: experience
-description: Dispatches fresh experiencers who live the product in personas — the first-timer, the real job, the second user, the worst day — each returning the record of what happened with that persona's own verdict at the end, ready to be challenged by the judge. For shaping artifacts, the experiencer probes the artifact against the owner's record and the wire. Use on every substantial piece after building it, and at every milestone, always feeding the judge's hearing.
+description: Sends fresh testers to use the product as a first-timer, worker, second user, or person on the worst day. Each returns a record and a verdict for the judge. Use after every substantial piece and at every milestone.
 ---
 
 # experience
 
-**Why this is its own skill:** a real user judges while using — so the experiencer rules, the way a user would. What keeps that honest is not banning the verdict but grounding and challenging it: every verdict must point at a moment actually lived in the experiencer's own record, and a separate judge questions and challenges it before it counts. Live it fully, record it faithfully, conclude like the user you are — and expect to defend it.
+A tester decides as a user would, after using the product. Every verdict points to moments in that tester’s record, and a separate judge challenges it before it counts.
 
-**The experiencer is a genuinely separate context, and there is a receipt.** Nothing else here matters if this part is faked: a walk performed by the builder in its own head is void, and writing "fresh users tried this" without the receipt below is fabricated evidence — the worst defect class this method knows.
+## Send a genuinely fresh tester
 
-**Dispatch, concretely.** In Claude Code: launch a subagent (the Agent tool, fresh context, a different model when available). On any host: `codex exec --sandbox workspace-write -C <fresh clone>` or another agent CLI, run against a clean clone — never your working tree. Give the experiencer the product files, the promises from `product.md`, and this skill's files — never your own summary of what you built.
+Use a separate context. A walk done by the builder is void. Claiming fresh users without written dispatch proof is fabricated evidence.
 
-**The receipt opens at dispatch, or it is void.** Before the experiencer runs, the work file records: the built field — the `state.md` line covering this build, quoted, literally saying **Built** (it is the first thing the judge checks) — who is experiencing (persona; tool, model, session), when and at what commit it was dispatched, the walks and commands planned — plus two lines that keep receipts from colliding: *who owns this run* (which session dispatched it), and *what a later session does on finding the record empty* (re-dispatch under your own named line, never assume the run died — two runs once executed one dispatch in parallel, neither knowing of the other). The record is appended when it returns, verbatim or linked. A receipt reconstructed at closure is exactly what a builder writes when nothing forced the capture — it does not count, twice proven. No dispatch-time receipt, no record, nothing for the judge to hear. Two more collision laws, both paid for: runs that touch a shared instrument — one browser, one device, one live environment — run sequentially, each on its own subject, and the conductor does not touch the instrument while a run is live (two rounds were once destroyed in a day: the conductor measuring inside a live run, then two parallel runs walking each other's subjects). And a hearing that batches several deltas enumerates them from the commit range, never from recollection — a hand-written batch list once omitted the exact delta an experiencer then walked into blind.
+Run the tester in a clean clone, never the builder’s working tree. Give them the product files, the promises from `product.md`, and this skill with its references. Do not give them the builder’s summary.
 
-**On any product with sessions or accounts, the record opens with a subject-identity proof, or the run is void.** Clear state, read the product's own who-am-I surface and quote it — it must show nobody. Establish the run's subject through a mechanism that can actually do so (for example, an account created through the product's own front door proves itself), then read and quote who-am-I again — it must match the run's brief exactly. Either read wrong: stop and say so, never dress up what you could not reach. Three rounds of production runs were once void because a plant failed silently and every run confidently walked a stranger's session — a wrong-subject run still renders screens.
+Before the run starts, commit a **receipt**: written proof of who was asked to test what. Record:
 
-**The stance: live it, record it, then rule as the user you are.** The record says what was done and what happened as it happens — exact commands, what appeared, what changed where, screenshots actually looked at with at least two pointed-at-the-pixels observations each, feelings reported as felt in persona. Then, at the end, the verdict: as this user, does it work, would you keep it, what breaks the deal — in your persona's own words. Two rules make an LLM's verdict worth hearing: **every verdict claim points at a moment in your own record** (a verdict pointing at nothing is void — the judge will strike it), and **anything you couldn't run is recorded as untested**, never converted into a pass, never silently dropped. The record must be checkable against its transcript, and the judge will question you on it: expect challenges, answer them from runs — going back to the product when asked — never from memory or politeness. You may also *be* that follow-up: a fresh context dispatched to continue an experiencer whose session ended. Then you inherit the persona and the record as written, run exactly the scenario the judge ordered, and append what you lived to that record as a marked follow-up run — never rewriting what the original lived.
+- Quote the `state.md` Built line that covers these product files.
+- Name the persona, tool, model, and session.
+- Give the dispatch date and commit.
+- List the planned walks and commands.
+- Name the session that owns this run.
+- Tell a later session finding an empty record to re-dispatch under its own named line rather than guess what happened — two runs once executed one dispatch in parallel, neither knowing of the other.
 
-**The personas — one experiencer each.** A substantial piece gets the personas its proven-means names (the first two at least); a milestone gets all four:
+Append or link the returned record. A receipt reconstructed at closure is exactly what a builder writes when nothing forced the capture — it does not count, twice proven. Without dispatch-time proof, there is no record for the judge.
 
-1. **The first-timer** — cold start: real build, fresh install or cleared storage, logged out, knows nothing. At the first screen, answer from the pixels alone: what is this, who's asking, why now? For anything with a user interface, walk `references/walk.md`.
-2. **The worker** — the real job, end to end, through the product's own surface (a harness the builder wrote is not the product), reading what it prints, chasing each claimed save/send/generate to its mechanism — the request, the changed record, the read-back.
-3. **The second user** — a least-privileged real account attempting what it shouldn't reach, and a second person on the same install looking for traces of the first.
-4. **The worst day** — everything hostile and unlucky at once: `references/worst-day.md`.
+Runs sharing one browser, device, or live environment run one at a time, each on its own subject, and the dispatching session keeps its hands off that shared environment while a run is live. Two rounds were once destroyed in a day: the dispatching session measuring inside a live run, then two parallel runs walking each other's subjects.
 
-Two roster laws ride on top. One of the hearing's experiencers — a role a rostered experiencer carries, not an extra dispatch — walks with only `product.md` and the piece's output, rendered at the owner's altitude, never the piece's work file: a roster that reads only the builder's corpus cannot find a corpus that drifted from the promises, and five rounds once perfected a truthful machine that missed its jobs. Rendering is not optional for headless work — whatever a piece produces, the dispatching session renders it as something the owner could look at and hands it to that experiencer, because the owner's one read of a rendered page caught what a dozen fresh contexts missed. And for a piece whose product is machinery — checks, boards, pipelines, nothing a user faces — one rostered experiencer (a role again, not an extra dispatch) attacks by running, its record quoting executed commands and their output; a machinery record with no executed attack is a read, not an experience.
+For a review that batches several changes, list them from the commit range. A hand-written batch list once omitted the exact change a tester then walked into blind.
 
-Different personas will reach different verdicts — that is the point, not a problem to fix. Never soften your verdict toward what another persona might say; the judge holds the divergence.
+## Prove who the tester is
 
-**Shaping artifacts get experienced too.** When the work is a `product.md` draft, a domain model, journeys, a deck — the product may not run yet, so the subjects change and the stance stands: the experiencer still executes, but what it executes are probes against the wire fixtures, greps against the repo, and checks against the owner's verbatim shaping record — never a read of sibling documents against each other, because a document corpus drifts into perfect agreement with itself. It records side by side what the artifact says and what the record, the wire, or the repo says, reads every owner-facing artifact cold as a smart outsider recording each stumble — and concludes with its verdict as that reader: could I act on this, does it say what the owner said, where does it break? Same grounding rule: every verdict claim points at a probe actually run.
+Any product with accounts or sessions starts with identity proof:
 
-**What comes back:** the record — runs, observations, felt reports, screenshots, mechanisms found or missing, limits hit — ending in the persona's verdict, appended to the receipt. Then the judge convenes the hearing: hears it, challenges it, and may send you back for another run before anything is ruled.
+1. Clear state and quote the product’s own identity view; it must show nobody.
+2. Establish the test subject through a mechanism that can really do so. An account created through the product’s front door proves itself.
+3. Quote the identity view again; it must exactly match the brief.
+
+If either read is wrong, stop and report it. Three rounds of production runs were once void because a plant failed silently and every run confidently walked a stranger's session — a wrong-subject run still renders screens.
+
+## Record the run, then decide
+
+Write the record as the run happens. Include exact commands, what appeared, what changed, and feelings reported in persona. Open every screenshot and give at least two observations that point to its pixels.
+
+Put the verdict last. Say, as this user, whether it works, whether you would keep it, and what breaks the deal. Every claim in the verdict must point to a moment in the same record. Mark anything you could not run as untested; never turn it into a pass or omit it.
+
+The judge will ask questions. Answer from new or recorded runs, never memory or politeness.
+
+A fresh context may continue a tester whose session ended. It inherits the persona and full record, runs the exact scenario the judge ordered, and appends a marked follow-up. It never rewrites the first run.
+
+## Staff the review
+
+A substantial piece uses the people named in its proof plan, with at least the first two below. A milestone uses all four, one fresh tester each.
+
+1. **First-timer:** Start from a fresh install or cleared storage, logged out, knowing nothing. From the first screen alone, answer: What is this? Who is asking? Why now? For a user interface, follow `references/walk.md`.
+2. **Worker:** Complete the real job through the product’s own surface. A builder’s harness is not the product. Trace each claimed save, send, or generation to the request, changed record, and read-back.
+3. **Second user:** Use a real least-privileged account to try forbidden actions. Then use a second person on the same install and look for traces of the first.
+4. **Worst day:** Bring hostile and unlucky conditions together by following `references/worst-day.md`.
+
+One of these testers also receives only `product.md` and the piece’s rendered output, not the work file. The dispatching session must render headless output into something the owner could inspect. Five rounds once perfected a truthful machine that missed its jobs. The owner's one read of a rendered page caught what a dozen fresh contexts missed.
+
+For machinery such as checks, boards, or pipelines, one rostered tester attacks it by running it. The record quotes the commands and output. Without an executed attack, the record is a read, not an experience.
+
+Different users should sometimes disagree. Never soften one verdict toward another; the judge needs the difference intact.
+
+## Test shaping material too
+
+Before a product runs, test `product.md`, domain models, journeys, drawings, and decks against independent subjects: the owner’s verbatim record, the repo, fixtures, or real behavior. Do not prove sibling documents by comparing them only with each other.
+
+Place the artifact’s claim beside what the independent subject says. Read anything owner-facing cold as a smart outsider and record each stumble.
+
+End with a verdict: Could I act on this? Does it say what the owner said? Where does it break? Every claim must point to a probe you ran.
+
+Append the record and verdict to the receipt. The judge then questions it and may send the tester back before ruling.

@@ -1,35 +1,34 @@
 # [Product name]
 
-[A floor, not a form: expand any section, add sections, add whole new materials — the product decides the shape, never the skeleton.]
+[A floor, not a form: add sections and supporting material as the product needs.]
 
-[One sentence: what the user gets — their outcome, not our feature.]
+[One sentence: the user’s outcome, not our feature.]
 
-[Who it's for, what they use today, why this instead. Consumer products speak to the market; the founder's data is dev corpus, never the definition.]
+[Who it serves · what they use now · why this. Build for the market; founder data is a development sample, not the definition.]
 
-## The jobs
-- `job: [name]` — [situation, job, outcome — one sentence]
+## Jobs
+- `job: [name]` — [situation, job, outcome]
 
-## The wedge
-[What stays true if a competitor copies every feature. Each claim marked: fires on the real shipped path — a canned substitute is a lie.]
-[The honest free comparison: what free AI / DIY / the incumbent already gives, and why someone still pays.]
+## Wedge
+[What remains special if features are copied · each `claim:` that must run for real · which substitute would be a lie · honest free comparison and reason to pay.]
 
 ## We are not
-- [three to five lines, each naming the failure it prevents]
+- [Boundary and the failure it prevents.]
 
 ## Whole-product properties
-[What must stay true even when every check is green — "the AI does the work", "calm", "never fabricates". Big decisions state their effect on each.]
+[What must remain true when checks are green. Decisions state their effect on each.]
 
 ## Magic moments
-- `moment: [name]` — surface · trigger · the beats in order · the feeling it must produce · the exact scenario that proves it (written before building).
+- `moment: [name]` — [surface · trigger · beats · desired feeling · exact proof scenario]
 
-## The feel
-[3–5 adjectives · "feels like X, not Y" · checkable restraint rules · named cheapeners. Banned words, each with its replacement.]
+## Feel
+[3–5 adjectives · “X, not Y” references · restraint rules · cheapeners · banned words and replacements.]
 
-## The AI surfaces
-[Per surface: what the model consumes · answer shape · what user data it must cite · three good and three unacceptable answers. Every number that judges real behavior is a hypothesis until its measured distribution exists.]
+## AI surfaces
+[For each: model input · answer shape · required user-data citations · three good and three unacceptable answers. Measure real distributions before setting judging numbers.]
 
 ## Foundations
-- [foundation] — Trigger: [the moment it becomes due]
+- [foundation] — Trigger: [when it becomes due]
 
-## When the deadline presses
-[What holds, what flexes, what defers.]
+## Under deadline pressure
+[What holds, flexes, and waits.]

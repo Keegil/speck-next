@@ -1,21 +1,43 @@
 ---
 name: map-build
-description: Turns a shaped product into map.md through an owner conversation — the ordered pieces, milestones, and the substrate decision. Use when shaping has exited, or when a ruling or finding re-cuts the piece-space.
+description: Turns a shaped product into an ordered map of pieces, milestones, proof plans, and the choice of what the product runs on. Use after shaping or when evidence changes the pieces.
 ---
 
 # map-build
 
-Mapping decides what gets built, in what order, and what proven means for each piece — the second most consequential conversation in a product's life, and it runs like one: numbered rounds in `work/mapping.md`, the owner's words verbatim, one or two forks at a time with options, real costs, and your recommendation. Never hand the owner a finished document and call it a conversation. Read `references/questions.md` for the forks that have actually mattered; start `map.md` from `templates/map.md` — a floor, not a form: grow it past the skeleton whenever the product's map needs more.
+Mapping decides what gets built, in what order, and how each piece will be accepted. Run numbered rounds in `work/mapping.md`. Keep the owner’s words verbatim. Present one or two choices at a time with real costs and your recommendation; never hand over a finished map and call it a conversation.
 
-The rules:
+Use relevant prompts from `references/questions.md`. Start `map.md` from `templates/map.md` and expand it when the product needs more.
 
-1. **Pieces come from the shaped corpus, not from engineering instinct.** Cut candidate pieces from the promises, the moments, the frames, and the shaped material — every piece names what it serves and what it consumes. A piece serving nothing is scope creep wearing a work file.
-2. **Ordering is a set of forks the owner picks, with costs.** Surface-first versus machinery-first, which moment lands earliest, what unlocks the households or users the later proofs need — presented as options, decided in rounds, recorded verbatim. The ordering rationale goes in the map so a re-cut knows what it's disturbing.
-3. **Every piece states what proven means for it** — the runs, the personas whose experiencers will live it, and what its judge will rule on — before any piece goes live.
-4. **Milestones are named in the map**: the smallest sets of pieces that prove an increment of the real product end to end. The first milestone says when the first real surface exists; if nothing visible exists for a while, the map says so and the owner has agreed to it.
-5. **The substrate round closes mapping.** What the product runs on — decided once, from the pieces' actual requirements, at a care level the owner states out loud (a weekend product and a regulated one deserve different substrate care). Options with real costs — money, lock-in, ops burden, reversal price — his pick lands as a `decisions.md` entry the map references. Substrate sprawl inside mapping rounds is the recorded failure this rule exists for.
-6. **The completion test is mechanical, and mapping doesn't exit without it.** Run, not asserted: every promise token in `product.md` is assigned to a piece · every drawn frame is assigned exactly once, no gaps, no duplicates · every piece of shaped material is consumed by a named piece or listed as unconsumed · every piece has a proven-means line · milestones cover every piece. The enumerable sets are mechanical: the named slugs in `product.md` (`job:`, `moment:`, `claim:`, the foundations) and the frames' own captions in the shaped decks — grep them, count them, match them against the map. Report the result to the owner with the counts.
-7. **Exit needs three things:** the completion test green, the map heard and judged with its receipt (a fresh experiencer probes it against the owner's records and the wire and concludes with its verdict — the `experience` skill's artifact form, receipt opened at dispatch — and a separate judge challenges that verdict and rules), and the owner's ratification of the order, in his words, in the record.
-8. **Every piece's charter is read against the standing rulings and the whole-product properties before the map goes to review.** A charter can license rebuilding exactly what a ruling forbids while every mechanical check stays green — a "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model. The map's accounting paragraph is derived from the piece texts — regenerate it, never hand-edit it beside them — and its census states its population, never a numerator that equals its own denominator. Citations into the records name the record and its date, never a bare round number.
-9. **The ratification ask is made on a plain rendering.** Link `map.md`, never paste it: the owner ratifies a product-words rendering of what gets built, in what order, and why — the rendering is a defense layer, and the one read where the owner catches what every other reviewer missed.
-10. **A re-cut is a round, not a rewrite.** When a ruling or finding re-opens the map, the change runs as new numbered rounds in the same record — what moved, why, what it disturbs — and the completion test runs again before the map is ratified again.
+## Rules
+
+1. **Cut pieces from shaped work.** Derive them from promises, moments, screen drawings, and supporting material. Every piece names what it serves and consumes. A piece serving nothing is scope creep.
+
+2. **Let the owner choose the order.** Present real choices: visible surface first or machinery first, which moment appears first, and what unlocks the users or data later pieces need. Record options, costs, recommendation, and the owner’s exact answer. Put the reason for the chosen order in the map so future changes show what they disturb.
+
+3. **Write each piece’s proof plan before it goes live.** Name the runs, the user types who will test it, and what the judge must rule on.
+
+4. **Name milestones.** Each is the smallest group of pieces that proves a real increment end to end. Say when the first real user surface appears. If it appears late, put that cost in the map and get the owner’s agreement.
+
+5. **End mapping with the running-platform decision.** Start from the pieces’ needs. Give options with money, lock-in, operating burden, and reversal cost. Ask the owner to state the care level; a weekend product and a regulated one differ.
+
+   Record the choice and reopening conditions in `decisions.md`. Choosing platforms throughout earlier rounds creates sprawl.
+
+6. **Run the completion test.** Do not assert it. Check that:
+   - every `job:`, `moment:`, `claim:`, and foundation in `product.md` belongs to a piece;
+   - every captioned screen drawing belongs to exactly one piece;
+   - every supporting item belongs to a piece or appears as unconsumed;
+   - every piece has a proof plan; and
+   - milestones cover every piece.
+
+Grep, count, and match the named sets. Report every population and result to the owner.
+
+7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules; dispatch proof must exist. Finally, the owner ratifies the order in their own words.
+
+8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
+
+Derive the map’s accounting summary from its pieces; regenerate it instead of editing two copies. State the full population behind every count. Cite owner records by filename and date, never a bare round number.
+
+9. **Ask for ratification in plain language.** Explain what will be built, in which order, why, and at what cost. Link `map.md`; do not paste it. The owner judges the explanation, then ratifies in the record.
+
+10. **Treat every re-cut as a new round.** Record what moved, why, and what it disturbs. Re-run the completion test and ask the owner to ratify the changed order.

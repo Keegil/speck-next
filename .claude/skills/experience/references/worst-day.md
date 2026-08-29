@@ -1,29 +1,64 @@
-# The worst day
+# Test the worst day
 
-The persona: everything hostile and unlucky arrives at once — the weak user probing doors, the network dying mid-write, the corrupt file, the overlapping run. Every move here was paid for by a real defect that shipped past a green suite. Use what applies; skip what doesn't. Run each move, record exactly what happened and how you got there — then end with your verdict as the person having this day, every claim in it pointing at a move you actually ran. The judge will challenge it; answer from the record.
+Act as the person facing weak permissions, a dying network, corrupt data, and overlapping work at once. Use every move that applies. Record exactly what you did and what happened. End with this person’s verdict, with every claim linked to a move you ran.
 
-**Trace the promises, not the tests.** Take each promise and acceptance line and find the exact code path that delivers it, then check the behavior yourself and record what it did. Record tests that assert the implementation instead of the promise: tautological tests, tests that mirror state back at itself, skipped tests, tests running as a privileged role the real user doesn't have. A test can codify the very bug you're hunting.
+## Follow promises, not tests
 
-**Attack authorization with a real weak user.** Log in as the least-privileged real principal and attempt the forbidden operation — don't reason about the guard, try it. Before trusting any permission check at one seam, list every reader and writer of that data across the whole codebase; a guard on one door means nothing if there are five doors.
+For each promise and acceptance line, find the exact code path that delivers it. Run the behavior yourself. Flag tests that merely repeat the implementation, mirror state back at itself, are skipped, or use privileges the real user lacks. A test can preserve the bug you need to find.
 
-**Break the safety nets on purpose.** A check that has never been seen red catches nothing. Break the thing it guards once, watch it go red, restore it. A monitoring claim, a fallback, a "fail closed" path: force the failure (kill the dependency, cut the network, return garbage) and watch what actually happens — fail-closed paths have shipped failing open.
+## Attack permissions as a weak user
 
-**Exercise what the happy path never touches.** Failure paths and error messages. Dependency outage and timeout. Interrupted operations and crash-mid-write. Overlapping runs of the same command. Teardown and async edges. Rollback. Boundary values, wrong types, empty and huge inputs, corrupted files and data — several shapes, not one.
+Use the least-privileged real account and attempt each forbidden operation. Do not infer the result from a guard. List every reader and writer of the data across the codebase; protecting one door is useless if five exist.
 
-**A judging number is a hypothesis until it meets data.** No threshold that judges real behavior locks before its measured distribution exists — a confidence floor of 0.60 once met a real corpus scoring 0.21, structurally, not tunably. And no rendered number carries a denominator the wire hasn't delivered: "read 431 deliveries — still reading" is honest while the total is unknown; "431 of 609" only becomes honest once 609 is a measured fact, and a percentage hides the question entirely.
+## Break the safety nets
 
-**Distrust fixtures when the premise depends on real data.** Fixtures can be structurally blind to the defect that matters (every fixture's gap was 18 days; the real outlier's was three years). When the product's value depends on how real data behaves, demand a run against real or realistic data before believing the premise.
+Break each guarded behavior, watch its check fail, then restore it. Force monitoring, fallbacks, and fail-closed paths by killing dependencies, cutting the network, and returning garbage. Observe what really happens; fail-closed paths have shipped failing open.
 
-**After every real find, sweep its mirrors.** A confirmed bug is rarely alone: check the sibling surface, the second rendering of the same data, the enforcement moment (does the rule fire on update as well as create?), and the reverse direction. The reverse direction has the highest historical yield and is the least intuitive. And when a defect shape you've already recorded in this repo turns up again, record them together as one shape, not two separate surprises.
+## Leave the happy path
 
-**Check whether the work graded itself.** Look at the diff: did it touch its own tests, CI config, or any logic that certifies it? A change that modifies its own grading goes in the record regardless of whether the change looks right — entire benchmarks have been gamed through one test-harness hook.
+Run failure paths and error messages, dependency outages and timeouts, interrupted operations and mid-write crashes, overlapping commands, teardown and async edges, rollback, boundary values, wrong types, empty and huge inputs, and several shapes of corrupt files or data.
 
-**Persistence means baseline, act, read back.** "It saved" is proven by reading the datastore before, acting, and reading after — a success screenshot, or a read with no baseline, cannot distinguish a fresh write from a stale row.
+## Measure before choosing a judging number
 
-**For AI claims, test the behavior, not the prompt.** A rule string present in the prompt source proves nothing — models follow a nearby example over a stated rule. Run the shipped model with and without the condition and compare what it actually does.
+A threshold for real behavior is a hypothesis until you measure the real distribution. A confidence floor of 0.60 once met a real corpus scoring 0.21, structurally, not tunably.
 
-**For UI: use it twice, and trust your eyes over the tools.** Once as a first-time user who doesn't know what's supposed to happen, once as a hostile one trying to get lost, break flows, and reach every screen. A screenshot is evidence only after you've actually looked at it — and a green automated accessibility or lint pass is not proof of visual fit: rule engines have no model of containment, and real overflows have clipped content for months behind perfect scores. Where accounts exist, run two real ones concurrently — caches, queues, and push tokens can leak across a sign-out even when every request authorizes correctly.
+Never show a denominator the product has not measured. “Read 431 deliveries — still reading” is honest while the total is unknown. “431 of 609” is honest only after measuring 609. A percentage merely hides the question.
 
-**Check that the loop was actually run — git already knows.** Four cheap mechanical reads, each of which has caught a real day going off the rails: was each work file's shape committed before its code (`git log --diff-filter=A -1 -- work/<file>.md` vs the code's first commit — same commit means documentation, not shaping)? How stale is `state.md` (`git rev-list --count $(git log -1 --format=%H -- state.md)..HEAD`)? Does every piece past Built have a review receipt? Does `map.md` match reality — is the live piece actually what's being built, and is any shaped material (deck frames, model sections) being consumed by code that the map doesn't know about, or sitting unconsumed without being listed?
+## Distrust convenient data
 
-**Record limits as limits.** A move you couldn't run is written down as something untested — never converted into a pass, never silently dropped.
+When a premise depends on real data, fixtures may hide the important shape. Every fixture's gap was 18 days; the real outlier's was three years. Run against real or realistic data before believing a value claim.
+
+## Sweep for siblings after every find
+
+Check the sibling surface, the second rendering of the data, update as well as create, and the reverse direction. The reverse direction has the highest historical yield and is the least intuitive. When the same defect shape returns in this repo, record one repeated shape rather than separate surprises.
+
+## Check whether the work graded itself
+
+Inspect the diff for changes to tests, CI, benchmarks, or certification logic. Record any change that alters its own grading even if it looks correct. Entire benchmarks have been gamed through one test-harness hook.
+
+## Prove persistence by reading back
+
+Read the datastore before the action, perform it, then read again. A success screen or a read without a baseline cannot distinguish a new write from stale data.
+
+## Test AI behavior, not prompt text
+
+A rule in source proves nothing because a model may follow a nearby example instead. Run the shipped model with and without the condition and compare its behavior.
+
+## Use the interface twice
+
+First use it as a newcomer who does not know the intended path. Then act as a hostile user trying to get lost, break flows, and reach every screen.
+
+Trust examined screenshots over tools. Automated accessibility and lint checks do not understand visual containment; real overflows have clipped content for months behind perfect scores. When accounts exist, use two real accounts concurrently because caches, queues, and push tokens can leak across sign-out even when requests authorize correctly.
+
+## Check whether the team followed the build loop
+
+Git can answer four cheap questions that have each caught a real day going off the rails:
+
+1. Was each work file committed before its product code? Compare `git log --diff-filter=A -1 -- work/<file>.md` with the first product commit. The same commit means the file documented work instead of shaping it.
+2. How stale is `state.md`? Run `git rev-list --count $(git log -1 --format=%H -- state.md)..HEAD`.
+3. Does every piece past Built have dispatch and review proof?
+4. Does `map.md` match reality? Check that its live piece is the work being built and that every used or unused shaped item is accounted for.
+
+## Keep limits honest
+
+Record every move you could not run as untested. Never turn it into a pass or omit it.

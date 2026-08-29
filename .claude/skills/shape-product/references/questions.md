@@ -1,37 +1,39 @@
-# The shaping questions
+# Questions for shaping
 
-Earned over eight months of real products. Use what this product needs; skip the rest. Ask one or two at a time — this is a conversation with the owner, not a questionnaire.
+Use what this product needs. Ask one or two at a time and keep the owner’s answers verbatim.
 
-**The core (almost every product):**
+## The core
 
-1. In one sentence, what does the user get — their outcome, not our feature? Refuse vagueness; stop rather than accept a feature list. Everything downstream measures against this sentence.
-2. Who specifically pays or relies on this, and what are they using today that it replaces?
-3. What jobs do they hire it for? One sentence each — situation, job, outcome — with a short stable name so work can point at it.
-4. What would this person get, honestly, from free general-purpose AI plus fifteen minutes, a spreadsheet, or a competitor's free tier? (A real product once locked its price against a competitor's paid tier when the true reference price was zero.)
-5. Given that — why would they still pay? If the only honest answer is "nicer UX", fix the product, not the answer.
-6. What's the wedge — the thing still true of this product if a competitor copied every feature? And which distinct claims does it rest on, each named, each marked: does this have to fire on the real shipped path, and what canned substitute would be a lie?
-7. What must this product never become, even if competitors do? Three to five "we are not" lines, each naming the failure it prevents.
-8. What must stay true of the whole even when every check is green? (The deepest recorded failure: a project traded away its AI-first core while every checklist row stayed green, because the property owned no row.)
+1. In one sentence, what does the user get? Name their outcome, not our feature. Stop rather than accept a feature list; everything downstream measures against this sentence.
+2. Who pays or relies on this, and what do they use today instead?
+3. What jobs do they hire it for? Give each a short stable name and one sentence covering the situation, job, and outcome.
+4. What would this person honestly get from free general AI plus fifteen minutes, a spreadsheet, or a competitor’s free tier? A real product once locked its price against a competitor's paid tier when the true reference price was zero.
+5. Why would they still pay? If the only answer is “nicer UX,” fix the product.
+6. What remains special if a competitor copies every feature? Name each supporting claim, whether it must run on the shipped path, and which canned substitute would be a lie.
+7. What must this product never become, even if competitors do? Write three to five “we are not” lines, each naming the failure it prevents.
+8. What must remain true of the whole when every check is green? The deepest recorded failure: a project traded away its AI-first core while every checklist row stayed green, because the property owned no row.
 
-**The AI-first conception.** Always considered thoroughly, never assumed: left unguided, builders churn out lookalikes of whatever already exists, so the burden of proof sits on convention. The honest outcome may well be that convention serves this job — but that verdict is earned through the questions below and written into `product.md`, never reached by silence.
+## Rebuild the category when the job calls for it
 
-9. Who is the best *human* who ever did this job for someone — a great accountant, a travel agent who knew you, a concierge, a private tutor — and how does that relationship actually work? They ask questions, make assumptions and say them out loud, let you correct them, remember, and adjust. That relationship is the bar, not the incumbent app.
-10. Which concepts does this category treat as god-given, and which are fossils — structure that only exists because software couldn't think when it was invented, or because the physical world imposed it? Folders are filing cabinets carried into software; tax software mirrors the paper form's line numbers instead of the question "I sold some shares — what do I owe?"; wherever no intelligence was available at runtime, expertise got pre-compiled into rigid plans and templates. Which of this category's concepts would survive being rebuilt by someone who had never seen the incumbent? Fossils get deleted and rebuilt, never automated.
-11. Rebuilt from the domain's first principles — what actually drives outcomes here — and from how the user really thinks and talks about it: what are this product's core concepts, named in the user's own language?
-12. What living model of the user or their situation sits at the center, doing the work? What does it infer, what does it ask, and where does the user see and correct its assumptions? Surfaces are conversations with that model: it works up front, pre-fills, and leaves confirmations — never a blank form, never work the system could have done. What is the user still typing that the model should have known?
-13. Unplug the model: does the product collapse? If it still basically works, the intelligence is decoration — reconceive. (A shipped product once traded its AI-first core away while every checklist stayed green, and a passing test literally enforced the model's absence.)
-14. Per AI-visible surface: what must the model consume, what shape must its answer take, what user data must it cite, and what do three good and three unacceptable answers look like?
-15. For every signal the product collects: where does it change behavior, where can the user see and edit it — or why is it deliberately unused? (Data collected and never used is the "AI bolted onto a tracker" failure shape.)
+Always consider these questions. Convention may be right, but earn that answer and record it in `product.md`.
 
-**For anything with a drawn surface:**
+9. Who is the best human who ever did this job for someone: a great accountant, a travel agent who knew them, a concierge, or a private tutor? How do they ask, infer, explain assumptions, accept correction, remember, and adapt? That relationship is the bar, not the incumbent app.
+10. Which category concepts are real, and which are fossils left by paper, physical limits, or software that could not think? Folders came from filing cabinets; tax software copied paper line numbers instead of asking “I sold shares; what do I owe?” Which concepts would survive if the builder had never seen the incumbent? Delete and rebuild fossils; do not automate them.
+11. From the domain’s first principles and the user’s own language, which forces drive outcomes and which concepts belong at the product’s center?
+12. What living model of the user or situation does the work? What does it infer and ask? Where can the user see and correct assumptions? Let surfaces converse with that model: work up front, pre-fill, and ask for confirmation. What is the user still typing that the model should know?
+13. If you unplug the model, does the product collapse? If it still basically works, reconceive it. A shipped product once traded its AI-first core away while every checklist stayed green, and a passing test literally enforced the model's absence.
+14. For each AI-visible surface, what must the model consume? What shape must the answer take? Which user data must it cite? Give three good and three unacceptable answers.
+15. For every collected signal, where does it change behavior and where can the user inspect and edit it? Otherwise, why is it deliberately unused? Data collected but unused is the “AI bolted onto a tracker” failure.
 
-16. Where are the moments the user thinks "this gets me"? Each: a name, the surface, the trigger, the beats in order, the reaction it must produce, and the exact scenario that proves it.
-17. Which moments earn or lose trust — first data ask, first suggestion, first payment, first failure — and what does the bad version feel like?
-18. How must it feel? Three to five adjectives, two or three "feels like X, not Y" references, a few checkable restraint rules, and the treatments that would cheapen it. Without a declared feel, later quality review collapses into generic craft advice.
-19. Which words must never face a user — overclaiming pitch language, internal vocabulary, test words, generic AI cheerleading — each with its replacement?
+## Drawn surfaces
 
-**Before the file closes:**
+16. Where should the user think “this gets me”? For each moment, name the surface, trigger, beats in order, desired reaction, and exact scenario that proves it.
+17. Which moments earn or lose trust, such as the first data request, suggestion, payment, or failure? What does the bad version feel like?
+18. How should the product feel? Give three to five adjectives, two or three “feels like X, not Y” references, checkable restraint rules, and treatments that would cheapen it. Without a declared feel, later review becomes generic craft advice.
+19. Which words must never reach a user? Include overclaiming pitch language, internal terms, test words, and generic AI cheerleading, each with its replacement.
 
-20. When a deadline presses, what holds, what flexes, what defers?
-21. How will each promise be judged, and by whom? Never by whoever wrote it.
-22. Which foundations will this product predictably need, and what's the trigger that makes each one due? (A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor.) Foundations fire on triggers, not upfront — but a foundation with no named trigger is one that never gets built.
+## Before closing
+
+20. Under deadline pressure, what holds, what flexes, and what waits?
+21. How will each promise be judged, and by whom? Never by its author.
+22. Which foundations will the product need, and what triggers each one? A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor. Foundations fire on triggers, not upfront, but a foundation without a trigger never gets built.

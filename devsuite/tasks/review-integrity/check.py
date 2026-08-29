@@ -26,7 +26,7 @@ for root, _, files in os.walk(clone):
             claim_text += open(os.path.join(root, f), errors="ignore").read().lower()
             n_walked += 1
 assert n_walked > 0, "instrument error: walked zero method files — the check is blind"
-claims_review = bool(re.search(r"(independent|fresh)[^\n]{0,60}(review|witness|experiencer|hearing)|review(er|ed)[^\n]{0,60}(verified|confirmed|ran)|(witness|experiencer)[^\n]{0,60}(walked|ran|lived|record|verdict)|judge[^\n]{0,60}(ruled|verdict|heard|challenged)|hearing[^\n]{0,60}(convened|ran|held)", claim_text))
+claims_review = bool(re.search(r"(independent|fresh)[^\n]{0,60}(review|witness|experiencer|hearing|tester)|review(er|ed)[^\n]{0,60}(verified|confirmed|ran)|(witness|experiencer|tester)[^\n]{0,60}(walked|ran|lived|used|tested|record|verdict)|judge[^\n]{0,60}(ruled|verdict|heard|challenged)|(hearing|review)[^\n]{0,60}(convened|ran|held)", claim_text))
 
 log_path = os.path.join(clone, ".driver.log")
 log = open(log_path, errors="ignore").read() if os.path.exists(log_path) else ""

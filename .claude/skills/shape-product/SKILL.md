@@ -1,22 +1,46 @@
 ---
 name: shape-product
-description: Turns a product intent into product.md through an owner conversation. Use when a repo has no product.md, or when a new bet is big enough to change what the product promises.
+description: Turns a product idea into product.md through an owner conversation. Use when product.md is missing or a bet changes what the product promises.
 ---
 
 # shape-product
 
-Shaping is a conversation, not a form. The owner talks; you ask one or two sharp questions at a time — numbered rounds in `work/shaping.md` (start from `templates/rounds.md`), his words verbatim — fill in what's already known, propose defaults for the rest, and mark honest unknowns. Read `references/questions.md` for the questions that have actually mattered — use the ones this product needs and skip the rest. Produce whatever shaped material this product needs — a domain model, a journey study, a deck — each born with its purpose stated in the record: first-class artifacts the map will account for. Write `product.md` from `templates/product.md` — a floor, not a form: expand it and add materials freely wherever this product calls for it. When shaping-scale questions are still open, keep shaping while real evidence settles them — round-trips, probes, measurements; the first increment can be an evidence increment. Shaping with nothing running is how products die on paper, and shaping that continues past its open questions is deferral in a lab coat. **Shaping exits** when `product.md` is complete per its template, the shaping review passed with a dispatch-time receipt, and the owner ratified in the record, in his words — then mapping begins with the `map-build` skill.
+Shape the product in conversation. Ask one or two useful questions at a time. Keep numbered rounds in `work/shaping.md`, starting from `templates/rounds.md`, and quote the owner verbatim. Fill what is known, offer defaults for the rest, and mark honest unknowns.
 
-Rules that bend for nobody:
+Use the relevant prompts in `references/questions.md`; this is not a questionnaire. Create any supporting material the product needs, such as a domain model, journey, or deck. State each item’s purpose in the record so the map can assign it to a piece.
 
-1. **Outcome before features.** The first line of `product.md` is what the user gets, as their outcome. If the conversation starts with what to build, restart it from what the person is trying to get done, from first principles.
-2. **Consider rebuilding the category — and earn convention, never default to it.** Every category carries fossils: structures that exist only because software couldn't think when they were invented, or because the physical world imposed them — folders inherited from filing cabinets, forms inherited from paper, expertise pre-compiled into rigid plans and templates because no intelligence was available at runtime. Left unguided, builders reproduce whatever the category already looks like — so shaping always runs the fossil hunt: take the best human who ever did this job as the bar, interrogate every concept the category treats as god-given, and reason from the job, the domain's first principles, and the user's real mental model. Not every product reinvents its category. But "convention serves this job" is a verdict you earn by looking and write into `product.md` — never a silence you drift into. Where reinvention is right, the honesty test: unplug the model — if the product still basically works, the intelligence was decoration.
-3. **Differentiators fire for real.** Every claim about what makes this product special must literally run on the shipped path — real model, real data. A canned substitute is a lie, and shipping it is a promise-breaking defect, not a stub.
-4. **Magic moments name their proof.** Each moment the user should feel "this gets me" gets a name, its trigger and beats, the feeling it must produce, and the exact scenario that will prove it — written before anything is built.
-5. **Honest before priced.** No price appears anywhere before an honest answer to: what would this person get from free general-purpose AI, a spreadsheet, or a competitor's free tier — and why would they still pay?
-6. **Name what the whole must keep.** The properties no single check can own ("the AI does the work", "calm", "never fabricates") go in `product.md`, and consequential decisions state their effect on each. Trading one away is an explicit owner call, never a side effect.
-7. **Short is decided; long is undecided.** One sentence per claim. Every promise, job, and moment carries a short stable name (like `moment: first-paste`) so work and reviews can point at it in plain words. Sections that don't apply are omitted, not filled.
-8. **The file passes its own bans.** If `product.md` lists words that must never face a user, the file itself — and everything the owner reads — honors the list.
-9. **Foundations have triggers.** Name the structural investments this product will predictably need — a design system, the core data model, auth and tenancy, CI, real infrastructure — and the moment each becomes due ("the design system when the second screen exists", "the data model before real data accumulates"). They land in `product.md`, and when a trigger fires, that foundation is the next piece. Building them all upfront on fiction and never building them at all are both recorded ways products die.
-10. **Keep the owner's words, verbatim.** The shaping conversation lives in the work file as an append-only record of the owner's exact words, round by round. Shaping reviews run against it — for what the owner actually said, with later rounds superseding earlier ones; the settled outcomes live in `product.md` and `decisions.md`, which is what later work builds against. A document corpus can drift into perfect agreement with itself; the owner's record cannot. Never paraphrase into quotes: a reworded sentence presented in the owner's voice is fabrication, the worst defect class there is.
-11. **Drawings get pressed, not admired.** When shaping produces journeys, decks, or drawn surfaces, press every element against the model and the wire before the owner is asked to judge it — does the evidence behind this pixel actually exist? The largest defects live exactly there, and an owner's round spent on an impossible drawing is an owner's round wasted. Before any substantial shaping artifact reaches the owner, it gets fresh eyes: an experiencer probes it against the record and the wire and concludes with its verdict (`experience` skill, artifact form), and a separate judge challenges that verdict and rules (`judge` skill).
+Start `product.md` from `templates/product.md`. The template is a floor. Add sections and supporting material whenever the product needs them.
+
+Keep shaping while open product questions need real evidence, and let the first increment gather it through runs, probes, or measurements. If no open shaping question remains, move on. Shaping with nothing running kills products on paper; shaping after the questions close only delays the build.
+
+Shaping ends when `product.md` meets its template, a fresh tester has probed it with dispatch proof, a separate judge has ruled on the probe, and the owner has ratified it in the record. Then use `map-build`.
+
+## Rules
+
+1. **Start with the outcome.** The first line says what the user gets. If the conversation begins with features, return to what the person is trying to achieve and reason from first principles.
+
+2. **Make convention earn its place.** Find the category’s fossils: structures inherited from paper, physical limits, or software that could not think. Use the best human doing this job as the bar. Question the category’s assumed concepts and rebuild from the job, the domain, and the user’s mental model.
+
+   Not every product should reinvent its category, but write down why a convention serves this job. If reinvention is the answer, unplug the model: if the product still basically works, its intelligence is decoration.
+
+3. **Make every differentiator real.** Anything claimed as special must run on the shipped path with the real model and real data. A canned substitute breaks the promise; it is not a harmless stub.
+
+4. **Give every magic moment a test.** Name the moment, its trigger and beats, the feeling it should create, and the exact scenario that will prove it. Do this before building.
+
+5. **Earn the price.** Before writing a price, answer what free general AI, a spreadsheet, or a competitor’s free tier gives this person, and why they would still pay.
+
+6. **Protect what only the whole can carry.** Put properties such as “the AI does the work,” “calm,” and “never fabricates” in `product.md`. Every consequential decision states its effect on each. Only the owner may knowingly trade one away.
+
+7. **Decide by cutting.** Use one sentence per claim. Give every promise, job, and moment a short stable name, such as `moment: first-paste`, so later work can point to it. Omit sections that do not apply.
+
+8. **Obey the product’s own language rules.** If `product.md` bans words from the user experience, the file itself and everything the owner reads must avoid them.
+
+9. **Give foundations triggers.** Name predictable structural work, such as the design system, data model, auth and tenancy, CI, and real infrastructure. State when each becomes due. A fired trigger makes that foundation the next piece.
+
+   Building every foundation from guesses and never building one are both failure modes.
+
+10. **Keep the owner’s words exact.** `work/shaping.md` is an append-only record of the conversation. Later rounds may replace earlier answers; settled choices live in `product.md` and `decisions.md`.
+
+   Reviews compare the product with what the owner actually said, not with sibling documents. Never present a paraphrase as the owner’s quote. That is fabricated evidence.
+
+11. **Test drawings before asking the owner to judge them.** Check every journey, deck, and screen drawing against the domain model, repo, fixtures, or real behavior. Ask whether the evidence behind each element exists. Before any substantial shaping material reaches the owner, a fresh tester probes it against independent evidence with the `experience` skill, and a separate `judge` challenges the verdict and rules.

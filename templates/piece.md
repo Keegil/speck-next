@@ -1,15 +1,31 @@
 # [Piece name]
 
-[A floor, not a form: grow this file to whatever the piece genuinely needs.]
+[A floor, not a form: grow this file when the piece needs more.]
 
-**Serves:** [job/moment/foundation from the map] · **Consumes:** [frames/sections/material]
+**Serves:** [job/moment/foundation] · **Consumes:** [screen drawings/sections/material]
 
-**Outcome:** [what exists and works when this piece lands — one short paragraph, committed before any of this piece's code.]
+**Outcome:** [What works when this lands. Commit this before product code.]
 
-**Proven means:** [the runs · the personas whose experiencers live it · what the judge rules on. A safety net counts only after it's been watched failing.]
+**Before first run:** [Hard limit on planning time, tokens, and files read.]
 
-**Hearing receipt** *(opened at dispatch, records appended on return)*: built [quote the `state.md` line and the commit that wrote it — the line must literally say **Built**; if it doesn't, stop and write Built in `state.md` first ("coded" or "checks pass" is not Built), then quote the new line] · experiencers [per persona: tool, model, session] · dispatched [date, commit] · walks and commands [planned] · owner of this run [which session] · if a record is empty [re-dispatch under your own named line] · records and verdicts [linked — each verdict pointing at lived moments].
+**Proof plan and review cost:** [Runs · exact user types and number of fresh testers, at least two · judge, plus second judge when risky or at a milestone · what each rules on. A safety net counts only after it has failed on purpose.]
 
-**Judgment** *(a separate fresh context that built and walked none of it)*: judge [tool, model, session] · ruled [date] · ruling on [this piece, at which commit] · challenges [questions put, re-runs ordered and their answers — a follow-up run by a fresh context is a named line under the original experiencer's receipt, appended to the same record] · verdicts [per promise: kept/broken/not judged · works · delivers the promise · good to use · quality hangs together — separately · structure: sound/straining/fighting] · second judge [milestone/risky only: rulings + any divergence] · routed [anything insufficient → shape, map, build, or re-experiencing, with the trace].
+**Review receipt** *(commit before any tester runs)*:
 
-**Result:** [what actually happened — iterations forced by the hearing, what stayed open, what the next agent shouldn't relearn.]
+- Built: [Quote the `state.md` line and its commit. It must literally say **Built** and cover the exact product files — written in the build's final commit, or in a records-only commit just after it. No build commit may land after it, and the receipt must open after the Built line was written. Otherwise stop, write Built in a new state-only commit, and open a new receipt. A build commit changes product code, screens, or data, not only records or state. After a rejected piece is fixed, quote a new Built line covering the fixed product files.]
+- Testers: [For each: persona, tool, model, session.]
+- Dispatched: [Date and product commit under test.]
+- Planned walks and commands: [List. For a batch, enumerate changes from the commit range.]
+- Run owner: [Dispatching session.]
+- Empty record: [A later session re-dispatches under its own named line.]
+- Records and verdicts: [One link per tester; every verdict points to lived moments.]
+
+**Judgment** *(fresh context that built and tested none of it)*:
+
+- Judge: [Tool, model, session · date · piece and commit under judgment.]
+- Challenges: [Questions, ordered re-runs, answers. Add a fresh follow-up context under the original tester’s receipt and append its run to that record.]
+- Rulings: [Each promise: kept/broken/not judged · works · delivers the promise · good to use · quality hangs together · structure: sound/straining/fighting.]
+- Second judge: [Required for milestones and risky pieces; rulings and disagreement.]
+- Sent back: [Anything insufficient returns to shape, map, build, or more testing, with the trace.]
+
+**Result:** [What happened, what review changed, what remains open, and what the next builder should not relearn.]

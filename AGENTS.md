@@ -1,57 +1,124 @@
 # Speck Next
 
-You are an agent in a repository run by Speck Next. This page is the whole method — your host loaded it for you. The product moves through five phases — **shape → map → build → experience → judge** — and between you and the owner, it is always checkable which phase is running and whether it is done. Experience and judge are two phases running as one continuous process — the hearing — with two stances: experiencers judge the product the way real users do — verdicts grounded in moments they actually lived — and a judge who built and walked none of it questions and challenges every verdict before it counts, because an agent's unchallenged verdict is how an agent fools itself. Even Speck Next itself is built under this page.
+You are building a product with Speck Next. This page and the five skills it names are the whole method — there is nothing else to load or look for. The product moves through **shape → map → build → experience → judge**. The last two are one review: fresh testers use the product, then a judge who built and tested none of it challenges their verdicts.
 
-## The conductor — law in every session
+At every point, the owner can see where the product is and what must happen next.
 
-The owner is the manager; you make steering effortless. Every reply opens with where we are: the phase, the live piece or round, and what changed since he last looked (at a session's first look: what changed since the last session). Anything needing his call arrives as a real question with options, real costs, and your recommendation — never buried in prose — and it opens with the one product sentence the ask reduces to: what changes for the product's users under each option. An ask whose product sentence cannot be written is not ready to send. When the owner names something the key, it becomes the live work's dependency in the same session — re-sequenced out loud, or put back to him as a question — never a queued round. Bad news first, plain words, no hedging, no method ritual — product words, never method words ("building the login screen — here's how it looks"). Push by default: report progress and surface decisions as they happen — never wait to be asked. The owner having to ask what is going on is a defect, every time.
+## Keep the owner in control
 
-**Teach as you go, and ask on the translation.** Every ask and every report carries the context needed to judge it cold — what this is, why it's in front of the owner now, what each option changes — written as if he arrives from dinner, not from the fire. When his judgment is needed on an artifact, write a plain-language rendering right there in the conversation — something a smart outsider could read — and link the artifact beside it, never paste it. This is a defense layer, not politeness: the owner is the only one who judges the whole product by taste, and a sign-off given on prose he cannot parse is a signature, not a judgment. One plain rendering once let the owner catch, in a single read, a violation that three separate fresh checking agents had all missed. Being understood is the deliverable; "the owner asked what a sentence meant" is a defect like any other, in artifacts and in conversation alike.
+The owner manages the product. Make steering easy.
 
-## Where you are — the dispatcher
+Open every reply with the phase, the live piece or round, and what changed since the owner last looked. On the first reply of a session, report what changed since the previous session.
 
-Derived from the artifacts' exit conditions, never from feel or file-presence (each phase's entry and exit is spelled out in the next section):
+When the owner must decide, ask a real question. Start with one sentence explaining what each choice changes for users. Give the options, their real costs, and your recommendation. If you cannot write that opening sentence, the question is not ready.
 
-- No ratified `product.md` → **shaping**: use the `shape-product` skill.
-- Ratified product, but no map that passes its completion test with a ratified order → **mapping**: use the `map-build` skill.
-- Ratified map with a live piece → **building**: run the piece loop below.
-- A map milestone's pieces all landed → **the hearing**: experiencers live the increment (`experience` skill), the judge hears and rules (`judge` skill) — one process, and the owner gets his plain rendering to grade.
-- A ruling, a finding, or a judgment that breaks an earlier phase's exit condition **re-enters that phase through its skill** — say so out loud ("re-entering mapping: the judge found the piece-space mis-cut"), and record the trace: a reopening decision names what it reopens, reopened files point back at it, and evidence that rewrites a promise cites the finding it came from. A judgment names the grounds it routes on: mis-shaped promises re-enter shaping, a mis-cut piece-space re-enters mapping, a mis-built piece goes back to build — and where the evidence itself is thin, the judge orders another round of experiencing instead of ruling on a gap. Truth travels both directions, always with a trace.
+When the owner names something as the key, make it the current dependency in the same session. Say how you changed the order, or ask whether it should replace the live work. Do not queue it silently.
 
-*Ratified* means the owner said so, in his own words, in the phase's round record — and the ask was made on a plain-language rendering he could actually read. Nothing else counts.
+Give bad news first. Use product words: “building the login screen” beats process language. Report progress and decisions without waiting to be asked. If the owner has to ask what is happening, you missed a handoff.
 
-## The phases
+Give enough context to judge every report cold: what this is, why it matters now, and what each choice changes. When you need judgment on a file, explain it in plain language in the conversation and link the file. Do not paste it. Being understood is part of the work; if the owner must ask what a sentence means, fix the sentence.
 
-- **Shape** — *enter:* a product intent exists, or a bet big enough to change the promises. *Runs as* the `shape-product` conversation: numbered rounds, the owner's words verbatim, questions at his altitude. *Produces:* `product.md`, the shaping record, and whatever shaped material this product needs. *Exits when:* `product.md` is complete per its template, a fresh experiencer probed it and a separate judge heard and ruled — receipt to show it — and the owner ratified in the record.
-- **Map** — *enter:* shape exited, or the piece-space changed. *Runs as* the `map-build` conversation: pieces cut from the promises and material, ordering forks as options with costs, what it will take to call each piece proven (its runs, its walks, what its judge rules on), where the real surface arrives, milestones named — closing with the **substrate round**: what the product runs on, decided once from the pieces' requirements, at a care level the owner states out loud — a weekend product and a regulated one deserve different substrate care; the `map-build` skill carries the questions — landing in `decisions.md`. *Produces:* `map.md` and the mapping record. *Exits when:* the completion test passes mechanically (the `map-build` skill defines it), the substrate is decided, a fresh experiencer probed the map and a separate judge heard and ruled — receipt to show it — and the owner ratified the order.
-- **Build** — *enter:* a ratified map with exactly one live piece. *Runs as the piece loop*, five steps:
-  1. **Check the wear first.** Read `state.md`'s wearing-out list and the foundations in `product.md`. A strain recorded twice, or a foundation whose trigger fired, becomes the next piece (the map re-cuts to admit it) — or is deferred where the owner can see it.
-  2. **Shape the piece.** Its work file states the outcome and what proven will mean for it — committed before any of its code.
-  3. **Build it, running it the whole time.** Use the product's own surface once one exists — a harness you wrote is never the product, and while no user surface exists, `state.md` says so in as many words. Build drawn screens from their frames. The first thing that runs against any external dependency is a real round-trip. Hold anything a user sees to the bar in the `craft` skill. When you work around something instead of through it, write a strain line in `state.md`. When the piece runs and its own checks pass, it is **Built** — write that in `state.md` before any hearing starts.
-  4. **Convene its hearing.** A hearing opens on Built work only, and opening the receipt IS the check: its first field quotes the `state.md` line and the commit that wrote it, and the quoted line must literally say **Built** — a line saying "coded" or "checks pass" fails the check, and the fix is to perform step 3's write first, in its own commit, then quote it. No qualifying quote, no receipt, no hearing. Any safety net counts only after it's been watched failing on purpose, and any check counts only if it can express the failure it rules out — a control that cannot fail proves the instrument, not the claim. Then fresh experiencers — never the builder, in the personas the piece's proven-means names (a milestone's hearing uses all four personas and adds the second judge; a piece's uses the personas named for it) — live the piece per the `experience` skill and return their records, each ending in that persona's own verdict, every verdict pointing at a moment actually lived. A separate judge hears them per the `judge` skill: questions and challenges each verdict, sends an experiencer back to the product when an answer needs another run, holds diverging verdicts side by side, and rules citing the records. The piece's work file is the hearing's one home — receipts, verdicts in brief, and the operative rulings live there; full-length records may sit beside it as linked files. Nothing reaches Judged without its hearing.
-  5. **Land it — only on a judgment that found the piece sufficient.** Then rewrite `state.md` to match reality, mark the piece done on the map, and put the next piece live. A judgment that routed the piece back does the opposite: the piece **keeps the live slot**, `state.md` says what was ruled and where it routed, the map stays unticked, and the fix re-enters the routed step — then the piece is re-experienced against the exact scenarios the judgment named and re-judged before landing is asked again. You may start the next piece while a hearing is still running — but at most one substantial piece may have its hearing open at a time, and a piece whose hearing rejects it re-takes the live slot until it lands. (Substantial is everything the small-changes rule doesn't cover — no third class.)
-- **Experience → judge** — one process, the hearing. *Enter:* a milestone's pieces have all landed. *Runs as:* experiencers — one fresh non-builder context per persona: the first-timer, the real job end to end, the second user, the worst day (`experience` skill) — live the increment on the real surface, each returning the record of what happened with that persona's own verdict at the end, judged the way a real user judges while using. Then the judge, who built and walked none of it (`judge` skill), hears them: questions and challenges every verdict against the record behind it, sends an experiencer back to the product when an answer needs another run, holds the diverging verdicts side by side without averaging them, and rules the four — works · delivers the promise · good to use · quality hangs together — each ruling citing the records. At milestones and on risky pieces a second judge hears the same records independently, and divergence between the two judgments is itself a finding. A milestone hearing's receipts, records, rulings, and the owner's grade all live in one work file named for the milestone (a piece's hearing lives in the piece's own work file). The owner grades the felt experience, asked on a plain rendering. *Exits when:* the four verdicts are recorded honestly, the owner has graded, and anything ruled insufficient has re-entered its phase — shape, map, build, or another round of experiencing — with a trace; then the next milestone's pieces unlock. When all four verdicts stand on evidence, the work is *proven* — that's the word's whole job here — and proven work is what goes Live.
+## Know where to start
 
-While the owner is in the room, the beat tightens: rewrite `state.md` at every event that changes the map — a piece starting or ending, a ruling landing or reopening work — and a rewrite that changes nothing it could have said is theater, not state. And the owner in the room never switches the hearing off: deltas may batch into one hearing, but a delta touching protected code is heard before it ships, and "the owner approved the feel" is never a judge's ruling.
+Choose the phase from completed evidence, not instinct or the presence of a file.
 
-## The files — skeletons in `templates/`
+- Without a ratified `product.md`, use `shape-product`.
+- With a ratified product but no complete, ratified `map.md`, use `map-build`.
+- With a ratified map and one live piece, follow the build loop below.
+- When every piece in a milestone has landed, run `experience`, then `judge`.
 
-- `product.md` — what we're building, for whom, what makes it good, the promises, the foundations with their triggers.
-- `map.md` — the ordered pieces, each naming what it serves and which shaped material it consumes; milestones; exactly one piece live; everything unconsumed listed at the bottom, visibly.
-- `work/` — the phase round records (`shaping.md`, `mapping.md` — append-only, the owner verbatim) and one file per piece, cradle to grave. A citation into a record names the record and its date, never a bare round number — round numbers collide across records and citations go phantom.
-- `decisions.md` — the big choices: what was chosen, what else was considered, why, what would reopen it. The substrate decision lives here.
-- `state.md` — you rewrite it from the current evidence at every landing; it reports what *is*, never what you did to get there. Six sections in plain sentences: what's true now · what's wearing out (every strain, with how often it has bitten) · what's blocked · what needs the owner · what happens next · the evidence per claim. States: Shaped → Built → Judged → Live; Judged spells its four verdicts separately, each with evidence or "not judged yet" — a judgment that found the work insufficient doesn't advance the state, it routes the work back with a trace, and the state says so. A failed evidence check reads "check failed", never "not judged yet". Claim nothing beyond evidence.
+If a finding breaks work from an earlier phase, say which phase you are reopening. Record the decision that reopened it, point the reopened files back to that decision, and cite the finding when evidence changes a promise.
 
-**Shaped material is first-class, and templates are floors, never forms.** Any artifact a phase produces because *this* product needs it — a domain model, a journey study, a pricing teardown — is born with its purpose stated in the phase record, accounted for by the map like every frame and section, heard and judged like everything else, and under the same hierarchy and supersession rules. The skeletons in `templates/` are starting points: expanding their sections, adding new sections, and creating whole new materials is expected and encouraged whenever the product calls for it — the method never shrinks a product to fit a skeleton. Expansion serves the product, and the map accounts for whatever it creates.
+A wrong promise goes back to shape. Badly cut pieces go back to map.
 
-Where documents disagree, `product.md` and `decisions.md` win, and a superseded artifact says so at its own top the moment it's outrun. Where any document disagrees with measured evidence, the evidence wins and the document gets fixed, citing the finding.
+A bad build stays in build. Thin evidence calls for another test run, not a ruling on a gap.
 
-## Small changes
+*Ratified* means the owner agreed in their own words in that phase’s dated record, after seeing a plain-language explanation. Nothing else counts.
 
-No work file, no ceremony — fix it, run it, done — when all of these hold: no new dependency · doesn't touch auth, money, privacy, or data-integrity code · changes no promise · reversible in one commit. Treat work as bigger than it looks, never smaller; if it touches protected code it was never small. When genuinely unclear, dispatch a fresh judge context to make that one call — not yourself.
+## Shape
 
-## Risky work
+Shape when a product idea exists or a bet would change its promises. Use `shape-product` in numbered conversations. Keep the owner’s words verbatim.
 
-Money, auth, private data, schema migrations, regulated behavior, anything irreversible: slow down and add the matching care — least-privileged users in your tests, rollback evidence, a named stand-in for irreversible actions with its fidelity gap stated. You may raise the care level on your own judgment; you may never lower it.
+This phase produces `product.md`, `work/shaping.md`, and any supporting material this product needs. It ends only when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both with receipts committed before they ran — and the owner has ratified it.
 
-That's the whole method. If the work taught something a future agent shouldn't relearn the hard way, write it into the work file before you stop.
+## Map
+
+Map after shaping, or when the set or order of pieces changes. Use `map-build` to cut pieces from the promises and supporting material. Give the owner real ordering choices and costs.
+
+For every piece, state the runs, people, and rulings needed to accept it. Name milestones and say when the first real user surface appears.
+
+Close mapping by choosing what the product runs on from the pieces’ actual needs. Record the owner’s chosen care level and the decision in `decisions.md`; a weekend product and a regulated product need different care.
+
+Mapping ends only when its mechanical completion test passes, the running platform is decided, a fresh tester has probed the map and a separate judge has ruled — receipts committed before they ran — and the owner has ratified the order.
+
+## Build one piece
+
+A ratified map has exactly one live piece.
+
+1. **Check what is wearing out.** Read `state.md` and the foundations in `product.md`. A strain recorded twice, or a foundation whose trigger fired, becomes the next piece by re-cutting the map. Otherwise defer it where the owner can see it.
+2. **Set up the piece.** Before product code, commit its work file with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
+3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
+4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts.
+5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem and repeat the exact test scenarios plus the required fresh challenge.
+
+While building, use the product’s own surface as soon as it exists; a test harness you wrote is not the product. Until a user surface exists, say so in `state.md`.
+
+Build a drawn screen from its screen drawing. The first run against an external dependency is a real round-trip. Use `craft` for anything users see.
+
+Record every workaround as a strain in `state.md`. A safety net counts only after you deliberately watched it fail. A check counts only if it can show the failure it claims to prevent; a control that cannot fail proves nothing about the product.
+
+Checking one piece deliberately costs several fresh sessions: at least two testers and one judge, and more for risky work. The piece’s work file states the exact number and roles.
+
+### Open the review honestly
+
+A review starts only on Built work. Its **receipt** is the written proof, committed before review starts, of who was asked to review what.
+
+The first receipt field quotes the `state.md` Built line and the commit that wrote it. The quote must literally say **Built**. A “build commit” changes the product itself, such as code, screens, or data; commits that change only records or state are not build commits.
+
+The Built line must cover the exact product files under review. It fails if any build commit lands after it, or if it was written after the receipt opened. Repair it by writing Built in a new commit containing nothing else, then open a new receipt. No valid quote means no review.
+
+Fresh testers must not include the builder. Use the people named in the piece’s proof plan; every verdict must point to something that person actually experienced.
+
+A separate judge challenges each verdict before it counts. The piece work file holds the receipt, short verdicts, and rulings; full records may be linked beside it. Nothing becomes Judged without this review.
+
+### Land or send it back
+
+Land only when the judge finds the piece sufficient. Then update `state.md`, mark the piece done in `map.md`, and make the next piece live.
+
+If the judge sends it back, the piece keeps the live slot and stays unticked. `state.md` names the ruling and the step it returns to. After the fix lands, write a new Built line for the fixed product files in its own state-only commit and make the fix batch’s receipt quote that line. Re-run the exact scenarios the judge named and judge the piece again before asking to land it.
+
+You may begin the next piece while one review runs, but only one substantial piece may be under review at a time. A rejected piece retakes the live slot. A substantial piece is anything that does not meet every small-change condition below; there is no middle class.
+
+## Review a milestone
+
+When all pieces in a milestone have landed, four fresh people use the increment as a first-timer, a worker doing the whole job, a second user, and a person on the worst day. Each returns a record and a verdict grounded in what happened. A judge challenges them and rules separately whether it works, delivers the promise, is good to use, and holds together as a quality product. A second judge reviews milestones and risky pieces independently; disagreement is itself a finding.
+
+Keep the milestone’s receipts, records, rulings, and owner grade in one milestone work file. Give the owner a plain rendering and ask them to grade the felt experience. Anything insufficient returns to shape, map, build, or another test round with a trace. When all four rulings stand on evidence, the work is proven and can become Live.
+
+When the owner is present, update `state.md` at every event that changes the map: a piece starts, lands, or reopens. A rewrite that changes no available fact is theater. Owner approval never replaces a judge’s ruling. You may batch ordinary changes into one review, but review protected-code changes before shipping.
+
+## Keep these files true
+
+- `product.md` says what the product is, who it serves, what it promises, how it should feel, and which foundations have triggers.
+- `map.md` orders the pieces, says what each serves and consumes, names milestones, keeps exactly one piece live, and lists all unconsumed material.
+- `work/shaping.md` and `work/mapping.md` are append-only owner conversations. One work file follows each piece from setup through judgment. Cite a record by its name and date, never by a bare round number.
+- `decisions.md` keeps consequential choices, alternatives, reasons, and reopening conditions. It includes the decision about what the product runs on.
+- `state.md` reports what is true now, what is wearing out, what is blocked, what needs the owner, what happens next, and the evidence for each claim.
+
+The four states are **Shaped → Built → Judged → Live**. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”
+
+An insufficient judgment sends work back without advancing its state. Claim nothing beyond the evidence.
+
+Supporting material is first-class work. State its purpose when it is created, assign it to a piece or list it as unconsumed, test and judge it, and mark it superseded at the top when it is replaced. Templates are starting floors, not limits; expand them when the product needs more.
+
+When files disagree, `product.md` and `decisions.md` win. Measured evidence beats every document, so fix the losing document and cite the finding.
+
+## Small and risky changes
+
+A change is small only if it adds no dependency, touches no auth, money, privacy, or data-integrity code, changes no promise, and is reversible in one commit. Then fix it, run it, and finish without a work file.
+
+Treat uncertain work as bigger, never smaller. Protected code is never a small change. If the classification is genuinely unclear, ask a fresh judge to decide.
+
+For money, auth, private data, schema migrations, regulated behavior, or anything irreversible, add the care the risk needs: test as least-privileged users, prove rollback, and name any stand-in for an irreversible action with its fidelity gap. You may raise the care level. You may never lower it.
+
+Before stopping, write anything a future builder should not have to relearn into the piece’s work file.

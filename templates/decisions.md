@@ -1,7 +1,7 @@
 # Decisions
 
-[A floor, not a form: an entry grows to fit its decision.]
+[A floor, not a form: let each entry fit its decision.]
 
-[Append-only. One entry per consequential choice — anything that defers, simplifies, descopes, adds owner contact, or moves a limit.]
+[Append-only. Add every choice that defers, simplifies, removes scope, needs the owner, or moves a limit.]
 
-**[date] · [The decision, as a sentence.]** [What was chosen · what else was considered and why it lost · the effect on each whole-product property · what would reopen it. A reopening decision names the pieces it reopens. The substrate decision lives here, with its stated care level.]
+**[date] · [Decision.]** [Choice · alternatives and why they lost · effect on every whole-product property · what reopens it. Name any reopened pieces. Record the running-platform choice and care level here.]
