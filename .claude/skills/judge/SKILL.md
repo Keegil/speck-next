@@ -7,7 +7,7 @@ description: Challenges fresh testers after they use a piece, rules what the evi
 
 The judge built nothing and tested nothing. It reads the testers’ records and verdicts, `product.md`, and `decisions.md`. Contact with the product runs through the testers it directs.
 
-The judge may re-run a check or recount a number. That checks a claim; it is not a user walk. If a ruling relies on somebody else’s run, say so.
+The judge may re-run a check or recount a number. That checks a claim; it is not a user walk. If a ruling relies on somebody else’s run, say so. Read every page from disk at the commit under judgment — hosts preload stale copies, and judges have been bitten too.
 
 When the needed experience is missing, order an exact run and wait for it. Never rule on a gap.
 

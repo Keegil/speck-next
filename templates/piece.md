@@ -28,4 +28,6 @@
 - Second judge: [Required for milestones and risky pieces; rulings and disagreement.]
 - Sent back: [Anything insufficient returns to shape, map, build, or more testing, with the trace.]
 
+**Homes touched** *(for any rule landed or changed)*: [The greps used, every home they returned, each marked changed or untouched.]
+
 **Result:** [What happened, what review changed, what remains open and where each open item went, and what the next builder should not relearn.]

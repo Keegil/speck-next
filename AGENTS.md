@@ -59,7 +59,7 @@ A ratified map has exactly one live piece.
 2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
 3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
 4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts. Its own checks are the checks named in the piece’s proof plan; a plan naming none leaves nothing to pass, so the piece cannot become Built.
-5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem and repeat the exact test scenarios plus the required fresh challenge.
+5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem, then execute the judge’s full requirements — a quoted control is a floor, not the scope — plus the required fresh challenge.
 
 While building, use the product’s own surface as soon as it exists; a test harness you wrote is not the product. Until a user surface exists, say so in `state.md`.
 
@@ -67,7 +67,7 @@ Build a drawn screen from its screen drawing. The first run against an external 
 
 Record every workaround as a strain in `state.md`. A safety net counts only after you deliberately watched it fail. A check counts only if it can show the failure it claims to prevent; a control that cannot fail proves nothing about the product.
 
-Before changing a rule that is stated in more than one place, grep for its distinctive phrase — case-insensitively, not one keyword — and find every home. Land the same change everywhere in one commit; the record carries the grep and everything it returned, each home marked changed or untouched. A one-home fix is not a fix.
+Before landing a new rule or changing one, find every place that states it or must now carry it: grep case-insensitively, trying several keys from widest to narrowest, and report the set you used. Land the same change in every home in one commit; the record carries the greps and everything they returned, each home marked changed or untouched. A one-home fix is not a fix.
 
 Checking one piece deliberately costs several fresh sessions: at least two testers and one judge, and more for risky work. The piece’s work file states the exact number and roles.
 
@@ -87,7 +87,7 @@ A separate judge challenges each verdict before it counts. The piece work file h
 
 Land only when the judge finds the piece sufficient. Then update `state.md`, mark the piece done in `map.md`, and make the next piece live.
 
-If the judge sends it back, the piece keeps the live slot and stays unticked. `state.md` names the ruling and the step it returns to. After the fix lands, write a new Built line for the fixed product files in its own state-only commit and make the fix batch’s receipt quote that line. Then re-run the judge’s scenarios — executing the full requirement each states, with any quoted control as its floor — plus one free skeptical attack of the tester’s own choosing, reported either way, and judge the piece again before asking to land it.
+If the judge sends it back, the piece keeps the live slot and stays unticked. `state.md` names the ruling and the step it returns to. After the fix lands, write a new Built line for the fixed product files in its own state-only commit and make the fix batch’s receipt quote that line. Then re-run the judge’s scenarios — executing the full requirement each states over its whole population, with any quoted control as its floor — plus one free skeptical attack of the tester’s own choosing, reported either way, and judge the piece again before asking to land it.
 
 You may begin the next piece while one review runs, but only one substantial piece may be under review at a time. A rejected piece retakes the live slot. A substantial piece is anything that does not meet every small-change condition below; there is no middle class.
 
