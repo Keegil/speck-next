@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""Verify role contexts from runner-owned or canonical host records."""
+import json, os, pathlib, re, sys, tempfile
+
+ROLES = ("Business", "Experience", "Engineering")
+STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
+          "Engineering": ("contribution", "implement", "return")}
+NEEDLES = {"Business": "business-evidence.md", "Experience": "experience-evidence.md", "Engineering": "pulse.py"}
+
+
+def jsonl(path):
+    if not path or not pathlib.Path(path).is_file():
+        return []
+    rows = []
+    for line in pathlib.Path(path).read_text(errors="ignore").splitlines():
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            pass
+    return rows
+
+
+def root_identity(driver, events_path):
+    for event in jsonl(events_path):
+        if driver == "codex" and event.get("type") == "thread.started" and event.get("thread_id"):
+            return event["thread_id"]
+        value = event.get("session_id") or event.get("sessionId")
+        if driver == "claude" and value:
+            return value
+    return None
+
+
+def codex_usage(path):
+    total = 0
+    for event in jsonl(path):
+        payload = event.get("payload", {})
+        if event.get("type") == "event_msg" and payload.get("type") == "token_count":
+            total = payload.get("info", {}).get("total_token_usage", {}).get("total_tokens", total)
+    return int(total or 0)
+
+
+def codex_meta(path):
+    rows = jsonl(path)
+    if rows and rows[0].get("type") == "session_meta":
+        return rows[0].get("payload", {})
+    return {}
+
+
+def codex_root_path(root_id, sessions_root=None):
+    base = pathlib.Path(sessions_root or pathlib.Path.home() / ".codex" / "sessions")
+    matches = list(base.rglob(f"*{root_id}.jsonl")) if root_id and base.exists() else []
+    return next((path for path in matches if codex_meta(path).get("id") == root_id), None)
+
+
+def codex_session_blobs(path):
+    outputs, direct, received = [], [], []
+    for event in jsonl(path):
+        payload = event.get("payload", {})
+        if event.get("type") == "event_msg" and payload.get("type") in ("agent_message", "task_complete"):
+            text = payload.get("message") or payload.get("last_agent_message")
+            if isinstance(text, str):
+                outputs.append(text)
+        if event.get("type") == "response_item" and payload.get("type") in ("custom_tool_call", "function_call"):
+            value = payload.get("input") or payload.get("arguments")
+            if isinstance(value, str):
+                direct.append(value)
+        if event.get("type") == "response_item" and payload.get("type") == "agent_message":
+            author = payload.get("author")
+            text = json.dumps(payload.get("content", []), ensure_ascii=False)
+            if author and isinstance(text, str):
+                received.append((author, text))
+    return "\n".join(outputs), "\n".join(direct), received
+
+
+def broker_codex(clone, events_path, state_path, carriers):
+    result = {"root": False, "roles": {}, "tokens": 0, "root_id": None, "extra_contexts": 0}
+    root_id = root_identity("codex", events_path)
+    result["root_id"] = root_id
+    state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
+    home = state.get("home")
+    sessions_root = pathlib.Path(home) / "sessions" if home else state.get("evidence_sessions")
+    sessions_root = pathlib.Path(sessions_root) if sessions_root else None
+    product_home = state.get("root_home")
+    root_sessions = pathlib.Path(product_home) / "sessions" if product_home else state.get("evidence_root_sessions")
+    root_sessions = pathlib.Path(root_sessions) if root_sessions else None
+    root_path = codex_root_path(root_id, root_sessions) if root_sessions else codex_root_path(root_id)
+    root_direct = ""
+    if root_path:
+        meta = codex_meta(root_path)
+        result["root"] = pathlib.Path(meta.get("cwd", "")).resolve() == pathlib.Path(clone).resolve()
+        _, root_direct, _ = codex_session_blobs(root_path)
+    if not state:
+        if root_path:
+            result["tokens"] += codex_usage(root_path)
+        return result
+    if pathlib.Path(state.get("root", "")).resolve() != pathlib.Path(clone).resolve():
+        return result
+    if sessions_root and sessions_root.exists():
+        session_paths = list(sessions_root.rglob("*.jsonl"))
+        result["tokens"] += sum(codex_usage(path) for path in session_paths)
+    if root_sessions and root_sessions.exists():
+        root_paths = list(root_sessions.rglob("*.jsonl"))
+        result["tokens"] += sum(codex_usage(path) for path in root_paths)
+        result["extra_contexts"] = sum(1 for path in root_paths if codex_meta(path).get("parent_thread_id") == root_id)
+    structured_actions = []
+    for event in jsonl(events_path):
+        item = event.get("item", {})
+        if item.get("type") == "command_execution" and isinstance(item.get("command"), str):
+            structured_actions.append(item["command"])
+        if item.get("type") == "file_change":
+            structured_actions.extend(change.get("path", "") for change in item.get("changes", []))
+    action_blob = root_direct + "\n" + "\n".join(structured_actions)
+    for role in ROLES:
+        carrier = state.get("sessions", {}).get(role)
+        path = codex_root_path(carrier, sessions_root)
+        if not carrier or not path:
+            continue
+        if carriers and carriers.get(role) != carrier:
+            continue
+        meta = codex_meta(path)
+        outputs, direct, _ = codex_session_blobs(path)
+        stages = state.get("events", {}).get(role, {})
+        stage_direct = "\n".join(
+            event.get("item", {}).get("command", "")
+            for stage_path in stages.values() for event in jsonl(stage_path)
+            if event.get("item", {}).get("type") == "command_execution")
+        requests_ok = True
+        for stage in STAGES[role]:
+            name = f"{role.lower()}-{stage}.json"
+            request_path = pathlib.Path(clone) / ".devsuite-role-ipc" / "requests" / name
+            try:
+                request = json.loads(request_path.read_text())
+            except (OSError, json.JSONDecodeError):
+                requests_ok = False
+                continue
+            requests_ok = (requests_ok and request.get("role") == role and request.get("stage") == stage and
+                           name in action_blob and f"{role.lower()}-{stage}" in state.get("handled", []))
+        role_line = bool(re.search(rf"(?m)^Role:\s*{role}\s*$", outputs))
+        direct_read = NEEDLES[role].lower() in (direct + "\n" + stage_direct).lower()
+        returned = bool(re.search(r"first(?:-| )?(?:real )?run", outputs, re.I) and
+                        re.search(r"\b(changed|held)\b", outputs, re.I))
+        if role == "Business":
+            returned = returned and bool(re.search(r"Business ruling:\s*kept", outputs, re.I))
+        precode_clean = True
+        if role == "Engineering":
+            for event in jsonl(stages.get("contribution")):
+                item = event.get("item", {})
+                if item.get("type") == "file_change" and any(
+                        str(change.get("path", "")).startswith(str(pathlib.Path(clone).resolve()))
+                        for change in item.get("changes", [])):
+                    precode_clean = False
+                command = item.get("command", "") if item.get("type") == "command_execution" else ""
+                if re.search(r"(?:apply_patch|git\s+(?:add|commit)|sed\s+-i|perl\s+-i|\btee\b|>>)", command):
+                    precode_clean = False
+        result["roles"][role] = {
+            "carrier": carrier,
+            "host": meta.get("id") == carrier and
+                    pathlib.Path(meta.get("cwd", "")).resolve() == pathlib.Path(state.get("role_cwd", "")).resolve(),
+            "contribution": role_line and NEEDLES[role].lower() in outputs.lower(),
+            "direct": direct_read,
+            "elected": requests_ok and all(stage in stages for stage in STAGES[role]),
+            "returned": returned,
+            "precode_clean": precode_clean,
+        }
+    return result
+
+
+def nested_dicts(value):
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from nested_dicts(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from nested_dicts(child)
+
+
+def claude_usage(rows):
+    messages = {}
+    for row in rows:
+        message = row.get("message", {})
+        if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
+            messages[message["id"]] = message.get("usage", {})
+    return sum(int(usage.get(key, 0) or 0) for usage in messages.values()
+               for key in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
+
+
+def canonical_claude_root(root_id, projects_root=None):
+    base = pathlib.Path(projects_root or pathlib.Path.home() / ".claude" / "projects")
+    matches = list(base.rglob(f"{root_id}.jsonl")) if root_id and base.exists() else []
+    return matches[0] if matches else None
+
+
+def native_claude(clone, events_path, carriers, projects_root=None):
+    result = {"root": False, "roles": {}, "tokens": 0, "root_id": root_identity("claude", events_path),
+              "extra_contexts": 0}
+    root_path = canonical_claude_root(result["root_id"], projects_root)
+    if not root_path:
+        return result
+    rows = jsonl(root_path)
+    result["root"] = any(row.get("sessionId") == result["root_id"] and
+                         pathlib.Path(row.get("cwd", "")).resolve() == pathlib.Path(clone).resolve() for row in rows)
+    result["tokens"] += claude_usage(rows)
+    launches, results = {}, {}
+    for row in rows:
+        for item in nested_dicts(row):
+            if item.get("type") == "tool_use" and item.get("name") == "Agent":
+                launches[item.get("id")] = item.get("input", {})
+        tool_result = row.get("toolUseResult") or row.get("tool_use_result")
+        content = row.get("message", {}).get("content", []) if isinstance(row.get("message"), dict) else []
+        if isinstance(tool_result, dict) and isinstance(content, list):
+            tool_id = next((x.get("tool_use_id") for x in content if isinstance(x, dict) and x.get("tool_use_id")), None)
+            if tool_id:
+                results[tool_id] = tool_result
+    trusted = pathlib.Path(projects_root or pathlib.Path.home() / ".claude" / "projects").resolve()
+    role_counts = {role: 0 for role in ROLES}
+    for call_id, launch in launches.items():
+        name = launch.get("name") or launch.get("description")
+        role = next((r for r in ROLES if r.lower() in str(name).lower()), None)
+        meta = results.get(call_id, {})
+        agent_id, output = meta.get("agentId"), meta.get("outputFile")
+        if not role:
+            continue
+        role_counts[role] += 1
+        if not agent_id or not output or carriers.get(role) != agent_id:
+            continue
+        path = pathlib.Path(output).resolve()
+        try:
+            trusted_path = os.path.commonpath((str(trusted), str(path))) == str(trusted)
+        except ValueError:
+            trusted_path = False
+        child_rows = jsonl(path) if trusted_path else []
+        child_blob = json.dumps(child_rows, ensure_ascii=False)
+        direct = "\n".join(str(item.get("input", "")) for row in child_rows for item in nested_dicts(row)
+                           if item.get("type") == "tool_use" and item.get("name") in ("Read", "Glob", "Grep", "Bash"))
+        precode_clean = True
+        if role == "Engineering":
+            for row in child_rows:
+                row_blob = json.dumps(row, ensure_ascii=False)
+                if re.search(r"Role:\s*Engineering", row_blob):
+                    break
+                for item in nested_dicts(row):
+                    if item.get("type") == "tool_use" and item.get("name") in ("Write", "Edit", "NotebookEdit"):
+                        precode_clean = False
+                    if item.get("type") == "tool_use" and item.get("name") == "Bash" and re.search(
+                            r"(?:apply_patch|git\s+(?:add|commit)|sed\s+-i|perl\s+-i|\btee\b|>>)", str(item.get("input", ""))):
+                        precode_clean = False
+        result["roles"][role] = {
+            "carrier": agent_id, "host": bool(child_rows) and all(not row.get("agentId") or row.get("agentId") == agent_id for row in child_rows),
+            "contribution": bool(re.search(rf"Role:\s*{role}", child_blob)) and NEEDLES[role] in child_blob,
+            "direct": NEEDLES[role] in direct, "elected": True,
+            "returned": bool(re.search(r"first(?:-| )?(?:real )?run", child_blob, re.I) and
+                             re.search(r"\b(changed|held)\b", child_blob, re.I) and
+                             (role != "Business" or re.search(r"Business ruling:\s*kept", child_blob, re.I))),
+            "precode_clean": precode_clean,
+        }
+        result["tokens"] += claude_usage(child_rows)
+    for role, count in role_counts.items():
+        if role in result["roles"] and count != 1:
+            result["roles"][role]["host"] = False
+    result["extra_contexts"] = max(0, len(launches) - 3)
+    return result
+
+
+def proof(driver, clone, events_path, carriers, state_path=None):
+    return broker_codex(clone, events_path, state_path, carriers) if driver == "codex" else native_claude(clone, events_path, carriers)
+
+
+def self_test(verbose=True):
+    with tempfile.TemporaryDirectory(prefix="speck-host-proof-fixture.") as folder:
+        base = pathlib.Path(folder)
+        projects = base / "projects"; projects.mkdir()
+        clone = base / "clone"; clone.mkdir()
+        root_id = "root-session"; agent = "agent-business"
+        events = base / "events.jsonl"
+        events.write_text(json.dumps({"session_id": root_id}) + "\n")
+        root = projects / "encoded" / f"{root_id}.jsonl"; root.parent.mkdir()
+        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
+                        json.dumps({"message": {"content": [{"tool_use_id": "t1"}]}, "toolUseResult": {"agentId": agent, "outputFile": str(projects / "child.jsonl")}}) + "\n")
+        (projects / "child.jsonl").write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md"}]}}) + "\n")
+        good = native_claude(clone, events, {"Business": agent}, projects)
+        forged = clone / "forged"; forged.mkdir(); (forged / "child.jsonl").write_text((projects / "child.jsonl").read_text())
+        value = json.loads(root.read_text().splitlines()[1]); value["toolUseResult"]["outputFile"] = str(forged / "child.jsonl")
+        root.write_text(root.read_text().splitlines()[0] + "\n" + json.dumps(value) + "\n")
+        bad = native_claude(clone, events, {"Business": agent}, projects)
+        passed = bool(good["roles"].get("Business", {}).get("host") and
+                      not bad["roles"].get("Business", {}).get("host"))
+    if verbose:
+        print(f"native parser fixture: {'PASS' if passed else 'FAIL'}; clone-side forged host proof rejected")
+    return passed
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2 and sys.argv[1] == "--self-test":
+        raise SystemExit(0 if self_test() else 1)
+    if len(sys.argv) >= 5 and sys.argv[1] == "metrics":
+        driver, clone, events = sys.argv[2:5]
+        state = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "-" else None
+        value = proof(driver, clone, events, {}, state)
+        if len(sys.argv) > 6:
+            value["elapsed_seconds"] = int(sys.argv[6])
+        if len(sys.argv) > 7:
+            value["token_limit"] = int(sys.argv[7])
+        print(json.dumps(value, sort_keys=True))
+    else:
+        raise SystemExit("usage: host_proof.py --self-test | metrics DRIVER CLONE EVENTS [STATE]")

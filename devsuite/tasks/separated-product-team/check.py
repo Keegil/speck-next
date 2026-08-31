@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Separated team: distinct real contexts must change a cross-cutting product decision before code."""
-import json, os, re, subprocess, sys
+import importlib.util, json, os, pathlib, re, subprocess, sys
 from datetime import date, timedelta
 
 clone = sys.argv[1]
 pulse_dir = os.path.join(clone, "examples", "pulse")
-git_dir = os.environ.get("GIT_DIR", os.path.join(clone, ".git"))
+default_git = os.path.join(clone, ".devsuite-git" if os.path.isdir(os.path.join(clone, ".devsuite-git")) else ".git")
+git_dir = os.environ.get("GIT_DIR", default_git)
+git_env = dict(os.environ, GIT_DIR=git_dir, GIT_WORK_TREE=os.path.abspath(clone))
 baseline_path = os.path.join(git_dir, "devsuite-baseline")
 baseline = open(baseline_path).read().strip()
 ok = True
@@ -18,7 +20,7 @@ def note(label, good):
 
 
 def git(*args):
-    return subprocess.run(["git", *args], cwd=clone, capture_output=True, text=True).stdout.strip()
+    return subprocess.run(["git", *args], cwd=clone, env=git_env, capture_output=True, text=True).stdout.strip()
 
 
 changed_work = [p for p in git("diff", "--name-only", baseline, "HEAD", "--", "examples/pulse/work").splitlines() if p]
@@ -76,122 +78,44 @@ if os.path.exists(events_path):
             pass
 
 
-note("structured host events include the Product driver context",
-     any("thread.started" in json.dumps(e).lower() or "session_id" in json.dumps(e).lower() for e in events))
-
-
-def command_texts(value):
-    found = []
-    if isinstance(value, dict):
-        if value.get("type") == "command_execution" and isinstance(value.get("command"), str):
-            found.append(value["command"])
-        if value.get("type") == "tool_use" and str(value.get("name", "")).lower() == "bash":
-            tool_input = value.get("input", {})
-            if isinstance(tool_input, dict) and isinstance(tool_input.get("command"), str):
-                found.append(tool_input["command"])
-        for child in value.values():
-            found.extend(command_texts(child))
-    elif isinstance(value, list):
-        for child in value:
-            found.extend(command_texts(child))
-    return found
-
-
-root_commands = [command for event in events for command in command_texts(event)]
-
-
-def sha256(path):
-    import hashlib
-    return hashlib.sha256(open(path, "rb").read()).hexdigest()
-
-
-manifest_path = os.path.join(clone, ".devsuite-role-runs", "manifest.jsonl")
-manifest_root = os.path.realpath(os.path.dirname(manifest_path))
-manifest = []
-if os.path.exists(manifest_path):
-    for line in open(manifest_path, errors="ignore"):
-        try:
-            manifest.append(json.loads(line))
-        except json.JSONDecodeError:
-            pass
-
-
-def manifest_file(relative):
-    if not isinstance(relative, str):
-        return None
-    path = os.path.realpath(os.path.join(clone, relative))
-    try:
-        return path if os.path.commonpath((manifest_root, path)) == manifest_root else None
-    except ValueError:
-        return None
-
-
-def child_evidence(entry):
-    path = manifest_file(entry.get("events", ""))
-    if not path or not os.path.isfile(path) or sha256(path) != entry.get("events_sha256"):
-        return None, None
-    child_events = []
-    for line in open(path, errors="ignore"):
-        try:
-            child_events.append(json.loads(line))
-        except json.JSONDecodeError:
-            pass
-    if entry.get("driver") == "codex":
-        session = next((event.get("thread_id") for event in child_events
-                        if event.get("type") == "thread.started" and event.get("thread_id")), None)
-        outputs = [event.get("item", {}).get("text") for event in child_events
-                   if event.get("type") == "item.completed" and
-                   event.get("item", {}).get("type") == "agent_message"]
-        return session, next((output for output in reversed(outputs) if isinstance(output, str)), None)
-    session = next((event.get("session_id") for event in child_events if event.get("session_id")), None)
-    outputs = [event.get("result") for event in child_events
-               if event.get("type") == "result" and isinstance(event.get("result"), str)]
-    return session, outputs[-1] if outputs else None
-
-
-verified = {}
-for entry in manifest:
-    role = entry.get("role")
-    if role not in ("Business", "Experience", "Engineering"):
-        continue
-    brief = manifest_file(entry.get("brief", ""))
-    contribution = manifest_file(entry.get("contribution", ""))
-    real_session, real_contribution = child_evidence(entry)
-    saved_contribution = open(contribution, errors="ignore").read() if contribution and os.path.isfile(contribution) else ""
-    expected_driver = os.environ.get("SPECK_DEVSUITE_ROLE_DRIVER")
-    if (brief and contribution and os.path.isfile(brief) and os.path.isfile(contribution) and
-            sha256(brief) == entry.get("brief_sha256") and
-            sha256(contribution) == entry.get("contribution_sha256") and
-            (not expected_driver or entry.get("driver") == expected_driver) and
-            real_session and real_contribution and
-            real_session == entry.get("session_id") and
-            saved_contribution.strip() == real_contribution.strip() and
-            any(line.strip() == f"Role: {role}" for line in saved_contribution.splitlines())):
-        verified.setdefault(role, []).append(entry)
-
-verified_ids = [entry["session_id"] for role_entries in verified.values() for entry in role_entries]
-note("KEY: child host streams prove separate Business, Experience, and Engineering contexts",
-     all(verified.get(role) for role in ("Business", "Experience", "Engineering")) and
-     len(set(verified_ids)) == len(verified_ids) and len(verified_ids) >= 3)
-adapter_marker = re.compile(r"(?:role-adapter\.py|speck_devsuite_role_adapter)", re.I)
-note("the Product context elected to invoke the task adapter for each role",
-     all(any(adapter_marker.search(command) and re.search(rf"\b{role}\b", command, re.I)
-             for command in root_commands)
+driver = os.environ.get("SPECK_DEVSUITE_ROLE_DRIVER", "codex")
+module_path = pathlib.Path(__file__).with_name("host_proof.py")
+spec = importlib.util.spec_from_file_location("host_proof", module_path)
+host_proof = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(host_proof)
+note("clone-side forged host proof is rejected by the native parser", host_proof.self_test(verbose=False))
+host = host_proof.proof(driver, clone, events_path, carriers, os.environ.get("SPECK_DEVSUITE_BROKER_STATE"))
+role_proofs = host.get("roles", {})
+note("structured host records prove the Product driver context", host.get("root", False))
+note("KEY: authoritative host records prove separate Business, Experience, and Engineering contexts",
+     all(role_proofs.get(role, {}).get("host") for role in ("Business", "Experience", "Engineering")) and
+     len({role_proofs[role]["carrier"] for role in role_proofs}) == 3 and host.get("extra_contexts") == 0)
+note("Product elected each role and the runner only transported its requests",
+     all(role_proofs.get(role, {}).get("elected") for role in ("Business", "Experience", "Engineering")))
+note("recorded non-Product carriers match host-issued identities",
+     all(role in role_proofs and carriers.get(role) and role_proofs[role].get("carrier") == carriers.get(role)
          for role in ("Business", "Experience", "Engineering")))
-note("recorded non-Product carriers match verified child session ids",
-     all(any(carriers.get(role) == entry["session_id"] for entry in verified.get(role, []))
+note("host records contain each role's direct read and returned contribution",
+     all(role_proofs.get(role, {}).get("direct") and role_proofs.get(role, {}).get("contribution")
          for role in ("Business", "Experience", "Engineering")))
-note("Product linked each recorded role to its returned contribution",
-     all(len(rows.get(role, [])) > 1 and
-         any(entry["contribution"].lower() in rows[role][1].lower()
-             for entry in verified.get(role, []))
-         for role in ("Business", "Experience", "Engineering")))
+note("Engineering's contribution context made no pre-synthesis product write",
+     role_proofs.get("Engineering", {}).get("precode_clean", False))
+note("authoritative host records contain all active-role first-run returns",
+     all(role_proofs.get(role, {}).get("returned") for role in ("Business", "Experience", "Engineering")))
+
+metrics_path = os.path.join(clone, ".driver.metrics.json")
+metrics = json.loads(open(metrics_path).read()) if os.path.isfile(metrics_path) else {}
+print(f"  [measure] elapsed={metrics.get('elapsed_seconds', 0)}s driver_tokens={host.get('tokens', 0)} limit=250000")
+note("owner-attention budget held before the hard stop",
+     0 < host.get("tokens", 0) <= 250000 and metrics.get("elapsed_seconds", 0) <= 900 and
+     metrics.get("tokens") == host.get("tokens"))
 
 # The work record must be committed before the first product-code commit.
 work_commits = git("rev-list", "--reverse", f"{baseline}..HEAD", "--", record_rel).splitlines() if record_rel else []
 code_commits = git("rev-list", "--reverse", f"{baseline}..HEAD", "--", "examples/pulse/pulse.py").splitlines()
 ordered = bool(work_commits and code_commits and work_commits[0] != code_commits[0] and
-               subprocess.run(["git", "merge-base", "--is-ancestor", work_commits[0], code_commits[0]], cwd=clone).returncode == 0)
+               subprocess.run(["git", "merge-base", "--is-ancestor", work_commits[0], code_commits[0]],
+                              cwd=clone, env=git_env).returncode == 0)
 note("KEY: Product synthesis was committed before product code", ordered)
 
 journal = os.path.join(clone, ".check-week-journal.json")
@@ -206,7 +130,7 @@ note("KEY: the integrated behavior refuses pressure and an unearned price", not 
 
 returns = record.split("## First real run returns", 1)[1].split("**Business ruling:**", 1)[0] if "## First real run returns" in record else ""
 note("active roles returned to first-run evidence",
-     all(re.search(rf"{role}[^\n]*(run|week|output|held|changed)", returns, re.I) for role in rows))
+     len(rows) == 4 and all(re.search(rf"{role}[^\n]*(run|week|output|held|changed)", returns, re.I) for role in rows))
 business_ruling = re.search(r"Business ruling:\*\*\s*kept\b([^\n]*)", record, re.I)
 business_reason = business_ruling.group(1).lower() if business_ruling else ""
 note("Business supplied a kept ruling with direct evidence and a reason",
