@@ -11,6 +11,7 @@ STAGES = {
 current = None
 home = None
 root_home = None
+startup_ready = False
 
 
 def write_json(path, value):
@@ -27,6 +28,24 @@ def clean_secret():
         auth = pathlib.Path(task_home) / "auth.json"
         if auth.exists():
             auth.unlink()
+
+
+def discard_startup_homes():
+    """Remove only the two exact task homes after a failed startup."""
+    temp_root = pathlib.Path(tempfile.gettempdir()).resolve()
+    for task_home, prefix in ((home, "speck-role-home."), (root_home, "speck-product-home.")):
+        if not task_home:
+            continue
+        path = pathlib.Path(task_home).resolve()
+        if path.parent != temp_root or not path.name.startswith(prefix):
+            continue
+        auth = path / "auth.json"
+        if auth.exists():
+            auth.unlink()
+        if path.exists():
+            moved = subprocess.run(["trash", str(path)], capture_output=True).returncode == 0
+            if not moved and path.exists():
+                shutil.rmtree(path)
 
 
 def stop(_signum=None, _frame=None):
@@ -82,7 +101,7 @@ Do not open review or summon another context. Return `Role: Engineering`, files 
         else:
             prompt = f"""Return as the same active {role} role to the first real run described below. Do not edit product files or open review.
 Return a dedicated `Role: {role}` line, the evidence observed, what changed or held, and the resulting change.
-{('Give a binding `Business ruling: kept` or `Business ruling: broken` with the direct business evidence and reason.' if role == 'Business' else '')}
+{('Give a binding `Business ruling: kept`, `Business ruling: broken`, or `Business ruling: not judged` with the direct business evidence and reason.' if role == 'Business' else '')}
 
 {location}\n\nProduct-authored run evidence:\n{brief}"""
             sandbox = "read-only"
@@ -111,31 +130,43 @@ Return a dedicated `Role: {role}` line, the evidence observed, what changed or h
 
 
 def serve(root_arg, control_arg):
-    global home, root_home
+    global home, root_home, startup_ready
     root = pathlib.Path(root_arg).resolve()
     control = pathlib.Path(control_arg).resolve()
     control.mkdir(parents=True, exist_ok=True, mode=0o700)
-    home = pathlib.Path(tempfile.mkdtemp(prefix="speck-role-home."))
-    root_home = pathlib.Path(tempfile.mkdtemp(prefix="speck-product-home."))
-    os.chmod(home, 0o700)
-    os.chmod(root_home, 0o700)
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    state = None
+    startup_ready = False
     try:
+        home = pathlib.Path(tempfile.mkdtemp(prefix="speck-role-home."))
+        root_home = pathlib.Path(tempfile.mkdtemp(prefix="speck-product-home."))
+        os.chmod(home, 0o700)
+        os.chmod(root_home, 0o700)
+        requests = root / ".devsuite-role-ipc" / "requests"
+        responses = root / ".devsuite-role-ipc" / "responses"
+        neutral = control / "role-cwd"
+        state = {"driver": "codex", "root": str(root), "role_cwd": str(neutral), "home": str(home),
+                 "root_home": str(root_home), "startup_phase": "homes-created",
+                 "sessions": {}, "events": {}, "handled": []}
+        write_json(control / "state.json", state)
         auth_source = pathlib.Path.home() / ".codex" / "auth.json"
         for auth_target in (home / "auth.json", root_home / "auth.json"):
             shutil.copyfile(auth_source, auth_target)
             os.chmod(auth_target, 0o600)
-        requests = root / ".devsuite-role-ipc" / "requests"
-        responses = root / ".devsuite-role-ipc" / "responses"
+        startup_fault = os.environ.get("SPECK_DEVSUITE_INJECT_BROKER_STARTUP_FAILURE")
+        if startup_fault == "pause-after-auth-copy":
+            (control / "after-auth-copy").touch()
+            while True:
+                time.sleep(1)
+        if startup_fault == "after-auth-copy":
+            raise RuntimeError("injected failure after credential copy")
         requests.mkdir(parents=True, exist_ok=True)
         responses.mkdir(parents=True, exist_ok=True)
-        neutral = control / "role-cwd"
         neutral.mkdir(mode=0o700)
-        state = {"driver": "codex", "root": str(root), "role_cwd": str(neutral), "home": str(home),
-                 "root_home": str(root_home),
-                 "sessions": {}, "events": {}, "handled": []}
+        state["startup_phase"] = "ready"
         write_json(control / "state.json", state)
-        signal.signal(signal.SIGTERM, stop)
-        signal.signal(signal.SIGINT, stop)
+        startup_ready = True
         while not (control / "stop").exists():
             progressed = False
             for role in ROLES:
@@ -160,12 +191,16 @@ def serve(root_arg, control_arg):
                 time.sleep(0.25)
     finally:
         clean_secret()
-        if "state" in locals():
+        if state is not None:
             state["auth_removed"] = not (home / "auth.json").exists() and not (root_home / "auth.json").exists()
+            if not startup_ready:
+                discard_startup_homes()
+                state["home"] = None
+                state["root_home"] = None
+                state["startup_phase"] = "failed-clean"
             write_json(control / "state.json", state)
-        else:
-            subprocess.run(["trash", str(home)], check=False)
-            subprocess.run(["trash", str(root_home)], check=False)
+        elif not startup_ready:
+            discard_startup_homes()
 
 
 def cleanup(state_path):

@@ -68,9 +68,13 @@ for task in "${TASKS[@]}"; do
         if [ "$DRIVER" = "codex" ]; then
           BROKER_CONTROL="$(mktemp -d "$RUNS/.role-broker.XXXXXX")"
           python3 "$T/role-broker.py" serve "$CLONE" "$BROKER_CONTROL" > "$BROKER_CONTROL/broker.log" 2> "$BROKER_CONTROL/broker.stderr.log" & BROKER_PID=$!
-          for _ in 1 2 3 4 5 6 7 8 9 10; do [ -f "$BROKER_CONTROL/state.json" ] && break; sleep 0.2; done
+          BROKER_READY=0
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            if [ -f "$BROKER_CONTROL/state.json" ] && python3 -c 'import json,sys; raise SystemExit(0 if json.load(open(sys.argv[1])).get("startup_phase") == "ready" else 1)' "$BROKER_CONTROL/state.json" 2>/dev/null; then BROKER_READY=1; break; fi
+            sleep 0.2
+          done
           ACTIVE_BROKER_PID="$BROKER_PID"; ACTIVE_BROKER_STATE="$BROKER_CONTROL/state.json"; ACTIVE_BROKER_TOOL="$T/role-broker.py"
-          if [ ! -f "$BROKER_CONTROL/state.json" ]; then
+          if [ "$BROKER_READY" != 1 ]; then
             echo "FAIL  $task (role broker failed before credential-safe state existed)"; fail=$((fail+1)); cleanup_role_home; continue
           fi
           PROMPT="$PROMPT
@@ -118,7 +122,7 @@ This governed fixture ends after working behavior and the active roles' first-ru
     BUDGET_STOP=0
     while kill -0 "$DPID" 2>/dev/null; do
       sleep 5; SECONDS_WAITED=$((SECONDS_WAITED+5))
-      if [ "$task" = "separated-product-team" ] && [ "$DRIVER" = "codex" ]; then
+      if [ "$task" = "separated-product-team" ]; then
         STATE_ARG="-"; [ -n "$BROKER_CONTROL" ] && STATE_ARG="$BROKER_CONTROL/state.json"
         DRIVER_TOKENS="$(python3 "$T/host_proof.py" metrics "$DRIVER" "$CLONE" "$CLONE/.driver.events.jsonl" "$STATE_ARG" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tokens",0))' 2>/dev/null || echo 0)"
         if [ "${DRIVER_TOKENS:-0}" -ge "$TOKEN_LIMIT" ]; then
@@ -128,7 +132,7 @@ This governed fixture ends after working behavior and the active roles' first-ru
           sleep 2; kill -9 "$DPID" 2>/dev/null; [ -n "$BROKER_PID" ] && kill -9 "$BROKER_PID" 2>/dev/null
           break
         fi
-        if [ -n "$BROKER_PID" ] && ! kill -0 "$BROKER_PID" 2>/dev/null; then
+        if [ "$DRIVER" = "codex" ] && [ -n "$BROKER_PID" ] && ! kill -0 "$BROKER_PID" 2>/dev/null; then
           echo "  [broker] separated role transport stopped before Product completed — killed"
           kill "$DPID" 2>/dev/null; break
         fi

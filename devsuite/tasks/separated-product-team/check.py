@@ -102,6 +102,8 @@ note("Engineering's contribution context made no pre-synthesis product write",
      role_proofs.get("Engineering", {}).get("precode_clean", False))
 note("authoritative host records contain all active-role first-run returns",
      all(role_proofs.get(role, {}).get("returned") for role in ("Business", "Experience", "Engineering")))
+note("Business host ruling permits the piece to progress",
+     role_proofs.get("Business", {}).get("ruling_permits", False))
 
 metrics_path = os.path.join(clone, ".driver.metrics.json")
 metrics = json.loads(open(metrics_path).read()) if os.path.isfile(metrics_path) else {}
