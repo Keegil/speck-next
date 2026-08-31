@@ -67,6 +67,16 @@ The run at `/tmp/claude-501/devsuite-runs/run-1788200061/separated-product-team`
 
 The run remains the pre-fix control. Engineering must make the disposable clone's git metadata writable and capture real child context identities without the runner inventing roles, then the entire governed requirement re-runs plus one skeptical attack.
 
+### Governed Codex run 2 — harness failed before dispatch
+
+Command:
+
+```sh
+DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-product-team
+```
+
+The post-adapter run at `/tmp/claude-501/devsuite-runs/run-1788202763/separated-product-team` exited 1 before Codex or any role context started. The runner tried to append task-private exclusions to `.git/info/exclude`, but this fresh clone had no `.git/info/` directory. The shell continued, moved `.git` to `.devsuite-git`, and the checker correctly scored the untouched fixture red. This run is the pre-fix control for the runner-ordering defect; it consumed no role calls and makes no claim about the repaired role adapter. Engineering must repair the narrow runner boundary, re-run its control, and then re-run the entire governed requirement plus a skeptical attack.
+
 ## Review receipt
 
 - Built: Not built yet.
