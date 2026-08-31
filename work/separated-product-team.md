@@ -125,6 +125,20 @@ Fresh reviewer `/root/bounded_transport_review` challenged `e964b1e` before the 
 
 This is the pre-fix control for the bounded transport. Engineering must close all four paths and re-run each attack plus the task control before Product spends the one live settling run. Business remains `broken`; the run allowance is unspent.
 
+### Bounded transport repaired and re-tested
+
+Engineering repaired the transport at `3364088`. Product re-ran `bash -n devsuite/run.sh`, Python compilation for the three task programs, `python3 devsuite/tasks/separated-product-team/host_proof.py --self-test`, `git diff --check 3364088^ 3364088`, and `./devsuite/run.sh --control separated-product-team`. Syntax and diff checks passed; the self-test reported `codex_extra=1`, `claude_extra=1`, a valid but non-permissive Business `broken` return, a valid but non-permissive `not judged` return, and a rejected forged host proof; the planted same-context task stayed red.
+
+Fresh reviewer `/root/bounded_transport_review` then replayed all four pre-fix controls against `3364088` and ruled the repair **sufficient** without starting a live governed run:
+
+- Synthetic Codex and Claude descendants each produced `extra_contexts=1` and failed acceptance.
+- Injected failure after credential copy and interruption during the same window both ended with `startup_phase: failed-clean`, no credential files, and no task homes.
+- A fake Claude host record reaching 250,001 aggregate tokens was killed at the first five-second poll; metrics and raw root and child evidence remained.
+- Business `broken` and `not judged` returns were recognized but blocked progress; `kept` alone permitted it.
+- The task control stayed red. A new root-level duplicate-role attack also produced one extra context, failed acceptance, and invalidated the duplicated role host.
+
+The bounded architecture and Product decision held. Engineering's first-run conclusion changed from root-only accounting to recursive host-session accounting; the resulting product change is recursive context and token measurement, cleanup registration before credential copy, and separate Business-return and Business-progress facts. Business remains `broken` until the one bounded Codex settling run supplies measured evidence; that allowance is still unspent.
+
 ## Review receipt
 
 - Built: Not built yet.
