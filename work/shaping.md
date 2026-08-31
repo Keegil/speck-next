@@ -46,9 +46,13 @@ This ratifies the direction, not an unreviewed wording change elsewhere. The pro
 
 ## Shape review receipt — opened before dispatch
 
-- Candidate: `product.md`, this shaping record, and the full v6 promise above at the commit containing this receipt.
+- Candidate: `product.md`, `CONTRACT.md`, this shaping record, and the full v6 promise above at the commit containing this receipt.
 - Fresh tester: `/root/v6_shape_map_tester` — did not shape, map, build, or contribute a role.
 - Judge: `/root/v6_shape_map_judge` — did not shape, map, build, contribute a role, or test.
 - Planned probe: compare the candidate to the owner's recorded words and the eight existing contract promises; try to find a changed promise, missing boundary, unowned tradeoff, owner-attention regression, or role theater.
 - Dispatched: after this receipt is committed; exact commit will be appended with the verdict.
 - Verdict and judgment: pending.
+
+### Tester round 1 — sent back
+
+The fresh tester at `/root/v6_shape_map_tester` read commit `d0860fe` and sent Shape back. `product.md` made the contract authoritative, but the receipt excluded it and its eight promises had not yet been amended. The tester also found a concrete product name in an old upgrade check. Product amended the existing eight promises, added the contract to this receipt, and abstracted the leaked detail. The same tester must re-run before judgment.

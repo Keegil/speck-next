@@ -24,7 +24,7 @@ All four are active. Their earliest uncertainties are written on piece 8 in `map
 - Every promise served: yes — the piece amends the existing eight; it adds no ninth.
 - Every shaped decision assigned: yes — all role, migration, proving, review, budget, and release decisions belong to piece 8.
 - Supporting material consumed or visible: yes — `work/shaping.md` and `work/separated-product-team.md` are consumed by piece 8; none is hidden.
-- Every piece names runs, checks, testers, rulings, expected active roles, and its four earliest uncertainties: yes for the live piece; queued triggered pieces retain their existing proof statements.
+- Every current or future piece names runs, checks, testers, rulings, expected active roles, and its four earliest uncertainties: yes for pieces 8–11. Historical pieces 1–7 keep their pre-v6 evidence and are not backfilled or represented as role-shaped.
 - Exactly one live piece: yes — piece 8.
 - Running platform: unchanged — plain git, Node for install and upgrade, and the existing supported agent hosts for development tasks.
 - Care: milestone treatment with two judges; no protected product code is changed.
@@ -64,6 +64,51 @@ Returned:
 ```text
 one live piece: PASS
 all role uncertainties: PASS
+both work records consumed: PASS
+pieces 1 through 11: PASS
+```
+
+### Tester round 1 — sent back
+
+The fresh tester at `/root/v6_shape_map_tester` read commit `d0860fe` and sent Map back. Shape was still open while the map claimed a live Shaped piece; queued pieces 9–11 lacked milestones and v6 role fields; the first real user surface was unnamed; the completion claim exceeded its command; and the public-detail scan was missing from the live proof plan. Product returned piece 8 to `next`, added the milestones and future-piece fields without backfilling historical work, named the first surface, narrowed the completion claim, and added the scan. The completion command is expanded below and the same tester must re-run before judgment.
+
+### Mechanical completion re-run — 2026-08-31
+
+Command:
+
+```sh
+python3 - <<'PY'
+from pathlib import Path
+text = Path('map.md').read_text()
+lines = text.splitlines()
+pieces = {n: next((line for line in lines if line.startswith(f'{n}. ')), '') for n in range(1, 12)}
+future = [pieces[n] for n in range(8, 12)]
+checks = {
+    'no live piece before ratification': text.count('[LIVE') == 0,
+    'future pieces have role fields': all('expected active roles:' in line and 'earliest uncertainty:' in line for line in future),
+    'future pieces have proof plans': all('proof plan:' in line for line in future),
+    'all pieces covered by milestones': all(name in '\n'.join(lines[4:11]) for name in (
+        'v3 discipline', 'v4 experience→judge', 'v5 the hearing', 'the campaigns land',
+        "a builder's words and fewer of them", 'name the words', 'three producers',
+        'a separated product team', 'v11 converter', 'CI limit enforcement', 'promise-conservation check')),
+    'first real user surface named': 'first real user surface' in text,
+    'both work records consumed': all(x in text for x in ('work/shaping.md', 'work/separated-product-team.md')),
+    'pieces 1 through 11': all(pieces.values()),
+}
+for name, passed in checks.items():
+    print(f'{name}: {"PASS" if passed else "FAIL"}')
+raise SystemExit(0 if all(checks.values()) else 1)
+PY
+```
+
+Returned:
+
+```text
+no live piece before ratification: PASS
+future pieces have role fields: PASS
+future pieces have proof plans: PASS
+all pieces covered by milestones: PASS
+first real user surface named: PASS
 both work records consumed: PASS
 pieces 1 through 11: PASS
 ```
