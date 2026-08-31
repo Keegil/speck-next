@@ -46,6 +46,7 @@ for task in "${TASKS[@]}"; do
       # Git metadata is normally protected by workspace-write. This is a
       # disposable clone, so keep the sandbox and move only its metadata to a
       # regular writable directory inside that clone.
+      mkdir -p "$CLONE/.git/info"
       printf '\n.devsuite-git/\n.devsuite-role-runs/\n.driver.log\n.driver.events.jsonl\n.driver.stderr.log\n' >> "$CLONE/.git/info/exclude"
       mv "$CLONE/.git" "$CLONE/.devsuite-git"
       export GIT_DIR="$CLONE/.devsuite-git"
