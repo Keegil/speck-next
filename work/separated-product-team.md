@@ -87,6 +87,31 @@ DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-pro
 
 The run at `/tmp/claude-501/devsuite-runs/run-1788202926/separated-product-team` exited 1 before Product or any child context started. The runner created the Git info path and moved the metadata successfully, but Codex's repository trust check did not recognize exported `GIT_DIR` and `GIT_WORK_TREE`; `.driver.stderr.log` says `Not inside a trusted directory and --skip-git-repo-check was not specified.` The root event stream is empty and the unchanged fixture is red. This is the pre-fix control for the task-only Codex launch boundary. Engineering must let both Product and child Codex contexts start in the relocated disposable repository without weakening their write and read-only sandboxes, then the complete governed requirement re-runs plus a skeptical attack.
 
+### Governed Codex run 4 — real roles and product behavior, proof path and budget failed
+
+Command:
+
+```sh
+DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-product-team
+```
+
+The run at `/tmp/claude-501/devsuite-runs/run-1788203121/separated-product-team` reached the real product and the real host collaboration system, then hit the 1,500-second cap and exited 1. Twelve checks passed: the piece record, four contributions, distinct carriers, role-appropriate evidence, distinct assumptions, material consequences and settling runs, the correct Product decision, the root Product identity, Product's attempted adapter calls, the pre-code commit, the real seven-day behavior, and the refusal of pressure and an unearned price. Six stayed red: the checker could not recognize the native child streams, could not bind recorded carriers and contributions to those streams, and the timeout arrived before active-role returns, the Business ruling, and contributor exclusions were recorded.
+
+The shell adapter is disproven for Codex. A child launched inside the Product sandbox first failed because the normal Codex state database was read-only. An isolated writable home created a real child session, but `CODEX_SANDBOX_NETWORK_DISABLED=1` prevented the nested model call. Product then used Codex's native collaboration system. The host created three independent raw rollouts with parent `01a05936-3ecb-7b83-822a-50c65b07fb11`, the fixture clone as their working directory, and exact host paths and ids:
+
+- Business `/root/pulse_business` — `01a0593d-9123-7e40-8d52-102e1de312b2`
+- Experience `/root/pulse_experience` — `01a0593d-ac12-7241-9175-c18af195a7f3`
+- Engineering `/root/pulse_engineering` — `01a0593d-d0da-7451-8d85-afbd6cf6a785`
+
+Those canonical host records contain each role's prompt, direct reads, contribution, and parent link. The generated work record used the exact host-issued agent paths, Product committed it at `b5478e2` before Engineering changed `pulse.py`, and the real CLI later passed seven-day, fourteen-day, gap, date-anchor, non-mutation, empty, help, corrupt-journal, and no-pressure checks. The checker remained red because it only understood the impossible shell adapter. The temporary isolated credential copy used during diagnosis was moved to Trash immediately after the run.
+
+The operating-cost assumption did not hold. The root host record ended at 6,284,012 total tokens: 6,260,823 input, of which 6,108,160 were cached, plus 23,189 output and 11,871 reasoning tokens. That exceeds this piece's 250,000 aggregate role-and-implementation limit, even before trying to sum child reports. The run also exhausted its time cap. The native roles produced distinct actions rather than duplicate prose — Business rejected an unsupported price and narrowed the adoption claim, Experience removed completion pressure, Engineering found the shared formatter, and Product integrated those into the pre-code decision — but the current route costs too much and did not finish its first-run returns.
+
+- **Product `/root` return:** The product decision and strong separation held; the code behavior was better because the lenses acted differently. The shell-adapter proof design and the cost conclusion changed. Resulting product change: use driver-native host evidence, remove nested role launches, keep the candidate Shaped, and require a complete run that closes returns and the Business gate inside an honestly revised evidence-backed budget before Built.
+- **Business replacement:** `/root/business_cost_return` is assessing the measured cost and blocking ruling; pending.
+- **Experience return:** Pending a carrier after the cost evidence and repaired run are available.
+- **Engineering return:** `/root/engineering_role` is replacing the impossible proof path with driver-native evidence; pending.
+
 ## Review receipt
 
 - Built: Not built yet.
