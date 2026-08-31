@@ -52,6 +52,21 @@ It exited 0 because the task went red. Re-running `python3 devsuite/tasks/separa
 - **Experience `/root/experience_role`:** The control proved strong theater resistance and specific builder feedback, but it accepted any non-empty Product synthesis. Experience's pre-code conclusions held and its new evidence required the synthesis check to say the real decision plainly before code: seven-day recap, gaps visible, no streak, praise, or unearned price.
 - **Engineering `/root/engineering_role`:** The runner captured evidence without manufacturing roles, and the core separation checks held. The unsupported Business green changed Engineering's conclusion: a status alone cannot satisfy the gate. Engineering tightened the check to require direct Business evidence and a reason grounded in adoption, cost, durable value, recap, or price; the re-run made that line red and kept the whole control red. Engineering is applying Experience's synthesis correction before the governed run.
 
+### Governed Codex run 1 — check failed
+
+Command:
+
+```sh
+DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-product-team
+```
+
+The run at `/tmp/claude-501/devsuite-runs/run-1788200061/separated-product-team` exited 1. Thirteen checks passed: one role-shaped piece; all four contributions; four distinct recorded carriers with Product separate from Engineering; four direct evidence sources; distinct assumptions; material consequences and disconfirming runs; correct Product synthesis; Product driver identity; recorded carriers present in the event text; real seven-day behavior; no pressure or unearned price; active-role returns; evidence-backed Business ruling; and contributor exclusion. Two checks failed:
+
+- The root Codex JSON stream omitted the real nested collaboration calls, so the parser could not prove the three role dispatches from host-issued events.
+- The agent attempted to commit the pre-code handoff, but the runner's `workspace-write` sandbox denied `.git/index.lock`; the required before-code commit was impossible in the supplied environment.
+
+The run remains the pre-fix control. Engineering must make the disposable clone's git metadata writable and capture real child context identities without the runner inventing roles, then the entire governed requirement re-runs plus one skeptical attack.
+
 ## Review receipt
 
 - Built: Not built yet.
