@@ -139,6 +139,27 @@ Fresh reviewer `/root/bounded_transport_review` then replayed all four pre-fix c
 
 The bounded architecture and Product decision held. Engineering's first-run conclusion changed from root-only accounting to recursive host-session accounting; the resulting product change is recursive context and token measurement, cleanup registration before credential copy, and separate Business-return and Business-progress facts. Business remains `broken` until the one bounded Codex settling run supplies measured evidence; that allowance is still unspent.
 
+### Governed Codex run 5 — bounded recovery stopped on cost
+
+Command:
+
+```sh
+DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=900 bash devsuite/run.sh separated-product-team
+```
+
+The one authorized settling run at `/tmp/claude-501/devsuite-runs/run-1788209486/separated-product-team` hit the live hard stop after 110 seconds at 266,484 aggregate host-reported tokens against the 250,000 limit. The runner killed Product and the broker, preserved the raw host records, and scored the governed task 0/1. Only Product's root identity, rejection of a forged host proof, and the fixture's unchanged no-pressure baseline were green. Product and one Business contribution completed; the next role session had only started when the stop fired. Engineering, Product synthesis, implementation, active-role returns, the fixture Business ruling, and contributor exclusions never ran.
+
+The stop and cleanup behaved as designed. `.driver.metrics.json` records `elapsed_seconds: 110`, `tokens: 266484`, and `token_limit: 250000`. The broker state records `auth_removed: true`, `home: null`, and `root_home: null`; an exact `/private/tmp` census found no `speck-role-home.*` or `speck-product-home.*` directory, and no process for the run remained. Raw Product and role sessions remain under the runner-owned `.role-broker.9r0VjU` evidence directory.
+
+- **Product `/root` return:** The roles still warrant distinct contexts, and the bounded transport safely enforced the product's law. The operating-cost conclusion changed again: even the subtracted route consumed the entire budget before two role contributions, synthesis, or code. Resulting product change: keep the candidate Shaped and blocked; do not spend on Claude, the ungoverned comparison, the full suite, milestone review, or release under the approved design.
+- **Business replacement `/root/business_cost_return`:** The earlier value conclusion held only narrowly: Business completed a real separate contribution, and the hard stop worked without owner interruption or residue. The commercial conclusion worsened. The run spent 106.6% of its allowance after only Product and Business; Experience had barely started, while Engineering, synthesis, implementation, the real run, returns, the fixture ruling, and exclusions had not happened. Resulting product change: the current execution design cannot be the default for every substantial piece. A lower-cost redesign must change the cost mechanism and predict the complete team's cost before another end-to-end run.
+- **Experience:** No completed contribution or return before the hard stop.
+- **Engineering:** No contribution, implementation, or return before the hard stop.
+
+The one bounded Codex allowance is spent. Any further governed attempt would be a product redesign and requires a new Business case and owner authority; it is not a continuation of this proof plan.
+
+**Business ruling: broken.** The minimum separated production team exhausted the whole piece allowance before half its roles completed. This blocks Built, milestone review, Claude, the full suite, merge, tag, and publish. No further governed proof is justified under the approved execution design. Raising the failed limit would not repair the value case, and collapsing the roles into one context would remove the product. Continuing requires an owner-authorized lower-cost execution redesign that preserves genuine separation and shows, component by component, how four roles, synthesis, implementation, returns, and exclusions fit below 250,000 tokens before another end-to-end run.
+
 ## Review receipt
 
 - Built: Not built yet.
