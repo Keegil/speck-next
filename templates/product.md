@@ -30,5 +30,14 @@
 ## Foundations
 - [foundation] — Trigger: [when it becomes due]
 
+## Product team
+- **Product** — [What product truth and decisions this role protects here.]
+- **Business** — [What viability, adoption, cost, or durable-value evidence it protects here.]
+- **Experience** — [What journeys, surfaces, behavior, and feel it protects here.]
+- **Engineering** — [What feasibility, safety, reversibility, and operation it protects here.]
+
+### Specialists
+- [Role, only if this product needs it] — Responsibility: [one] · Exits when: [observable trigger]
+
 ## Under deadline pressure
 [What holds, flexes, and waits.]

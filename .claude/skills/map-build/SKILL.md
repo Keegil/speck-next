@@ -9,6 +9,8 @@ Mapping decides what gets built, in what order, and how each piece will be accep
 
 Use relevant prompts from `references/questions.md`. Start `map.md` from `templates/map.md` and expand it when the product needs more.
 
+Before Product integrates the map, Product, Business, Experience, and Engineering each contribute from a distinct context. Record the same carrier, evidence, conclusion, assumptions, proposed-change, and active-decision fields used in shaping. Product preserves dissent and presents one ordering recommendation. Role contributors cannot later test or judge this map.
+
 ## Rules
 
 1. **Cut pieces from shaped work.** Derive them from promises, moments, screen drawings, and supporting material. Every piece names what it serves and consumes. A piece serving nothing is scope creep.
@@ -16,6 +18,8 @@ Use relevant prompts from `references/questions.md`. Start `map.md` from `templa
 2. **Let the owner choose the order.** Present real choices: visible surface first or machinery first, which moment appears first, and what unlocks the users or data later pieces need. Record options, costs, recommendation, and the owner’s exact answer. Put the reason for the chosen order in the map so future changes show what they disturb.
 
 3. **Write each piece’s proof plan before it goes live.** Name the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on.
+
+   Also name the roles expected to be active and the earliest Product, Business, Experience, and Engineering uncertainty the piece will test. A role that names a material consequence and an earliest disconfirming run stays active.
 
 4. **Name milestones.** Each is the smallest group of pieces that proves a real increment end to end. Say when the first real user surface appears. If it appears late, put that cost in the map and get the owner’s agreement.
 

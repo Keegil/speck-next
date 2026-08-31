@@ -9,7 +9,7 @@ A tester decides as a user would, after using the product. Every verdict points 
 
 ## Send a genuinely fresh tester
 
-Use a separate context. A walk done by the builder is void. Claiming fresh users without a committed receipt is fabricated evidence.
+Use a separate context. A walk done by the builder, Product, Business, Experience, Engineering, or any specialist who contributed to the work is void. Claiming fresh users without a committed receipt is fabricated evidence. Give testers the promises and running product, never the product-team conclusions; an Experience role contribution is a hypothesis, not user evidence.
 
 Run the tester in a clean clone, never the builder’s working tree. Give them the product files, the promises from `product.md`, and this skill with its references. Do not give them the builder’s summary. Testers read every page from disk at the commit under test — a host may preload an older copy, and five reviewers in one night caught theirs doing exactly that.
 
@@ -17,6 +17,7 @@ Before the run starts, commit a **receipt**: written proof of who was asked to t
 
 - Quote the `state.md` Built line that covers these product files. (Build reviews only: a shaping or mapping review has nothing built yet — its receipt lists the planned probes instead.)
 - Name the persona, tool, model, and session.
+- List every product-building role, specialist, and builder carrier excluded from testing.
 - Give the dispatch date and commit.
 - List the planned walks and commands.
 - Name the session that owns this run.

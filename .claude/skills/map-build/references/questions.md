@@ -18,13 +18,14 @@ Ask one or two at a time. Give options, costs, and a recommendation. Keep the ow
 
 7. For each piece, what runs, which user types test it, and what does the judge rule on? Put one line in the map.
 8. Which pieces touch money, auth, private data, or irreversible sends and need extra care from the start?
+9. Which product-building roles are expected to stay active for each piece, and what is the earliest Product, Business, Experience, and Engineering uncertainty it can settle?
 
 ## Name milestones
 
-9. What is the smallest set of pieces that proves a real increment end to end, which the owner can drive and grade? Name it and the next one.
+10. What is the smallest set of pieces that proves a real increment end to end, which the owner can drive and grade? Name it and the next one.
 
 ## Decide what it runs on
 
-10. What do the pieces require: data shape, model access, latency, privacy, and cost ceiling? Requirements come before brands.
-11. What are the options and their real costs: monthly money, lock-in, operating burden, and reversal cost after a stated number of pieces? Include the boring option. The owner picks a care level. Over-engineering past it is the recorded “we went a bit overboard” failure, just as under-engineering is.
-12. What would reopen this decision? Put it in `decisions.md`.
+11. What do the pieces require: data shape, model access, latency, privacy, and cost ceiling? Requirements come before brands.
+12. What are the options and their real costs: monthly money, lock-in, operating burden, and reversal cost after a stated number of pieces? Include the boring option. The owner picks a care level. Over-engineering past it is the recorded “we went a bit overboard” failure, just as under-engineering is.
+13. What would reopen this decision? Put it in `decisions.md`.

@@ -25,7 +25,7 @@ for arg in "$@"; do
     *) TASKS+=("$arg") ;;
   esac
 done
-[ ${#TASKS[@]} -eq 0 ] && TASKS=(small-change bug-hunt honest-state review-integrity)
+[ ${#TASKS[@]} -eq 0 ] && TASKS=(small-change bug-hunt honest-state review-integrity separated-product-team)
 mkdir -p "$RUNS"
 
 pass=0; fail=0
@@ -44,11 +44,21 @@ for task in "${TASKS[@]}"; do
     # stdin closed (an open pipe once hung a session for 79 minutes waiting on it),
     # and every task bounded: a driver that exceeds the deadline is killed and scored by its checks.
     DEADLINE="${DEVSUITE_TASK_TIMEOUT:-1500}"
-    case "$DRIVER" in
-      codex)  codex exec --sandbox workspace-write -C "$CLONE" "$PROMPT" < /dev/null > "$CLONE/.driver.log" 2>&1 & DPID=$! ;;
-      claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep" < /dev/null > "$CLONE/.driver.log" 2>&1) & DPID=$! ;;
-      *) echo "unknown driver: $DRIVER"; exit 2 ;;
-    esac
+    if [ "$task" = "separated-product-team" ]; then
+      # This task needs host-issued dispatch evidence. The runner only captures
+      # structured events; the governed agent must decide to summon the roles.
+      case "$DRIVER" in
+        codex)  codex exec --json --sandbox workspace-write -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$! ;;
+        claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep,Agent" --output-format stream-json --verbose < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log") & DPID=$! ;;
+        *) echo "unknown driver: $DRIVER"; exit 2 ;;
+      esac
+    else
+      case "$DRIVER" in
+        codex)  codex exec --sandbox workspace-write -C "$CLONE" "$PROMPT" < /dev/null > "$CLONE/.driver.log" 2>&1 & DPID=$! ;;
+        claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep" < /dev/null > "$CLONE/.driver.log" 2>&1) & DPID=$! ;;
+        *) echo "unknown driver: $DRIVER"; exit 2 ;;
+      esac
+    fi
     SECONDS_WAITED=0
     while kill -0 "$DPID" 2>/dev/null; do
       sleep 5; SECONDS_WAITED=$((SECONDS_WAITED+5))

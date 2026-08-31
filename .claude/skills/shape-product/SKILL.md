@@ -13,6 +13,8 @@ Start `product.md` from `templates/product.md`. The template is a floor. Add sec
 
 Keep shaping while open product questions need real evidence, and let the first increment gather it through runs, probes, or measurements. If no open shaping question remains, move on. Shaping with nothing running kills products on paper; shaping after the questions close only delays the build.
 
+Before Product integrates `product.md`, Product, Business, Experience, and Engineering each contribute from a distinct context. Record each carrier, direct evidence, conclusion, assumptions, proposed change, and active decision in `work/shaping.md`. A role claiming material impact names the consequence and the earliest run that could disprove it; Product cannot mark that concern inactive. Product preserves meaningful dissent and gives the owner one integrated explanation. The roles do not replace the fresh tester and judge below, and none of their contributors is eligible for either job.
+
 Shaping ends when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both with receipts committed before they ran — and the owner has ratified it in the record. Then use `map-build`.
 
 ## Rules
@@ -44,3 +46,5 @@ Shaping ends when `product.md` meets its template, a fresh tester has probed it 
    Reviews compare the product with what the owner actually said, not with sibling documents. Never present a paraphrase as the owner’s quote. That is fabricated evidence.
 
 11. **Test drawings before asking the owner to judge them.** Check every journey, deck, and screen drawing against the domain model, repo, fixtures, or real behavior. Ask whether the evidence behind each element exists. Before any substantial shaping material reaches the owner, a fresh tester probes it against independent evidence with the `experience` skill, and a separate `judge` challenges the verdict and rules.
+
+12. **Name this product's responsibilities.** In `product.md`, say what Product, Business, Experience, and Engineering protect for this product. Add a specialist only for a product-specific need, with one responsibility and the observable trigger that ends the assignment.

@@ -37,3 +37,4 @@ Always consider these questions. Convention may be right, but earn that answer a
 20. Under deadline pressure, what holds, what flexes, and what waits?
 21. How will each promise be judged, and by whom? Never by its author.
 22. Which foundations will the product need, and what triggers each one? A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor. Foundations fire on triggers, not upfront, but a foundation without a trigger never gets built.
+23. What does each of Product, Business, Experience, and Engineering protect for this product? Does a product-specific specialist need one responsibility now, and what observed event ends that assignment?

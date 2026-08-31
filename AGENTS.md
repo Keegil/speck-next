@@ -18,6 +18,25 @@ Give bad news first. Use product words: “building the login screen” beats pr
 
 Give enough context to judge every report cold: what this is, why it matters now, and what each choice changes. When you need judgment on a file, explain it in plain language in the conversation and link the file. Do not paste it. One plain explanation once let the owner catch, in a single read, a violation three separate fresh reviewers had all missed. Being understood is part of the work; if the owner must ask what a sentence means, fix the sentence.
 
+## Build with a separated product team
+
+Every substantial piece gets four product-building roles. A **carrier** is the exact host-issued context or session acting in a role; four headings written by one carrier do not count.
+
+- **Product** protects the product's promises and order. It reads the owner's record, `product.md`, `map.md`, decisions, and the other roles' evidence; integrates one product decision; keeps the owner to one clear recommendation; and may maintain the product, map, decision, and work records. Product does not edit the piece's product implementation.
+- **Business** protects commercial viability or, for a non-commercial product, adoption, operating cost, and durable value. It reads direct market, alternative, price, adoption, and cost evidence rather than inferring a business case from the product brief.
+- **Experience** protects how the product is understood and used. It reads observed journeys, surfaces, user behavior, and the declared feel. This is product work, not the later fresh-user test, and it never stands in for a user.
+- **Engineering** protects feasibility, safety, reversibility, and operation. It reads the repository, runtime, dependencies, data, and real system behavior. Engineering owns implementation.
+
+The four roles use distinct contexts once before Shape closes, once before Map closes, and once before product code for every substantial piece. Each contribution records its carrier, direct evidence, conclusion, assumptions, proposed change, and active or inactive decision. Product integrates them without flattening disagreement. Show the owner dissent only when it changes a promise, user-facing choice, risk, or order; keep the rest in the work record with the evidence and the run that will settle it.
+
+A role that says it is materially affected names the consequence and the earliest run that could disprove it. Product cannot mark that role inactive, though Product still resolves the tradeoff. Active roles return at the first real run while choices are cheap and record what the run showed, what changed or held, and the resulting product change.
+
+A consequential miss after a role said its concern was handled keeps that role involved at the next piece's key decisions and runs. A repeat keeps it involved through the milestone until measured evidence supports relaxing it. Add a specialist only when this product creates the need; give the specialist one responsibility and an observable exit trigger.
+
+Business rules `kept`, `broken`, or `not judged` on any piece that changes users, value, price or revenue, acquisition or adoption, ongoing cost, or durable value, and on every milestone. `Broken` or `not judged` blocks that piece or milestone. This is conditional business evidence, not a fifth universal quality ruling.
+
+Anyone who contributed as a product-building role or specialist is ineligible as a fresh tester or judge. Small changes do not summon this team.
+
 ## Know where to start
 
 Choose the phase from completed evidence, not instinct or the presence of a file.
@@ -39,11 +58,15 @@ A bad build stays in build. Thin evidence calls for another test run, not a ruli
 
 Shape when a product idea exists or a bet would change its promises. Use `shape-product` in numbered conversations. Keep the owner’s words verbatim.
 
+Before Product integrates the shaped product, dispatch Business, Experience, and Engineering into contexts distinct from Product and from each other. Keep their evidence and Product's synthesis in the shaping record; give the owner one integrated explanation, not four reports.
+
 This phase produces `product.md`, `work/shaping.md`, and any supporting material this product needs. It ends only when `product.md` meets its template, a fresh tester has probed it and a separate judge has ruled — both with receipts committed before they ran — and the owner has ratified it.
 
 ## Map
 
 Map after shaping, or when the set or order of pieces changes. Use `map-build` to cut pieces from the promises and supporting material. Give the owner real ordering choices and costs.
+
+Before Product integrates the map, the same four roles contribute again from distinct contexts, using the shaped product and direct evidence for ordering, value, experience, and feasibility.
 
 For every piece, state the runs, the checks that must pass, the people who will test it, and the rulings needed to accept it. Name milestones and say when the first real user surface appears.
 
@@ -56,8 +79,8 @@ Mapping ends only when its mechanical completion test passes, the running platfo
 A ratified map has exactly one live piece.
 
 1. **Check what is wearing out.** Read `state.md` and the foundations in `product.md`. A strain recorded twice, or a foundation whose trigger fired, becomes the next piece by re-cutting the map. Otherwise defer it where the owner can see it.
-2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, the proof plan, and a hard limit on time, tokens, and files read before the first run.
-3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running.
+2. **Set up the piece.** Before product code, commit its work file (start from `templates/piece.md`) with the outcome, proof plan, hard limit on time, tokens, and files read before the first run, and separate contributions from Product, Business, Experience, and Engineering. Product records one synthesis with dissent preserved, then hands implementation to Engineering.
+3. **Build while running it.** If planning has gone on for a long time and nothing has run, the limit has failed: stop planning and get the smallest honest part running. At the first real run, return every active role and record what the evidence changed.
 4. **Mark it Built.** When the piece runs and its own checks pass, write **Built** in `state.md` — in the build's final commit, or right after it in a commit that changes nothing else. Do this before review starts. Its own checks are the checks named in the piece’s proof plan; a plan naming none leaves nothing to pass, so the piece cannot become Built.
 5. **Have fresh people test and judge it.** Use `experience`, then `judge`. If the judge finds it sufficient, land it. If not, fix the named problem, then execute the judge’s full requirements — a quoted control is a floor, not the scope — plus one free skeptical attack, reported either way.
 
@@ -79,7 +102,7 @@ The first receipt field quotes the `state.md` Built line and the commit that wro
 
 The Built line must cover the exact product files under review. It fails if any build commit lands after it, or if it was written after the receipt opened — with one exception: a fix landed during the review answers to the judge's re-run rules instead of invalidating the line for the tree the review already ran. Repair a failed line by writing Built in a new commit containing nothing else, then open a new receipt. No valid quote means no review.
 
-Fresh testers must not include the builder. Use the people named in the piece’s proof plan; every verdict must point to something that person actually experienced.
+Fresh testers must not include the builder, any product-building role contributor, or a specialist contributor. Use the people named in the piece’s proof plan; every verdict must point to something that person actually experienced. Testers receive the promises and running product, not the role conclusions.
 
 A separate judge challenges each verdict before it counts. The piece work file holds the receipt, short verdicts, and rulings; full records may be linked beside it. Nothing becomes Judged without this review.
 
@@ -97,6 +120,8 @@ When all pieces in a milestone have landed, four fresh people use the increment 
 
 Keep the milestone’s receipts, records, rulings, and owner grade in one milestone work file. Give the owner a plain rendering and ask them to grade the felt experience. Anything insufficient returns to shape, map, build, or another test round with a trace. When all four rulings stand on evidence, the work is proven and can become Live.
 
+Every milestone also needs Business's evidence-backed `kept` ruling. A business-changing piece needs it before that piece lands. `Broken` or `not judged` blocks the affected piece or milestone.
+
 When the owner is present, update `state.md` at every event that changes the map: a piece starts, lands, or reopens. A rewrite that changes no available fact is theater. Owner approval never replaces a judge’s ruling. You may batch ordinary changes into one review, but review protected-code changes before shipping.
 
 ## Keep these files true
@@ -105,7 +130,7 @@ When the owner is present, update `state.md` at every event that changes the map
 - `map.md` orders the pieces, says what each serves and consumes, names milestones, keeps exactly one piece live, and lists all unconsumed material.
 - `work/shaping.md` and `work/mapping.md` are append-only owner conversations. One work file follows each piece from setup through judgment. Cite a record by its name and date, never by a bare round number.
 - `decisions.md` keeps consequential choices, alternatives, reasons, and reopening conditions. It includes the decision about what the product runs on.
-- `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim.
+- `state.md` reports what is true now, what is wearing out (every strain, and how often it has bitten), what is blocked, what needs the owner, what happens next, and the evidence for each claim. It carries unresolved role tensions and missing role evidence, never four role-status reports.
 - `templates/` holds the starting skeleton for every file above. `templates/piece.md` carries the piece work file's receipt and judgment fields.
 
 The four states are **Shaped → Built → Judged → Live**. Shaped means the work file is committed with the piece’s outcome, proof plan, and before-first-run limit, before any product code. Built means the piece runs and the checks named in that plan pass, written in `state.md`. Judged means its review ruled it sufficient: the piece delivers what it was shaped to deliver, with every open item and its destination named in `state.md` — a review that sends it back leaves the state where it was. Live means the whole milestone is proven and owner-graded — the first three states belong to each piece; Live belongs to the milestone. `state.md` lists the four Judged rulings separately with evidence or “not judged yet.” A failed evidence check says “check failed.”

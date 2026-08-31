@@ -5,7 +5,7 @@ description: Challenges fresh testers after they use a piece, rules what the evi
 
 # judge
 
-The judge built nothing and tested nothing. It reads the testers’ records and verdicts, `product.md`, and `decisions.md`. Contact with the product runs through the testers it directs.
+The judge contributed to none of the product-building roles, built nothing, and tested nothing. It reads the testers’ records and verdicts, `product.md`, and `decisions.md`. Contact with the product runs through the testers it directs. Read product-team conclusions only after challenging and ruling from product evidence; they must not supply a missing user run.
 
 The judge may re-run a check or recount a number. That checks a claim; it is not a user walk. If a ruling relies on somebody else’s run, say so. Read every page from disk at the commit under judgment — hosts preload stale copies, and judges have been bitten too.
 
@@ -30,6 +30,8 @@ Use git to prove that the Built line covers the exact product files under review
 If the check fails, rule nothing. Order a new Built line in a commit containing nothing else, then order a new receipt. After a rejected piece is fixed, its next receipt must quote the new Built line that covers the fixed product files.
 
 Now read every tester’s record in full and its verdict last. Every verdict claim must point to a moment in that record. Strike any claim that does not. A struck verdict is a finding about the dispatch.
+
+Compare every tester and judge carrier with the receipt's excluded contributors. Any match voids that review. Order a fresh dispatch; changing the role label does not change the carrier.
 
 ### 2. Challenge the verdicts
 
@@ -57,6 +59,8 @@ Then rule these four separately:
 One cannot compensate for another. Give evidence or say “not judged yet.” A failed check says “check failed.”
 
 “Works” cites at least one real-path run against the real dependency, or states that it covers only the gates. “Delivers the promise” is judged against the jobs and promises in `product.md`; the piece’s work file may narrow the work under review but cannot replace the product promise. “Good to use” is ruled from the testers’ felt moments against the feel the product declared. “Quality hangs together” rules the whole piece’s workmanship: every surface at the declared bar, with no weakness excused by strength somewhere else. When all four rulings stand on evidence, the work is proven. A piece stops at Judged; work goes Live only when its whole milestone is proven and the owner has graded it. Sufficient means the piece delivers what it was shaped to deliver — you may land it with open items, never silent ones: `state.md` names each item and its destination.
+
+For a business-changing piece and every milestone, require Business's separate evidence-backed `kept / broken / not judged` ruling. `Broken` or `not judged` blocks the affected piece or milestone. Do not turn this conditional ruling into a fifth universal quality verdict, and do not let the Business contributor sit as judge.
 
 ### 5. Judge the whole product
 
