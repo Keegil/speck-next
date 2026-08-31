@@ -114,6 +114,17 @@ The operating-cost assumption did not hold. The root host record ended at 6,284,
 
 **Business ruling: broken.** The roles produced distinct product value, but the candidate exceeded its own operating-cost law and timed out before its blocking evidence closed. This blocks Built, milestone judgment, merge, tag, and publish. It permits Engineering's narrow repair and one bounded Codex settling run; Claude and the full suite wait.
 
+### Bounded-transport pre-run review — sent back
+
+Fresh reviewer `/root/bounded_transport_review` challenged `e964b1e` before the one allowed settling run. It ran `python3 devsuite/tasks/separated-product-team/host_proof.py --self-test`, `./devsuite/run.sh --control separated-product-team`, and task-local synthetic Codex and Claude fixtures. The control stayed red, but four independent attacks found that the candidate could still overclaim its proof:
+
+- A helper context launched beneath Business, Experience, or Engineering was not counted on either host, so “exactly four contexts” could pass with a hidden fifth context.
+- A failure between copying Codex credentials and writing the broker state could leave a temporary credential home with no cleanup handle.
+- Claude had the 900-second wall but not the 250,000-token live stop required by this piece's proof plan.
+- A Business return containing the binding ruling `broken` was parsed as no return; the proof must distinguish “Business returned a valid ruling” from “Business ruled `kept` and allows progress.”
+
+This is the pre-fix control for the bounded transport. Engineering must close all four paths and re-run each attack plus the task control before Product spends the one live settling run. Business remains `broken`; the run allowance is unspent.
+
 ## Review receipt
 
 - Built: Not built yet.
