@@ -60,3 +60,7 @@ The fresh tester at `/root/v6_shape_map_tester` read commit `d0860fe` and sent S
 ### Tester re-run and judge round 1 — sent back
 
 The same tester read fix commit `674a7db`, re-executed both pre-fix controls, and found every Shape blocker closed: the contract joined the receipt, all eight promises carried the selected direction, and the concrete product name was gone. Shape was sufficient for judgment. The separate judge at `/root/v6_shape_map_judge` challenged that favorable result and found one ambiguous independence sentence: “a judge who contributed, built, and walked none of it” could permit a contributor to judge. Product changed it to say the judge contributed to none of it, built none of it, and tested none of it. The same tester and judge must re-run this exact boundary.
+
+### Shape re-run — sufficient
+
+At commit `0680580`, the tester reproduced the ambiguous pre-fix sentence at `674a7db`, confirmed it absent from the fix, and attacked the carrier population independently: all four role contributors were disjoint from the tester and judge, and the contract excluded every contributor class. Verdict: **SUFFICIENT**. The separate judge re-heard the fixed boundary and ruled **SUFFICIENT**: the promise is complete, internally consistent, public-safe in the changed authoritative surface, and compatible with the existing eight promises. The owner's recorded `Yes, lock v6` selection and subsequent implementation authorization stand on the unchanged promise. Shape closes; Map may now run.

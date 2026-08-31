@@ -112,3 +112,43 @@ first real user surface named: PASS
 both work records consumed: PASS
 pieces 1 through 11: PASS
 ```
+
+### Tester round 2 — sent back behind Shape
+
+The same tester re-read commit `674a7db`. Every original Shape blocker closed, but Map correctly remained sent back while Shape awaited judgment. The tester also found that pieces 10 and 11 did not name their exact acceptance rulings, the mechanical check tested only for a `proof plan:` label, and `state.md` plus this record contradicted the map about whether piece 8 was live. Shape has since closed at `0680580`. Product made piece 8 live, named the exact rulings on pieces 8–11, aligned state and mapping, and expanded the completion check below. The same tester must run every Map control plus one free attack before the judge hears it.
+
+### Mechanical completion after Shape closed — 2026-08-31
+
+Command:
+
+```sh
+python3 - <<'PY'
+from pathlib import Path
+text = Path('map.md').read_text()
+state = Path('state.md').read_text()
+lines = text.splitlines()
+pieces = {n: next((line for line in lines if line.startswith(f'{n}. ')), '') for n in range(1, 12)}
+future = [pieces[n] for n in range(8, 12)]
+quality = ('works', 'delivers the promise', 'good to use', 'quality hangs together', 'structure')
+checks = {
+    'one live piece and it is piece 8': text.count('[LIVE') == 1 and '[LIVE — Shaped]' in pieces[8],
+    'future pieces have role fields': all('expected active roles:' in line and 'earliest uncertainty:' in line for line in future),
+    'future pieces have proof plans': all('proof plan:' in line for line in future),
+    'future pieces name exact quality rulings': all('acceptance rulings:' in line and all(q in line for q in quality) for line in future),
+    'milestones requiring Business name it': all('Business' in pieces[n] for n in (8, 9, 11)),
+    'all pieces covered by milestones': all(name in '\n'.join(lines[4:12]) for name in (
+        'v3 discipline', 'v4 experience→judge', 'v5 the hearing', 'the campaigns land',
+        "a builder's words and fewer of them", 'name the words', 'three producers',
+        'a separated product team', 'v11 converter', 'CI limit enforcement', 'promise-conservation check')),
+    'first real user surface named': 'first real user surface' in text,
+    'both work records consumed': all(x in text for x in ('work/shaping.md', 'work/separated-product-team.md')),
+    'pieces 1 through 11': all(pieces.values()),
+    'state agrees piece 8 is live': 'one live Shaped piece' in state and 'No piece is live' not in state,
+}
+for name, passed in checks.items():
+    print(f'{name}: {"PASS" if passed else "FAIL"}')
+raise SystemExit(0 if all(checks.values()) else 1)
+PY
+```
+
+Returned ten `PASS` lines: one live piece 8; role fields; proof plans; exact quality rulings; required Business rulings; complete milestone coverage; first real surface; both consumed records; pieces 1–11; and state agreement.
