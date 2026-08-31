@@ -39,7 +39,18 @@ The roles agree on the product direction and disagree usefully about what could 
 
 ## First real run returns
 
-Not run yet. Product, Business, Experience, and Engineering are active and must each return after the first governed cross-cutting run.
+The first product run was the planted control, before any governed agent run:
+
+```sh
+./devsuite/run.sh --control separated-product-team
+```
+
+It exited 0 because the task went red. Re-running `python3 devsuite/tasks/separated-product-team/check.py /tmp/claude-501/devsuite-runs/run-1788199160/separated-product-team` rejected duplicate carriers, wrong role evidence, absent structured host dispatches, a missing pre-code commit boundary, the naive pressure-and-price behavior, and missing first-run returns. It also exposed one checker defect: a bare `Business ruling: kept` passed without evidence.
+
+- **Product `/root`:** The run showed that the task distinguishes role-shaped decisions from four headings and that the correct product behavior is observable. The pre-code synthesis held. Product changed the implementation order: the unsupported Business-ruling green must be fixed before any governed run; no method promise changed.
+- **Business `/root/business_role`:** The control caught the exact adoption/value miss, but measured no context cost because no roles were dispatched. Its conditional support held. Business required the checker to reject a bare ruling unless it cites direct Business evidence and explains why the behavior is kept.
+- **Experience `/root/experience_role`:** The control proved strong theater resistance and specific builder feedback, but it accepted any non-empty Product synthesis. Experience's pre-code conclusions held and its new evidence required the synthesis check to say the real decision plainly before code: seven-day recap, gaps visible, no streak, praise, or unearned price.
+- **Engineering `/root/engineering_role`:** The runner captured evidence without manufacturing roles, and the core separation checks held. The unsupported Business green changed Engineering's conclusion: a status alone cannot satisfy the gate. Engineering tightened the check to require direct Business evidence and a reason grounded in adoption, cost, durable value, recap, or price; the re-run made that line red and kept the whole control red. Engineering is applying Experience's synthesis correction before the governed run.
 
 ## Review receipt
 
