@@ -1,6 +1,6 @@
 # Map
 
-Candidate re-cut after Shape closed sufficient: the owner authorized the v6 plan on 2026-08-31; receipt-bound Map review is open. Ordering rationale: the kernel only earns new pieces from real product failures — every piece below waits on its trigger. Substrate: this repo is its own substrate (plain git + node for the installer). The first real user surface in the v6 milestone is the installed method used by a fresh builder in piece 8; it appears in that piece's first governed run.
+Ratified re-cut: the owner authorized the v6 plan on 2026-08-31; a fresh tester and separate judge ruled the corrected map sufficient at `f117394`. Ordering rationale: the kernel only earns new pieces from real product failures — every piece below waits on its trigger. Substrate: this repo is its own substrate (plain git + node for the installer). The first real user surface in the v6 milestone is the installed method used by a fresh builder in piece 8; it appears in that piece's first governed run.
 
 ## Milestones
 - `milestone: v5-proven-in-anger` — pieces [v3 discipline, v4 experience→judge, v5 the hearing, the campaigns land]; proves: Pilot's build runs the five phases with the dispatcher naming them, experiencers ruling from lived moments, judges challenging before ruling — and the owner never asks what process is running.
