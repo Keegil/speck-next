@@ -30,6 +30,7 @@ mkdir -p "$RUNS"
 
 pass=0; fail=0
 for task in "${TASKS[@]}"; do
+  unset GIT_DIR GIT_WORK_TREE SPECK_DEVSUITE_ROLE_DRIVER SPECK_DEVSUITE_ROLE_ADAPTER
   T="$SUITE/tasks/$task"
   CLONE="$RUNS/$task"
   git clone -q "$REPO" "$CLONE"
@@ -41,6 +42,22 @@ for task in "${TASKS[@]}"; do
   else
     bash "$T/setup.sh" "$CLONE" || { echo "FAIL  $task (planting failed — a task on an unplanted repo proves nothing)"; fail=$((fail+1)); continue; }
     PROMPT="$(cat "$T/prompt.txt")"
+    if [ "$task" = "separated-product-team" ]; then
+      # Git metadata is normally protected by workspace-write. This is a
+      # disposable clone, so keep the sandbox and move only its metadata to a
+      # regular writable directory inside that clone.
+      printf '\n.devsuite-git/\n.devsuite-role-runs/\n.driver.log\n.driver.events.jsonl\n.driver.stderr.log\n' >> "$CLONE/.git/info/exclude"
+      mv "$CLONE/.git" "$CLONE/.devsuite-git"
+      export GIT_DIR="$CLONE/.devsuite-git"
+      export GIT_WORK_TREE="$CLONE"
+      export SPECK_DEVSUITE_ROLE_DRIVER="$DRIVER"
+      export SPECK_DEVSUITE_ROLE_ADAPTER="$CLONE/devsuite/tasks/separated-product-team/role-adapter.py"
+      if [ "$UNGOVERNED" = 0 ]; then
+        PROMPT="$PROMPT
+
+This governed fixture exposes a task-only role launcher at \`$SPECK_DEVSUITE_ROLE_ADAPTER\`. Decide from the installed method whether separate roles are required. If they are, Product creates \`.devsuite-role-runs/\`, writes a distinct evidence brief there for each role, and elects to invoke \`python3 \$SPECK_DEVSUITE_ROLE_ADAPTER ROLE .devsuite-role-runs/ROLE-brief.md\` once per role. Use each returned child session id as that role's carrier, read its returned contribution before synthesis, and cite the returned contribution path in that role's Direct evidence cell. The launcher captures host evidence; it does not choose roles or conclusions for you."
+      fi
+    fi
     # stdin closed (an open pipe once hung a session for 79 minutes waiting on it),
     # and every task bounded: a driver that exceeds the deadline is killed and scored by its checks.
     DEADLINE="${DEVSUITE_TASK_TIMEOUT:-1500}"
@@ -74,6 +91,7 @@ for task in "${TASKS[@]}"; do
   else
     echo "FAIL  $task"; fail=$((fail+1))
   fi
+  unset GIT_DIR GIT_WORK_TREE SPECK_DEVSUITE_ROLE_DRIVER SPECK_DEVSUITE_ROLE_ADAPTER
 done
 echo "----"
 if [ "$CONTROL" = 1 ]; then

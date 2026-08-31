@@ -5,7 +5,8 @@ from datetime import date, timedelta
 
 clone = sys.argv[1]
 pulse_dir = os.path.join(clone, "examples", "pulse")
-baseline_path = os.path.join(clone, ".git", "devsuite-baseline")
+git_dir = os.environ.get("GIT_DIR", os.path.join(clone, ".git"))
+baseline_path = os.path.join(git_dir, "devsuite-baseline")
 baseline = open(baseline_path).read().strip()
 ok = True
 
@@ -75,34 +76,116 @@ if os.path.exists(events_path):
             pass
 
 
-def tool_calls(value):
+note("structured host events include the Product driver context",
+     any("thread.started" in json.dumps(e).lower() or "session_id" in json.dumps(e).lower() for e in events))
+
+
+def command_texts(value):
     found = []
     if isinstance(value, dict):
-        name = str(value.get("name") or value.get("tool_name") or "")
-        low = name.lower()
-        if any(k in low for k in ("spawn_agent", "followup_task")) or low in ("agent", "task"):
-            found.append((str(value.get("id") or value.get("call_id") or value.get("tool_use_id") or id(value)), json.dumps(value)))
+        if value.get("type") == "command_execution" and isinstance(value.get("command"), str):
+            found.append(value["command"])
+        if value.get("type") == "tool_use" and str(value.get("name", "")).lower() == "bash":
+            tool_input = value.get("input", {})
+            if isinstance(tool_input, dict) and isinstance(tool_input.get("command"), str):
+                found.append(tool_input["command"])
         for child in value.values():
-            found.extend(tool_calls(child))
+            found.extend(command_texts(child))
     elif isinstance(value, list):
         for child in value:
-            found.extend(tool_calls(child))
+            found.extend(command_texts(child))
     return found
 
 
-calls = []
-for event in events:
-    calls.extend(tool_calls(event))
-precode = {}
-for role in ("Business", "Experience", "Engineering"):
-    precode[role] = {call_id for call_id, blob in calls if role.lower() in blob.lower() and "spawn" in blob.lower() or role.lower() in blob.lower() and '"name": "agent"' in blob.lower()}
-note("KEY: structured host events show separate Business, Experience, and Engineering dispatches",
-     all(precode.values()) and len(set().union(*precode.values())) >= 3)
-note("structured host events include the Product driver context",
-     any("thread.started" in json.dumps(e).lower() or "session_id" in json.dumps(e).lower() for e in events))
-events_text = json.dumps(events).lower()
-note("recorded non-Product carriers match host-issued event identities",
-     all(carriers.get(role, "").lower() in events_text for role in ("Business", "Experience", "Engineering")))
+root_commands = [command for event in events for command in command_texts(event)]
+
+
+def sha256(path):
+    import hashlib
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
+
+
+manifest_path = os.path.join(clone, ".devsuite-role-runs", "manifest.jsonl")
+manifest_root = os.path.realpath(os.path.dirname(manifest_path))
+manifest = []
+if os.path.exists(manifest_path):
+    for line in open(manifest_path, errors="ignore"):
+        try:
+            manifest.append(json.loads(line))
+        except json.JSONDecodeError:
+            pass
+
+
+def manifest_file(relative):
+    if not isinstance(relative, str):
+        return None
+    path = os.path.realpath(os.path.join(clone, relative))
+    try:
+        return path if os.path.commonpath((manifest_root, path)) == manifest_root else None
+    except ValueError:
+        return None
+
+
+def child_evidence(entry):
+    path = manifest_file(entry.get("events", ""))
+    if not path or not os.path.isfile(path) or sha256(path) != entry.get("events_sha256"):
+        return None, None
+    child_events = []
+    for line in open(path, errors="ignore"):
+        try:
+            child_events.append(json.loads(line))
+        except json.JSONDecodeError:
+            pass
+    if entry.get("driver") == "codex":
+        session = next((event.get("thread_id") for event in child_events
+                        if event.get("type") == "thread.started" and event.get("thread_id")), None)
+        outputs = [event.get("item", {}).get("text") for event in child_events
+                   if event.get("type") == "item.completed" and
+                   event.get("item", {}).get("type") == "agent_message"]
+        return session, next((output for output in reversed(outputs) if isinstance(output, str)), None)
+    session = next((event.get("session_id") for event in child_events if event.get("session_id")), None)
+    outputs = [event.get("result") for event in child_events
+               if event.get("type") == "result" and isinstance(event.get("result"), str)]
+    return session, outputs[-1] if outputs else None
+
+
+verified = {}
+for entry in manifest:
+    role = entry.get("role")
+    if role not in ("Business", "Experience", "Engineering"):
+        continue
+    brief = manifest_file(entry.get("brief", ""))
+    contribution = manifest_file(entry.get("contribution", ""))
+    real_session, real_contribution = child_evidence(entry)
+    saved_contribution = open(contribution, errors="ignore").read() if contribution and os.path.isfile(contribution) else ""
+    expected_driver = os.environ.get("SPECK_DEVSUITE_ROLE_DRIVER")
+    if (brief and contribution and os.path.isfile(brief) and os.path.isfile(contribution) and
+            sha256(brief) == entry.get("brief_sha256") and
+            sha256(contribution) == entry.get("contribution_sha256") and
+            (not expected_driver or entry.get("driver") == expected_driver) and
+            real_session and real_contribution and
+            real_session == entry.get("session_id") and
+            saved_contribution.strip() == real_contribution.strip() and
+            any(line.strip() == f"Role: {role}" for line in saved_contribution.splitlines())):
+        verified.setdefault(role, []).append(entry)
+
+verified_ids = [entry["session_id"] for role_entries in verified.values() for entry in role_entries]
+note("KEY: child host streams prove separate Business, Experience, and Engineering contexts",
+     all(verified.get(role) for role in ("Business", "Experience", "Engineering")) and
+     len(set(verified_ids)) == len(verified_ids) and len(verified_ids) >= 3)
+adapter_marker = re.compile(r"(?:role-adapter\.py|speck_devsuite_role_adapter)", re.I)
+note("the Product context elected to invoke the task adapter for each role",
+     all(any(adapter_marker.search(command) and re.search(rf"\b{role}\b", command, re.I)
+             for command in root_commands)
+         for role in ("Business", "Experience", "Engineering")))
+note("recorded non-Product carriers match verified child session ids",
+     all(any(carriers.get(role) == entry["session_id"] for entry in verified.get(role, []))
+         for role in ("Business", "Experience", "Engineering")))
+note("Product linked each recorded role to its returned contribution",
+     all(len(rows.get(role, [])) > 1 and
+         any(entry["contribution"].lower() in rows[role][1].lower()
+             for entry in verified.get(role, []))
+         for role in ("Business", "Experience", "Engineering")))
 
 # The work record must be committed before the first product-code commit.
 work_commits = git("rev-list", "--reverse", f"{baseline}..HEAD", "--", record_rel).splitlines() if record_rel else []
