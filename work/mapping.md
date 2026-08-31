@@ -152,3 +152,41 @@ PY
 ```
 
 Returned ten `PASS` lines: one live piece 8; role fields; proof plans; exact quality rulings; required Business rulings; complete milestone coverage; first real surface; both consumed records; pieces 1–11; and state agreement.
+
+### Tester round 3 — sent back
+
+At `2b9a419`, the tester re-executed both prior failure sets and the expanded ten-check population. Those controls all closed. The full proof-plan read found two new blockers: pieces 10 and 11 each named only one fresh tester instead of the required two, and piece 10 made Business active over cost-versus-drag but deferred its Business ruling to the milestone. Product named at least two exact fresh tester roles for every future piece and made Business binding on piece 10. The completion command now checks those contents rather than the presence of labels.
+
+### Full completion run after tester round 3 — 2026-08-31
+
+Command:
+
+```sh
+python3 - <<'PY'
+from pathlib import Path
+text = Path('map.md').read_text(); state = Path('state.md').read_text(); lines = text.splitlines()
+pieces = {n: next((line for line in lines if line.startswith(f'{n}. ')), '') for n in range(1, 12)}
+future = [pieces[n] for n in range(8, 12)]
+quality = ('works', 'delivers the promise', 'good to use', 'quality hangs together', 'structure')
+def tester_count(line):
+    roles = line.split('fresh tester roles:', 1)[1].split('· acceptance rulings:', 1)[0]
+    return len([x for x in roles.replace(' and ', ',').split(',') if x.strip()])
+checks = {
+    'one live piece and it is piece 8': text.count('[LIVE') == 1 and '[LIVE — Shaped]' in pieces[8],
+    'future pieces have role fields': all('expected active roles:' in x and 'earliest uncertainty:' in x for x in future),
+    'future pieces have proof plans': all('proof plan:' in x for x in future),
+    'future pieces name at least two tester roles': all('fresh tester roles:' in x and tester_count(x) >= 2 for x in future),
+    'future pieces name exact quality rulings': all('acceptance rulings:' in x and all(q in x for q in quality) for x in future),
+    'all affected pieces name Business ruling': all('Business `kept / broken / not judged`' in pieces[n] for n in (8, 9, 10, 11)),
+    'all pieces covered by milestones': all(name in '\n'.join(lines[4:12]) for name in ('v3 discipline', 'v4 experience→judge', 'v5 the hearing', 'the campaigns land', "a builder's words and fewer of them", 'name the words', 'three producers', 'a separated product team', 'v11 converter', 'CI limit enforcement', 'promise-conservation check')),
+    'first real user surface named': 'first real user surface' in text,
+    'both work records consumed': all(x in text for x in ('work/shaping.md', 'work/separated-product-team.md')),
+    'pieces 1 through 11': all(pieces.values()),
+    'state agrees piece 8 is live': 'one live Shaped piece' in state and 'No piece is live' not in state,
+}
+for name, passed in checks.items(): print(f'{name}: {"PASS" if passed else "FAIL"}')
+raise SystemExit(0 if all(checks.values()) else 1)
+PY
+```
+
+Returned `PASS` for all eleven named checks and exit code 0.
