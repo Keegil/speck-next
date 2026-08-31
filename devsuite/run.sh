@@ -66,7 +66,7 @@ This governed fixture exposes a task-only role launcher at \`$SPECK_DEVSUITE_ROL
       # This task needs host-issued dispatch evidence. The runner only captures
       # structured events; the governed agent must decide to summon the roles.
       case "$DRIVER" in
-        codex)  codex exec --json --sandbox workspace-write -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$! ;;
+        codex)  codex exec --json --sandbox workspace-write --skip-git-repo-check -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$! ;;
         claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep,Agent" --output-format stream-json --verbose < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log") & DPID=$! ;;
         *) echo "unknown driver: $DRIVER"; exit 2 ;;
       esac

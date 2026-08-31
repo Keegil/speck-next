@@ -43,7 +43,7 @@ Product's evidence brief:
 
 with events_path.open("w") as events, stderr_path.open("w") as stderr:
     if driver == "codex":
-        command = ["codex", "exec", "--json", "--sandbox", "read-only", "-C", str(root),
+        command = ["codex", "exec", "--json", "--sandbox", "read-only", "--skip-git-repo-check", "-C", str(root),
                    "-o", str(contribution_path), prompt]
     else:
         command = ["claude", "-p", prompt, "--allowedTools", "Bash,Read,Glob,Grep",
