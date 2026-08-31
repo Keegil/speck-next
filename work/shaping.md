@@ -56,3 +56,7 @@ This ratifies the direction, not an unreviewed wording change elsewhere. The pro
 ### Tester round 1 — sent back
 
 The fresh tester at `/root/v6_shape_map_tester` read commit `d0860fe` and sent Shape back. `product.md` made the contract authoritative, but the receipt excluded it and its eight promises had not yet been amended. The tester also found a concrete product name in an old upgrade check. Product amended the existing eight promises, added the contract to this receipt, and abstracted the leaked detail. The same tester must re-run before judgment.
+
+### Tester re-run and judge round 1 — sent back
+
+The same tester read fix commit `674a7db`, re-executed both pre-fix controls, and found every Shape blocker closed: the contract joined the receipt, all eight promises carried the selected direction, and the concrete product name was gone. Shape was sufficient for judgment. The separate judge at `/root/v6_shape_map_judge` challenged that favorable result and found one ambiguous independence sentence: “a judge who contributed, built, and walked none of it” could permit a contributor to judge. Product changed it to say the judge contributed to none of it, built none of it, and tested none of it. The same tester and judge must re-run this exact boundary.
