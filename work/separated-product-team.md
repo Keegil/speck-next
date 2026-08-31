@@ -77,6 +77,16 @@ DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-pro
 
 The post-adapter run at `/tmp/claude-501/devsuite-runs/run-1788202763/separated-product-team` exited 1 before Codex or any role context started. The runner tried to append task-private exclusions to `.git/info/exclude`, but this fresh clone had no `.git/info/` directory. The shell continued, moved `.git` to `.devsuite-git`, and the checker correctly scored the untouched fixture red. This run is the pre-fix control for the runner-ordering defect; it consumed no role calls and makes no claim about the repaired role adapter. Engineering must repair the narrow runner boundary, re-run its control, and then re-run the entire governed requirement plus a skeptical attack.
 
+### Governed Codex run 3 — host trust check failed before dispatch
+
+Command:
+
+```sh
+DEVSUITE_DRIVER=codex DEVSUITE_TASK_TIMEOUT=1500 ./devsuite/run.sh separated-product-team
+```
+
+The run at `/tmp/claude-501/devsuite-runs/run-1788202926/separated-product-team` exited 1 before Product or any child context started. The runner created the Git info path and moved the metadata successfully, but Codex's repository trust check did not recognize exported `GIT_DIR` and `GIT_WORK_TREE`; `.driver.stderr.log` says `Not inside a trusted directory and --skip-git-repo-check was not specified.` The root event stream is empty and the unchanged fixture is red. This is the pre-fix control for the task-only Codex launch boundary. Engineering must let both Product and child Codex contexts start in the relocated disposable repository without weakening their write and read-only sandboxes, then the complete governed requirement re-runs plus a skeptical attack.
+
 ## Review receipt
 
 - Built: Not built yet.
