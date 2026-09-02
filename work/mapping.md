@@ -385,3 +385,15 @@ combined final public-detail scan: PASS
 - Skeptical attack: compare every release condition in the owner's original plan and `work/separated-product-team.md` with the two current pieces; any unmatched condition sends the map back.
 - Re-judge: `/root/selective_map_judge`, after a sufficient re-test.
 - Verdict and judgment: pending.
+
+### Selective Map final re-test — sufficient
+
+At `0e34587`, `/root/selective_map_tester` replayed all 21 completion checks, the five original controls, both rc.1 attacks, and both dropped-release controls. Every check returned `PASS`. Its skeptical attack matched every condition from the owner's authorized plan and the original one-piece proof plan to pieces 8 or 9: install and migration honesty, version and diff reporting, budgets, controls, Codex, Claude, the ungoverned miss, the exact milestone roster, two judges and their release-specific rulings, owner grade, and the final combined leak scan all have a destination. Verdict: **SUFFICIENT**.
+
+### Selective Map final judgment receipt — opened before dispatch
+
+- Candidate: `0e34587` plus the exact final re-test verdict above at the commit containing this receipt.
+- Re-judge: `/root/selective_map_judge`, replaying both prior release-proof failures and challenging the complete conserved population.
+- Free attack: find any way a piece-specific green can be mistaken for the final v6 release decision, or any owner touchpoint added by the split.
+- Dispatch: only after this receipt is committed.
+- Judgment: pending.
