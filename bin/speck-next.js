@@ -84,8 +84,8 @@ function writeMarker(existing, provenance, assessmentRecord) {
     version: VERSION,
     sourceCheckout: provenance.sourceCheckout,
     methodSurfaceSha256: provenance.methodSurfaceSha256,
+    upgradeAssessmentRecord: assessmentRecord,
   };
-  if (assessmentRecord) next.upgradeAssessmentRecord = assessmentRecord;
   next.installedAt = installedAt;
   fs.mkdirSync(path.dirname(markerPath), { recursive: true });
   fs.writeFileSync(markerPath, JSON.stringify(next, null, 2) + "\n");
@@ -133,8 +133,8 @@ function activeMarkdownLines(content) {
   return { lines, active };
 }
 
-function assessmentError(message) {
-  die(`refusing: ${message} The version marker was not changed.`);
+function assessmentError(message, repair = "Restore consistent assessment evidence, then run the upgrade again.") {
+  die(`refusing: ${message} Nothing in the repository changed. ${repair}`);
 }
 
 function parseAssessment(content, required = false) {
@@ -201,52 +201,91 @@ function appendAssessment(content) {
   return content + prefix + ASSESSMENT_BLOCK;
 }
 
-function ensureProductTeamAssessment(source, prior) {
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+function markerAssessmentDisposition(prior) {
+  if (!hasOwn(prior, "upgradeAssessmentRecord")) return { known: false, record: null };
+  const record = prior.upgradeAssessmentRecord;
+  if (record !== null && record !== ASSESSMENT_RECORD)
+    assessmentError(
+      `the marker's upgradeAssessmentRecord is ${JSON.stringify(record)}; it must be null or ${JSON.stringify(ASSESSMENT_RECORD)}.`,
+      "Restore the marker's explicit assessment disposition from version control, then run the upgrade again."
+    );
+  return { known: true, record };
+}
+
+function planProductTeamAssessment(source, prior) {
   const productPath = path.join(target, "product.md");
-  const requiredRecord = prior && prior.upgradeAssessmentRecord || null;
-  if (requiredRecord && requiredRecord !== ASSESSMENT_RECORD)
-    assessmentError(`the marker names an unsupported upgrade-assessment record (${JSON.stringify(requiredRecord)}).`);
+  const disposition = markerAssessmentDisposition(prior);
   if (!fs.existsSync(productPath)) {
-    if (requiredRecord) assessmentError(`the marker requires an upgrade assessment, but product.md is missing.`);
+    if (disposition.record === ASSESSMENT_RECORD)
+      assessmentError(
+        `the marker requires ${ASSESSMENT_RECORD}, but product.md is missing.`,
+        "Restore product.md and its canonical assessment block, then run the upgrade again."
+      );
     return {
       message: "Product team migration: product.md is missing, so no product history or assessment was invented.",
       assessment: null,
       assessmentRecord: null,
+      productContent: null,
     };
   }
   if (!fs.statSync(productPath).isFile())
-    assessmentError(`product.md exists but is not a file.`);
+    assessmentError(
+      "product.md exists but is not a file.",
+      "Restore product.md as a regular file, then run the upgrade again."
+    );
 
-  let current = fs.readFileSync(productPath, "utf8");
-  const existing = parseAssessment(current, Boolean(requiredRecord));
+  const original = fs.readFileSync(productPath, "utf8");
+  const existing = parseAssessment(original, disposition.record === ASSESSMENT_RECORD);
+  const rc1 = removeGeneratedLine(original, RC1_UNIVERSAL_STATUS);
+  const rejectedRc2 = removeGeneratedLine(rc1.content, REJECTED_RC2_STATUS);
+  const generatedAssessment = rc1.removed || rejectedRc2.removed;
+
+  if (disposition.known && disposition.record === null) {
+    if (existing || generatedAssessment || source !== "current")
+      assessmentError(
+        "the marker says no upgrade assessment applies, but the repository contains evidence that one is required.",
+        "Restore the marker and product assessment evidence from the same successful upgrade, then run it again."
+      );
+    return {
+      message: "Product team migration: not needed (the marker explicitly records that no one-time assessment applies).",
+      assessment: null,
+      assessmentRecord: null,
+      productContent: null,
+    };
+  }
+
   if (existing) {
     return {
       message: `Product team migration: kept the explicit ${existing.state} upgrade assessment; product.md was unchanged.`,
       assessment: existing,
       assessmentRecord: ASSESSMENT_RECORD,
+      productContent: null,
     };
   }
 
-  const rc1 = removeGeneratedLine(current, RC1_UNIVERSAL_STATUS);
-  const rejectedRc2 = removeGeneratedLine(rc1.content, REJECTED_RC2_STATUS);
-  const mustAssess = source !== "current" || rc1.removed || rejectedRc2.removed;
-  if (!mustAssess) {
-    return {
-      message: "Product team migration: not needed (this current repository never opened the one-time migration assessment).",
-      assessment: null,
-      assessmentRecord: null,
-    };
-  }
+  if (source === "current" && !generatedAssessment)
+    assessmentError(
+      "this current rc.2 marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied.",
+      "Restore the deleted assessment evidence or the explicit marker disposition from version control, then run the upgrade again."
+    );
 
-  current = appendAssessment(rejectedRc2.content);
-  fs.writeFileSync(productPath, current);
-  const assessment = parseAssessment(current, true);
+  const productContent = appendAssessment(rejectedRc2.content);
+  const assessment = parseAssessment(productContent, true);
   let message = "Product team migration: preserved historical product bytes and appended one explicit pending upgrade assessment.";
   if (rc1.removed)
     message = "Product team migration: removed the exact generated rc.1 status and appended one explicit pending upgrade assessment; every other historical byte was preserved.";
   else if (rejectedRc2.removed)
     message = "Product team migration: repaired the rejected rc.2 generated status into one explicit pending upgrade assessment; every other historical byte was preserved.";
-  return { message, assessment, assessmentRecord: ASSESSMENT_RECORD };
+  return { message, assessment, assessmentRecord: ASSESSMENT_RECORD, productContent };
+}
+
+function applyProductTeamAssessment(plan) {
+  if (plan.productContent !== null)
+    fs.writeFileSync(path.join(target, "product.md"), plan.productContent);
 }
 
 function versionWithProvenance(version, sourceCheckout, methodSurfaceSha256) {
@@ -355,10 +394,11 @@ if (cmd === "install") {
   const source = migrationSource(prior.version);
   if (source === "unknown")
     die(`refusing: ${MARKER} carries an unknown version (${JSON.stringify(prior.version)}). Nothing was touched.`);
+  const migration = planProductTeamAssessment(source, prior);
   const provenance = copySurface();
   retireReplacedSkills();
   ensureMap();
-  const migration = ensureProductTeamAssessment(source, prior);
+  applyProductTeamAssessment(migration);
   writeMarker(prior, provenance, migration.assessmentRecord);
   const changes = gitChanges();
   const diff = gitDiff();

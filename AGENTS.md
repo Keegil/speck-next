@@ -47,7 +47,7 @@ Wrong promise reopens Shape; wrong piece/order reopens Map; otherwise resume the
 - `complete — Map reopened`
 - `complete — resumed [live piece] from state.md`, using the actual piece name.
 
-Complete needs the record. Missing, duplicate, deleted, or malformed block fails; quoted or paraphrased history is inert. Continue from `state.md`.
+Complete needs the record. Missing, duplicate, deleted, or malformed block fails; quoted or paraphrased history is inert. The marker's `upgradeAssessmentRecord` is always explicit: `null` means none applies, while the record path means the block is required. A current rc.2 marker missing that field is unknown unless surviving canonical or generated evidence proves the assessment applies; Speck Next does not guess. The upgrader validates this before replacing any repository byte. An assessment refusal names the defect and repair, changes nothing, and never tells the builder to resume. Continue from `state.md`.
 
 Business rules `kept`, `broken`, or `not judged` on any piece that changes users, value, price or revenue, acquisition or adoption, ongoing cost, or durable value, and on every milestone. `Broken` or `not judged` blocks that piece or milestone. This is conditional business evidence, not a fifth universal quality ruling.
 

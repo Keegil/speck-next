@@ -362,7 +362,9 @@ def static_contract_homes(kernel):
         "AGENTS.md": ["Product and Engineering are always called", "named run and its return",
                       "wrongly kept inactive", "concern was handled", "replacement carrier",
                       "Finish an upgrade", ASSESSMENT_RECORD, "complete — Shape reopened",
-                      "complete — Map reopened", "from state.md"],
+                      "complete — Map reopened", "from state.md", "upgradeAssessmentRecord",
+                      "does not guess", "before replacing any repository byte",
+                      "assessment refusal"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -374,11 +376,13 @@ def static_contract_homes(kernel):
         "templates/state.md": ["overdue informative returns", "false inactive call"],
         "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
                         "writes the version marker last", "replacement carrier inherits",
-                        ASSESSMENT_RECORD, "method-surface digests"],
+                        ASSESSMENT_RECORD, "method-surface digests", "Every fixed marker carries",
+                        "before changing any repository byte", "complete non-Git path kinds and bytes"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
-                      "source checkout separately"],
+                      "source checkout separately", "fieldless current rc.2 marker is unknown",
+                      "before any repository byte changes"],
         "capabilities.md": ["Selective product team", "live-host affordability",
-                            "assessment-control subjects"],
+                            "assessment-control subjects", "complete-target snapshot"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -451,6 +455,53 @@ def surface_hash(root):
     return digest.hexdigest()
 
 
+def repository_snapshot(root):
+    """Every non-Git path kind and byte, including empty directories and links."""
+    entries = []
+    for item in sorted(root.rglob("*"), key=lambda candidate: candidate.relative_to(root).as_posix()):
+        relative = item.relative_to(root)
+        if ".git" in relative.parts:
+            continue
+        info = item.lstat()
+        if item.is_symlink():
+            kind, payload = "link", os.readlink(item).encode()
+        elif item.is_dir():
+            kind, payload = "directory", b""
+        elif item.is_file():
+            kind, payload = "file", item.read_bytes()
+        else:
+            kind, payload = f"other:{info.st_mode}", b""
+        entries.append((relative.as_posix(), kind, payload))
+    return tuple(entries)
+
+
+def porcelain_v1_z(root):
+    return subprocess.run(
+        ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+        cwd=root, check=True, capture_output=True,
+    ).stdout
+
+
+def refusal_baseline(root):
+    return {
+        "marker": (root / ".claude/speck-next.json").read_bytes(),
+        "tree": repository_snapshot(root),
+        "porcelain": porcelain_v1_z(root),
+    }
+
+
+def refusal_unchanged(root, before, run):
+    return (
+        run.returncode != 0 and
+        "Nothing in the repository changed." in run.stderr and
+        "run the upgrade again" in run.stderr and
+        "resume" not in (run.stdout + run.stderr).lower() and
+        (root / ".claude/speck-next.json").read_bytes() == before["marker"] and
+        repository_snapshot(root) == before["tree"] and
+        porcelain_v1_z(root) == before["porcelain"]
+    )
+
+
 def method_surface_sha256(root):
     digest = hashlib.sha256()
     files = []
@@ -479,10 +530,10 @@ def marker_ok(root, source_checkout, surface_digest, assessment_record=None):
         "version": "6.0.0-rc.2",
         "sourceCheckout": source_checkout,
         "methodSurfaceSha256": surface_digest,
+        "upgradeAssessmentRecord": assessment_record,
     }
-    if assessment_record:
-        expected["upgradeAssessmentRecord"] = assessment_record
-    return all(actual.get(key) == value for key, value in expected.items()) and "commit" not in actual
+    return (all(key in actual and actual[key] == value for key, value in expected.items()) and
+            "commit" not in actual)
 
 
 def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surface_digest,
@@ -517,9 +568,21 @@ def run_migration_matrix(kernel):
                     "**State and live piece read:** state.md · Piece alpha\n\n"
                     "## Product\nCarrier: assessment-product\nDirect evidence: product\nConclusion: product\nAssumptions: product\nProposed change: product\nActive decision: product\n\n"
                     "## Business\nCarrier: assessment-business\nDirect evidence: business\nConclusion: business\nAssumptions: business\nProposed change: business\nActive decision: business\n\n"
+                    "## Experience\nCarrier: assessment-experience\nDirect evidence: experience\nConclusion: experience\nAssumptions: experience\nProposed change: experience\nActive decision: experience\n\n"
                     "## Engineering\nCarrier: assessment-engineering\nDirect evidence: engineering\nConclusion: engineering\nAssumptions: engineering\nProposed change: engineering\nActive decision: engineering\n\n"
                     "## Product synthesis\nOne integrated decision.\n\n"
                     f"## Route\n{route}\n")
+
+        def assessment_record_ok(content, route):
+            roles = ("Product", "Business", "Experience", "Engineering")
+            carriers = re.findall(r"^Carrier: (.+)$", content, re.MULTILINE)
+            return (
+                all(content.count(f"## {role}\n") == 1 for role in roles) and
+                len(carriers) == len(roles) == len(set(carriers)) and
+                content.count("## Product synthesis\n") == 1 and
+                content.count("## Route\n") == 1 and
+                content.endswith(f"## Route\n{route}\n")
+            )
 
         def complete_pending(repo, status, route, state, retained_history=""):
             product = (repo / "product.md").read_text().replace(ASSESSMENT_PENDING, status, 1)
@@ -541,6 +604,71 @@ def run_migration_matrix(kernel):
                 raise AssertionError(first.stderr or first.stdout)
             commit_fixture(repo, "accept pending upgrade")
             return repo
+
+        def fixed_current(name, product=None, extra=None):
+            repo = base / name
+            repo.mkdir()
+            init_repo(repo)
+            installed = run_cli(kernel, "install", repo)
+            if installed.returncode != 0:
+                raise AssertionError(installed.stderr or installed.stdout)
+            if product is not None:
+                write_file(repo, "product.md", product)
+            for relative, content in (extra or {}).items():
+                write_file(repo, relative, content)
+            commit_fixture(repo, "fixed current baseline")
+            return repo
+
+        def plant_refusal_dirt(repo):
+            with (repo / "AGENTS.md").open("a") as handle:
+                handle.write("installed-method refusal sentinel\n")
+            state_path = repo / "state.md"
+            state_path.parent.mkdir(parents=True, exist_ok=True)
+            with state_path.open("a") as handle:
+                handle.write("tracked unrelated refusal sentinel\n")
+            write_file(repo, "work/refusal-dirt.md", "untracked unrelated refusal sentinel\n")
+            write_file(repo, ".claude/skills/independent-review/refusal-dirt.md",
+                       "retired skill must survive refusal\n")
+            map_path = repo / "map.md"
+            if map_path.exists():
+                map_path.unlink()
+
+        def run_atomic_refusal(repo):
+            plant_refusal_dirt(repo)
+            before = refusal_baseline(repo)
+            refused = run_cli(kernel, "upgrade", repo)
+            return refused, refusal_unchanged(repo, before, refused)
+
+        missing_field = object()
+
+        def refusal_repo(name, product, version="6.0.0-rc.2",
+                         assessment_field=missing_field, record_content=None, marker_extra=None):
+            repo = fixed_current(name)
+            prior = {
+                "name": "speck-next", "version": version, "commit": f"{name}fixture",
+                "installedAt": "2026-01-02T03:04:05.000Z",
+            }
+            if assessment_field is not missing_field:
+                prior["upgradeAssessmentRecord"] = assessment_field
+            if marker_extra:
+                prior.update(marker_extra)
+                if "sourceCheckout" in marker_extra and "methodSurfaceSha256" in marker_extra:
+                    prior.pop("commit", None)
+            write_file(repo, ".claude/speck-next.json", json.dumps(prior, indent=2) + "\n")
+            write_file(repo, "state.md", "# State\n\nPiece alpha is live.\n")
+            if product is not None:
+                write_file(repo, "product.md", product)
+            if record_content is not None:
+                write_file(repo, ASSESSMENT_RECORD, record_content)
+            commit_fixture(repo, f"{name} refusal baseline")
+            return repo
+
+        snapshot_control = fixed_current("snapshot-positive")
+        before_snapshot = repository_snapshot(snapshot_control)
+        with (snapshot_control / "AGENTS.md").open("a") as handle:
+            handle.write("snapshot positive-control byte\n")
+        results.append(("complete-target snapshot detects one changed installed byte",
+                        before_snapshot != repository_snapshot(snapshot_control)))
 
         fresh = base / "fresh"
         fresh.mkdir()
@@ -622,39 +750,35 @@ def run_migration_matrix(kernel):
                       not (missing / "product.md").exists() and "product.md is missing" in run.stdout)
         results.append(("missing pre-v6 product stays missing and routes to Shape", missing_ok))
 
-        current = base / "current"
-        current.mkdir()
         current_product = "# Current selective product\n\nThe assessment is complete.\n"
-        seed_upgrade_repo(current, "6.0.0-rc.2", "currentfixture", current_product,
-                          {"state.md": "# State\n\nCurrent work is here.\n"})
+        current = fixed_current(
+            "current", current_product, {"state.md": "# State\n\nCurrent work is here.\n"}
+        )
         first = run_cli(kernel, "upgrade", current)
         first_hash = surface_hash(current)
-        commit_fixture(current, "accept current upgrade")
         second = run_cli(kernel, "upgrade", current)
-        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", "currentfixture", source_checkout,
-                                        surface_digest, NEXT_CURRENT_CHANGED) and
+        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+                                        surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       (current / "product.md").read_text() == current_product and
                       marker_ok(current, source_checkout, surface_digest) and
                       upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       first_hash == surface_hash(current))
-        results.append(("assessed current product resumes from state without rerunning assessment", current_ok))
+        results.append(("explicit-null current product resumes without an assessment", current_ok))
 
-        current_missing = base / "current-missing"
-        current_missing.mkdir()
-        seed_upgrade_repo(current_missing, "6.0.0-rc.2", "currentmissingfixture")
+        current_missing = fixed_current("current-missing")
         first = run_cli(kernel, "upgrade", current_missing)
-        commit_fixture(current_missing, "accept current missing-product upgrade")
         second = run_cli(kernel, "upgrade", current_missing)
         current_missing_ok = (
-            upgrade_report_ok(first, "6.0.0-rc.2", "currentmissingfixture", source_checkout,
-                              surface_digest, NEXT_MISSING_CHANGED) and
+            upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+                              surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
             marker_ok(current_missing, source_checkout, surface_digest) and
             upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             not (current_missing / "product.md").exists())
-        results.append(("missing current product stays missing and routes to Shape", current_missing_ok))
+        results.append(("explicit-null current repository with no product stays missing and routes to Shape",
+                        current_missing_ok))
 
         porcelain = base / "porcelain"
         porcelain.mkdir()
@@ -671,6 +795,7 @@ def run_migration_matrix(kernel):
             installed.returncode == 0 and
             upgrade_report_ok(run, "5.4.1", "porcelainfixture", source_checkout,
                               surface_digest, NEXT_PENDING_CHANGED) and
+            marker_ok(porcelain, source_checkout, surface_digest, ASSESSMENT_RECORD) and
             "Working-tree changes across the complete installed surface plus product.md:\n M .claude/speck-next.json\n" in run.stdout)
         results.append(("first unstaged changed path keeps both porcelain status columns", porcelain_ok))
 
@@ -685,24 +810,30 @@ def run_migration_matrix(kernel):
         run = run_cli(kernel, "upgrade", dirty)
         dirty_ok = (upgrade_report_ok(run, "5.4.1", "dirtyfixture", source_checkout,
                                      surface_digest, NEXT_PENDING_CHANGED) and
+                    marker_ok(dirty, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                     (dirty / "state.md").read_text() == dirty_state and
                     (dirty / "work/inflight.md").read_text() == dirty_work)
         results.append(("dirty unrelated work survives byte for byte", dirty_ok))
 
-        retry = base / "retry"
-        retry.mkdir()
-        seed_upgrade_repo(retry, "5.4.1", "retryfixture")
-        old_marker = (retry / ".claude/speck-next.json").read_bytes()
+        retry = fixed_current("retry")
+        write_file(retry, ".claude/speck-next.json", json.dumps({
+            "name": "speck-next", "version": "5.4.1", "commit": "retryfixture",
+            "installedAt": "2026-01-02T03:04:05.000Z",
+        }, indent=2) + "\n")
+        write_file(retry, "state.md", "baseline tracked state\n")
         (retry / "product.md").mkdir()
-        failed = run_cli(kernel, "upgrade", retry)
-        marker_held = failed.returncode != 0 and (retry / ".claude/speck-next.json").read_bytes() == old_marker
+        write_file(retry, "product.md/sentinel.txt", "product path is a directory\n")
+        commit_fixture(retry, "product-directory refusal baseline")
+        failed, refusal_atomic = run_atomic_refusal(retry)
+        (retry / "product.md/sentinel.txt").unlink()
         (retry / "product.md").rmdir()
         write_file(retry, "product.md", "# Recovered product\n")
         retried = run_cli(kernel, "upgrade", retry)
-        retry_ok = (marker_held and upgrade_report_ok(retried, "5.4.1", "retryfixture", source_checkout,
+        retry_ok = (refusal_atomic and "product.md exists but is not a file" in failed.stderr and
+                    upgrade_report_ok(retried, "5.4.1", "retryfixture", source_checkout,
                                                      surface_digest, NEXT_PENDING_CHANGED) and
                     marker_ok(retry, source_checkout, surface_digest, ASSESSMENT_RECORD))
-        results.append(("failed migration leaves the old marker and a retry completes", retry_ok))
+        results.append(("product-directory refusal is byte-atomic and a repair retries", retry_ok))
 
         unknown = base / "unknown"
         unknown.mkdir()
@@ -729,6 +860,76 @@ def run_migration_matrix(kernel):
             marker_ok(rejected, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("rejected rc.2 generated status becomes explicit while its quote stays inert", rejected_ok))
 
+        fieldless_canonical = refusal_repo(
+            "fieldless-canonical", "# Current product\n\n" + ASSESSMENT_BLOCK
+        )
+        run = run_cli(kernel, "upgrade", fieldless_canonical)
+        fieldless_canonical_ok = (
+            upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-canonicalfixture",
+                              source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
+            marker_ok(fieldless_canonical, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+            (fieldless_canonical / "product.md").read_text() == "# Current product\n\n" + ASSESSMENT_BLOCK)
+        results.append(("fieldless current marker uses surviving canonical evidence",
+                        fieldless_canonical_ok))
+
+        fieldless_missing = refusal_repo("fieldless-missing-product", None)
+        run = run_cli(kernel, "upgrade", fieldless_missing)
+        fieldless_missing_ok = (
+            upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-missing-productfixture",
+                              source_checkout, surface_digest, NEXT_MISSING_CHANGED) and
+            marker_ok(fieldless_missing, source_checkout, surface_digest) and
+            not (fieldless_missing / "product.md").exists())
+        results.append(("fieldless current marker with no product safely records null",
+                        fieldless_missing_ok))
+
+        atomic_specs = [
+            ("exact rejected-rc.2 deletion is ambiguous",
+             "# Rejected migration with its generated assessment deleted\n", "6.0.0-rc.2",
+             missing_field),
+            ("fieldless current product is ambiguous",
+             "# Fieldless current product\n", "6.0.0-rc.2", missing_field),
+            ("unsupported assessment-record value",
+             "# Product\n\n" + ASSESSMENT_BLOCK, "6.0.0-rc.2", "work/other.md"),
+            ("empty assessment-record value",
+             "# Product\n", "6.0.0-rc.2", ""),
+            ("canonical block missing its status field",
+             f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_RECORD_LINE}\n",
+             "6.0.0-rc.2", ASSESSMENT_RECORD),
+            ("canonical block duplicates its status field",
+             f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n",
+             "6.0.0-rc.2", ASSESSMENT_RECORD),
+            ("canonical block misses its record field",
+             f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n",
+             "6.0.0-rc.2", ASSESSMENT_RECORD),
+            ("canonical block duplicates its record field",
+             f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n{ASSESSMENT_RECORD_LINE}\n",
+             "6.0.0-rc.2", ASSESSMENT_RECORD),
+            ("canonical block has the wrong record field",
+             f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n**Record:** `work/wrong.md`\n",
+             "6.0.0-rc.2", ASSESSMENT_RECORD),
+            ("generated rc.1 fingerprint is duplicated",
+             f"# Product\n\n{RC1_STATUS}\n{RC1_STATUS}\n", "6.0.0-rc.1", missing_field),
+            ("generated rejected-rc.2 fingerprint is duplicated",
+             f"# Product\n\n{REJECTED_RC2_STATUS}\n{REJECTED_RC2_STATUS}\n",
+             "6.0.0-rc.2", missing_field),
+        ]
+        for label, product_text, version, assessment_field in atomic_specs:
+            repo = refusal_repo(
+                "atomic-" + re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-"),
+                product_text, version, assessment_field,
+            )
+            refused, atomic = run_atomic_refusal(repo)
+            results.append((f"{label} and refuses before every target write", atomic))
+
+        laundered = refusal_repo(
+            "atomic-99a-laundered-deletion",
+            "# Rejected migration laundered after its assessment was deleted\n",
+            marker_extra={"sourceCheckout": "99a0f38", "methodSurfaceSha256": "a" * 64},
+        )
+        refused, laundered_ok = run_atomic_refusal(laundered)
+        results.append(("99a0f38 provenance cannot launder deleted assessment state",
+                        laundered_ok))
+
         route_specs = [
             ("Shape", ASSESSMENT_COMPLETE_SHAPE, "Shape reopened.",
              "# State\n\nShape is reopened.\n", "Next: there are no upgrade changes to commit; continue Shape from state.md.", ""),
@@ -748,6 +949,7 @@ def run_migration_matrix(kernel):
                 upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+                assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(), route) and
                 before == surface_hash(repo) and
                 (not retained or retained in (repo / "product.md").read_text()))
             results.append((f"completed assessment follows the {name} route", route_ok))
@@ -767,12 +969,8 @@ def run_migration_matrix(kernel):
             else:
                 product_path.write_text(mutation(product_path.read_text()))
             commit_fixture(repo, f"{name} corruption")
-            old_marker = (repo / ".claude/speck-next.json").read_bytes()
-            failed = run_cli(kernel, "upgrade", repo)
-            corruption_ok = (failed.returncode != 0 and
-                             "version marker was not changed" in failed.stderr and
-                             (repo / ".claude/speck-next.json").read_bytes() == old_marker)
-            results.append((f"{name} fails closed once the lifecycle is opened", corruption_ok))
+            failed, corruption_ok = run_atomic_refusal(repo)
+            results.append((f"{name} refuses before every target write", corruption_ok))
 
         missing_record = seeded_pending("missing-completed-record")
         product_path = missing_record / "product.md"
@@ -780,11 +978,10 @@ def run_migration_matrix(kernel):
             ASSESSMENT_PENDING,
             "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md", 1))
         commit_fixture(missing_record, "claim completion without its record")
-        old_marker = (missing_record / ".claude/speck-next.json").read_bytes()
-        failed = run_cli(kernel, "upgrade", missing_record)
-        missing_record_ok = (failed.returncode != 0 and ASSESSMENT_RECORD in failed.stderr and
-                             (missing_record / ".claude/speck-next.json").read_bytes() == old_marker)
-        results.append(("completed assessment without its named record fails closed", missing_record_ok))
+        failed, missing_record_ok = run_atomic_refusal(missing_record)
+        missing_record_ok = missing_record_ok and ASSESSMENT_RECORD in failed.stderr
+        results.append(("completed assessment without its record refuses before every target write",
+                        missing_record_ok))
 
         provenance_kernel = base / "provenance-kernel"
         provenance_kernel.mkdir()
