@@ -32,8 +32,8 @@
 
 ## Product team
 - **Product** — [What product truth and decisions this role protects here.]
-- **Business** — [What viability, adoption, cost, or durable-value evidence it protects here.]
-- **Experience** — [What journeys, surfaces, behavior, and feel it protects here.]
+- **Business** — Protects: [viability, adoption, cost, or durable value] · Call when: [observable condition] · May stay out when: [direct current evidence] · Evidence expires: [event or date] · Material changes: [examples]
+- **Experience** — Protects: [journeys, surfaces, behavior, and feel] · Call when: [observable condition] · May stay out when: [direct current evidence] · Evidence expires: [event or date] · Material changes: [examples]
 - **Engineering** — [What feasibility, safety, reversibility, and operation it protects here.]
 
 ### Specialists

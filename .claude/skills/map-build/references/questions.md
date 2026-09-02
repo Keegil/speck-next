@@ -18,7 +18,7 @@ Ask one or two at a time. Give options, costs, and a recommendation. Keep the ow
 
 7. For each piece, what runs, which user types test it, and what does the judge rule on? Put one line in the map.
 8. Which pieces touch money, auth, private data, or irreversible sends and need extra care from the start?
-9. Which product-building roles are expected to stay active for each piece, and what is the earliest Product, Business, Experience, and Engineering uncertainty it can settle?
+9. Product and Engineering join every substantial piece. For Business and Experience, which product-specific call conditions fire, what current direct evidence keeps either out, is that evidence still valid, and has a listed material change or uncertainty appeared? For every called role, what is the earliest run that can test its conclusion?
 
 ## Name milestones
 

@@ -12,7 +12,7 @@
 
 [Order these and keep exactly one live.]
 
-1. **[piece]** [LIVE/next/done] — serves: [job/moment/foundation] · consumes: [screen drawings/model sections/material] · expected active roles: [list] · earliest uncertainty: [Product · Business · Experience · Engineering] · proof plan: [runs · checks that must pass · user types · judge rulings · Business ruling when required] · risky: [care needed/no]
+1. **[piece]** [LIVE/next/done] — serves: [job/moment/foundation] · consumes: [screen drawings/model sections/material] · role calls: [Product + Engineering; Business/Experience condition and current evidence] · earliest informative runs: [called role → run] · proof plan: [runs · checks that must pass · user types · judge rulings · Business ruling when required] · risky: [care needed/no]
 
 ## Unconsumed material
 

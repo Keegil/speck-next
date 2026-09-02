@@ -10,12 +10,19 @@ const SRC = path.join(__dirname, "..");
 const VERSION = require(path.join(SRC, "package.json")).version;
 const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills"), "templates"];
 const MARKER = path.join(".claude", "speck-next.json");
-const REPORTED_PATHS = [...SURFACE, MARKER, "product.md"];
+const REPORTED_PATHS = [...SURFACE, MARKER, "map.md", "product.md"];
+const RC1_UNIVERSAL_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise.";
+const SELECTIVE_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order.";
 
 const cmd = process.argv[2];
 const target = path.resolve(process.argv[3] || ".");
 
 function die(msg) { console.error(msg); process.exit(1); }
+
+function sourceCommit() {
+  try { return execSync("git rev-parse --short HEAD", { cwd: SRC, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); }
+  catch { return null; }
+}
 
 function copySurface() {
   for (const item of SURFACE) {
@@ -23,15 +30,15 @@ function copySurface() {
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.cpSync(from, to, { recursive: true });
   }
-  let commit = null;
-  try { commit = execSync("git rev-parse --short HEAD", { cwd: SRC, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); } catch {}
+  return sourceCommit();
+}
+
+function writeMarker(existing, commit) {
   const markerPath = path.join(target, MARKER);
   let installedAt = new Date().toISOString();
-  try {
-    const existing = JSON.parse(fs.readFileSync(markerPath, "utf8"));
-    if (existing.version === VERSION && existing.commit === commit && existing.installedAt)
-      installedAt = existing.installedAt;
-  } catch {}
+  if (existing && existing.version === VERSION && existing.commit === commit && existing.installedAt)
+    installedAt = existing.installedAt;
+  fs.mkdirSync(path.dirname(markerPath), { recursive: true });
   fs.writeFileSync(markerPath,
     JSON.stringify({ name: "speck-next", version: VERSION, commit, installedAt }, null, 2) + "\n");
 }
@@ -49,25 +56,59 @@ function ensureMap() {
     fs.writeFileSync(mapPath, "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n");
 }
 
-function isPreV6(version) {
-  const major = Number.parseInt(String(version || "").replace(/^v/i, "").split(".")[0], 10);
-  return !Number.isFinite(major) || major < 6;
+function migrationSource(version) {
+  const normalized = String(version || "").trim().replace(/^v/i, "");
+  const match = normalized.match(/^(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?$/);
+  if (!match) return "unknown";
+  if (normalized === "6.0.0-rc.1") return "rc.1";
+  return Number(match[1]) < 6 ? "pre-v6" : "current";
 }
 
-function ensureProductTeamAssessment(priorVersion) {
-  if (!isPreV6(priorVersion)) return "Product team migration: not needed (already v6 or later).";
+function ensureProductTeamAssessment(source) {
+  if (source === "current")
+    return "Product team migration: not needed (the repository already carries the selective contract).";
   const productPath = path.join(target, "product.md");
   if (!fs.existsSync(productPath))
-    return "Product team migration: no product.md exists, so nothing was invented; the v6 template will guide shaping.";
+    return "Product team migration: product.md is missing, so no product history or assessment was invented.";
   const current = fs.readFileSync(productPath, "utf8");
-  if (/^##[ \t]+Product team[ \t]*$/im.test(current))
-    return "Product team migration: existing product.md section preserved.";
+  if (current.includes(SELECTIVE_STATUS))
+    return "Product team migration: the selective unassessed status is already present; product.md was unchanged.";
+  if (current.includes(RC1_UNIVERSAL_STATUS)) {
+    fs.writeFileSync(productPath, current.replace(RC1_UNIVERSAL_STATUS, SELECTIVE_STATUS));
+    return "Product team migration: replaced the exact generated rc.1 universal status with the selective rc.2 status; every other product.md byte was preserved.";
+  }
   const prefix = current.endsWith("\n") ? "\n" : "\n\n";
+  if (/^##[ \t]+Product team[ \t]*$/im.test(current)) {
+    fs.appendFileSync(productPath, prefix + `## Speck Next product-team assessment
+
+${SELECTIVE_STATUS}
+`);
+    return "Product team migration: preserved the owner-authored Product team section and added one selective unassessed status; historical text was untouched.";
+  }
   fs.appendFileSync(productPath, prefix + `## Product team
 
-**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise.
+${SELECTIVE_STATUS}
 `);
-  return "Product team migration: added one honest unassessed section to product.md; historical work was untouched.";
+  return "Product team migration: added one selective unassessed Product team section; historical text was untouched.";
+}
+
+function versionWithCommit(version, commit) {
+  return commit ? `${version} (${commit})` : `${version} (commit unavailable)`;
+}
+
+function installedFiles() {
+  const files = [];
+  function visit(relative) {
+    const absolute = path.join(target, relative);
+    if (!fs.existsSync(absolute)) return;
+    const stat = fs.statSync(absolute);
+    if (stat.isDirectory()) {
+      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
+    } else files.push(relative);
+  }
+  for (const root of [...SURFACE, "map.md"]) visit(root);
+  files.push(MARKER);
+  return files.sort();
 }
 
 function gitRead(args) {
@@ -105,10 +146,12 @@ if (cmd === "install") {
     die(`refusing: ${target} already carries agent instructions.\n` +
         `If it's a Speck Next repo, use: npx github:Keegil/speck-next upgrade\n` +
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
-  copySurface();
+  const commit = copySurface();
   ensureMap();
-  const files = execSync(`find AGENTS.md CLAUDE.md .claude templates map.md -type f`, { cwd: target }).toString().trim().split("\n").length;
-  console.log(`Installed Speck Next v${VERSION} into ${target} — ${files} files on disk (method files, the version marker, an empty starter map).`);
+  writeMarker(null, commit);
+  const files = installedFiles();
+  console.log(`Installed Speck Next ${versionWithCommit(VERSION, commit)} into ${target} — ${files.length} files on disk (method files, the version marker, and an empty starter map).`);
+  console.log(`Installed paths:\n${files.join("\n")}`);
   console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
 } else if (cmd === "upgrade") {
   const markerPath = path.join(target, MARKER);
@@ -116,22 +159,30 @@ if (cmd === "install") {
     die(`refusing: ${target} doesn't look like a Speck Next repo (no ${MARKER}).\n` +
         `Fresh repo? Use: npx github:Keegil/speck-next install\n` +
         `Old-Speck repo? Converting it is a later version's job. Nothing was touched.`);
-  const prior = JSON.parse(fs.readFileSync(markerPath));
-  copySurface();
+  let prior;
+  try { prior = JSON.parse(fs.readFileSync(markerPath, "utf8")); }
+  catch { die(`refusing: ${MARKER} is not valid JSON. Nothing was touched.`); }
+  const source = migrationSource(prior.version);
+  if (source === "unknown")
+    die(`refusing: ${MARKER} carries an unknown version (${JSON.stringify(prior.version)}). Nothing was touched.`);
+  const commit = copySurface();
   retireReplacedSkills();
   ensureMap();
-  const migration = ensureProductTeamAssessment(prior.version);
+  const migration = ensureProductTeamAssessment(source);
+  writeMarker(prior, commit);
   const changes = gitChanges();
   const diff = gitDiff();
-  const from = prior.commit ? `${prior.version} (${prior.commit})` : prior.version;
-  console.log(`Upgraded Speck Next ${from} -> ${VERSION} in ${target}.`);
+  const from = versionWithCommit(prior.version, prior.commit || null);
+  const to = versionWithCommit(VERSION, commit);
+  console.log(`Upgraded Speck Next ${from} -> ${to} in ${target}.`);
   console.log(migration);
   console.log(changes
-    ? `Changed paths across the complete installed surface plus product.md:\n${changes}`
-    : "Already up to date — nothing changed.");
+    ? `Working-tree changes across the complete installed surface plus product.md:\n${changes}`
+    : "Working-tree changes across the complete installed surface plus product.md: none.");
   console.log(diff
     ? `Complete installed-surface plus product.md diff (working tree against HEAD):\n${diff}`
     : "Complete installed-surface plus product.md diff: empty.");
+  console.log("Next: review the reported paths and complete diff, commit the upgrade, then run the product-team assessment named in product.md before the next substantial piece.");
 } else {
   console.log(`speck-next v${VERSION} — a small kernel for building great products and proving them by running them.
 

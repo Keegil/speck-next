@@ -9,7 +9,7 @@ Mapping decides what gets built, in what order, and how each piece will be accep
 
 Use relevant prompts from `references/questions.md`. Start `map.md` from `templates/map.md` and expand it when the product needs more.
 
-Before Product integrates the map, Product, Business, Experience, and Engineering each contribute from a distinct context. Record the same carrier, evidence, conclusion, assumptions, proposed-change, and active-decision fields used in shaping. Product preserves dissent and presents one ordering recommendation. Role contributors cannot later test or judge this map.
+Before Product integrates the first Map after Shape, Product, Business, Experience, and Engineering each contribute from a distinct context. On a later re-map, Product contributes and calls every role whose protected concern, evidence, expiry, or ordering changed; uncertainty calls the relevant role. Record the four call decisions. An inactive Business or Experience entry contains only its product-specific condition and the direct current evidence that kept it out. Every called role records the carrier, evidence, conclusion, assumptions, proposed change, active decision, consequence, and earliest informative run. Product preserves dissent and presents one ordering recommendation. Original and replacement role carriers cannot later test or judge this map.
 
 ## Rules
 
@@ -19,7 +19,7 @@ Before Product integrates the map, Product, Business, Experience, and Engineerin
 
 3. **Write each piece’s proof plan before it goes live.** Name the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on.
 
-   Also name the roles expected to be active and the earliest Product, Business, Experience, and Engineering uncertainty the piece will test. A role that names a material consequence and an earliest disconfirming run stays active.
+   Also record the role calls: Product and Engineering always; Business and Experience when their product-specific condition, missing or expired evidence, a material change, or uncertainty requires them. For every role expected to be active, name the earliest run that can actually test its conclusion. A role that declares a material consequence stays active.
 
 4. **Name milestones.** Each is the smallest group of pieces that proves a real increment end to end. Say when the first real user surface appears. If it appears late, put that cost in the map and get the owner’s agreement.
 
@@ -44,4 +44,4 @@ Derive the map’s accounting summary from its pieces; regenerate it instead of 
 
 9. **Ask for ratification in plain language.** Explain what will be built, in which order, why, and at what cost. Link `map.md`; do not paste it. The owner judges the explanation, then ratifies in the record.
 
-10. **Treat every re-cut as a new round.** Record what moved, why, and what it disturbs. Re-run the completion test and ask the owner to ratify the changed order.
+10. **Treat every re-cut as a new round.** Record what moved, why, what it disturbs, and whose concern, evidence, expiry, or ordering changed. Re-run the completion test and ask the owner to ratify the changed order.
