@@ -31,10 +31,13 @@ def required_roles(case):
             required.add(role)
     if case.get("false_inactive"):
         required.add(case["false_inactive"])
+    if case.get("handled_miss"):
+        required.add(case["handled_miss"])
     return required
 
 
-def make_role_case(name, business=None, experience=None, false_inactive=None, replacement=None):
+def make_role_case(name, business=None, experience=None, false_inactive=None, replacement=None,
+                   handled_miss=None, handled_repeat=False):
     case = {
         "name": name,
         "facts": {
@@ -42,6 +45,8 @@ def make_role_case(name, business=None, experience=None, false_inactive=None, re
             "Experience": experience or role_facts(),
         },
         "false_inactive": false_inactive,
+        "handled_miss": handled_miss,
+        "handled_repeat": handled_repeat,
     }
     called = required_roles(case)
     carriers = {role: f"carrier-{role.lower()}" for role in called}
@@ -82,6 +87,7 @@ def make_role_case(name, business=None, experience=None, false_inactive=None, re
         "excluded": set(carriers.values()) | {r["original"] for r in replacements.values()},
         "testers": {"fresh-tester"},
         "judges": {"fresh-judge"},
+        "landing": True,
     }
     if false_inactive:
         record["repair"] = {
@@ -95,6 +101,17 @@ def make_role_case(name, business=None, experience=None, false_inactive=None, re
             "new_built": True,
             "new_receipt": True,
             "mandatory_next_comparable_piece": True,
+        }
+    if handled_miss:
+        record["handled_miss"] = {
+            "role": handled_miss,
+            "prior_concern_marked_handled": True,
+            "consequential_miss": True,
+            "mandatory_next_comparable_piece": True,
+            "key_decisions": True,
+            "informative_runs": True,
+            "repeat": handled_repeat,
+            "mandatory_through_milestone": handled_repeat,
         }
     case["record"] = record
     return case
@@ -126,9 +143,11 @@ def validate_role_case(case):
         errors.append("Product and Engineering are not separated")
     if record.get("implementation_carrier") != engineering or record.get("implementation_carrier") == product:
         errors.append("Engineering alone does not own implementation")
-    overdue = record["run_exists"] & required - set(record["returns"])
-    if overdue:
-        errors.append("an informative return is overdue")
+    if record.get("landing"):
+        if required - record["run_exists"]:
+            errors.append("a named informative run has not happened before landing")
+        if required - set(record["returns"]):
+            errors.append("an informative return is overdue before landing")
     for role, lineage in record.get("replacements", {}).items():
         contribution = record["contributions"].get(role, {})
         if (contribution.get("carrier") != lineage.get("replacement") or
@@ -152,6 +171,16 @@ def validate_role_case(case):
                 repair.get("new_built") and repair.get("new_receipt") and
                 repair.get("mandatory_next_comparable_piece")):
             errors.append("false inactivity did not repair the current evidence chain")
+    if case.get("handled_miss"):
+        escalation = record.get("handled_miss", {})
+        if not (escalation.get("role") == case["handled_miss"] and
+                escalation.get("prior_concern_marked_handled") and
+                escalation.get("consequential_miss") and
+                escalation.get("mandatory_next_comparable_piece") and
+                escalation.get("key_decisions") and escalation.get("informative_runs") and
+                escalation.get("repeat") == case["handled_repeat"] and
+                escalation.get("mandatory_through_milestone") == case["handled_repeat"]):
+            errors.append("a handled-concern miss did not escalate the role for long enough")
     return errors
 
 
@@ -194,6 +223,10 @@ def run_role_controls():
     scenarios.append((overdue, lambda c: c["record"].__setitem__(
         "returns", {k: v for k, v in c["record"]["returns"].items() if k != "Business"})))
 
+    run_due = make_role_case("named informative run happens before landing", business=role_facts(condition=True))
+    scenarios.append((run_due, lambda c: c["record"].__setitem__(
+        "run_exists", set(c["record"]["run_exists"]) - {"Business"})))
+
     replacement = make_role_case("replacement inherits and both carriers stay excluded",
                                  business=role_facts(condition=True), replacement="Business")
     scenarios.append((replacement, lambda c: c["record"].__setitem__(
@@ -202,6 +235,14 @@ def run_role_controls():
     separation = make_role_case("Product and Engineering stay separated")
     scenarios.append((separation, lambda c: c["record"].__setitem__(
         "implementation_carrier", c["record"]["contributions"]["Product"]["carrier"])))
+
+    handled = make_role_case("handled miss staffs the next comparable piece", handled_miss="Business")
+    scenarios.append((handled, lambda c: mutate_calls(c, "Business")))
+
+    repeated = make_role_case("repeated handled miss stays through the milestone",
+                              handled_miss="Experience", handled_repeat=True)
+    scenarios.append((repeated, lambda c: c["record"]["handled_miss"].__setitem__(
+        "mandatory_through_milestone", False)))
 
     good = True
     for case, mutate in scenarios:
@@ -223,16 +264,19 @@ def run_role_controls():
 
 def static_contract_homes(kernel):
     required = {
-        "AGENTS.md": ["Product and Engineering are always called", "wrongly kept inactive", "replacement carrier"],
+        "AGENTS.md": ["Product and Engineering are always called", "named run and its return",
+                      "wrongly kept inactive", "concern was handled", "replacement carrier"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
         ".claude/skills/map-build/references/questions.md": ["Product and Engineering join every substantial piece"],
         "templates/product.md": ["Call when:", "Evidence expires:"],
         "templates/map.md": ["role calls:", "earliest informative runs:"],
-        "templates/piece.md": ["## Role call decisions", "## Informative role returns", "## False inactive repair"],
+        "templates/piece.md": ["## Role call decisions", "## Informative role returns",
+                               "## False inactive repair", "## Handled-concern miss escalation"],
         "templates/state.md": ["overdue informative returns", "false inactive call"],
-        "CONTRACT.md": ["writes the version marker last", "replacement carrier inherits"],
+        "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
+                        "writes the version marker last", "replacement carrier inherits"],
         "README.md": ["right product-building views", "version-and-commit ends"],
         "capabilities.md": ["Selective product team", "live-host affordability"],
     }
@@ -240,7 +284,8 @@ def static_contract_homes(kernel):
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
         "templates/map.md": ["expected active roles:"],
         "templates/piece.md": ["## Pre-code product team"],
-        "CONTRACT.md": ["four distinct pre-code carriers on substantial work"],
+        "CONTRACT.md": ["four distinct pre-code carriers on substantial work",
+                        "On later re-maps and substantial pieces, Product and Engineering always contribute"],
     }
     good = True
     for relative, needles in required.items():

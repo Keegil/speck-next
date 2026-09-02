@@ -37,13 +37,17 @@
 
 ## Informative role returns
 
-[For every active role: carrier · named earliest informative run · run evidence · what changed or held · resulting product change. Once that run exists, a missing return leaves the concern unresolved and blocks landing.]
+[For every active role: carrier · named earliest informative run · run evidence · what changed or held · resulting product change. The named run and its return are both required before landing; if either is missing, the concern remains unresolved and the piece cannot land.]
 
 [A replacement is a new carrier that inherits the same evidence and prior contribution. Record the lineage; both original and replacement stay excluded from testing and judgment.]
 
 ## False inactive repair
 
 [If evidence shows Business or Experience was wrongly inactive, stop. Route a wrong promise to Shape, a wrong piece or order to Map, or anything else to piece setup. Call the missed role and have Product re-synthesize before Engineering resumes. Name every affected Built line, receipt, tester verdict, and judgment as invalid; keep unrelated evidence. Require changed work, a new Built line, and a new receipt. Make the role mandatory on the next comparable piece; a repeat keeps it through the milestone. Otherwise: not triggered, with evidence.]
+
+## Handled-concern miss escalation
+
+[If a called role said its concern was handled and a consequential miss later proves otherwise, record the role, prior conclusion, and direct miss evidence. Keep the role involved at the next comparable piece's key decisions and informative runs. A repeat keeps it involved through the milestone until measured evidence supports relaxing it. This does not replace the current-piece repair for false inactivity. Otherwise: not triggered, with evidence.]
 
 **Business ruling:** [Required for a business-changing piece and every milestone: `kept / broken / not judged` with evidence. The latter two block. Otherwise: not required, with reason.]
 
