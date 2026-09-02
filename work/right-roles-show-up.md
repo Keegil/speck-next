@@ -426,3 +426,25 @@ Engineering owns the same six homes: `AGENTS.md`, `CONTRACT.md`, `README.md`, `c
 **Judge:** after both round-3 records are committed, a third fresh carrier challenges every tester claim and reruns both prior judgments' complete requirements plus each new skeptical attack. They separately rule works, delivers the promise, good to use, quality hangs together, and sound structure; every open item gets a destination.
 
 **Excluded:** every carrier in the first two receipts and judgments; `/root/piece8_retest_builder`, `/root/piece8_retest_upgrader`, `/root/piece8_judge_round2`; every Product, Business, Experience, Engineering, specialist, builder, and auditor carrier; and any honest replacement. The two round-3 testers and judge are distinct from one another and this whole set.
+
+## Fresh testing — round 3
+
+### First-time builder — carrier `/root/piece8_round3_builder`
+
+**Running product:** a disposable kernel clone pinned to product implementation `a20a537`, plus fresh product repositories installed from it. The tester received `product.md`, `map.md`, the Built line, and the committed round-3 receipt, not the product-role conclusions.
+
+The tester used the installed piece template to set up four substantial changes: an internal cache change called distinct Product and Engineering only; user-facing empty-state copy added Experience; a pure operating-cost change added Business; and a cross-cutting alert called all four. The records kept inactive roles factual, separated Product from Engineering, put one Product synthesis before implementation, and exposed the named-run, missing-return, false-inactivity, handled-miss, and contributor-exclusion blocks. Their free skeptical attack tried to classify user-facing pricing copy as Business-only; the recorded Experience condition fired, so the product could not launder that change through the narrower call set.
+
+On the actual CLI, fresh install wrote 19 files and an explicit `upgradeAssessmentRecord: null`. After a minimal product started, ordinary upgrade gave the one-command `resume current work from state.md` route; `--open-assessment` could not override that decided state. A v5 product opened one pending assessment and, after a valid four-carrier record, resumed the exact named live piece. A fieldless rc.2 product refused untouched, printed the recovery command, opened exactly one pending assessment only when that command was followed, and rejected a second flagged attempt. The support sweep returned 26 routing, eight assessment, and 84 migration subjects with `PASS`.
+
+**Verdict: SUFFICIENT.** The first-time path called the right lenses without fake departmental prose and remained understandable through install, normal resume, pending assessment, and conservative recovery. No finding needs a destination.
+
+### Mid-product upgrader — carrier `/root/piece8_round3_upgrader`
+
+**Running product:** independently constructed v5, rc.1, rejected-rc.2, current-rc.2, dirty, custom, missing-product, pending, completed, malformed, and recovery fixtures against implementation `a20a537`. The tester received the same cold review surface and no role conclusions.
+
+For a legitimate fieldless rc.2 product, ordinary upgrade exited 1 and printed both `Nothing in the repository changed.` and the exact `--open-assessment` route. The full non-Git digest stayed `da0abaf6f205df1e2b1de61dce4eea8d50f0d71b8d18229647c98c75e06a7f64`, the marker hash stayed `0749b8e904bf96bf0c7f7254bda616d4e9e8fc9130653cfdef6cf767da25a79d`, and porcelain-v1-z bytes were identical. Following the printed flag preserved unrelated dirt, appended exactly one pending block, wrote the canonical record pointer, emitted no resume instruction, and rejected repeat use. Valid four-carrier records then produced the exact Shape, Map, and `Piece alpha` routes.
+
+The tester separately constructed the deleted-assessment history laundered through `99a0f38`; ordinary upgrade again preserved the whole snapshot, marker, and porcelain bytes before offering the same recovery. v5, exact rc.1, rejected rc.2, custom prose, missing product, explicit null, symlink, missing completed record, unknown version, bad arguments, marker-last retry, and same-surface/different-checkout provenance all behaved as stated. Identical installed bytes from source checkouts `9a1c0af` and `a20a537` shared method digest `27866d1356b19f5d2e3a2911965841f3b2fa9b8d96342df4ce0417f9d08b44fc` while retaining distinct source labels. Their free skeptical attack placed the rejected status inside a blockquote; quoted history remained inert and the explicit recovery still opened one canonical pending block. The support sweep again returned 26/8/84 and `PASS`.
+
+**Verdict: SUFFICIENT.** The upgrader preserves history and local work, refuses unknown state without pretending it is complete, and gives every supported state an executable next action. No finding needs a destination.
