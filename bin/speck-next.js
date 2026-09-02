@@ -2,6 +2,7 @@
 // Speck Next installer/upgrader. Run from anywhere:
 //   npx github:Keegil/speck-next install [dir]
 //   npx github:Keegil/speck-next upgrade [dir]
+//   npx github:Keegil/speck-next upgrade [dir] --open-assessment
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -19,11 +20,37 @@ const ASSESSMENT_RECORD = "work/product-team-assessment.md";
 const ASSESSMENT_RECORD_LINE = `**Record:** \`${ASSESSMENT_RECORD}\``;
 const ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending";
 const ASSESSMENT_BLOCK = `${ASSESSMENT_HEADING}\n\n${ASSESSMENT_PENDING}\n${ASSESSMENT_RECORD_LINE}\n`;
-
-const cmd = process.argv[2];
-const target = path.resolve(process.argv[3] || ".");
+const RECOVERABLE_FIELDLESS_VERSION = "6.0.0-rc.2";
 
 function die(msg) { console.error(msg); process.exit(1); }
+
+function parseCli(argv) {
+  const [command, ...args] = argv.slice(2);
+  if (command === "--open-assessment")
+    die("refusing: --open-assessment is available only with upgrade. No target was accessed and nothing was touched.");
+  if (command && command.startsWith("-") && !["--help", "-h"].includes(command))
+    die(`refusing: unknown option ${JSON.stringify(command)}. No target was accessed and nothing was touched.`);
+  const paths = [];
+  let openAssessment = false;
+  for (const argument of args) {
+    if (argument === "--open-assessment") {
+      if (openAssessment)
+        die("refusing: --open-assessment may appear only once. No target was accessed and nothing was touched.");
+      openAssessment = true;
+    } else if (argument.startsWith("-")) {
+      die(`refusing: unknown option ${JSON.stringify(argument)}. No target was accessed and nothing was touched.`);
+    } else {
+      paths.push(argument);
+    }
+  }
+  if (paths.length > 1)
+    die("refusing: install and upgrade accept at most one target directory. No target was accessed and nothing was touched.");
+  if (openAssessment && command !== "upgrade")
+    die("refusing: --open-assessment is available only with upgrade. No target was accessed and nothing was touched.");
+  return { command, target: path.resolve(paths[0] || "."), openAssessment };
+}
+
+const { command: cmd, target, openAssessment } = parseCli(process.argv);
 
 function sourceCommit() {
   try { return execSync("git rev-parse --short HEAD", { cwd: SRC, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); }
@@ -104,8 +131,12 @@ function ensureMap() {
     fs.writeFileSync(mapPath, "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n");
 }
 
+function normalizedVersion(version) {
+  return String(version || "").trim().replace(/^v/i, "");
+}
+
 function migrationSource(version) {
-  const normalized = String(version || "").trim().replace(/^v/i, "");
+  const normalized = normalizedVersion(version);
   const match = normalized.match(/^(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?$/);
   if (!match) return "unknown";
   if (normalized === "6.0.0-rc.1") return "rc.1";
@@ -133,8 +164,8 @@ function activeMarkdownLines(content) {
   return { lines, active };
 }
 
-function assessmentError(message, repair = "Restore consistent assessment evidence, then run the upgrade again.") {
-  die(`refusing: ${message} Nothing in the repository changed. ${repair}`);
+function assessmentError(message, repair = "Next: restore consistent assessment evidence, then run the upgrade again.") {
+  die(`refusing: ${message}\nNothing in the repository changed.\n${repair}`);
 }
 
 function parseAssessment(content, required = false) {
@@ -205,26 +236,44 @@ function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key);
 }
 
+function entryExists(absolute) {
+  try {
+    fs.lstatSync(absolute);
+    return true;
+  } catch (error) {
+    if (error.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
 function markerAssessmentDisposition(prior) {
   if (!hasOwn(prior, "upgradeAssessmentRecord")) return { known: false, record: null };
   const record = prior.upgradeAssessmentRecord;
   if (record !== null && record !== ASSESSMENT_RECORD)
     assessmentError(
       `the marker's upgradeAssessmentRecord is ${JSON.stringify(record)}; it must be null or ${JSON.stringify(ASSESSMENT_RECORD)}.`,
-      "Restore the marker's explicit assessment disposition from version control, then run the upgrade again."
+      "Next: restore the marker's explicit assessment disposition from version control, then run the upgrade again."
     );
   return { known: true, record };
 }
 
-function planProductTeamAssessment(source, prior) {
+function openAssessmentError() {
+  assessmentError(
+    "--open-assessment applies only to a current rc.2 repository whose marker is missing upgradeAssessmentRecord and whose regular product.md has no canonical or generated assessment evidence.",
+    "Next: run the upgrade again without --open-assessment so the repository's existing evidence determines the route."
+  );
+}
+
+function planProductTeamAssessment(source, prior, openAssessmentRequested) {
   const productPath = path.join(target, "product.md");
   const disposition = markerAssessmentDisposition(prior);
-  if (!fs.existsSync(productPath)) {
+  if (!entryExists(productPath)) {
     if (disposition.record === ASSESSMENT_RECORD)
       assessmentError(
         `the marker requires ${ASSESSMENT_RECORD}, but product.md is missing.`,
-        "Restore product.md and its canonical assessment block, then run the upgrade again."
+        "Next: restore product.md and its canonical assessment block, then run the upgrade again."
       );
+    if (openAssessmentRequested) openAssessmentError();
     return {
       message: "Product team migration: product.md is missing, so no product history or assessment was invented.",
       assessment: null,
@@ -232,10 +281,10 @@ function planProductTeamAssessment(source, prior) {
       productContent: null,
     };
   }
-  if (!fs.statSync(productPath).isFile())
+  if (!fs.lstatSync(productPath).isFile())
     assessmentError(
-      "product.md exists but is not a file.",
-      "Restore product.md as a regular file, then run the upgrade again."
+      "product.md exists but is not a regular file.",
+      "Next: restore product.md as a regular file, then run the upgrade again."
     );
 
   const original = fs.readFileSync(productPath, "utf8");
@@ -243,13 +292,20 @@ function planProductTeamAssessment(source, prior) {
   const rc1 = removeGeneratedLine(original, RC1_UNIVERSAL_STATUS);
   const rejectedRc2 = removeGeneratedLine(rc1.content, REJECTED_RC2_STATUS);
   const generatedAssessment = rc1.removed || rejectedRc2.removed;
+  const recordPath = path.join(target, ASSESSMENT_RECORD);
+  if (!existing && entryExists(recordPath))
+    assessmentError(
+      `${ASSESSMENT_RECORD} exists without a canonical assessment block in product.md.`,
+      `Next: restore the matching canonical block or move the orphan record aside, then run the upgrade again.`
+    );
 
   if (disposition.known && disposition.record === null) {
     if (existing || generatedAssessment || source !== "current")
       assessmentError(
         "the marker says no upgrade assessment applies, but the repository contains evidence that one is required.",
-        "Restore the marker and product assessment evidence from the same successful upgrade, then run it again."
+        "Next: restore the marker and product assessment evidence from the same successful upgrade, then run it again."
       );
+    if (openAssessmentRequested) openAssessmentError();
     return {
       message: "Product team migration: not needed (the marker explicitly records that no one-time assessment applies).",
       assessment: null,
@@ -259,6 +315,7 @@ function planProductTeamAssessment(source, prior) {
   }
 
   if (existing) {
+    if (openAssessmentRequested) openAssessmentError();
     return {
       message: `Product team migration: kept the explicit ${existing.state} upgrade assessment; product.md was unchanged.`,
       assessment: existing,
@@ -267,18 +324,29 @@ function planProductTeamAssessment(source, prior) {
     };
   }
 
-  if (source === "current" && !generatedAssessment)
+  const ambiguousCurrent = source === "current" && !disposition.known && !generatedAssessment;
+  const recoverableAmbiguity = ambiguousCurrent &&
+    normalizedVersion(prior.version) === RECOVERABLE_FIELDLESS_VERSION;
+  if (openAssessmentRequested && !recoverableAmbiguity) openAssessmentError();
+
+  if (ambiguousCurrent && !openAssessmentRequested)
     assessmentError(
-      "this current rc.2 marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied.",
-      "Restore the deleted assessment evidence or the explicit marker disposition from version control, then run the upgrade again."
+      recoverableAmbiguity
+        ? "this current rc.2 marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied."
+        : `this ${JSON.stringify(prior.version)} marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied.`,
+      recoverableAmbiguity
+        ? "Next: run the upgrade again with --open-assessment to conservatively open the one-time assessment. Product work will not resume until that assessment records its route."
+        : "Next: restore consistent assessment evidence for this version, then run the upgrade again."
     );
 
   const productContent = appendAssessment(rejectedRc2.content);
   const assessment = parseAssessment(productContent, true);
-  let message = "Product team migration: preserved historical product bytes and appended one explicit pending upgrade assessment.";
-  if (rc1.removed)
+  let message = openAssessmentRequested
+    ? "Product team migration: --open-assessment preserved every existing product byte and appended one explicit pending upgrade assessment."
+    : "Product team migration: preserved historical product bytes and appended one explicit pending upgrade assessment.";
+  if (!openAssessmentRequested && rc1.removed)
     message = "Product team migration: removed the exact generated rc.1 status and appended one explicit pending upgrade assessment; every other historical byte was preserved.";
-  else if (rejectedRc2.removed)
+  else if (!openAssessmentRequested && rejectedRc2.removed)
     message = "Product team migration: repaired the rejected rc.2 generated status into one explicit pending upgrade assessment; every other historical byte was preserved.";
   return { message, assessment, assessmentRecord: ASSESSMENT_RECORD, productContent };
 }
@@ -394,7 +462,7 @@ if (cmd === "install") {
   const source = migrationSource(prior.version);
   if (source === "unknown")
     die(`refusing: ${MARKER} carries an unknown version (${JSON.stringify(prior.version)}). Nothing was touched.`);
-  const migration = planProductTeamAssessment(source, prior);
+  const migration = planProductTeamAssessment(source, prior, openAssessment);
   const provenance = copySurface();
   retireReplacedSkills();
   ensureMap();
@@ -418,6 +486,8 @@ if (cmd === "install") {
 
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
+  npx github:Keegil/speck-next upgrade [dir] --open-assessment
+                                                conservatively open an ambiguous rc.2 assessment
 
 The method itself is one page: AGENTS.md. Everything else is five skills your agent loads on demand, and six file skeletons in templates/.
 Pin a released tag, e.g.: npx -y github:Keegil/speck-next#v5.0.0 install  (all tags: github.com/Keegil/speck-next/tags)`);

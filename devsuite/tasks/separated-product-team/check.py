@@ -19,6 +19,7 @@ NEXT_PENDING_CHANGED = f"Next: review the reported paths and complete diff, comm
 NEXT_PENDING_CLEAN = f"Next: there are no upgrade changes to commit; complete {ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md."
 NEXT_CURRENT_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then resume current work from state.md."
 NEXT_CURRENT_CLEAN = "Next: there are no upgrade changes to commit; resume current work from state.md."
+AMBIGUITY_RETRY = "Next: run the upgrade again with --open-assessment to conservatively open the one-time assessment. Product work will not resume until that assessment records its route."
 CONTRIBUTION_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "earliest_run"}
 ASSESSMENT_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "active_decision"}
 
@@ -364,7 +365,8 @@ def static_contract_homes(kernel):
                       "Finish an upgrade", ASSESSMENT_RECORD, "complete — Shape reopened",
                       "complete — Map reopened", "from state.md", "upgradeAssessmentRecord",
                       "does not guess", "before replacing any repository byte",
-                      "assessment refusal"],
+                      "assessment refusal", "upgrade [dir] --open-assessment",
+                      "cannot override any other state"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -377,12 +379,15 @@ def static_contract_homes(kernel):
         "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
                         "writes the version marker last", "replacement carrier inherits",
                         ASSESSMENT_RECORD, "method-surface digests", "Every fixed marker carries",
-                        "before changing any repository byte", "complete non-Git path kinds and bytes"],
+                        "before changing any repository byte", "complete non-Git path kinds and bytes",
+                        "fieldless-current refusal and explicit recovery",
+                        "flag-exclusion and argument-error tables"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
-                      "before any repository byte changes"],
+                      "before any repository byte changes", "upgrade [dir] --open-assessment"],
         "capabilities.md": ["Selective product team", "live-host affordability",
-                            "assessment-control subjects", "complete-target snapshot"],
+                            "assessment-control subjects", "complete-target snapshot",
+                            "ambiguity-recovery"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -438,9 +443,13 @@ def commit_fixture(root, message):
     subprocess.run(["git", "commit", "-q", "-m", message], cwd=root, check=True)
 
 
-def run_cli(kernel, command, target):
-    return subprocess.run(["node", str(kernel / "bin/speck-next.js"), command, str(target)],
-                          cwd=kernel, capture_output=True, text=True)
+def run_cli_args(kernel, *arguments, cwd=None):
+    return subprocess.run(["node", str(kernel / "bin/speck-next.js"), *map(str, arguments)],
+                          cwd=cwd or kernel, capture_output=True, text=True)
+
+
+def run_cli(kernel, command, target, *arguments):
+    return run_cli_args(kernel, command, target, *arguments)
 
 
 def surface_hash(root):
@@ -490,15 +499,28 @@ def refusal_baseline(root):
     }
 
 
+def snapshot_unchanged(root, before):
+    return (
+        (root / ".claude/speck-next.json").read_bytes() == before["marker"] and
+        repository_snapshot(root) == before["tree"] and
+        porcelain_v1_z(root) == before["porcelain"]
+    )
+
+
+def has_resume_instruction(output):
+    return any(
+        re.search(r"^Next:\s*resume\b|[,;]\s*then\s+resume\b", line, re.IGNORECASE)
+        for line in output.splitlines()
+    )
+
+
 def refusal_unchanged(root, before, run):
     return (
         run.returncode != 0 and
         "Nothing in the repository changed." in run.stderr and
         "run the upgrade again" in run.stderr and
-        "resume" not in (run.stdout + run.stderr).lower() and
-        (root / ".claude/speck-next.json").read_bytes() == before["marker"] and
-        repository_snapshot(root) == before["tree"] and
-        porcelain_v1_z(root) == before["porcelain"]
+        not has_resume_instruction(run.stdout + run.stderr) and
+        snapshot_unchanged(root, before)
     )
 
 
@@ -633,10 +655,12 @@ def run_migration_matrix(kernel):
             if map_path.exists():
                 map_path.unlink()
 
-        def run_atomic_refusal(repo):
-            plant_refusal_dirt(repo)
+        def run_atomic_refusal(repo, *arguments, flag_before=False, plant=True):
+            if plant:
+                plant_refusal_dirt(repo)
             before = refusal_baseline(repo)
-            refused = run_cli(kernel, "upgrade", repo)
+            refused = (run_cli_args(kernel, "upgrade", *arguments, repo)
+                       if flag_before else run_cli(kernel, "upgrade", repo, *arguments))
             return refused, refusal_unchanged(repo, before, refused)
 
         missing_field = object()
@@ -663,12 +687,181 @@ def run_migration_matrix(kernel):
             commit_fixture(repo, f"{name} refusal baseline")
             return repo
 
+        def recovery_path(name, marker_extra=None, flag_before=False):
+            original = f"# {name} product\n\nExisting promises stay byte-identical.\n"
+            repo = refusal_repo(name, original, marker_extra=marker_extra)
+            refused, refusal_ok = run_atomic_refusal(repo)
+            refusal_ok = (
+                refusal_ok and refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+                (repo / "product.md").read_text() == original
+            )
+            results.append((f"{name} ordinary ambiguity refuses untouched with executable recovery",
+                            refusal_ok))
+
+            state_bytes = (repo / "state.md").read_bytes()
+            work_bytes = (repo / "work/refusal-dirt.md").read_bytes()
+            if flag_before:
+                opened = run_cli_args(kernel, "upgrade", "--open-assessment", repo)
+            else:
+                opened = run_cli(kernel, "upgrade", repo, "--open-assessment")
+            prior_checkout = marker_extra.get("sourceCheckout") if marker_extra else f"{name}fixture"
+            prior_digest = marker_extra.get("methodSurfaceSha256") if marker_extra else None
+            opened_ok = (
+                upgrade_report_ok(opened, "6.0.0-rc.2", prior_checkout, source_checkout,
+                                  surface_digest, NEXT_PENDING_CHANGED, prior_digest) and
+                "--open-assessment preserved every existing product byte" in opened.stdout and
+                not has_resume_instruction(opened.stdout + opened.stderr) and
+                (repo / "product.md").read_text() == expected_product(original) and
+                (repo / "state.md").read_bytes() == state_bytes and
+                (repo / "work/refusal-dirt.md").read_bytes() == work_bytes and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD)
+            )
+            position = "before" if flag_before else "after"
+            results.append((f"{name} flag {position} the directory opens one pending assessment",
+                            opened_ok))
+
+            commit_fixture(repo, f"accept {name} recovery")
+            second_flag, second_flag_ok = run_atomic_refusal(
+                repo, "--open-assessment", flag_before=flag_before, plant=False
+            )
+            ordinary = run_cli(kernel, "upgrade", repo)
+            retry_ok = (
+                second_flag_ok and "without --open-assessment" in second_flag.stderr and
+                upgrade_report_ok(ordinary, "6.0.0-rc.2", source_checkout, source_checkout,
+                                  surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
+                (repo / "product.md").read_text() == expected_product(original)
+            )
+            results.append((f"{name} rejects a second flag and ordinary retry is byte-stable",
+                            retry_ok))
+
+            complete_pending(
+                repo,
+                "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md",
+                "Resume Piece alpha from state.md.",
+                "# State\n\nPiece alpha is live.\n",
+            )
+            completed = run_cli(kernel, "upgrade", repo)
+            expected_next = "Next: there are no upgrade changes to commit; resume Piece alpha from state.md."
+            completed_ok = (
+                upgrade_report_ok(completed, "6.0.0-rc.2", source_checkout, source_checkout,
+                                  surface_digest, expected_next, surface_digest) and
+                assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(),
+                                     "Resume Piece alpha from state.md.") and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD)
+            )
+            results.append((f"{name} recovered assessment completes through the named live route",
+                            completed_ok))
+            return repo
+
+        def flag_exclusion(name, product, version="6.0.0-rc.2",
+                           assessment_field=missing_field, record_content=None):
+            repo = refusal_repo(
+                "flag-exclusion-" + name,
+                product,
+                version=version,
+                assessment_field=assessment_field,
+                record_content=record_content,
+            )
+            refused, unchanged = run_atomic_refusal(repo, "--open-assessment")
+            results.append((f"--open-assessment cannot override {name}", unchanged))
+            return repo
+
         snapshot_control = fixed_current("snapshot-positive")
         before_snapshot = repository_snapshot(snapshot_control)
         with (snapshot_control / "AGENTS.md").open("a") as handle:
             handle.write("snapshot positive-control byte\n")
         results.append(("complete-target snapshot detects one changed installed byte",
                         before_snapshot != repository_snapshot(snapshot_control)))
+
+        recovery_path("commit-only fieldless recovery")
+        recovery_path(
+            "provenance-laundered fieldless recovery",
+            marker_extra={"sourceCheckout": "99a0f38", "methodSurfaceSha256": "a" * 64},
+            flag_before=True,
+        )
+
+        flag_exclusion("explicit-null", "# Explicit null product\n", assessment_field=None)
+        flag_exclusion(
+            "valid-required",
+            "# Required product\n\n" + ASSESSMENT_BLOCK,
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        flag_exclusion("fieldless-canonical", "# Canonical product\n\n" + ASSESSMENT_BLOCK)
+        flag_exclusion("pre-v6", "# Pre-v6 product\n", version="5.4.1")
+        flag_exclusion("rc1", f"# rc.1 product\n\n{RC1_STATUS}\n", version="6.0.0-rc.1")
+        flag_exclusion("non-rc2-current", "# Later current product\n", version="6.0.0")
+        flag_exclusion("generated-status", f"# Generated product\n\n{REJECTED_RC2_STATUS}\n")
+        flag_exclusion("missing-product", None)
+        flag_exclusion("missing-required-product", None, assessment_field=ASSESSMENT_RECORD)
+        flag_exclusion("unsupported-pointer", "# Product\n", assessment_field="work/other.md")
+        flag_exclusion("empty-pointer", "# Product\n", assessment_field="")
+        flag_exclusion(
+            "malformed-canonical",
+            f"# Product\n\n{ASSESSMENT_HEADING}\n\n**Speck Next upgrade assessment:** finished\n{ASSESSMENT_RECORD_LINE}\n",
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        flag_exclusion(
+            "completed-without-record",
+            f"# Product\n\n{ASSESSMENT_HEADING}\n\n**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md\n{ASSESSMENT_RECORD_LINE}\n",
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        flag_exclusion(
+            "duplicate-generated-status",
+            f"# Product\n\n{REJECTED_RC2_STATUS}\n{REJECTED_RC2_STATUS}\n",
+        )
+        orphan_record = flag_exclusion(
+            "orphan-record",
+            "# Product with orphan record\n",
+            record_content="# Orphan assessment record\n",
+        )
+        refused, unchanged = run_atomic_refusal(orphan_record, plant=False)
+        results.append(("ordinary upgrade rejects an orphan assessment record", unchanged))
+
+        directory_product = refusal_repo("flag-exclusion-directory-product", None)
+        (directory_product / "product.md").mkdir()
+        write_file(directory_product, "product.md/sentinel.txt", "directory product\n")
+        commit_fixture(directory_product, "directory product")
+        refused, unchanged = run_atomic_refusal(directory_product, "--open-assessment")
+        results.append(("--open-assessment cannot override a directory product", unchanged))
+
+        linked_product = refusal_repo("flag-exclusion-linked-product", None)
+        (linked_product / "product.md").symlink_to("state.md")
+        commit_fixture(linked_product, "linked product")
+        refused, unchanged = run_atomic_refusal(linked_product, "--open-assessment")
+        results.append(("--open-assessment requires a regular product file", unchanged))
+        refused, unchanged = run_atomic_refusal(linked_product, plant=False)
+        results.append(("ordinary upgrade rejects a linked product path", unchanged))
+
+        optional_dir = refusal_repo("optional-directory", "# Optional-directory product\n")
+        opened = run_cli_args(kernel, "upgrade", "--open-assessment", cwd=optional_dir)
+        optional_dir_ok = (
+            upgrade_report_ok(opened, "6.0.0-rc.2", "optional-directoryfixture",
+                              source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
+            marker_ok(optional_dir, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+            (optional_dir / "product.md").read_text() ==
+            expected_product("# Optional-directory product\n")
+        )
+        results.append(("--open-assessment accepts an omitted directory", optional_dir_ok))
+
+        argv_target = refusal_repo("argv-target", "# Argument target\n")
+        plant_refusal_dirt(argv_target)
+        bad_argv = [
+            ("standalone recovery option", ("--open-assessment",)),
+            ("command-position unknown option", ("--unknown-option",)),
+            ("duplicate option", ("upgrade", argv_target, "--open-assessment", "--open-assessment")),
+            ("unknown option", ("upgrade", "--unknown-option", argv_target)),
+            ("extra path", ("upgrade", argv_target, base / "second-target")),
+            ("install option", ("install", argv_target, "--open-assessment")),
+        ]
+        for label, arguments in bad_argv:
+            before = refusal_baseline(argv_target)
+            refused = run_cli_args(kernel, *arguments)
+            argv_ok = (
+                refused.returncode != 0 and
+                "No target was accessed and nothing was touched." in refused.stderr and
+                snapshot_unchanged(argv_target, before)
+            )
+            results.append((f"bad argv rejects {label} before target access", argv_ok))
 
         fresh = base / "fresh"
         fresh.mkdir()
@@ -829,7 +1022,7 @@ def run_migration_matrix(kernel):
         (retry / "product.md").rmdir()
         write_file(retry, "product.md", "# Recovered product\n")
         retried = run_cli(kernel, "upgrade", retry)
-        retry_ok = (refusal_atomic and "product.md exists but is not a file" in failed.stderr and
+        retry_ok = (refusal_atomic and "product.md exists but is not a regular file" in failed.stderr and
                     upgrade_report_ok(retried, "5.4.1", "retryfixture", source_checkout,
                                                      surface_digest, NEXT_PENDING_CHANGED) and
                     marker_ok(retry, source_checkout, surface_digest, ASSESSMENT_RECORD))
@@ -920,6 +1113,11 @@ def run_migration_matrix(kernel):
             )
             refused, atomic = run_atomic_refusal(repo)
             results.append((f"{label} and refuses before every target write", atomic))
+            if "ambiguous" not in label:
+                flagged, flag_atomic = run_atomic_refusal(
+                    repo, "--open-assessment", plant=False
+                )
+                results.append((f"--open-assessment cannot override {label}", flag_atomic))
 
         laundered = refusal_repo(
             "atomic-99a-laundered-deletion",
@@ -971,6 +1169,11 @@ def run_migration_matrix(kernel):
             commit_fixture(repo, f"{name} corruption")
             failed, corruption_ok = run_atomic_refusal(repo)
             results.append((f"{name} refuses before every target write", corruption_ok))
+            flagged, flag_corruption_ok = run_atomic_refusal(
+                repo, "--open-assessment", plant=False
+            )
+            results.append((f"--open-assessment cannot override {name}",
+                            flag_corruption_ok))
 
         missing_record = seeded_pending("missing-completed-record")
         product_path = missing_record / "product.md"
@@ -982,6 +1185,11 @@ def run_migration_matrix(kernel):
         missing_record_ok = missing_record_ok and ASSESSMENT_RECORD in failed.stderr
         results.append(("completed assessment without its record refuses before every target write",
                         missing_record_ok))
+        flagged, missing_record_flag_ok = run_atomic_refusal(
+            missing_record, "--open-assessment", plant=False
+        )
+        results.append(("--open-assessment cannot override missing completed record",
+                        missing_record_flag_ok))
 
         provenance_kernel = base / "provenance-kernel"
         provenance_kernel.mkdir()
