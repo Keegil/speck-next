@@ -358,6 +358,18 @@ At `2f21837`, `/root/selective_map_judge` replayed both prior release-proof fail
 
 The only remaining Map condition is the owner's ratification of the reviewed order. If the owner selects the recommended two-piece seam unchanged, no further Map-only re-test is required.
 
+## Round 4 — owner ratifies the executable seam
+
+The owner saw the three reviewed ordering choices in the conversation. Product recommended:
+
+> **Two pieces at the executable seam:** first install and migrate the right contract; then prove real carriers finish inside the limits. Failures stay inside the behavior they can actually invalidate. Cost: one additional piece review, but no additional owner sign-off before the milestone.
+
+**Owner selection, verbatim:**
+
+> Do it!
+
+This selects the recommended two-piece order. Map closes. “The right roles show up” becomes the one live piece; “The team finishes inside its limit” remains queued until piece 8 is Judged. The platform, care, release roster, and owner touchpoints remain unchanged.
+
 ### Selective Map judgment round 1 — sent back
 
 At `39ac08c`, `/root/selective_map_judge` challenged the favorable re-test and upheld the executable seam. It found two dropped release obligations. First, piece 9 had reduced the owner's exact four-person milestone roster and release-specific rulings to unnamed fresh people and generic qualities. Second, the public-detail scan sat only in piece 8 even though piece 9 changes executable release files afterward. Either omission could let the split release with less proof than the original authorized piece. Verdict: **SEND BACK**.
