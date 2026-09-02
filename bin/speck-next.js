@@ -147,6 +147,7 @@ function activeMarkdownLines(content) {
   const lines = content.split("\n");
   const active = [];
   let fence = null;
+  let htmlComment = false;
   for (const line of lines) {
     const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
     if (fence) {
@@ -154,13 +155,41 @@ function activeMarkdownLines(content) {
       if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = null;
       continue;
     }
-    if (marker) {
+    if (!htmlComment && /^[ \t]*>/.test(line)) {
+      active.push(false);
+      continue;
+    }
+    if (!htmlComment && marker) {
       fence = marker[1];
       active.push(false);
       continue;
     }
-    active.push(!/^[ \t]*>/.test(line));
+    let cursor = 0;
+    let commentTouched = htmlComment;
+    while (true) {
+      if (htmlComment) {
+        const close = line.indexOf("-->", cursor);
+        if (close === -1) break;
+        htmlComment = false;
+        commentTouched = true;
+        cursor = close + 3;
+      } else {
+        const open = line.indexOf("<!--", cursor);
+        if (open === -1) break;
+        htmlComment = true;
+        commentTouched = true;
+        // Starting at the opener's dashes also handles the valid short forms
+        // <!--> and <!---> while the first --> still closes ordinary comments.
+        cursor = open + 2;
+      }
+    }
+    active.push(!commentTouched);
   }
+  if (htmlComment)
+    assessmentError(
+      "product.md contains an unclosed HTML comment, so its current assessment evidence cannot be determined.",
+      "Next: close the HTML comment without changing the intended current assessment fields, then run the upgrade again."
+    );
   return { lines, active };
 }
 
@@ -222,7 +251,7 @@ function removeGeneratedLine(content, generated) {
   const { lines, active } = activeMarkdownLines(content);
   const matches = lines.flatMap((line, index) => active[index] && line === generated ? [index] : []);
   if (matches.length > 1)
-    assessmentError(`product.md contains ${matches.length} unquoted copies of a generated upgrade status; its origin is ambiguous.`);
+    assessmentError(`product.md contains ${matches.length} current copies of a generated upgrade status; its origin is ambiguous.`);
   if (matches.length === 1) lines[matches[0]] = "";
   return { content: lines.join("\n"), removed: matches.length === 1 };
 }

@@ -366,7 +366,9 @@ def static_contract_homes(kernel):
                       "complete — Map reopened", "from state.md", "upgradeAssessmentRecord",
                       "does not guess", "before replacing any repository byte",
                       "assessment refusal", "upgrade [dir] --open-assessment",
-                      "cannot override any other state"],
+                      "cannot override any other state",
+                      "comment-touched line stays inactive",
+                      "unclosed live comment refuses"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -381,13 +383,15 @@ def static_contract_homes(kernel):
                         ASSESSMENT_RECORD, "method-surface digests", "Every fixed marker carries",
                         "before changing any repository byte", "complete non-Git path kinds and bytes",
                         "fieldless-current refusal and explicit recovery",
-                        "flag-exclusion and argument-error tables"],
+                        "flag-exclusion and argument-error tables",
+                        "inactive-container tables", "top-level `<!-- ... -->` comments"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
-                      "before any repository byte changes", "upgrade [dir] --open-assessment"],
+                      "before any repository byte changes", "upgrade [dir] --open-assessment",
+                      "comment-touched line stays inactive", "unclosed live comment refuses"],
         "capabilities.md": ["Selective product team", "live-host affordability",
                             "assessment-control subjects", "complete-target snapshot",
-                            "ambiguity-recovery"],
+                            "ambiguity-recovery", "inactive-container"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -772,6 +776,207 @@ def run_migration_matrix(kernel):
             handle.write("snapshot positive-control byte\n")
         results.append(("complete-target snapshot detects one changed installed byte",
                         before_snapshot != repository_snapshot(snapshot_control)))
+
+        commented_generated_original = (
+            "# Commented generated-status product\n\n"
+            "<!--\n" + REJECTED_RC2_STATUS + "\n-->\n"
+        )
+        commented_generated = refusal_repo(
+            "commented-generated-status", commented_generated_original
+        )
+        refused, commented_generated_refusal = run_atomic_refusal(commented_generated)
+        commented_generated_refusal = (
+            commented_generated_refusal and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (commented_generated / "product.md").read_text() ==
+            commented_generated_original
+        )
+        results.append((
+            "HTML-commented rejected status refuses untouched with executable recovery",
+            commented_generated_refusal,
+        ))
+
+        commented_state = (commented_generated / "state.md").read_bytes()
+        commented_work = (commented_generated / "work/refusal-dirt.md").read_bytes()
+        opened = run_cli(kernel, "upgrade", commented_generated, "--open-assessment")
+        commented_generated_opened = (
+            upgrade_report_ok(
+                opened, "6.0.0-rc.2", "commented-generated-statusfixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            "--open-assessment preserved every existing product byte" in opened.stdout and
+            not has_resume_instruction(opened.stdout + opened.stderr) and
+            (commented_generated / "product.md").read_text() ==
+            expected_product(commented_generated_original) and
+            (commented_generated / "state.md").read_bytes() == commented_state and
+            (commented_generated / "work/refusal-dirt.md").read_bytes() == commented_work and
+            marker_ok(commented_generated, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD)
+        )
+        results.append((
+            "HTML-commented rejected status recovers to one current pending block",
+            commented_generated_opened,
+        ))
+
+        commented_complete_original = (
+            "# Commented completed-assessment product\n\n"
+            "<!--\n" + ASSESSMENT_HEADING + "\n\n"
+            "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md\n"
+            + ASSESSMENT_RECORD_LINE + "\n-->\n"
+        )
+        commented_complete = refusal_repo(
+            "commented-complete-assessment",
+            commented_complete_original,
+            record_content="# Existing assessment record\n",
+        )
+        refused, commented_complete_refusal = run_atomic_refusal(commented_complete)
+        flagged, commented_complete_flag_refusal = run_atomic_refusal(
+            commented_complete, "--open-assessment", plant=False
+        )
+        commented_complete_ok = (
+            commented_complete_refusal and commented_complete_flag_refusal and
+            ASSESSMENT_RECORD in refused.stderr and
+            not has_resume_instruction(refused.stdout + refused.stderr) and
+            not has_resume_instruction(flagged.stdout + flagged.stderr) and
+            (commented_complete / "product.md").read_text() ==
+            commented_complete_original
+        )
+        results.append((
+            "HTML-commented completed block and orphan record refuse both calls untouched",
+            commented_complete_ok,
+        ))
+
+        same_line_comment_original = (
+            "# Same-line HTML-comment product\n\n"
+            "<!-- " + REJECTED_RC2_STATUS + " -->\n"
+        )
+        same_line_comment = refusal_repo(
+            "same-line-comment", same_line_comment_original
+        )
+        refused, same_line_comment_ok = run_atomic_refusal(same_line_comment)
+        same_line_comment_ok = (
+            same_line_comment_ok and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (same_line_comment / "product.md").read_text() ==
+            same_line_comment_original
+        )
+        results.append((
+            "same-line HTML comment cannot supply generated assessment evidence",
+            same_line_comment_ok,
+        ))
+
+        mixed_line_comment_original = (
+            "# Mixed-line HTML-comment product\n\n"
+            "Visible history before the comment <!--\n"
+            + REJECTED_RC2_STATUS + "\n"
+            "--> visible history after the comment\n"
+        )
+        mixed_line_comment = refusal_repo(
+            "mixed-line-comment", mixed_line_comment_original
+        )
+        refused, mixed_line_comment_ok = run_atomic_refusal(mixed_line_comment)
+        mixed_line_comment_ok = (
+            mixed_line_comment_ok and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (mixed_line_comment / "product.md").read_text() ==
+            mixed_line_comment_original
+        )
+        results.append((
+            "visible text beside a multiline HTML comment cannot activate hidden evidence",
+            mixed_line_comment_ok,
+        ))
+
+        def current_after_history(name, history):
+            product = "# " + name + " product\n\n" + history + "\n" + ASSESSMENT_BLOCK
+            repo = refusal_repo(name, product)
+            current = run_cli(kernel, "upgrade", repo)
+            return (
+                upgrade_report_ok(
+                    current, "6.0.0-rc.2", f"{name}fixture", source_checkout,
+                    surface_digest, NEXT_PENDING_CHANGED,
+                ) and
+                not has_resume_instruction(current.stdout + current.stderr) and
+                (repo / "product.md").read_text() == product and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD)
+            )
+
+        multiple_comments = (
+            "<!-- first closed comment -->\n"
+            "<!--\n" + REJECTED_RC2_STATUS + "\n-->"
+        )
+        results.append((
+            "multiple closed HTML comments hand off to current state on the next clean line",
+            current_after_history("multiple-closed-comments", multiple_comments),
+        ))
+
+        fenced_and_quoted_comments = (
+            "```markdown\n"
+            "<!--\n" + REJECTED_RC2_STATUS + "\n-->\n"
+            "```\n"
+            "> <!--\n"
+            "> " + ASSESSMENT_HEADING + "\n"
+            "> **Speck Next upgrade assessment:** complete — resumed Retired piece from state.md\n"
+            "> " + ASSESSMENT_RECORD_LINE + "\n"
+            "> -->"
+        )
+        results.append((
+            "comment delimiters inside fences and blockquotes cannot change top-level state",
+            current_after_history("fenced-and-quoted-comments",
+                                  fenced_and_quoted_comments),
+        ))
+
+        outer_comment = (
+            "<!--\n"
+            "```markdown\n"
+            "> quote and fence markers stay inside the comment\n"
+            + REJECTED_RC2_STATUS + "\n"
+            "-->"
+        )
+        results.append((
+            "fence and quote markers inside an HTML comment cannot escape it",
+            current_after_history("outer-comment-precedence", outer_comment),
+        ))
+
+        nested_comment = (
+            "<!--\n"
+            "nested opener content <!-- does not replace the first close\n"
+            + REJECTED_RC2_STATUS + "\n"
+            "-->"
+        )
+        results.append((
+            "nested HTML-comment opener is inert content until the first close",
+            current_after_history("nested-comment-opener", nested_comment),
+        ))
+
+        results.append((
+            "stray HTML-comment closer is plain text before current state",
+            current_after_history("stray-comment-closer", "-->"),
+        ))
+
+        unclosed_comment_original = (
+            "# Unclosed HTML-comment product\n\n"
+            "<!--\n" + REJECTED_RC2_STATUS + "\n"
+        )
+        unclosed_comment = refusal_repo(
+            "unclosed-comment", unclosed_comment_original
+        )
+        refused, unclosed_ordinary_ok = run_atomic_refusal(unclosed_comment)
+        flagged, unclosed_flagged_ok = run_atomic_refusal(
+            unclosed_comment, "--open-assessment", plant=False
+        )
+        unclosed_ok = (
+            unclosed_ordinary_ok and unclosed_flagged_ok and
+            "unclosed HTML comment" in refused.stderr and
+            "unclosed HTML comment" in flagged.stderr and
+            not has_resume_instruction(refused.stdout + refused.stderr) and
+            not has_resume_instruction(flagged.stdout + flagged.stderr) and
+            (unclosed_comment / "product.md").read_text() ==
+            unclosed_comment_original
+        )
+        results.append((
+            "unclosed HTML comment makes ordinary and flagged upgrade refuse untouched",
+            unclosed_ok,
+        ))
 
         recovery_path("commit-only fieldless recovery")
         recovery_path(
