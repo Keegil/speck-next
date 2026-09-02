@@ -152,7 +152,7 @@ The closing home census repeated the pre-code search families. Changed homes are
 
 ## Result
 
-The Piece 8 product implementation is Built at `946b85a` from product commits `10acad3`, `8bf17be`, `78857f9`, and `737959a`; the review opened at `a737eaa`. The first-time-builder verdict is sufficient. The mid-product-upgrader verdict sends the candidate back because the one-time assessment has no explicit completion and resume path. That verdict does not count until the independent judge challenges it. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
+The Piece 8 candidate was Built at `946b85a` from product commits `10acad3`, `8bf17be`, `78857f9`, and `737959a`; review opened at `a737eaa`. The first-time-builder verdict was sufficient and the mid-product-upgrader sent it back. The independent judge upheld and strengthened the send-back at round 1: the upgrade assessment has no executable completion/resume transition, quoted historical status can trap a completed assessment as pending, and checkout provenance is presented as though it identifies the installed surface. Piece 8 remains live and returns to build. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
 
 ## Fresh testing — round 1
 
@@ -175,3 +175,21 @@ The Piece 8 product implementation is Built at `946b85a` from product commits `1
 **Blocking experience:** after an ordinary supported upgrade, the generated status and `Next:` line require a product-and-current-map assessment but the installed surface never says which record receives the four carrier contributions, where Product writes the synthesis, what explicit edit completes `Unassessed`, or how the existing live piece resumes. The tester ran `rg -n -i 'upgrade status|product-and-current-map|assess the existing product|unassessed|assessment.*(complete|finish|close|record|replace|remove)|clear.*assessment|migration' AGENTS.md .claude/skills templates product.md`; only the generated paragraph was actionable. Leaving it repeats “finish” forever; deleting it silently changes the upgrader to “resume.”
 
 **Verdict: SEND BACK.** Define the assessment record, its required evidence and synthesis, the explicit status transition, and the return to the existing live piece; then rerun this journey.
+
+## Judgment — round 1
+
+**Judge:** `/root/piece8_judge_round1`, disjoint from both testers and every role, builder, prior reader, and auditor.
+
+**Candidate challenged:** product through `737959a`; Built line `946b85a`; receipt `a737eaa`; tester records `5135238`.
+
+**What the judge ran and found:** A disposable supported v5 upgrade reproduced the printed instruction to run the pending product-and-current-map assessment. A search across installed `AGENTS.md`, skills, templates, `product.md`, and `state.md` found no instruction naming its record, Product synthesis, completion edit, or no-reopen resume path beyond the generated status paragraph. The judge then completed an assessment in natural historical prose while retaining the old status as a quote; the installer's raw exact-sentence search still reported the assessment pending. A fresh install from `5135238` and one from `737959a` produced identical installed method bytes apart from the marker while reporting different commit values, so that field identifies the source checkout rather than the last installed-surface change.
+
+**Tester challenges:** The first-time builder's routing evidence held, but their provenance note is material to exact traceability. The mid-product upgrader's send-back held and the historical-quote attack widened it from missing guidance to a brittle status mechanism.
+
+**Rulings:** works — insufficient · delivers the promise — insufficient · good to use — insufficient · quality hangs together — insufficient · sound structure — insufficient.
+
+**Route back:** Piece 8 build. The product promise and two-piece order still hold. Before Engineering edits, Product integrates the delta with Business, Experience, and Engineering because adoption, handoff, trust, migration safety, and provenance changed after those roles had marked their concerns handled. Their old returns and Business ruling describe `737959a`, not the repaired candidate. This first handled-concern miss makes the affected roles mandatory at the next comparable piece's key decisions and runs; Piece 9 already calls both Business and Experience.
+
+**Required fix and re-run:** Name the upgrade assessment record, the four carrier contributions and Product synthesis it receives, the explicit completion status/action, the wrong-promise and wrong-piece/order reopen paths, and the no-reopen return to the existing live piece. Replace the raw paragraph-presence gate with explicit state that quoted history cannot hold open. Report checkout provenance honestly or separately identify installed-surface provenance. After the fix, rerun the mid-product tester's complete supported-upgrade population; their grep must find executable assessment/resume instructions outside the generated status. Rerun the first-time builder's full contrasting routes and uncertainty-stop mutant if any installed always-read page, template, or output changes. Add the judge's skeptical attack: completed natural historical prose that quotes or paraphrases old status must remain complete. Then write a new Built line, open a new receipt, use fresh testers, and re-judge from a fresh context.
+
+**Open items:** assessment completion/resume and provenance return to this Piece 8 fix batch. Live-host affordability remains Piece 9.
