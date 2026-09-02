@@ -238,3 +238,33 @@ The pre-edit census used `upgrade|migration|unassessed|product-team assessment`,
 **Preserved dissent:** Engineering adds a method-surface digest; Business would accept merely labeling the checkout. Product keeps the digest because it answers the tester's exact confusion without misnaming a Git commit, uses the standard library, and makes dirty-source or record-only checkout differences visible. It remains provenance, never a new acceptance state.
 
 **Repair status:** Product synthesis is complete and committed before Engineering code. Business, Experience, and Engineering are active; the old Business ruling and Experience return are invalid for the repaired candidate. Their earliest informative runs are the complete deterministic migration matrix, the installed three-route builder journey, and the v5 no-reopen lifecycle plus provenance controls respectively.
+
+## Repair informative returns
+
+**Engineering — carrier `/root/piece8_engineering`:** At the named v5 no-reopen and provenance run, pending pointed to the explicit four-role/Product-synthesis record; Shape, Map, and the named live-piece completion routes all executed; exact quotes and paraphrases stayed inert; missing, duplicate, malformed, deleted, and recordless completed state failed before marker change; and two source checkouts with identical method bytes shared one digest. Engineering's earlier “held” conclusion is replaced by this evidence on `99a0f38`. No Engineering concern remains before the new Built line.
+
+**Experience — carrier `/root/piece8_experience`:** The previous sufficient return on `737959a` remains disproved. On the repair, a disposable v5 product with a ratified product, current map, state, and live piece received the pending block and plain link to “Finish an upgrade.” Using only the installed page, Experience wrote the named record once, cloned it across the three routes, and saw clean retries continue Shape, continue Map, and resume the named live piece from `state.md`. Exact quoted and paraphrased rejected status remained in every product without reopening pending. A record-only source checkout changed while the method digest stayed identical and both labels were understandable. First-time selective routing still held. The lack of a record template caused one translation step but every required field was present and the record completed on the first pass. **Result: sufficient; no Experience concern remains before Built.**
+
+**Business — carrier `/root/piece8_business`:** The 26 routing, eight assessment, and 21 migration subjects passed independently. All five incomplete assessment-record mutants went red; all corrupt lifecycle states failed without changing the previous marker; historical/custom/dirty bytes, retry stability, missing-product honesty, reporting, and the same-context control held. Two checkouts installed byte-identical non-marker surfaces with the same SHA-256 while their source checkout labels differed. The prior permanent-loop and ambiguous-provenance failures are closed. The failed 266,484-token governed run and Piece 8's failed setup limit remain failed and cannot support Piece 9. **Binding ruling: `kept` for Piece 8 candidate `99a0f38`, provided the required subtractive Built-state commit keeps the always-read sum at or below 50,000 bytes.** Piece 9, the milestone, and release remain `not judged`.
+
+**Product — carrier `/root`:** Product read the exact six-file diff and reran the product boundary. The scoped parser ignores blockquotes and fences, completion retains rather than deletes its record link, the marker pointer makes later deletion fail, current fresh products do not inherit migration work, and the surface digest explains identical installed methods across record-only checkouts. The three role returns changed one Product action: with only 428 bytes of headroom before state changes, the new Built line must replace stale round-one state rather than append another chronicle. No product implementation change is required. Product remains active through the subtractive state measurement and fresh review.
+
+The final Product commands were:
+
+```sh
+python3 devsuite/tasks/separated-product-team/check.py --piece-8-controls .
+./devsuite/run.sh --control separated-product-team
+node --check bin/speck-next.js
+python3 -c 'from pathlib import Path; compile(Path("devsuite/tasks/separated-product-team/check.py").read_text(), "check.py", "exec")'
+git diff --check c89886b..99a0f38
+find AGENTS.md CLAUDE.md .claude/skills templates -type f -print0 | sort -z | xargs -0 wc -c
+wc -c AGENTS.md product.md map.md state.md
+```
+
+They returned `role-control subjects=26 clean=13 mutants=13`, `assessment-control subjects=8 clean=3 mutants=5`, `migration subjects=21`, and `Piece 8 controls: PASS`; the existing control reported `1 of 1 tasks went red`; syntax, compilation, and diff checks returned zero; the method source was 17 files / 77,572 bytes with five skills; and the current four-file always-read sum was 49,572 bytes. The added-line leak matcher was watched matching its planted string, then returned zero over `capabilities.md` and zero over the complete public installed/doc surface.
+
+**False inactive repair:** not triggered in Piece 8's actual work; the false-inactive controls still repair the current piece and invalidate only dependent evidence.
+
+**Handled-concern miss escalation:** triggered once for Business and Experience. Both had marked adoption/handoff handled on `737959a`; fresh upgrade and judgment showed the consequential assessment-loop and provenance miss. Both therefore remain involved at Piece 9's key decisions and informative runs, which its existing Map calls already require. A repeat would keep the repeated role through the v6 milestone.
+
+**Repair result:** implementation commit `99a0f38` changes exactly `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `bin/speck-next.js`, and the separated-team checker. The repaired candidate runs and all active roles have returned. Product next replaces stale round-one state with the exact new Built boundary, measures the always-read sum, and commits only `state.md`. Review round 1 remains preserved as the failed control; a new receipt and fresh review must follow.
