@@ -546,3 +546,25 @@ The repaired parser and full 26/8/126 population ran, and Experience found no re
 **Excluded:** `/root`, `/root/piece8_business`, `/root/piece8_experience`, `/root/piece8_engineering`, `/root/piece8_migration_audit`, every Shape/Map/product-role or specialist carrier, every builder and auditor, and every tester or judge named in the first three receipts, including `/root/piece8_fresh_builder`, `/root/piece8_midproduct_upgrader`, `/root/piece8_judge_round1`, `/root/piece8_retest_builder`, `/root/piece8_retest_upgrader`, `/root/piece8_judge_round2`, `/root/piece8_round3_builder`, `/root/piece8_round3_upgrader`, and `/root/piece8_round3_judge`. The two round-4 testers and judge must be distinct from one another and this whole set.
 
 **Run owner:** `/root`. No governed host/model run belongs to this review.
+
+## Fresh testing — round 4
+
+### First-time builder — carrier `/root/piece8_round4_builder`
+
+**Candidate used:** exact product implementation `0e170ce` under receipt `1522b5f`, installed into disposable fresh Git repositories. The tester received the product promise, Built line, installed method, and round-4 receipt, not product-role conclusions.
+
+Fresh install reported 19 files, explicit assessment `null`, source checkout `0e170ce`, and method digest `f440af1a1c9f87239c7b9191e1bfa54684f45509fea021e45c85dbff28a9f00e`. Four substantial-change records called Product plus Engineering only, added Business, added Experience, and called all four exactly when the product conditions fired. Product and Engineering stayed distinct; inactive roles contained only their condition and direct current evidence; synthesis preceded code; named runs and returns blocked landing; false inactivity repaired the current evidence; handled misses widened later involvement; and every contributor stayed excluded from fresh review.
+
+The full command returned 26 routing, eight assessment, and 126 migration subjects with `PASS`; the same-context control returned one of one tasks red. Exact and substring public-detail scans each caught ten planted controls and zero candidate additions. Independent HTML-comment, balanced and unmatched inline opener, escaped and unescaped opener, and mixed-line fixtures all held with before-and-after hashes. The tester's free attack changed hidden history to CRLF line endings: ordinary upgrade refused with an identical product hash, and flagged recovery preserved all 534 original bytes as the exact prefix before appending one pending block.
+
+**Verdict: SUFFICIENT.** No product finding needs a destination. An archive-only test attempt lacked Git provenance and was rerun from a disposable Git checkout; that was tester setup, not the installed product.
+
+### Mid-product upgrader — carrier `/root/piece8_round4_upgrader`
+
+**Candidate used:** exact product implementation `0e170ce` under receipt `1522b5f`, across independently constructed v5, generated rc.1, rejected/current rc.2, custom, missing, dirty, retry, corrupt, pending, and completed fixtures. The tester received the same cold review surface and no role conclusions.
+
+The 26/8/126 population passed and the same-context control stayed red. Refusals preserved every non-Git byte, marker byte, unrelated dirty byte, and porcelain column. Ordinary fieldless ambiguity refused with the exact recovery; the flag opened only that undecided state; Shape, Map, and named-piece completion routes preserved historical work and printed their specific next actions. Different source checkouts with identical installed bytes shared method digest `f440af1a…`; bad arguments refused before target access. HTML-comment, inline-code, provenance, and CRLF recovery attacks otherwise held.
+
+**Free skeptical attack and finding:** The exact generated rc.1 path removed its obsolete generated prose but left an empty `## Product team`. The tester completed a four-carrier assessment and selected the named-piece resume route without adding Product-specific Business or Experience call conditions, trusted evidence, expiry, or material-change examples. Upgrade exited zero, said `product.md` was unchanged, and instructed the builder to resume. The authoritative product still contained no conditions from which the next substantial piece could decide whether Business or Experience joins.
+
+**Verdict: INSUFFICIENT.** Worst trust failure: a plain resume instruction overclaims readiness beside a visibly empty authoritative section. Proposed destination: Build. Require an upgrade completion to establish the Product-team responsibilities and observable call conditions in `product.md`, and make the running completion path reject or route incomplete product setup instead of resuming.
