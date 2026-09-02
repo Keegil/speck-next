@@ -1119,18 +1119,20 @@ def run_migration_matrix(kernel):
             (hidden_canonical / "product.md").read_text() == hidden_canonical_original,
         ))
 
-        odd_escape_original = (
-            "# Odd backslash parity product\n\n"
+        escaped_opener_original = (
+            "# Backslash-escaped opener product\n\n"
             "An escaped opener \\`<!--` remains plain text.\n"
         )
-        odd_escape = refusal_repo("odd-backslash-parity", odd_escape_original)
-        refused, odd_escape_ordinary = run_atomic_refusal(odd_escape)
-        flagged, odd_escape_flagged = run_atomic_refusal(
-            odd_escape, "--open-assessment", plant=False
+        escaped_opener = refusal_repo(
+            "backslash-escaped-opener", escaped_opener_original
+        )
+        refused, escaped_opener_ordinary = run_atomic_refusal(escaped_opener)
+        flagged, escaped_opener_flagged = run_atomic_refusal(
+            escaped_opener, "--open-assessment", plant=False
         )
         results.append((
-            "odd backslash parity cannot make a backtick shield a real comment",
-            odd_escape_ordinary and odd_escape_flagged and
+            "a backslash-escaped backtick cannot shield a real comment",
+            escaped_opener_ordinary and escaped_opener_flagged and
             "unclosed HTML comment" in refused.stderr and
             "unclosed HTML comment" in flagged.stderr,
         ))
