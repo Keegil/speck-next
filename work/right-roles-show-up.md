@@ -1,0 +1,126 @@
+# The right roles show up
+
+**Serves:** all eight contract promises through selective product-role separation, honest adoption, and repair of a missed call in the current piece · **Consumes:** the ratified selective promise in `work/shaping.md`, the ratified executable seam in `work/mapping.md`, the failed universal `6.0.0-rc.1` candidate, and the rule-home census below
+
+**Outcome:** A fresh or upgrading repository receives `6.0.0-rc.2` and can decide which independent product lenses the work actually needs. Product and Engineering are always separate on substantial work. Business and Experience join when their own conditions, evidence, expiry, a material change, or uncertainty requires them. An inactive role leaves a factual reason, not a pretend contribution. A missed call stops and repairs the current piece. This piece proves those rules and the migration deterministically; it does not claim that live role carriers finish affordably.
+
+**Before first run:** Set at role dispatch: no more than four carriers and one contribution from each; no more than 90 minutes from the live-piece commit; no more than 120,000 aggregate host-reported tokens; no more than 30 unique repository files read before the first deterministic product run. The carrier and one-contribution limits held. The three non-Product carriers alone used at least 6,822,314 gross and 423,210 fresh tokens, so the token limit failed before Product was counted. The host evidence does not expose a trustworthy normalized file-read total, so that limit is not judged. Planning stops here; Engineering's first action after this commit is the smallest honest run against an exact rc.1 migration fixture.
+
+Token command, reading the last host token record from each role session:
+
+```sh
+python3 - <<'PY'
+import json
+from pathlib import Path
+base = Path.home() / ".codex/sessions/2026/09/02"
+runs = {
+    "Business": "rollout-2026-09-02T18-30-33-01a062f5-3a3a-7da3-bb4d-026a3a7525b9.jsonl",
+    "Experience": "rollout-2026-09-02T18-30-45-01a062f5-6783-7242-9370-28d9fa14e2dc.jsonl",
+    "Engineering": "rollout-2026-09-02T18-30-58-01a062f5-99e0-7712-90d0-f5c0f8506e63.jsonl",
+}
+totals = dict(input_tokens=0, cached_input_tokens=0, output_tokens=0, total_tokens=0, fresh_tokens=0)
+for role, name in runs.items():
+    usage = None
+    for line in (base / name).read_text().splitlines():
+        payload = json.loads(line).get("payload", {})
+        info = payload.get("info") if payload.get("type") == "token_count" else None
+        if isinstance(info, dict) and isinstance(info.get("total_token_usage"), dict):
+            usage = info["total_token_usage"]
+    values = {key: int(usage.get(key, 0)) for key in ("input_tokens", "cached_input_tokens", "output_tokens", "total_tokens")}
+    values["fresh_tokens"] = values["input_tokens"] - values["cached_input_tokens"] + values["output_tokens"]
+    for key, value in values.items():
+        totals[key] += value
+    print(role, " ".join(f"{key}={value}" for key, value in values.items()))
+print("LOWER_BOUND_THREE_ROLES", " ".join(f"{key}={value}" for key, value in totals.items()))
+PY
+```
+
+It returned:
+
+```text
+Business input_tokens=1293551 cached_input_tokens=1196928 output_tokens=9911 total_tokens=1303462 fresh_tokens=106534
+Experience input_tokens=2687604 cached_input_tokens=2575232 output_tokens=19258 total_tokens=2706862 fresh_tokens=131630
+Engineering input_tokens=2787732 cached_input_tokens=2626944 output_tokens=24258 total_tokens=2811990 fresh_tokens=185046
+LOWER_BOUND_THREE_ROLES input_tokens=6768887 cached_input_tokens=6399104 output_tokens=53427 total_tokens=6822314 fresh_tokens=423210
+```
+
+**Proof plan and review cost:** Before edits, reproduce the known rc.1 migration failure on an exact generated fixture. Then run deterministic clean and broken twins for Product-plus-Engineering only, Business active, Experience active, all four active, ambiguity, expiry, false inactivity and current-piece repair, an overdue informative return, replacement-carrier lineage and exclusions, and Product/Engineering separation. Run fresh install plus v5, generated rc.1, custom-section, missing-product, dirty-worktree, failure-and-retry, and second-upgrade fixtures. Every clean subject must pass and every one-field mutation must fail with its subject count printed. `node --check`, Python compilation without cache writes, the existing separated-team control, the complete home census, exact installed/always-read/file/skill budgets, `git diff --check`, and the public-detail scan must pass. No governed Codex or Claude run, broker run, host proof, or component model probe belongs to this piece. After Built, two fresh testers use the candidate: one first-time builder routes contrasting pieces, and one mid-product upgrader resumes real work. One independent judge challenges both records and rules that it works, delivers the promise, is good to use, hangs together as a quality product, and has sound structure. Business rules separately before landing. The second milestone judge remains in Piece 9's milestone hearing unless this piece's evidence makes the work risky.
+
+## Role call decisions
+
+| Role | Decision | Product-specific reason | Earliest informative run |
+|---|---|---|---|
+| Product | Active | Always active on substantial work; this piece resolves the installed promise, migration behavior, and proof boundary. | The contrasting deterministic fixtures select exactly the required roles and reject false inactivity. |
+| Business | Active | The piece changes adoption, owner attention, token and time cost, maintenance, and durable method value. | The no-model fresh/v5/rc.1/custom/missing/dirty/idempotent matrix completes with zero owner repair, bounded footprint, and honest output. |
+| Experience | Active | The piece changes always-read wording, templates, role selection, upgrade output, builder handoff, comprehension, and trust. | A disposable fresh install and mid-product upgrade let a builder route contrasting pieces, leave no fake inactive-role prose, and understand what blocks landing. |
+| Engineering | Active | Always active and separate from Product; this piece changes installed rules, migration, reversibility, reporting, and deterministic proof. | An exact generated rc.1 fixture first reproduces the obsolete universal contract, then crosses to rc.2 twice while preserving every unrelated byte. |
+
+## Pre-code contributions
+
+### Product
+
+- **Carrier:** `/root`.
+- **Direct evidence:** the owner's ratified “Lock selective separation!” and “Do it!”; `product.md`; `map.md`; `decisions.md`; the repaired Shape and Map records; the 266,484-gross-token failed governed run; and the three contributions below.
+- **Conclusion:** Install one selective contract everywhere, repair both v5 and obsolete rc.1 repositories honestly, and prove repository semantics without reopening live-host cost in this piece.
+- **Assumptions:** deterministic fixtures can prove routing, record, migration, reporting, and footprint behavior but cannot prove live carrier obedience or cost; Piece 9 owns that claim; old-Speck conversion and Odd remain out of scope.
+- **Proposed change:** make Product and Engineering the substantial-piece floor; call Business and Experience through their authored conditions and evidence; record current-piece repair and informative returns; migrate to rc.2 marker-last and byte-stably; keep host transport untouched.
+- **Active decision:** active. A wrong integration either loses a needed lens or preserves the universal ceremony already disproved by cost. The selection fixture is the earliest disconfirming run.
+
+### Business
+
+- **Carrier:** `/root/piece8_business`.
+- **Direct evidence:** the stopped governed run at 266,484 gross tokens in 110 seconds; the current major-only upgrader classification; the current universal checker; disposable fresh-install and pre-v6 fixtures; installed and always-read footprint measurements; and `capabilities.md`'s open host and field claims.
+- **Conclusion:** this is a useful, low-cost adoption boundary, but the installed rc.1 candidate remains Business broken until the deterministic migration and routing evidence exists. Piece 8 cannot turn the failed host run green.
+- **Assumptions:** local Node fixtures faithfully test install, migration, reporting, idempotence, selection, and current-piece repair; exact generated rc.1 text can be distinguished from owner-authored text; no installed file, skill, owner beat, or host proof is added.
+- **Proposed change:** replace the universal contract in every home; migrate v5 and rc.1 to rc.2; replace only the exact generated universal paragraph; preserve custom and historical bytes; report the exact version/commit span, paths, diff, and footprint.
+- **Active decision:** active. A bad selector loses a business concern; a bad upgrader leaves existing products on the costly universal cadence. The migration and selection matrix is the earliest disconfirming run.
+- **Pre-code ruling:** deterministic and local implementation may proceed. This is not a `kept` ruling for the finished piece, release, or live-host execution.
+
+### Experience
+
+- **Carrier:** `/root/piece8_experience`.
+- **Direct evidence:** the current universal `AGENTS.md`, fixed four-row piece template, universal contract and checker; disposable fresh, v5, rc.1, custom-section, and missing-product journeys; and the upgrader's current lack of a clear resume action.
+- **Conclusion:** the current fresh and upgrading journeys are broken for selective separation. Builders need a visible factual call decision, full detail only from called roles, immediate repair of a missed lens, and a plain next action after upgrade.
+- **Assumptions:** owner-authored bytes remain in order; a generated assessment status can be added beside a custom section without claiming historical assessment; the first informative Experience evidence is a builder journey, not syntax or a technical smoke run.
+- **Proposed change:** make role-owned conditions, evidence, expiry, and material-change examples visible in product and map templates; split call decisions from active contributions in the piece; add current-piece repair, informative-return due points, and replacement exclusions; make rc.2 migration distinguish generated rc.1, custom, missing, and already-selective products; finish output with a plain `Next:` action.
+- **Active decision:** active. Without the change, builders either fill departmental prose or silently skip a fired lens. Fresh-install and mid-product-upgrade journeys are the earliest disconfirming runs.
+
+### Engineering
+
+- **Carrier:** `/root/piece8_engineering`, distinct from Product and retained for implementation and its return.
+- **Direct evidence:** the selective authority in `product.md` and the ratified Shape/Map records; universal cadence in `AGENTS.md`, Shape/Map skills, templates, contract, README, and checker; executable installer defects around major-only v6 detection, heading-based suppression, marker-before-migration, and incomplete reporting; and the commit boundary separating installed semantics from Piece 9 transport.
+- **Conclusion:** replace every universal rule home with one selective contract, migrate marker-last and byte-stably to rc.2, and prove it through deterministic controls only.
+- **Assumptions:** Piece 8 migration sources are v5.x and exact `6.0.0-rc.1`; custom bytes remain untouched while a canonical unassessed status is added; deterministic proof does not claim host obedience; no new installed file, skill, dependency, state, or owner beat is needed.
+- **Proposed change:** update the installed method, Shape/Map prompts, product/map/piece/state templates, eight contract promises, public description and capability claim, package and installer; add a `--piece-8-controls` path to the existing separated-team checker; leave all host runner, broker, host-proof, and live fixture files untouched.
+- **Active decision:** active. Otherwise an rc.1 repository silently retains the rejected contract or a false inactive decision leaves tainted Built/review evidence standing. The exact rc.1 before/after/retry fixture is the earliest disconfirming run.
+
+## Product synthesis and Engineering handoff
+
+One installed rule governs the work. All four distinct carriers form or reopen the product and take the first Map after Shape. Later re-maps call Product and every role whose protected concern, evidence, expiry, or ordering changed. Every substantial piece has distinct Product and Engineering carriers. Business and Experience join before the affected decision or code when their authored condition fires, evidence is missing or expired, a listed material change occurs, the answer is uncertain, or the role declares an effect. Product cannot waive those facts.
+
+An inactive Business or Experience role records only its condition and the direct current evidence that kept it out. It has no carrier, conclusion, assumptions, or proposed change. Active roles keep the full contribution. Each active role names the earliest run that can actually test its conclusion and returns there; once that run exists, a missing return leaves the concern unresolved and blocks landing. Replacement carriers inherit the same evidence and prior contribution, and both original and replacement remain excluded from testing and judgment.
+
+False inactivity repairs the current evidence chain first. Work stops and returns to Shape for a wrong promise, Map for a wrong piece or order, or piece setup otherwise. The missed role joins for the rest of the piece, Product re-synthesizes before Engineering resumes, and every affected Built line, receipt, tester verdict, and judgment becomes invalid. New work, a new Built line, and a new receipt are required. Unrelated evidence remains. The role is also mandatory on the next comparable piece; a repeat keeps it through the milestone.
+
+Engineering owns the implementation listed in its contribution. Product owns only this work record and later product/map/decision/state truth. Engineering must first run the exact generated rc.1 control, then make the smallest installer-and-contract repair and rerun that same fixture twice before widening to the full matrix. The version is `6.0.0-rc.2`. The marker is written only after successful copying and migration. Missing `product.md` stays missing. Exact generated rc.1 prose is replaced; custom prose is preserved and receives one honest unassessed status without suppressing migration. Output names both ends, both commits when known, the migration outcome, working-tree paths across the complete installed surface plus `product.md`, and a plain next action. `capabilities.md` may claim only deterministic routing/migration proof; live hosts and field value stay open.
+
+The home census used the case-insensitive families `product…business…experience…engineering`, `four roles|four separate|all four`, `every substantial piece`, `active|inactive role`, `first real run`, `product team`, `excluded contributors`, and `contributed as` across `AGENTS.md`, every skill and reference, every template, `CONTRACT.md`, `README.md`, `capabilities.md`, the installer, package, and separated-team task. Engineering changes `AGENTS.md`; the Shape and Map skills and question references; `templates/product.md`, `templates/map.md`, `templates/piece.md`, and `templates/state.md`; `CONTRACT.md`; `README.md`; `capabilities.md`; `package.json`; `bin/speck-next.js`; and `devsuite/tasks/separated-product-team/check.py`. It leaves `CLAUDE.md`, Craft, Experience and Judge and their references, `templates/decisions.md`, `templates/rounds.md`, every Product-owned record, and every Piece 9 runner/broker/host fixture untouched. The generic rounds template remains a conversation and receipt floor; the Shape and Map skills own their role-contribution fields.
+
+**Preserved dissent:** Experience considers migration a distinct builder journey and insists on its own proof lane; Product keeps it inside Piece 8 because fresh and upgrading repositories consume the same installed selective contract, while keeping separate fixtures and a separate mid-product tester. Engineering proposed leaving the rounds template untouched; Product agrees after inspecting it because it states no universal attendance rule and delegates phase-specific records to the skills. The failed pre-run cost is not repaired by widening or reinterpreting the limit; it remains a finding for Piece 9's transport and context design.
+
+## Informative returns
+
+- **Product:** due after the contrasting role-selection fixtures.
+- **Business:** due after the complete deterministic migration, preservation, reporting, and footprint evidence; final ruling remains `not judged` until then.
+- **Experience:** due after the fresh-builder and mid-product-upgrader journeys, before Built.
+- **Engineering:** due after the exact rc.1 repair and full deterministic matrix, before Built.
+
+## Review receipt
+
+Not open. Review starts only after the candidate runs, every Built check above passes, all active-role returns exist, Business rules, and `state.md` carries a valid Built line committed before this receipt.
+
+**Excluded contributors:** `/root`, `/root/piece8_business`, `/root/piece8_experience`, `/root/piece8_engineering`, and any honest replacement carrier.
+
+## Result
+
+Implementation has not started. The pre-code synthesis is complete, the token limit failed, and the smallest rc.1 product run is next. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.

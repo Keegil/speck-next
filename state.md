@@ -2,7 +2,7 @@
 
 ## What's true now
 
-The owner has ratified selective separation and the reviewed two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is live at setup; it installs and migrates the selective contract as `6.0.0-rc.2` and proves deterministic role routing without a costly governed host run. Piece 9 remains queued until piece 8 is Judged. The 21-condition Map population passed, the fresh tester found the repaired map sufficient, and the independent judge ruled it sufficient at `2f21837`; the owner's verbatim **“Do it!”** closes the order. The previous governed Codex run remains failed at 266,484 gross tokens against 250,000. The installed universal `6.0.0-rc.1` candidate remains Business **broken** and the released version remains v5.4.1.
+The owner has ratified selective separation and the reviewed two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is live in build; its four distinct pre-code contributions and Product synthesis are complete in `work/right-roles-show-up.md`. It installs and migrates the selective contract as `6.0.0-rc.2` and proves deterministic role routing without a governed host run. Piece 9 remains queued until piece 8 is Judged. The three non-Product setup carriers alone used at least 6,822,314 gross and 423,210 fresh tokens, so Piece 8's 120,000-token before-first-run limit failed; planning stopped and the exact rc.1 migration fixture is the next action. The previous governed Codex run also remains failed at 266,484 gross tokens against 250,000. The installed universal `6.0.0-rc.1` candidate remains Business **broken** and the released version remains v5.4.1.
 
 The kernel is at **v5.4.1**, and its vocabulary is defined: a full census of the 124 rule-carrying terms across the loaded pages left one word undefined — `sufficient` — and the owner's selection of a drafted option closed it the same night (recorded as exactly that in decisions.md; the sentence is on both pages that carry the landing gate). Every page an agent loads is written in a builder's words: the method page (`AGENTS.md`), five skills — `shape-product`, `map-build`, `craft`, `experience`, `judge` — with four references, six template skeletons, and the installer. The method's shape: five phases, shape → map → build → experience → judge, where the last two are one review — fresh testers use the product and decide as users do, and a judge who built and tested nothing challenges every verdict before it counts. States: Shaped → Built → Judged → Live, with *proven* as plain speech for all four rulings standing on evidence.
 
@@ -18,15 +18,15 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The installed universal v6 candidate is blocked from Built, milestone judgment, merge, tag, and publish by Business's **broken** operating-cost ruling. No governed host run is authorized in piece 8. Its fresh Business and Experience conditions fire, so their distinct contributions and Engineering's separate implementation handoff must be committed before installed-method code. Piece 9 cannot start before piece 8 is Judged, and its complete governed attempt remains blocked until every isolated component admission passes.
+The installed universal v6 candidate is blocked from Built, milestone judgment, merge, tag, and publish by Business's **broken** operating-cost ruling. No governed host run is authorized in piece 8. Piece 8's pre-run token limit failed and its file-read limit is not measurable from the present host records; neither can be reported as held. Piece 9 cannot start before piece 8 is Judged, and its complete governed attempt remains blocked until every isolated component admission passes.
 
 ## What needs the owner
 
-Nothing while the piece-8 product team prepares the pre-code decision. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-**Piece 8, “The right roles show up,” is live at setup.** Product dispatches fresh Business, Experience, and Engineering carriers against the ratified outcome. Product then commits one synthesis and the piece work file before Engineering edits the installed method, migration, or deterministic controls. Host transport, component model probes, Codex/Claude governed runs, and release review remain piece 9.
+**Piece 8, “The right roles show up,” is live in build.** Engineering first reproduces the exact generated rc.1 migration defect, then implements the committed synthesis and reruns that fixture twice before the full deterministic routing and migration matrix. Product, Business, Experience, and Engineering return only at their named informative evidence. Host transport, component model probes, Codex/Claude governed runs, and release review remain piece 9.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves to this file with the next density work · the four rules stacked without a heading stay filed with that work · capabilities.md's stale AGENTS.md size waits on the computed check that would retire the self-measurement strain.
 
