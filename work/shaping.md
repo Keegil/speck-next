@@ -176,3 +176,17 @@ This amended promise supersedes the first proposed promise in Round 4. The full 
 - Judge: a new carrier that did not shape, contribute, implement, test, or review either prior v6 candidate; dispatched only after the re-test is sufficient.
 - Dispatch: after this receipt is committed; exact commit will be appended with the verdict.
 - Verdict and judgment: pending.
+
+### Redesigned Shape re-test — sufficient
+
+At commit `bc666d7`, `/root/redesign_shape_tester` replayed both failed controls across their full populations. The false-inactive path now stops and repairs the current piece, summons the missed role, re-synthesizes before implementation continues, and invalidates only evidence affected by the omission. Its skeptical attack could neither preserve tainted evidence nor erase unrelated evidence or reopen an unaffected landed piece. The old run also remains failed at 266,484 gross tokens: the redesigned fixture must stay at or below both 250,000 gross and 200,000 fresh tokens, so cached-token reporting cannot reverse the control.
+
+The tester separately challenged every reopened Shape, the first Map after Shape, later re-map narrowing, pre-v6 product-and-map assessment, role-authored triggers and expiry, concrete rechecks while a role is absent, overdue informative returns, phase routing, and replacement-carrier exclusion. Verdict: **SUFFICIENT**.
+
+### Redesigned Shape judge receipt — opened before dispatch
+
+- Candidate: `bc666d7` plus this exact tester verdict at the commit containing the receipt.
+- Judge: `/root/redesign_shape_judge` — did not shape, contribute a product role, implement, test, or review either prior v6 candidate.
+- Challenge: try to overturn the tester's favorable verdict against the owner's original missing-lenses concern, the measured cost failure, all eight contract promises, and the full counterexample population in both redesigned Shape receipts. Pay particular attention to whether selective separation protects the lens while absent, whether the owner still sees one recommendation, and whether the cost rule is both honest and buildable.
+- Dispatch: only after this receipt is committed.
+- Judgment: pending.
