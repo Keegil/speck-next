@@ -286,3 +286,25 @@ They returned `role-control subjects=26 clean=13 mutants=13`, `assessment-contro
 **Judge:** after both round-2 records are committed, a third new carrier challenges them and reruns the round-1 requirement over its whole population plus the retained-history attack and each tester's skeptical attack. They separately rule works, delivers the promise, good to use, quality hangs together, and structure; every open item gets a destination.
 
 **Excluded:** every carrier named in the round-1 receipt, `/root/piece8_fresh_builder`, `/root/piece8_midproduct_upgrader`, `/root/piece8_judge_round1`, and every Product, Business, Experience, Engineering, specialist, builder, or auditor carrier. The two round-2 testers and judge must be distinct from one another and this full set.
+
+## Fresh testing — round 2
+
+### First-time builder — `/root/piece8_retest_builder`
+
+**Candidate used:** a read-only disposable clone detached at exact product candidate `99a0f38`. The source remained at receipt commit `1767e62` and was not edited.
+
+**What happened:** Four fresh installations each reported rc.2, source checkout `99a0f38`, the same installed-method SHA-256, and 19 installed files. Four distinct fresh carriers classified an internal substantial change as Product plus Engineering, a builder-visible recovery change as Product plus Engineering plus Experience, an adoption-and-journey change as all four, and an ambiguous consequence as all four with product code stopped. Inactive Business and Experience decisions cited their product-specific condition and current evidence without inventing a carrier, conclusion, assumptions, or proposed change. Product and Engineering remained distinct. Every active concern named an informative run, and the installed method blocked landing when that run or return was missing.
+
+**Round-one requirement and skeptical attack:** The tester found the source-checkout label and installed-method digest understandable, with only minor friction because the digest population is not defined inline. In the uncertainty-stop mutant, Product could not waive missing evidence and Engineering refused product code. As an independent attack, syntax passed for all four hypothetical runtimes, but no role accepted syntax as evidence for adoption, journey, freshness, or cost. A consequential disagreement about whether baseline evidence was needed remained for Product synthesis rather than being flattened into permission.
+
+**Verdict: SUFFICIENT.** Selective routing, separation, inactive-role honesty, synthesis, informative-run returns, false-inactive repair, and provenance held for first-time use. Live carrier execution remains Piece 9.
+
+### Mid-product upgrader — `/root/piece8_retest_upgrader`
+
+**Candidate used:** exact product candidate `99a0f38` in disposable supported v5, rc.1, rejected rc.2, custom, missing-product, dirty, retry, corrupt-state, and completion-route fixtures. The source repository was not edited.
+
+**What held:** Supported v5 and rc.1 repositories received one canonical pending block while owner-authored and quoted history stayed inert. Exact rejected-rc.2 repair preserved the product prefix byte-for-byte. Shape, Map, and named-live-piece completion routes finished and clean retries continued the correct route. Missing product routed to Shape; dirty owner work survived; successful status and diff output matched Git. Fabricated completion without its record, duplicate blocks, and malformed status all refused and kept the old marker.
+
+**Blocking skeptical attack:** The tester first created the rejected rc.2 state through the supported v5 upgrade at `737959a`, then deleted its generated assessment section. Upgrading that fixture with `99a0f38` exited zero, said the current repository had never opened the one-time assessment, told the builder to resume from `state.md`, and advanced the marker. Deleting the outstanding evidence therefore impersonated non-applicability despite the installed promise that deleted required state fails. The tester also found that corrupt-state refusals occur after method files have already been copied: `product.md` and the old marker stayed unchanged, but the installed surface and working-tree status did not. The refusal is retryable but not byte-atomic.
+
+**Verdict: SEND BACK.** A legacy rc.2 marker without the new lifecycle pointer is ambiguous: it can mean an unaffected current product or a rejected migration whose block was deleted. It must not be inferred safe. The upgrader must detect that ambiguity before changing installed bytes, preserve the prior marker and tree on refusal, and keep legitimate current products distinguishable. The fresh judge must decide whether this preflight requirement applies to every corrupt assessment state.
