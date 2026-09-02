@@ -124,3 +124,55 @@ This replaces the universal “all four at every piece and all active roles at t
 - Planned skeptical attack: find one realistic substantial piece for which selective activation loses a lens the owner's original request meant to protect, or show that the new cost accounting can excuse the failed experiment.
 - Dispatch: only after this receipt is committed.
 - Verdict and judgment: pending.
+
+### Redesigned Shape tester round 1 — sent back
+
+Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:
+
+1. A false inactive decision repaired only the next comparable piece. The current piece could still advance without the lens it had wrongly skipped.
+2. The proposed 250,000-fresh / 750,000-gross stops demoted the exact 250,000-gross limit that run 5 exceeded. Separate accounting was useful, but that enforcement change could relabel the failed experiment.
+
+Product accepted both findings. Business `/root/business_cost_return` and Engineering `/root/redesign_engineering_role` separately reviewed the repair against the same evidence and found it worth re-testing. Their conclusions below replace only the two defective parts of the first candidate; every other tested rule remains.
+
+### Product fix — current-piece repair and additive cost accounting
+
+When evidence shows that Business or Experience was wrongly inactive, work stops. The current piece returns to Shape for a wrong promise, Map for a wrong piece or order, or otherwise to piece setup. The missed role is summoned against the evidence available when it should have been called and stays active through the rest of the piece. Product re-synthesizes before Engineering starts or resumes implementation. Any Built line, review receipt, tester verdict, or judgment affected by the omission is invalid; after the repair runs, the piece needs a new Built line and a new receipt. The call condition is also broadened and the role is mandatory on the next comparable piece. A repeat keeps it involved through the milestone. Fixing the future never substitutes for fixing the current product.
+
+All four roles contribute from distinct contexts at every initial or reopened Shape and on the first Map that follows it. A later re-map calls Product plus every role whose protected concern, evidence, expiry, or ordering is affected. For a pre-v6 product, the one full assessment covers both the existing product and its current map; it reopens Shape for a wrong promise and Map for a wrong piece or order.
+
+The call conditions are executable records, not Product's intuition. `product.md` names, for Business and Experience, the observable conditions, trusted direct evidence, expiry, and examples of a material scope change. `map.md` records each role's application of those conditions to every piece and the earliest informative run for each active concern. Piece setup rechecks the mapped decision against current scope and evidence, and repeats that check whenever either changes. A fired condition, expired or missing evidence, a listed material change, or uncertainty summons the role. Product cannot waive the result. Product, Engineering, the owner, or new measured evidence can expose a trigger while a role is absent; an active role may also declare a material effect itself.
+
+An active role's contribution is due before the affected product decision or code. Its return is due at the earliest named informative run and before the piece lands or the associated choice becomes expensive. The runs needed to create that evidence may proceed, but until the return exists the concern stays unresolved and the piece cannot land. Business's `not judged` remains blocking wherever its ruling is required. If a carrier becomes unavailable mid-piece, the replacement is named honestly, receives the same source evidence and prior contribution, and does not erase either carrier's exclusion from testing or judging.
+
+The old run remains failed at 266,484 gross tokens against its 250,000 limit. The complete redesigned fixture passes only if all three are true: at most **250,000 gross tokens**, at most **200,000 fresh tokens**, and at most **900 seconds**. Fresh means uncached input plus output; gross means all input plus output. Cached, fresh, and gross usage are each reported from host evidence. Neither token measure can excuse failure of the other.
+
+Before another complete run, the runner enforces a component envelope whose ceilings sum to no more than **235,000 gross / 160,000 fresh / 705 seconds**:
+
+| Component | Gross | Fresh | Wall |
+|---|---:|---:|---:|
+| Product selects evidence and issues the role briefs | 21,000 | 12,000 | 45 s |
+| Business, Experience, and Engineering contribute concurrently | 54,000 | 32,000 | 90 s |
+| Product integrates and commits the pre-code decision | 26,000 | 18,000 | 60 s |
+| Engineering implements, runs, and returns | 70,000 | 55,000 | 360 s |
+| Business and Experience return concurrently | 40,000 | 24,000 | 90 s |
+| Product closes the record | 24,000 | 19,000 | 60 s |
+| **Complete admission envelope** | **235,000** | **160,000** | **705 s** |
+
+Each role's contribution receives its direct evidence in the initial hashed packet and gets one response; it does not spend model turns discovering or polling for evidence. Engineering may use at most three further responses to implement, execute, and return. Product gets one response to select and dispatch, one to integrate before code, and one to close the record. Every downstream component's allowance is reserved before the component starts. A component that exceeds its own token, turn, or wall allowance fails even if another used less. Before the end-to-end attempt, isolated probes must confirm Business contribution-and-return at no more than 38,000 gross / 22,000 fresh; the three concurrent contributions at 54,000 / 32,000; Product selection-and-synthesis at 47,000 / 30,000; and Engineering contribution-through-return at 88,000 / 67,000. Any failed probe invalidates the admission case and blocks the complete run.
+
+The local hosts report usage after a model response, so the runner may observe an overshoot only after it occurs. It stops on the first observed crossing and records the final observed number. Any crossing fails; “the stop worked” cannot be reported as “the budget held.”
+
+### Amended proposed replacement promise — not yet ratified
+
+> **Speck protects four product lenses throughout substantial work, while paying for a separate context when that lens can change the product. Product, Business, Experience, and Engineering contribute from distinct contexts every time the product is shaped and on the first map that follows. Business and Experience define observable call conditions, trusted evidence, and expiry; they apply those conditions to the mapped pieces. Every substantial piece then has separate Product and Engineering carriers. At piece setup and whenever scope or evidence changes, the recorded conditions are checked again. Business and Experience join before code when a condition fires, evidence is missing or stale, the piece materially changed, the answer is uncertain, or they declare an effect. Product cannot waive those facts. An inactive role produces no fake report: the piece cites the role-owned condition and direct evidence that kept it out. Product integrates one decision and never implements; Engineering owns implementation. Each active role returns at the earliest real run that can test its conclusion, before the piece lands or the choice becomes expensive; without that evidence the concern stays unresolved and the piece cannot land. If a role was wrongly left out, the current piece stops and reopens, the missed role joins before work continues, and affected build or review evidence is replaced. The role also stays for the next comparable piece; a repeat keeps it through the milestone. Business still gives a binding ruling on business-changing work and every milestone. Role contributors and honest replacement carriers never count as fresh testers or judges, specialists still need one responsibility and an exit trigger, small changes remain exempt, and the owner still receives one product recommendation rather than departmental reports.**
+
+This amended promise supersedes the first proposed promise in Round 4. The full operational interpretation remains Product synthesis points 1–3 and 5–8 above, with point 4 corrected to say Business and Experience **contribute before code** when activated and return only at their earliest informative run. The cost and false-inactive rules in this fix supersede the earlier 250,000-fresh / 750,000-gross proposal and its next-piece-only miss consequence.
+
+## Redesigned Shape re-test receipt — opened before dispatch
+
+- Candidate: the unchanged sufficient portions of `4422d6c` plus the tester finding, Product fix, component envelope, and complete amended promise at the commit containing this receipt.
+- Fresh re-tester: `/root/redesign_shape_tester`, replaying both failed controls over their full populations.
+- Planned extra attack: try to make an omission invalidate unrelated evidence or take a landed piece backward unnecessarily; the repair must invalidate only evidence affected by the missing role while still blocking every decision that depended on it.
+- Judge: a new carrier that did not shape, contribute, implement, test, or review either prior v6 candidate; dispatched only after the re-test is sufficient.
+- Dispatch: after this receipt is committed; exact commit will be appended with the verdict.
+- Verdict and judgment: pending.
