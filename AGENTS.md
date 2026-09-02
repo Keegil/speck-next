@@ -37,6 +37,18 @@ If later evidence shows that Business or Experience was wrongly kept inactive, s
 
 A consequential miss after a called role said its concern was handled is a separate escalation, not false inactivity. Keep that role involved at the next comparable piece's key decisions and informative runs. A repeat keeps it involved through the milestone until measured evidence supports relaxing it.
 
+### Finish an upgrade
+
+When `product.md` says **Speck Next upgrade assessment: pending**, before substantial work Product writes `work/product-team-assessment.md`: product, map, state, and live piece read; each role's distinct carrier, direct evidence, conclusion, assumptions, proposed change, and active decision; one **Product synthesis**; one **Route**.
+
+Wrong promise reopens Shape; wrong piece/order reopens Map; otherwise resume the named live piece from `state.md`, without owner decision or backfill. Commit the record, `product.md`, `state.md`, and any reopening decision. Keep `Record`; set status to:
+
+- `complete — Shape reopened`
+- `complete — Map reopened`
+- `complete — resumed [live piece] from state.md`, using the actual piece name.
+
+Complete needs the record. Missing, duplicate, deleted, or malformed block fails; quoted or paraphrased history is inert. Continue from `state.md`.
+
 Business rules `kept`, `broken`, or `not judged` on any piece that changes users, value, price or revenue, acquisition or adoption, ongoing cost, or durable value, and on every milestone. `Broken` or `not judged` blocks that piece or milestone. This is conditional business evidence, not a fifth universal quality ruling.
 
 Anyone who contributed as a product-building role or specialist — including an original or replacement carrier — is ineligible as a fresh tester or judge. Small changes do not summon this team.

@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
-import copy, hashlib, importlib.util, json, os, pathlib, re, subprocess, sys, tempfile
+import copy, hashlib, importlib.util, json, os, pathlib, re, shutil, subprocess, sys, tempfile
 from datetime import date, timedelta
 
 
 RC1_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise."
-SELECTIVE_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order."
+REJECTED_RC2_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order."
+ASSESSMENT_HEADING = "## Speck Next upgrade assessment"
+ASSESSMENT_RECORD = "work/product-team-assessment.md"
+ASSESSMENT_RECORD_LINE = f"**Record:** `{ASSESSMENT_RECORD}`"
+ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending"
+ASSESSMENT_BLOCK = f"{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n"
+ASSESSMENT_COMPLETE_SHAPE = "**Speck Next upgrade assessment:** complete — Shape reopened"
+ASSESSMENT_COMPLETE_MAP = "**Speck Next upgrade assessment:** complete — Map reopened"
 NEXT_MISSING_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
 NEXT_MISSING_CLEAN = "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work."
-NEXT_PENDING_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then run the pending product-and-current-map assessment named in product.md before the next substantial piece."
-NEXT_PENDING_CLEAN = "Next: there are no upgrade changes to commit; finish the pending product-and-current-map assessment named in product.md before the next substantial piece."
+NEXT_PENDING_CHANGED = f"Next: review the reported paths and complete diff, commit the upgrade, then complete {ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md."
+NEXT_PENDING_CLEAN = f"Next: there are no upgrade changes to commit; complete {ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md."
 NEXT_CURRENT_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then resume current work from state.md."
 NEXT_CURRENT_CLEAN = "Next: there are no upgrade changes to commit; resume current work from state.md."
 CONTRIBUTION_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "earliest_run"}
+ASSESSMENT_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "active_decision"}
 
 
 def role_facts(**changes):
@@ -268,10 +276,93 @@ def run_role_controls():
     return good
 
 
+def make_assessment_case(route):
+    roles = ("Product", "Business", "Experience", "Engineering")
+    return {
+        "inputs": {"product": "product.md", "map": "map.md", "state_live_piece": "Piece alpha"},
+        "contributions": {
+            role: {
+                "carrier": f"assessment-{role.lower()}",
+                "evidence": f"direct {role.lower()} evidence",
+                "conclusion": f"{role} conclusion",
+                "assumptions": f"{role} assumptions",
+                "proposed_change": f"{role} proposed change",
+                "active_decision": f"{role} active decision",
+            }
+            for role in roles
+        },
+        "product_synthesis": "One integrated decision with dissent preserved.",
+        "routes": [route],
+    }
+
+
+def validate_assessment_case(case):
+    errors = []
+    roles = {"Product", "Business", "Experience", "Engineering"}
+    if set(case.get("inputs", {})) != {"product", "map", "state_live_piece"} or not all(case["inputs"].values()):
+        errors.append("the existing product, current map, state, and live piece were not all read")
+    if set(case.get("contributions", {})) != roles:
+        errors.append("the assessment does not contain exactly four role contributions")
+    for contribution in case.get("contributions", {}).values():
+        if set(contribution) != ASSESSMENT_FIELDS or not all(contribution.values()):
+            errors.append("an assessment contribution is incomplete")
+    carriers = [entry.get("carrier") for entry in case.get("contributions", {}).values()]
+    if len(carriers) != len(set(carriers)):
+        errors.append("assessment carriers are not distinct")
+    if not case.get("product_synthesis"):
+        errors.append("Product synthesis is missing")
+    routes = case.get("routes", [])
+    allowed = {"Shape reopened", "Map reopened", "resumed Piece alpha from state.md"}
+    if len(routes) != 1 or routes[0] not in allowed:
+        errors.append("the assessment must select exactly one allowed route")
+    return errors
+
+
+def run_assessment_controls():
+    clean = [
+        ("wrong promise reopens Shape", make_assessment_case("Shape reopened")),
+        ("wrong piece or order reopens Map", make_assessment_case("Map reopened")),
+        ("no reopen resumes the existing live piece", make_assessment_case("resumed Piece alpha from state.md")),
+    ]
+    mutants = []
+    missing = copy.deepcopy(clean[0][1])
+    missing["contributions"].pop("Business")
+    mutants.append(("missing contribution", missing))
+    duplicate = copy.deepcopy(clean[1][1])
+    duplicate["contributions"]["Business"]["carrier"] = duplicate["contributions"]["Product"]["carrier"]
+    mutants.append(("duplicate carrier", duplicate))
+    no_synthesis = copy.deepcopy(clean[2][1])
+    no_synthesis["product_synthesis"] = ""
+    mutants.append(("missing Product synthesis", no_synthesis))
+    no_route = copy.deepcopy(clean[2][1])
+    no_route["routes"] = []
+    mutants.append(("zero routes", no_route))
+    two_routes = copy.deepcopy(clean[2][1])
+    two_routes["routes"] = ["Shape reopened", "Map reopened"]
+    mutants.append(("two routes", two_routes))
+
+    good = True
+    for label, case in clean:
+        errors = validate_assessment_case(case)
+        passed = not errors
+        print(f"  [{'ok' if passed else 'RED'}] assessment clean: {label}")
+        good = good and passed
+    for label, case in mutants:
+        errors = validate_assessment_case(case)
+        passed = bool(errors)
+        print(f"  [{'ok' if passed else 'RED'}] assessment mutant rejected: {label}" +
+              (f" ({errors[0]})" if errors else ""))
+        good = good and passed
+    print(f"  [measure] assessment-control subjects={len(clean) + len(mutants)} clean={len(clean)} mutants={len(mutants)}")
+    return good
+
+
 def static_contract_homes(kernel):
     required = {
         "AGENTS.md": ["Product and Engineering are always called", "named run and its return",
-                      "wrongly kept inactive", "concern was handled", "replacement carrier"],
+                      "wrongly kept inactive", "concern was handled", "replacement carrier",
+                      "Finish an upgrade", ASSESSMENT_RECORD, "complete — Shape reopened",
+                      "complete — Map reopened", "from state.md"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -282,9 +373,12 @@ def static_contract_homes(kernel):
                                "## False inactive repair", "## Handled-concern miss escalation"],
         "templates/state.md": ["overdue informative returns", "false inactive call"],
         "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
-                        "writes the version marker last", "replacement carrier inherits"],
-        "README.md": ["right product-building views", "version-and-commit ends"],
-        "capabilities.md": ["Selective product team", "live-host affordability"],
+                        "writes the version marker last", "replacement carrier inherits",
+                        ASSESSMENT_RECORD, "method-surface digests"],
+        "README.md": ["right product-building views", ASSESSMENT_RECORD,
+                      "source checkout separately"],
+        "capabilities.md": ["Selective product team", "live-host affordability",
+                            "assessment-control subjects"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -357,15 +451,46 @@ def surface_hash(root):
     return digest.hexdigest()
 
 
+def method_surface_sha256(root):
+    digest = hashlib.sha256()
+    files = []
+    for relative in ("AGENTS.md", "CLAUDE.md", ".claude/skills", "templates"):
+        path = root / relative
+        paths = sorted(p for p in path.rglob("*") if p.is_file()) if path.is_dir() else [path]
+        files.extend(paths)
+    for item in sorted(files, key=lambda candidate: candidate.relative_to(root).as_posix()):
+        digest.update(item.relative_to(root).as_posix().encode() + b"\0" + item.read_bytes() + b"\0")
+    return digest.hexdigest()
+
+
 def marker(root):
     return json.loads((root / ".claude/speck-next.json").read_text())
 
 
-def upgrade_report_ok(run, prior_version, prior_commit, source_commit, expected_next):
+def provenance(version, source_checkout, surface_digest=None):
+    surface = f"sha256:{surface_digest}" if surface_digest else "not recorded"
+    return f"{version} (source checkout {source_checkout or 'not recorded'}; method surface {surface})"
+
+
+def marker_ok(root, source_checkout, surface_digest, assessment_record=None):
+    actual = marker(root)
+    expected = {
+        "name": "speck-next",
+        "version": "6.0.0-rc.2",
+        "sourceCheckout": source_checkout,
+        "methodSurfaceSha256": surface_digest,
+    }
+    if assessment_record:
+        expected["upgradeAssessmentRecord"] = assessment_record
+    return all(actual.get(key) == value for key, value in expected.items()) and "commit" not in actual
+
+
+def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surface_digest,
+                      expected_next, prior_digest=None):
     output = run.stdout + run.stderr
     next_lines = [line for line in run.stdout.splitlines() if line.startswith("Next:")]
     return (run.returncode == 0 and
-            f"{prior_version} ({prior_commit}) -> 6.0.0-rc.2 ({source_commit})" in output and
+            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in output and
             "Product team migration:" in output and
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
@@ -373,13 +498,49 @@ def upgrade_report_ok(run, prior_version, prior_commit, source_commit, expected_
 
 
 def run_migration_matrix(kernel):
-    source_commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=kernel,
-                                   check=True, capture_output=True, text=True).stdout.strip()
+    source_checkout = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=kernel,
+                                     check=True, capture_output=True, text=True).stdout.strip()
+    surface_digest = method_surface_sha256(kernel)
     results = []
     details = []
 
     with tempfile.TemporaryDirectory(prefix="speck-piece8-") as temporary:
         base = pathlib.Path(temporary)
+
+        def expected_product(original):
+            return original + ("\n" if original.endswith("\n") else "\n\n") + ASSESSMENT_BLOCK
+
+        def assessment_record(route):
+            return ("# Product-team assessment\n\n"
+                    "**Product read:** product.md\n"
+                    "**Map read:** map.md\n"
+                    "**State and live piece read:** state.md · Piece alpha\n\n"
+                    "## Product\nCarrier: assessment-product\nDirect evidence: product\nConclusion: product\nAssumptions: product\nProposed change: product\nActive decision: product\n\n"
+                    "## Business\nCarrier: assessment-business\nDirect evidence: business\nConclusion: business\nAssumptions: business\nProposed change: business\nActive decision: business\n\n"
+                    "## Engineering\nCarrier: assessment-engineering\nDirect evidence: engineering\nConclusion: engineering\nAssumptions: engineering\nProposed change: engineering\nActive decision: engineering\n\n"
+                    "## Product synthesis\nOne integrated decision.\n\n"
+                    f"## Route\n{route}\n")
+
+        def complete_pending(repo, status, route, state, retained_history=""):
+            product = (repo / "product.md").read_text().replace(ASSESSMENT_PENDING, status, 1)
+            if retained_history:
+                product += "\n" + retained_history
+            write_file(repo, "product.md", product)
+            write_file(repo, ASSESSMENT_RECORD, assessment_record(route))
+            write_file(repo, "state.md", state)
+            commit_fixture(repo, "complete product-team assessment")
+
+        def seeded_pending(name):
+            repo = base / name
+            repo.mkdir()
+            seed_upgrade_repo(repo, "5.4.1", f"{name}fixture", "# Existing product\n",
+                              {"map.md": "# Map\n\n- [ ] Piece alpha — live\n",
+                               "state.md": "# State\n\nPiece alpha is live.\n"})
+            first = run_cli(kernel, "upgrade", repo)
+            if first.returncode != 0:
+                raise AssertionError(first.stderr or first.stdout)
+            commit_fixture(repo, "accept pending upgrade")
+            return repo
 
         fresh = base / "fresh"
         fresh.mkdir()
@@ -387,8 +548,10 @@ def run_migration_matrix(kernel):
         run = run_cli(kernel, "install", fresh)
         installed = [p for p in fresh.rglob("*") if p.is_file() and ".git" not in p.parts]
         fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == "6.0.0-rc.2" and
-                    marker(fresh)["commit"] == source_commit and not (fresh / "product.md").exists() and
+                    marker_ok(fresh, source_checkout, surface_digest) and
+                    not (fresh / "product.md").exists() and
                     len(installed) <= 20 and sum(p.stat().st_size for p in installed) <= 100_000 and
+                    f"Installed Speck Next {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in run.stdout and
                     "Installed paths:" in run.stdout and "Next:" in run.stdout)
         results.append(("fresh install reports its surface and leaves product.md missing", fresh_ok))
 
@@ -401,13 +564,13 @@ def run_migration_matrix(kernel):
         commit_fixture(v5, "accept first upgrade")
         second = run_cli(kernel, "upgrade", v5)
         second_hash = surface_hash(v5)
-        migrated_v5 = (upgrade_report_ok(first, "5.4.1", "v5fixture", source_commit,
-                                         NEXT_PENDING_CHANGED) and
-                       (v5 / "product.md").read_text().startswith(v5_product) and
-                       (v5 / "product.md").read_text().count(SELECTIVE_STATUS) == 1 and
-                       marker(v5)["version"] == "6.0.0-rc.2" and first_hash == second_hash and
-                       upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
-                                         NEXT_PENDING_CLEAN) and
+        migrated_v5 = (upgrade_report_ok(first, "5.4.1", "v5fixture", source_checkout,
+                                         surface_digest, NEXT_PENDING_CHANGED) and
+                       (v5 / "product.md").read_text() == expected_product(v5_product) and
+                       marker_ok(v5, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+                       first_hash == second_hash and
+                       upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                                         surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                        "Working-tree changes across the complete installed surface plus product.md: none." in second.stdout and
                        "Complete installed-surface plus product.md diff: empty." in second.stdout)
         results.append(("v5 migration is selective and the second upgrade is byte-stable", migrated_v5))
@@ -416,16 +579,19 @@ def run_migration_matrix(kernel):
         rc1 = base / "rc1"
         rc1.mkdir()
         rc1_product = f"# Existing product\n\nHistorical sentence.\n\n## Product team\n\n{RC1_STATUS}\n\nTrailing history.\n"
-        expected_rc2 = rc1_product.replace(RC1_STATUS, SELECTIVE_STATUS)
+        expected_rc2 = expected_product(rc1_product.replace(RC1_STATUS, ""))
         seed_upgrade_repo(rc1, "6.0.0-rc.1", "rc1fixture", rc1_product)
         first = run_cli(kernel, "upgrade", rc1)
         first_hash = surface_hash(rc1)
         second = run_cli(kernel, "upgrade", rc1)
         second_hash = surface_hash(rc1)
-        rc1_ok = (upgrade_report_ok(first, "6.0.0-rc.1", "rc1fixture", source_commit,
-                                   NEXT_PENDING_CHANGED) and
+        rc1_ok = (upgrade_report_ok(first, "6.0.0-rc.1", "rc1fixture", source_checkout,
+                                   surface_digest, NEXT_PENDING_CHANGED) and
                   (rc1 / "product.md").read_text() == expected_rc2 and RC1_STATUS not in expected_rc2 and
-                  first_hash == second_hash and marker(rc1)["version"] == "6.0.0-rc.2")
+                  first_hash == second_hash and
+                  upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                                    surface_digest, NEXT_PENDING_CHANGED, surface_digest) and
+                  marker_ok(rc1, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("exact generated rc.1 prose is replaced and retry is byte-stable", rc1_ok))
         details.append(f"rc1_second_hash={second_hash}")
 
@@ -437,20 +603,22 @@ def run_migration_matrix(kernel):
         first_hash = surface_hash(custom)
         second = run_cli(kernel, "upgrade", custom)
         custom_text = (custom / "product.md").read_text()
-        custom_ok = (upgrade_report_ok(first, "5.4.1", "customfixture", source_commit,
-                                      NEXT_PENDING_CHANGED) and
-                     custom_text.startswith(custom_product) and
-                     "## Speck Next product-team assessment" in custom_text and
-                     custom_text.count(SELECTIVE_STATUS) == 1 and first_hash == surface_hash(custom) and
+        custom_ok = (upgrade_report_ok(first, "5.4.1", "customfixture", source_checkout,
+                                      surface_digest, NEXT_PENDING_CHANGED) and
+                     custom_text == expected_product(custom_product) and
+                     custom_text.count(ASSESSMENT_HEADING) == 1 and
+                     first_hash == surface_hash(custom) and
+                     marker_ok(custom, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                      second.returncode == 0)
-        results.append(("custom Product team prose is untouched beside one canonical status", custom_ok))
+        results.append(("custom Product team prose is untouched before one canonical assessment", custom_ok))
 
         missing = base / "missing"
         missing.mkdir()
         seed_upgrade_repo(missing, "5.4.1", "missingfixture")
         run = run_cli(kernel, "upgrade", missing)
-        missing_ok = (upgrade_report_ok(run, "5.4.1", "missingfixture", source_commit,
-                                       NEXT_MISSING_CHANGED) and
+        missing_ok = (upgrade_report_ok(run, "5.4.1", "missingfixture", source_checkout,
+                                       surface_digest, NEXT_MISSING_CHANGED) and
+                      marker_ok(missing, source_checkout, surface_digest) and
                       not (missing / "product.md").exists() and "product.md is missing" in run.stdout)
         results.append(("missing pre-v6 product stays missing and routes to Shape", missing_ok))
 
@@ -463,11 +631,12 @@ def run_migration_matrix(kernel):
         first_hash = surface_hash(current)
         commit_fixture(current, "accept current upgrade")
         second = run_cli(kernel, "upgrade", current)
-        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", "currentfixture", source_commit,
-                                        NEXT_CURRENT_CHANGED) and
+        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", "currentfixture", source_checkout,
+                                        surface_digest, NEXT_CURRENT_CHANGED) and
                       (current / "product.md").read_text() == current_product and
-                      upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
-                                        NEXT_CURRENT_CLEAN) and
+                      marker_ok(current, source_checkout, surface_digest) and
+                      upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                                        surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       first_hash == surface_hash(current))
         results.append(("assessed current product resumes from state without rerunning assessment", current_ok))
 
@@ -478,11 +647,12 @@ def run_migration_matrix(kernel):
         commit_fixture(current_missing, "accept current missing-product upgrade")
         second = run_cli(kernel, "upgrade", current_missing)
         current_missing_ok = (
-            upgrade_report_ok(first, "6.0.0-rc.2", "currentmissingfixture", source_commit,
-                              NEXT_MISSING_CHANGED) and
+            upgrade_report_ok(first, "6.0.0-rc.2", "currentmissingfixture", source_checkout,
+                              surface_digest, NEXT_MISSING_CHANGED) and
             "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
-            upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
-                              NEXT_MISSING_CLEAN) and
+            marker_ok(current_missing, source_checkout, surface_digest) and
+            upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                              surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             not (current_missing / "product.md").exists())
         results.append(("missing current product stays missing and routes to Shape", current_missing_ok))
 
@@ -499,8 +669,8 @@ def run_migration_matrix(kernel):
         run = run_cli(kernel, "upgrade", porcelain)
         porcelain_ok = (
             installed.returncode == 0 and
-            upgrade_report_ok(run, "5.4.1", "porcelainfixture", source_commit,
-                              NEXT_PENDING_CHANGED) and
+            upgrade_report_ok(run, "5.4.1", "porcelainfixture", source_checkout,
+                              surface_digest, NEXT_PENDING_CHANGED) and
             "Working-tree changes across the complete installed surface plus product.md:\n M .claude/speck-next.json\n" in run.stdout)
         results.append(("first unstaged changed path keeps both porcelain status columns", porcelain_ok))
 
@@ -513,8 +683,8 @@ def run_migration_matrix(kernel):
         write_file(dirty, "state.md", dirty_state)
         write_file(dirty, "work/inflight.md", dirty_work)
         run = run_cli(kernel, "upgrade", dirty)
-        dirty_ok = (upgrade_report_ok(run, "5.4.1", "dirtyfixture", source_commit,
-                                     NEXT_PENDING_CHANGED) and
+        dirty_ok = (upgrade_report_ok(run, "5.4.1", "dirtyfixture", source_checkout,
+                                     surface_digest, NEXT_PENDING_CHANGED) and
                     (dirty / "state.md").read_text() == dirty_state and
                     (dirty / "work/inflight.md").read_text() == dirty_work)
         results.append(("dirty unrelated work survives byte for byte", dirty_ok))
@@ -529,9 +699,9 @@ def run_migration_matrix(kernel):
         (retry / "product.md").rmdir()
         write_file(retry, "product.md", "# Recovered product\n")
         retried = run_cli(kernel, "upgrade", retry)
-        retry_ok = (marker_held and upgrade_report_ok(retried, "5.4.1", "retryfixture", source_commit,
-                                                     NEXT_PENDING_CHANGED) and
-                    marker(retry)["version"] == "6.0.0-rc.2")
+        retry_ok = (marker_held and upgrade_report_ok(retried, "5.4.1", "retryfixture", source_checkout,
+                                                     surface_digest, NEXT_PENDING_CHANGED) and
+                    marker_ok(retry, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("failed migration leaves the old marker and a retry completes", retry_ok))
 
         unknown = base / "unknown"
@@ -542,6 +712,113 @@ def run_migration_matrix(kernel):
         unknown_ok = (refused.returncode != 0 and "unknown version" in refused.stderr and
                       "Nothing was touched" in refused.stderr and before == surface_hash(unknown))
         results.append(("unknown marker version refuses before touching the repository", unknown_ok))
+
+        rejected = base / "rejected-rc2"
+        rejected.mkdir()
+        rejected_product = ("# Rejected rc.2 product\n\n> " + REJECTED_RC2_STATUS +
+                            "\n\n## Product team\n\n" + REJECTED_RC2_STATUS + "\n")
+        seed_upgrade_repo(rejected, "6.0.0-rc.2", "rejectedfixture", rejected_product)
+        run = run_cli(kernel, "upgrade", rejected)
+        repaired_text = (rejected / "product.md").read_text()
+        rejected_ok = (
+            upgrade_report_ok(run, "6.0.0-rc.2", "rejectedfixture", source_checkout,
+                              surface_digest, NEXT_PENDING_CHANGED) and
+            repaired_text.count(ASSESSMENT_HEADING) == 1 and
+            f"> {REJECTED_RC2_STATUS}" in repaired_text and
+            not any(line == REJECTED_RC2_STATUS for line in repaired_text.splitlines()) and
+            marker_ok(rejected, source_checkout, surface_digest, ASSESSMENT_RECORD))
+        results.append(("rejected rc.2 generated status becomes explicit while its quote stays inert", rejected_ok))
+
+        route_specs = [
+            ("Shape", ASSESSMENT_COMPLETE_SHAPE, "Shape reopened.",
+             "# State\n\nShape is reopened.\n", "Next: there are no upgrade changes to commit; continue Shape from state.md.", ""),
+            ("Map", ASSESSMENT_COMPLETE_MAP, "Map reopened.",
+             "# State\n\nMap is reopened.\n", "Next: there are no upgrade changes to commit; continue Map from state.md.", ""),
+            ("resume", "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md",
+             "Resume Piece alpha from state.md.", "# State\n\nPiece alpha is live.\n",
+             "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+             f"> {REJECTED_RC2_STATUS}\nHistorical wording paraphrases that an assessment once waited."),
+        ]
+        for name, status, route, state, expected_next, retained in route_specs:
+            repo = seeded_pending(f"complete-{name.lower()}")
+            complete_pending(repo, status, route, state, retained)
+            before = surface_hash(repo)
+            run = run_cli(kernel, "upgrade", repo)
+            route_ok = (
+                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                                  surface_digest, expected_next, surface_digest) and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+                before == surface_hash(repo) and
+                (not retained or retained in (repo / "product.md").read_text()))
+            results.append((f"completed assessment follows the {name} route", route_ok))
+
+        corruptions = {
+            "missing product": None,
+            "duplicate block": lambda text: text + "\n" + ASSESSMENT_BLOCK,
+            "malformed status": lambda text: text.replace(ASSESSMENT_PENDING,
+                                                            "**Speck Next upgrade assessment:** finished", 1),
+            "deleted block": lambda text: text.replace("\n" + ASSESSMENT_BLOCK, "", 1),
+        }
+        for name, mutation in corruptions.items():
+            repo = seeded_pending("corrupt-" + name.replace(" ", "-"))
+            product_path = repo / "product.md"
+            if mutation is None:
+                product_path.unlink()
+            else:
+                product_path.write_text(mutation(product_path.read_text()))
+            commit_fixture(repo, f"{name} corruption")
+            old_marker = (repo / ".claude/speck-next.json").read_bytes()
+            failed = run_cli(kernel, "upgrade", repo)
+            corruption_ok = (failed.returncode != 0 and
+                             "version marker was not changed" in failed.stderr and
+                             (repo / ".claude/speck-next.json").read_bytes() == old_marker)
+            results.append((f"{name} fails closed once the lifecycle is opened", corruption_ok))
+
+        missing_record = seeded_pending("missing-completed-record")
+        product_path = missing_record / "product.md"
+        product_path.write_text(product_path.read_text().replace(
+            ASSESSMENT_PENDING,
+            "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md", 1))
+        commit_fixture(missing_record, "claim completion without its record")
+        old_marker = (missing_record / ".claude/speck-next.json").read_bytes()
+        failed = run_cli(kernel, "upgrade", missing_record)
+        missing_record_ok = (failed.returncode != 0 and ASSESSMENT_RECORD in failed.stderr and
+                             (missing_record / ".claude/speck-next.json").read_bytes() == old_marker)
+        results.append(("completed assessment without its named record fails closed", missing_record_ok))
+
+        provenance_kernel = base / "provenance-kernel"
+        provenance_kernel.mkdir()
+        for relative in ("package.json", "AGENTS.md", "CLAUDE.md"):
+            shutil.copy2(kernel / relative, provenance_kernel / relative)
+        shutil.copytree(kernel / "bin", provenance_kernel / "bin")
+        shutil.copytree(kernel / ".claude/skills", provenance_kernel / ".claude/skills")
+        shutil.copytree(kernel / "templates", provenance_kernel / "templates")
+        init_repo(provenance_kernel)
+        commit_fixture(provenance_kernel, "provenance checkout one")
+        checkout_one = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=provenance_kernel,
+                                      check=True, capture_output=True, text=True).stdout.strip()
+        install_one = base / "provenance-one"
+        install_one.mkdir()
+        init_repo(install_one)
+        first = run_cli(provenance_kernel, "install", install_one)
+        subprocess.run(["git", "commit", "--allow-empty", "-q", "-m", "provenance checkout two"],
+                       cwd=provenance_kernel, check=True)
+        checkout_two = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=provenance_kernel,
+                                      check=True, capture_output=True, text=True).stdout.strip()
+        install_two = base / "provenance-two"
+        install_two.mkdir()
+        init_repo(install_two)
+        second = run_cli(provenance_kernel, "install", install_two)
+        digest_one = method_surface_sha256(install_one)
+        digest_two = method_surface_sha256(install_two)
+        provenance_ok = (
+            first.returncode == second.returncode == 0 and checkout_one != checkout_two and
+            digest_one == digest_two and
+            marker_ok(install_one, checkout_one, digest_one) and
+            marker_ok(install_two, checkout_two, digest_two) and
+            provenance("6.0.0-rc.2", checkout_one, digest_one) in first.stdout and
+            provenance("6.0.0-rc.2", checkout_two, digest_two) in second.stdout)
+        results.append(("different source checkouts identify one identical installed method surface", provenance_ok))
 
     good = True
     for label, passed in results:
@@ -558,9 +835,11 @@ def piece8_controls(kernel_arg):
     print("Piece 8 deterministic controls")
     homes_ok = static_contract_homes(kernel)
     roles_ok = run_role_controls()
+    assessments_ok = run_assessment_controls()
     migration_ok = run_migration_matrix(kernel)
-    print(f"Piece 8 controls: {'PASS' if homes_ok and roles_ok and migration_ok else 'FAIL'}")
-    return 0 if homes_ok and roles_ok and migration_ok else 1
+    passed = homes_ok and roles_ok and assessments_ok and migration_ok
+    print(f"Piece 8 controls: {'PASS' if passed else 'FAIL'}")
+    return 0 if passed else 1
 
 
 if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-controls":
