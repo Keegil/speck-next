@@ -64,3 +64,13 @@ The same tester read fix commit `674a7db`, re-executed both pre-fix controls, an
 ### Shape re-run — sufficient
 
 At commit `0680580`, the tester reproduced the ambiguous pre-fix sentence at `674a7db`, confirmed it absent from the fix, and attacked the carrier population independently: all four role contributors were disjoint from the tester and judge, and the contract excluded every contributor class. Verdict: **SUFFICIENT**. The separate judge re-heard the fixed boundary and ruled **SUFFICIENT**: the promise is complete, internally consistent, public-safe in the changed authoritative surface, and compatible with the existing eight promises. The owner's recorded `Yes, lock v6` selection and subsequent implementation authorization stand on the unchanged promise. Shape closes; Map may now run.
+
+## Round 4 — redesign after the running cost failure
+
+The bounded run stopped after Product and one Business contribution consumed 266,484 of the 250,000-token allowance. It had not reached two role contributions, synthesis, implementation, or the first real product run. Business ruled the execution design broken. This measured finding reopens Shape because “four separate contexts at every substantial piece” may itself be the wrong promise rather than only a bad carrier implementation.
+
+**Owner, verbatim:**
+
+> Alright, let's redesign a bit, but also consider if it's worth adjusting the rules a bit if we think we can make things genuinely better.
+
+Product is asking separate Business, Experience, and Engineering contexts to challenge both levels: which lenses must never disappear, and at which decisions a separate carrier actually improves the product enough to earn its cost. No implementation changes until Product integrates those contributions and the owner sees the resulting product promise in plain language. The reopening decision is recorded in `decisions.md` on 2026-09-02.
