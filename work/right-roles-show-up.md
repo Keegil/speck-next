@@ -152,4 +152,26 @@ The closing home census repeated the pre-code search families. Changed homes are
 
 ## Result
 
-The Piece 8 product implementation is complete at `10acad3`, `8bf17be`, `78857f9`, and `737959a`. Its deterministic selection, current-piece repair, return and escalation rules, fresh installation, honest migration, reporting, footprint, and public-detail boundary pass the proof plan. The active roles returned at their informative evidence and Business ruled `kept` for this piece. It is ready for the separate Built line; review is not open yet. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
+The Piece 8 product implementation is Built at `946b85a` from product commits `10acad3`, `8bf17be`, `78857f9`, and `737959a`; the review opened at `a737eaa`. The first-time-builder verdict is sufficient. The mid-product-upgrader verdict sends the candidate back because the one-time assessment has no explicit completion and resume path. That verdict does not count until the independent judge challenges it. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
+
+## Fresh testing — round 1
+
+### First-time builder — `/root/piece8_fresh_builder`
+
+**Candidate used:** product implementation through `737959a`; `git diff --exit-code 737959a..HEAD -- AGENTS.md CLAUDE.md bin templates .claude/skills` returned zero before the walk.
+
+**What happened:** `node bin/speck-next.js install <fresh-git-fixture>` installed rc.2 with 19 files. Reading only the installed method and templates, the tester created four contrasting piece setups. The internal change called Product and Engineering; the builder-visible handoff added Experience; the adoption, cost, and journey change called all four; and an ambiguous consequence also called the affected roles. Every setup kept Product and Engineering separate, used one Product synthesis, required a named informative run and return, and left inactive roles with evidence but no carrier or contribution prose. A deliberate invalid setup tried to dismiss uncertain shared-cache consequences with Product's opinion. The installed rule stopped at setup, called both affected roles, withdrew the synthesis, and required a new synthesis before Engineering; because no build existed, no later evidence needed invalidation.
+
+**Worst confusion:** the installer printed the source checkout `a737eaa`, while the last product-changing commit was `737959a`. `git diff --exit-code` proved the installed surface identical, so the tester treated this as provenance wording rather than a functional failure and left it for the judge.
+
+**Verdict: SUFFICIENT.** Selective call decisions were understandable and enforceable from the installed product. Live carrier execution remains Piece 9.
+
+### Mid-product upgrader — `/root/piece8_midproduct_upgrader`
+
+**Candidate used:** a disposable clone detached at `737959a`.
+
+**What held:** Real v5.4.1 and exact generated rc.1 repositories crossed to rc.2; rc.1's generated universal paragraph was replaced exactly once; custom Product-team bytes remained an exact prefix beside one generated status; missing `product.md` stayed missing and routed to Shape; dirty state/work hashes survived; retry was byte-stable; printed scoped status and diff exactly matched Git; the first status entry retained both porcelain columns; and a clean current retry said there was nothing to commit before resuming from `state.md`. An adversarial `product.md` directory left a visibly partial method copy but kept the old marker, so retry honesty held while failure presentation remained rough.
+
+**Blocking experience:** after an ordinary supported upgrade, the generated status and `Next:` line require a product-and-current-map assessment but the installed surface never says which record receives the four carrier contributions, where Product writes the synthesis, what explicit edit completes `Unassessed`, or how the existing live piece resumes. The tester ran `rg -n -i 'upgrade status|product-and-current-map|assess the existing product|unassessed|assessment.*(complete|finish|close|record|replace|remove)|clear.*assessment|migration' AGENTS.md .claude/skills templates product.md`; only the generated paragraph was actionable. Leaving it repeats “finish” forever; deleting it silently changes the upgrader to “resume.”
+
+**Verdict: SEND BACK.** Define the assessment record, its required evidence and synthesis, the explicit status transition, and the return to the existing live piece; then rerun this journey.
