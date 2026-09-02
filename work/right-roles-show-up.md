@@ -134,9 +134,21 @@ The closing home census repeated the pre-code search families. Changed homes are
 
 ## Review receipt
 
-Not open. Review starts only after the candidate runs, every Built check above passes, all active-role returns exist, Business rules, and `state.md` carries a valid Built line committed before this receipt.
+**Built line and commit:** `state.md` at `946b85a` says:
 
-**Excluded contributors:** `/root`, `/root/piece8_business`, `/root/piece8_experience`, `/root/piece8_engineering`, and any honest replacement carrier.
+> **Built — Piece 8 “The right roles show up”:** product commits `10acad3`, `8bf17be`, `78857f9`, and `737959a` cover exactly `AGENTS.md`, `.claude/skills/shape-product/SKILL.md`, `.claude/skills/shape-product/references/questions.md`, `.claude/skills/map-build/SKILL.md`, `.claude/skills/map-build/references/questions.md`, `templates/product.md`, `templates/map.md`, `templates/piece.md`, `templates/state.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. The proof-plan commands and returned results recorded in `work/right-roles-show-up.md` pass selective routing and focused broken twins, current-piece repair, informative-run and return blocks, handled-miss escalation, replacement and exclusion, fresh install, eleven honest migration journeys, syntax, complete diff, footprint, and the public-detail boundary; the existing same-context control remains red. No product implementation commit follows `737959a`.
+
+**Opened:** 2026-09-02, after `946b85a` and before either tester was dispatched.
+
+**Candidate:** the exact product implementation ending at `737959a`; later commits `c88dc4a`, `946b85a`, and this receipt change records only role evidence, state, and the review request.
+
+**Fresh tester 1 — first-time builder:** receives `product.md`, the Piece 8 promise and routing cases from `map.md`, and the installed candidate—not the product-role conclusions. They install into a disposable fresh repository, use the loaded method and templates to set up contrasting substantial changes, and decide whether Product/Engineering stay separate, Business/Experience appear only when facts call them, inactive roles leave no invented contribution, uncertainty cannot be waived, and the owner gets one understandable recommendation. They report what they actually ran and saw, the worst confusion, and a verdict.
+
+**Fresh tester 2 — mid-product upgrader:** receives the same product promise plus supported v5, exact generated rc.1, custom-section, missing-product, dirty-work, and clean-retry journeys—not the product-role conclusions. They execute disposable upgrades, follow the printed next action, inspect preserved and changed bytes, and decide whether an existing builder can resume without fabricated history, manual surgery, or a false commit instruction. They report what they actually ran and saw, the worst trust failure, and a verdict.
+
+**Judge:** after both tester records are committed, one fresh judge who built and tested none of this challenges their evidence and the candidate. The judge separately rules whether Piece 8 works, delivers the promise, is good to use, hangs together as a quality product, and has sound structure. A sufficient ruling must name every open item and its destination.
+
+**Excluded contributors and prior readers:** `/root`, `/root/piece8_business`, `/root/piece8_experience`, `/root/piece8_engineering`, `/root/piece8_migration_audit`, `/root/piece8_contract_audit`, `/root/bounded_transport_review`, every earlier Shape or Map contributor/tester/judge, and any honest replacement carrier. Neither fresh tester nor the judge may come from this set, and the judge cannot be either tester.
 
 ## Result
 
