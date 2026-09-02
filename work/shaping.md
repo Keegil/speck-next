@@ -190,3 +190,11 @@ The tester separately challenged every reopened Shape, the first Map after Shape
 - Challenge: try to overturn the tester's favorable verdict against the owner's original missing-lenses concern, the measured cost failure, all eight contract promises, and the full counterexample population in both redesigned Shape receipts. Pay particular attention to whether selective separation protects the lens while absent, whether the owner still sees one recommendation, and whether the cost rule is both honest and buildable.
 - Dispatch: only after this receipt is committed.
 - Judgment: pending.
+
+### Redesigned Shape judgment — sent back for owner ratification
+
+At commit `487ecd2`, independent judge `/root/redesign_shape_judge` challenged the re-tester's favorable verdict against the owner's original missing-lenses concern, the measured cost failure, all eight promises, and every counterexample in both receipts. The judge found the redesign substantively sufficient: role-owned conditions and rechecks protect an absent lens; false inactive decisions repair the current piece; unresolved returns block landing; replacement carriers do not regain review eligibility; Product remains the one owner interface; the old gross limit still fails the old run; and the component envelope is internally complete without a new installed file, skill, or dashboard.
+
+The judge sent Shape back for one remaining reason: the owner ratified the earlier universal promise, not this amended one. The candidate itself says “not yet ratified,” and the measured failure reopened Shape. After the owner sees and explicitly selects the complete amended promise, the judge requires no further redesign-only test unless that selection changes its substance.
+
+Preserved risks remain proof work, not hidden Shape defects: the isolated component runs must earn the 235,000-gross / 160,000-fresh admission envelope before another complete attempt; the complete run must then stay below both hard token limits and the time wall; and carrier continuity remains a monitored bias risk rather than proof of independence.
