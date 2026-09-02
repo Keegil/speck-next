@@ -198,3 +198,17 @@ At commit `487ecd2`, independent judge `/root/redesign_shape_judge` challenged t
 The judge sent Shape back for one remaining reason: the owner ratified the earlier universal promise, not this amended one. The candidate itself says “not yet ratified,” and the measured failure reopened Shape. After the owner sees and explicitly selects the complete amended promise, the judge requires no further redesign-only test unless that selection changes its substance.
 
 Preserved risks remain proof work, not hidden Shape defects: the isolated component runs must earn the 235,000-gross / 160,000-fresh admission envelope before another complete attempt; the complete run must then stay below both hard token limits and the time wall; and carrier continuity remains a monitored bias risk rather than proof of independence.
+
+### Round 4 — owner ratification
+
+The owner saw the complete amended promise and the product consequences in the conversation. The options were:
+
+- **Lock selective separation (Recommended):** Record this promise, re-cut the map, and have Engineering implement the reviewed design.
+- **Adjust the promise:** Keep Shape open and change whichever boundary still feels wrong.
+- **Keep universal separation:** Keep all four mandatory before every substantial piece, with the measured cost and ceremony problem unresolved.
+
+**Owner selection, verbatim:**
+
+> Lock selective separation!
+
+This ratifies the amended promise exactly as reviewed. Shape closes. Map reopens because role activation, proof order, and the live piece's setup must change before implementation.
