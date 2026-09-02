@@ -309,3 +309,33 @@ state agrees no piece is live: PASS
 - Skeptical attack: find one changed installed or executable home whose ownership or proof falls between the pieces.
 - Dispatch: only after this receipt and the completion command are committed.
 - Verdict and judgment: pending.
+
+### Selective Map tester round 1 — sent back
+
+At `8be7757`, `/root/selective_map_tester` executed the full 16-check completion population and returned every line green. The one-piece cross-invalidation, migration-after-host, false-inactive role, missing milestone piece, and premature piece-9 controls also held. Its independent home-by-home attack found one seam leak: piece 8 owned `bin/speck-next.js`, but its proof plan did not explicitly require the rc.1→rc.2 version crossing, exact version-span report, or complete changed-path output. Piece 9 could therefore claim to consume an “exact installed contract” whose version had never been proven. Verdict: **SEND BACK**.
+
+Product repaired the current map. Piece 8 now makes `6.0.0-rc.2` part of its outcome, treats both v5 and the obsolete universal rc.1 as migration sources, and requires the marker, exact from→to span, every changed path, and the complete installed-surface plus `product.md` diff to be exercised. Piece 9 explicitly consumes the **Judged `6.0.0-rc.2`** contract. The completion population also gains checks for both facts, so the dependency is no longer held only by prose inspection.
+
+### Expanded completion re-run
+
+Command: the committed re-cut completion command above, plus these two entries in `checks`:
+
+```python
+'piece 8 proves rc2 version and output span': all(x in pieces[8] for x in ('`6.0.0-rc.2`', 'exact from→rc.2 version/marker reporting', 'complete changed-path and surface diff output')),
+'piece 9 waits for Judged rc2 contract': '[queued — requires piece 8 Judged]' in pieces[9] and 'Judged `6.0.0-rc.2` installed contract' in pieces[9],
+```
+
+Returned exit code 0 with the original 16 `PASS` lines plus:
+
+```text
+piece 8 proves rc2 version and output span: PASS
+piece 9 waits for Judged rc2 contract: PASS
+```
+
+### Selective Map re-test receipt — opened before dispatch
+
+- Candidate: the original full population and controls at `8be7757`, plus the tester's finding, repaired `map.md`, and expanded dependency checks at the commit containing this receipt.
+- Re-tester: `/root/selective_map_tester`, replaying the exact seam failure and all prior controls.
+- Free attack: try an rc.1 repository with the exact generated universal section and one with owner-authored Product-team content; the former must receive an honest selective assessment, the latter must be preserved without letting the old marker suppress the assessment.
+- Judge: `/root/selective_map_judge`, dispatched only after the re-test is sufficient.
+- Verdict and judgment: pending.
