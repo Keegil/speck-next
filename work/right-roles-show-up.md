@@ -193,3 +193,48 @@ The Piece 8 candidate was Built at `946b85a` from product commits `10acad3`, `8b
 **Required fix and re-run:** Name the upgrade assessment record, the four carrier contributions and Product synthesis it receives, the explicit completion status/action, the wrong-promise and wrong-piece/order reopen paths, and the no-reopen return to the existing live piece. Replace the raw paragraph-presence gate with explicit state that quoted history cannot hold open. Report checkout provenance honestly or separately identify installed-surface provenance. After the fix, rerun the mid-product tester's complete supported-upgrade population; their grep must find executable assessment/resume instructions outside the generated status. Rerun the first-time builder's full contrasting routes and uncertainty-stop mutant if any installed always-read page, template, or output changes. Add the judge's skeptical attack: completed natural historical prose that quotes or paraphrases old status must remain complete. Then write a new Built line, open a new receipt, use fresh testers, and re-judge from a fresh context.
 
 **Open items:** assessment completion/resume and provenance return to this Piece 8 fix batch. Live-host affordability remains Piece 9.
+
+## Repair setup after judgment round 1
+
+### Active role deltas
+
+**Product — carrier `/root`:** The promise and piece boundary hold; the defect is a missing installed transition. Product accepts the judge's three findings and the distinct role consequences below. The repair must make one upgraded-product assessment executable and explicit without backfilling history, creating an owner decision on the no-reopen path, or weakening selective calls. Product remains active through the repaired migration matrix.
+
+**Business — carrier `/root/piece8_business`:** Direct comparison proved `737959a..a82ee0a` changed no product surface. A completed-assessment fixture retaining the old pending paragraph as history still printed the pending instruction, and two identical non-marker installations reported different bare commits. The resulting permanent loop and ambiguous provenance break adoption, owner attention, and durable trust. The unrepaired Piece 8 candidate is Business `broken`. Engineering may make the narrow repair after synthesis; Business returns and rules again only after the full no-model migration matrix passes. The failed host and Piece 8 setup limits remain failed.
+
+**Experience — carrier `/root/piece8_experience`:** The prior sufficient return is explicitly disproved. An upgraded builder needs one visible lifecycle: a canonical block in `product.md`; a named `work/product-team-assessment.md`; four distinct contributions and one Product synthesis there; one explicit route to Shape, Map, or the existing live piece; and a committed completion status that deletion cannot impersonate. Wrong promise reopens Shape, wrong piece/order reopens Map, and no reopen names and resumes the existing live piece from `state.md`. The installed page must explain the transition, and output must point to it. Experience returns after a builder completes all three routes from installed instructions alone while quoted and paraphrased history stays inert.
+
+**Engineering — carrier `/root/piece8_engineering`:** Whole-file paragraph search is the root defect. Engineering proposes one exact top-level assessment section whose status and record fields are parsed only within that section; a marker pointer distinguishes an upgraded product whose lifecycle must exist from a current product that never needed migration. Pending names the record. Complete accepts exactly Shape reopened, Map reopened, or a named live piece resumed from `state.md`, and requires the record to exist. Missing, duplicate, deleted, or malformed required state refuses visibly before the marker changes. Legacy generated prose remains only a migration fingerprint. Marker and output label the source checkout and add a SHA-256 over the sorted installed method surface; copied bytes must match that digest before the marker is written last. No dependency, installed file, template, skill, or Piece 9 path is added.
+
+### Product synthesis and handoff
+
+The assessment becomes a real, single-source state transition:
+
+```md
+## Speck Next upgrade assessment
+
+**Speck Next upgrade assessment:** pending
+**Record:** `work/product-team-assessment.md`
+```
+
+Installed `AGENTS.md` gets one short “Finish an upgrade” passage. Product creates the named record and writes the existing product, current map, state, and live piece it read; distinct Product, Business, Experience, and Engineering carriers; each role's direct evidence, conclusion, assumptions, proposed change, and active decision; one Product synthesis; and exactly one route. Product then commits the record, `product.md`, and `state.md` together, plus the reopening decision when required. Completion changes only the canonical status to one of:
+
+```md
+**Speck Next upgrade assessment:** complete — Shape reopened
+**Speck Next upgrade assessment:** complete — Map reopened
+**Speck Next upgrade assessment:** complete — resumed [live piece] from state.md
+```
+
+The record link remains. Completion is never inferred from removing words. The parser accepts exactly one unquoted top-level assessment heading, one canonical status, and one canonical record field before the next top-level heading. A completed state requires the named record. Once the marker says this migration lifecycle was opened, a missing, duplicate, or malformed block fails honestly rather than assuming completion. Quoted or paraphrased historical prose elsewhere is inert. A current fresh product with no lifecycle pointer remains current; the rejected rc.2 generated paragraph is repaired into the canonical block because rc.2 has not been released.
+
+The marker writes `sourceCheckout`, `methodSurfaceSha256`, and the assessment-record pointer instead of presenting a bare `commit` as method identity. Legacy `commit` is read as a source-checkout fallback. Console output labels both source checkouts and both method-surface digests; a legacy digest says `not recorded`. The digest covers the sorted kernel-owned method surface and is verified after copy and before the marker is written last. The candidate stays `6.0.0-rc.2`.
+
+Engineering owns `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. Product owns this record and later state truth. Skills, templates, `package.json`, Product records, and every Piece 9 runner, broker, host-proof, and live fixture remain untouched unless the pre-edit census proves a direct conflicting rule.
+
+Before edits, Engineering runs and records red controls for: no executable “Finish an upgrade”/record/completion/routes in the installed surface; completed natural prose retaining the pending sentence still reported pending; missing/duplicate/malformed/deleted canonical state not failing closed; missing contribution, duplicate carrier, missing Product synthesis, and zero or two routes; and two source checkouts with identical method bytes reporting different unlabeled commits and no shared digest. The fixed population adds pending plus all three completion routes, quote and paraphrase attacks, record/block corruption, rejected-rc.2 repair, same-surface/different-checkout provenance, and every existing eleven migration journeys. Then rerun all 26 routing subjects, the legacy control, syntax, compilation, complete diff, budgets, home census, and the positive-control-backed public-detail scan. No host model or Piece 9 path runs.
+
+The pre-edit census used `upgrade|migration|unassessed|product-team assessment`, `source commit|source checkout|method surface|marker`, `resume current|reopen Shape|reopen Map`, and `SELECTIVE_STATUS|versionWithCommit` across `AGENTS.md`, `CLAUDE.md`, every skill and reference, every template, `CONTRACT.md`, `README.md`, `capabilities.md`, installer, package, and checker. It returned the six owned homes above plus unrelated steady-state review, state, and migration wording. The six change; `CLAUDE.md`, all skills/references, all templates, package, and Product/Piece 9 records stay untouched for the reasons above.
+
+**Preserved dissent:** Engineering adds a method-surface digest; Business would accept merely labeling the checkout. Product keeps the digest because it answers the tester's exact confusion without misnaming a Git commit, uses the standard library, and makes dirty-source or record-only checkout differences visible. It remains provenance, never a new acceptance state.
+
+**Repair status:** Product synthesis is complete and committed before Engineering code. Business, Experience, and Engineering are active; the old Business ruling and Experience return are invalid for the repaired candidate. Their earliest informative runs are the complete deterministic migration matrix, the installed three-route builder journey, and the v5 no-reopen lifecycle plus provenance controls respectively.
