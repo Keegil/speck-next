@@ -267,4 +267,22 @@ They returned `role-control subjects=26 clean=13 mutants=13`, `assessment-contro
 
 **Handled-concern miss escalation:** triggered once for Business and Experience. Both had marked adoption/handoff handled on `737959a`; fresh upgrade and judgment showed the consequential assessment-loop and provenance miss. Both therefore remain involved at Piece 9's key decisions and informative runs, which its existing Map calls already require. A repeat would keep the repeated role through the v6 milestone.
 
-**Repair result:** implementation commit `99a0f38` changes exactly `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `bin/speck-next.js`, and the separated-team checker. The repaired candidate runs and all active roles have returned. Product next replaces stale round-one state with the exact new Built boundary, measures the always-read sum, and commits only `state.md`. Review round 1 remains preserved as the failed control; a new receipt and fresh review must follow.
+**Repair result:** implementation commit `99a0f38` changes exactly `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `bin/speck-next.js`, and the separated-team checker. The repaired candidate runs and all active roles have returned. Product replaced stale round-one state with the exact new Built boundary; `wc -c AGENTS.md product.md map.md state.md` returned 48,747 bytes, and the state-only Built commit is `940b8a5`. Review round 1 remains preserved as the failed control.
+
+## Review receipt — round 2
+
+**Built line and commit:** `state.md` at `940b8a5` says:
+
+> **Built — Piece 8 “The right roles show up,” repaired candidate:** product commits `10acad3`, `8bf17be`, `78857f9`, `737959a`, and `99a0f38` cover exactly `AGENTS.md`, `.claude/skills/shape-product/SKILL.md`, `.claude/skills/shape-product/references/questions.md`, `.claude/skills/map-build/SKILL.md`, `.claude/skills/map-build/references/questions.md`, `templates/product.md`, `templates/map.md`, `templates/piece.md`, `templates/state.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. The commands and returns in `work/right-roles-show-up.md` pass the full routing, assessment, migration, preservation, provenance, failure, syntax, diff, footprint, and public-detail populations while the same-context control stays red. `wc -c AGENTS.md product.md map.md state.md` returned **48,747 bytes**, within 50,000. No product implementation commit follows `99a0f38`.
+
+**Opened:** 2026-09-02, after `940b8a5` and before either round-2 tester was dispatched.
+
+**Candidate:** exact product implementation ending at `99a0f38`; later commits `4401087`, `940b8a5`, and this receipt change only role evidence, state, and review records.
+
+**Fresh tester 1 — first-time builder:** a new carrier receives the product promise, installed candidate, and round-1 judge requirements, never the role conclusions. Because `AGENTS.md` changed, they rerun the complete fresh install, four contrasting call decisions, Product/Engineering separation, factual inactive rows, one Product synthesis, named-run and return landing blocks, and the uncertainty-stop mutant. They also judge whether source checkout and method digest now make provenance understandable, then add one skeptical attack not named by the builder.
+
+**Fresh tester 2 — mid-product upgrader:** a different new carrier receives supported v5, rc.1, rejected rc.2, custom, missing-product, dirty, retry, and corrupt-state journeys plus the round-1 grep floor, never the role conclusions. They follow only installed instructions through pending and all three completion routes, retain exact quoted and paraphrased old status, confirm completion cannot be deleted or fabricated, compare same-method/different-checkout provenance, and add one skeptical attack of their own. They report lived output, worst trust/comprehension failure, and a verdict.
+
+**Judge:** after both round-2 records are committed, a third new carrier challenges them and reruns the round-1 requirement over its whole population plus the retained-history attack and each tester's skeptical attack. They separately rule works, delivers the promise, good to use, quality hangs together, and structure; every open item gets a destination.
+
+**Excluded:** every carrier named in the round-1 receipt, `/root/piece8_fresh_builder`, `/root/piece8_midproduct_upgrader`, `/root/piece8_judge_round1`, and every Product, Business, Experience, Engineering, specialist, builder, or auditor carrier. The two round-2 testers and judge must be distinct from one another and this full set.
