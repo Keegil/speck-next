@@ -339,3 +339,15 @@ piece 9 waits for Judged rc2 contract: PASS
 - Free attack: try an rc.1 repository with the exact generated universal section and one with owner-authored Product-team content; the former must receive an honest selective assessment, the latter must be preserved without letting the old marker suppress the assessment.
 - Judge: `/root/selective_map_judge`, dispatched only after the re-test is sufficient.
 - Verdict and judgment: pending.
+
+### Selective Map re-test — sufficient
+
+At `d2b2e66`, `/root/selective_map_tester` replayed the original 16 checks, both new seam checks, all five prior controls, and the two rc.1 migration attacks. All 18 completion checks passed. The exact generated universal rc.1 section is now an explicit migration source; owner-authored Product-team content stays preserved while the old rc.1 marker cannot suppress the required assessment. Restoring one-piece cross-invalidation, moving migration behind host proof, omitting piece 9 from the milestone, or advancing it before piece 8 is Judged each failed the candidate's stated or mechanical dependency. Every original v6 requirement remains consumed across the two pieces. Verdict: **SUFFICIENT**.
+
+### Selective Map judge receipt — opened before dispatch
+
+- Candidate: `d2b2e66` plus the exact re-test verdict above at the commit containing this receipt.
+- Judge: `/root/selective_map_judge` — did not shape, map, contribute a role, implement, test, or review either v6 candidate.
+- Challenge: try to overturn the tester's favorable verdict against the ratified selective promise, the eight contract promises, both failed Map controls, every original v6 release requirement, and the complete file ownership seam. Judge the three ordering choices and whether Product's recommendation is the smallest independently runnable cut rather than method ceremony.
+- Dispatch: only after this receipt is committed.
+- Judgment: pending.
