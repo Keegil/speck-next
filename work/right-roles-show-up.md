@@ -62,7 +62,7 @@ LOWER_BOUND_THREE_ROLES input_tokens=6768887 cached_input_tokens=6399104 output_
 - **Carrier:** `/root`.
 - **Direct evidence:** the owner's ratified “Lock selective separation!” and “Do it!”; `product.md`; `map.md`; `decisions.md`; the repaired Shape and Map records; the 266,484-gross-token failed governed run; and the three contributions below.
 - **Conclusion:** Install one selective contract everywhere, repair both v5 and obsolete rc.1 repositories honestly, and prove repository semantics without reopening live-host cost in this piece.
-- **Assumptions:** deterministic fixtures can prove routing, record, migration, reporting, and footprint behavior but cannot prove live carrier obedience or cost; Piece 9 owns that claim; old-Speck conversion and Odd remain out of scope.
+- **Assumptions:** deterministic fixtures can prove routing, record, migration, reporting, and footprint behavior but cannot prove live carrier obedience or cost; Piece 9 owns that claim; old-Speck conversion and the already-running external product remain out of scope.
 - **Proposed change:** make Product and Engineering the substantial-piece floor; call Business and Experience through their authored conditions and evidence; record current-piece repair and informative returns; migrate to rc.2 marker-last and byte-stably; keep host transport untouched.
 - **Active decision:** active. A wrong integration either loses a needed lens or preserves the universal ceremony already disproved by cost. The selection fixture is the earliest disconfirming run.
 
@@ -110,10 +110,27 @@ The home census used the case-insensitive families `product…business…experie
 
 ## Informative returns
 
-- **Product:** due after the contrasting role-selection fixtures.
-- **Business:** due after the complete deterministic migration, preservation, reporting, and footprint evidence; final ruling remains `not judged` until then.
-- **Experience:** due after the fresh-builder and mid-product-upgrader journeys, before Built.
-- **Engineering:** due after the exact rc.1 repair and full deterministic matrix, before Built.
+- **Product — carrier `/root`:** The contrasting routing subjects selected Product plus Engineering alone, added Business alone, added Experience alone, or called all four from the recorded conditions. Ambiguity, expired evidence, a false inactive call, a missing informative run, a missing return, replacement lineage, Product implementation, and same-carrier Product/Engineering each went red in their focused mutant. The selection rule held. The broader Product review did change the candidate seven times before this return: later re-maps had accidentally kept Engineering universal; a role could avoid returning by never creating its named run; the handled-concern miss rule had disappeared from the always-loaded page; a capability row exposed concrete fixture details; a missing-product upgrade gave an impossible next action; a clean retry told the builder to commit nonexistent changes; and the first porcelain status line lost its leading column. Engineering repaired each finding and the complete matrix passed again. **Resulting product change:** selective delivery now covers later re-maps, both halves of an informative return, both miss paths, abstract public evidence, state-aware upgrade guidance, and exact working-tree status. No Product concern remains unresolved before Built.
+- **Business — carrier `/root/piece8_business`:** Eleven migration subjects covered fresh install, v5, exact generated rc.1, custom Product-team prose, missing product, assessed current product, dirty work, failed retry, an unknown version, a clean retry, and exact changed-path output. They completed without an owner question or manual repair; the 19-file / 76,998-byte fresh footprint, five skills, and 46,552-byte always-read surface remained inside the contract. The previous 266,484-gross-token governed run and this piece's 6,822,314-gross-token three-role setup lower bound remain failed evidence, not reclassified success. **Binding ruling: `kept` for Piece 8.** The selective repository and adoption boundary earns its cost and may proceed to Built and review. Live carrier execution, Piece 9, the milestone, and release remain `not judged`; this ruling does not permit any of them.
+- **Experience — carrier `/root/piece8_experience`:** The first fresh-install and mid-product-upgrade walk found the core selection flow understandable but returned unresolved at `78857f9`: a repository with no `product.md` was told to run an assessment named in that missing file, and the first unstaged changed path looked staged because one status column was trimmed. At `737959a`, the same journey received one possible next action for every product state: create and ratify a missing product before Map, finish a pending product-and-map assessment, or resume the assessed product from `state.md`; a clean retry explicitly had nothing to commit, and the first porcelain line retained both columns. The selective call records, factual inactive rows, immediate false-inactive repair, and missing-run/return landing blocks also held in the executed subjects. **Result:** sufficient before Built; no Experience concern remains unresolved.
+- **Engineering — carrier `/root/piece8_engineering`:** Before edits, an exact generated rc.1 fixture reported rc.1 to rc.1, left one universal paragraph and zero selective paragraphs, and said migration was not needed. After the repair, that fixture crossed to rc.2, replaced only the generated paragraph, preserved adjacent bytes, and stayed byte-stable on retry. The expanded routing and migration matrix, syntax checks, complete diff, home census, footprint, and leak control all passed at `737959a`. Experience's running journey changed Engineering's earlier conclusion and produced the state-aware `Next:` table plus exact porcelain output. **Result:** implementation held; no Engineering concern remains unresolved before Built.
+
+The final Product readback ran these commands after all returns:
+
+```sh
+python3 devsuite/tasks/separated-product-team/check.py --piece-8-controls .
+./devsuite/run.sh --control separated-product-team
+node --check bin/speck-next.js
+python3 -c 'from pathlib import Path; compile(Path("devsuite/tasks/separated-product-team/check.py").read_text(), "check.py", "exec")'
+git diff --check ddb62f1..HEAD
+node -e 'const p=require("./package.json"); if(p.version!=="6.0.0-rc.2") process.exit(1); console.log(p.version)'
+find AGENTS.md CLAUDE.md .claude/skills templates -type f -print0 | sort -z | xargs -0 wc -c
+wc -c AGENTS.md product.md map.md state.md
+```
+
+They returned `role-control subjects=26 clean=13 mutants=13`, `migration subjects=11`, and `Piece 8 controls: PASS`; the legacy control reported `1 of 1 tasks went red`; syntax, compilation, and diff checks returned zero; the package printed `6.0.0-rc.2`; the installed-method source was 17 files / 76,664 bytes; and the four always-read files totaled 46,552 bytes. A disposable Git repository then ran `node bin/speck-next.js install <fixture>` and returned 19 non-Git files / 76,998 bytes, marker `6.0.0-rc.2`, and no invented `product.md`. The added-line public-detail matcher was first watched matching its planted fixture, then returned zero matches over `capabilities.md` and zero over the complete installed-surface change.
+
+The closing home census repeated the pre-code search families. Changed homes are `AGENTS.md`; Shape and Map skills plus their question references; product, map, piece, and state templates; `CONTRACT.md`; `README.md`; `capabilities.md`; `package.json`; the installer; and the separated-team checker. Inspected and intentionally untouched homes are `CLAUDE.md`; Craft; Experience and Judge plus their references; decisions and rounds templates; Product-owned records; and every Piece 9 runner, broker, host-proof, and live-fixture file. The only remaining exact universal paragraph is the rc.1 migration fingerprint and its control, never an installed rule.
 
 ## Review receipt
 
@@ -123,4 +140,4 @@ Not open. Review starts only after the candidate runs, every Built check above p
 
 ## Result
 
-Implementation has not started. The pre-code synthesis is complete, the token limit failed, and the smallest rc.1 product run is next. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
+The Piece 8 product implementation is complete at `10acad3`, `8bf17be`, `78857f9`, and `737959a`. Its deterministic selection, current-piece repair, return and escalation rules, fresh installation, honest migration, reporting, footprint, and public-detail boundary pass the proof plan. The active roles returned at their informative evidence and Business ruled `kept` for this piece. It is ready for the separate Built line; review is not open yet. Host affordability remains Piece 9's unresolved concern and cannot be inferred from Piece 8.
