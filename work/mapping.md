@@ -194,3 +194,118 @@ Returned `PASS` for all eleven named checks and exit code 0.
 ### Final Map re-test and judgment — sufficient
 
 At `f117394`, the fresh tester re-executed every blocker from all three send-backs and the exact full completion command. All eleven named checks returned `PASS`; the tester's free attack found no hidden product dependency or extra owner beat. Verdict: **SUFFICIENT**. The separate judge challenged the favorable result and ruled **SUFFICIENT**: piece 8 is one independently useful increment with its first surface named; pieces 8–11 have the required uncertainties, runs, fresh people, quality rulings, and Business gates; Product stays the owner's single interface; state, map, and the authorized order agree. The owner's recorded implementation authorization ratifies this unchanged order. Map closes.
+
+## Round 3 — selective separation re-cut
+
+The universal piece failed before half its role flow completed. Shape reopened, and the owner later saw the complete repaired promise and selected, verbatim:
+
+> Lock selective separation!
+
+That changes role activation, migration semantics, cost admission, and the live piece's proof order, so Map reopens. The same still-current Shape carriers resumed with the delta only for the first Map after the changed promise.
+
+### Four separate mapping contributions
+
+**Product — carrier `/root` — active.** Evidence: the ratified promise at `66bfb43`, current product and map, the five governed attempts, the eight promises, and the three mapping contributions below. Conclusion: the old piece contains two runnable uncertainties that failed independently—whether repositories receive and apply the right selective contract, and whether real host carriers can execute it inside the limit. Assumptions: a piece must be independently runnable and judgeable, not independently releasable; the v6 milestone remains the release boundary. Proposed change: split at that executable seam, keep Product as the one owner interface, and do not create a third proof-only piece.
+
+**Business — carrier `/root/business_cost_return` — active.** Direct evidence: `product.md`'s adoption and cost conditions, run 5's 266,484-token stop, current upgrader fixtures, and the proof/review cost of extra pieces. Conclusion: two pieces are the smallest useful boundary; Business preferred grouping fresh selective execution first and existing-product migration second so a migration defect cannot force the expensive host path to rerun. Assumptions: fresh adoption and existing-product migration are independently valuable user jobs, and piece hearings add no owner sign-off. Proposed change: cost admission before either full host run, Business binding on both pieces and the milestone, and no release while the installed candidate remains Business broken.
+
+**Experience — carrier `/root/redesign_experience_role` — active.** Direct evidence: the installed words and templates, product-specific Experience conditions, the failed all-role barrier, and the fresh-versus-upgrading builder journeys. Conclusion: keep one piece because runner-only or migration-only work is not an owner-usable release and splitting repeats active roles and review. Assumptions: a piece may carry multiple executed proof lanes, and migration remains one product surface unless measured evidence shows incompatible behavior. Proposed change if Product keeps one piece: order it internally as rules, selection controls, component admission, fresh build, migration, hosts, and review. Earliest informative Experience run is a disposable install where a fresh builder routes contrasting pieces and gives the owner one synthesis.
+
+**Engineering — carrier `/root/redesign_engineering_role` — active.** Direct evidence: the current installed files and runner, `isPreV6()` treating rc.1 as already migrated, the universal template/checker assumptions, and run 5's separate semantic and transport failures. Conclusion: split into two, but keep migration with the contract it installs; fresh install, v5 upgrade, rc.1 repair, idempotence, and deterministic role selection run without live host transport. Assumptions: current Shape carriers can prove the first piece; host evidence remains mandatory for the second; the same shared executable files are changed sequentially. Proposed change: piece 8 owns installed semantics and migration as `6.0.0-rc.2`; piece 9 owns bounded host transport and full cross-host proof.
+
+### Product synthesis and preserved dissent
+
+Product selects Engineering's seam. The installed contract and migration are one product behavior: splitting them could leave rc.1 repositories carrying the obsolete universal promise, and both live in the upgrader's installed surface. Host transport and cost are a different executable uncertainty: they can fail without changing which roles a repository should call. Therefore:
+
+1. **The right roles show up** installs and migrates the selective contract and proves deterministic routing, current-piece repair, idempotence, footprint, and honesty without a costly governed run.
+2. **The team finishes inside its limit** consumes that exact Judged contract, then proves real contexts, direct evidence, implementation, informative returns, cost, and both hosts before the milestone hearing.
+
+Business's fresh-versus-migration split is preserved because it isolates a real adoption journey, but Product rejects it at this map: migration installs the same contract and rc.1 is already a demonstrated semantic repair case. Experience's one-piece recommendation is preserved because only the milestone is releasable, but Product rejects it: another host failure would needlessly reopen already-runnable repository semantics and migration. A third proof-only piece is rejected by all useful evidence; it adds a hearing without adding product behavior.
+
+All four roles honestly fire on both v6 pieces under the product-specific conditions. The kernel change touches adoption, cost, method wording, templates, migration, builder flow, and host execution. Selectivity is proved through contrasting product fixtures, not by pretending either lens is inactive here.
+
+### Ordering choices for the owner
+
+- **Two pieces at the executable seam (Recommended):** first install and migrate the right contract; then prove real carriers finish inside the limits. Failures stay inside the behavior they can actually invalidate. Cost: one additional piece review, but no additional owner sign-off before the milestone.
+- **One integrated piece:** fewer piece records and one review, but any later transport or migration failure can reopen the full rule-and-proof population.
+- **Two pieces at the adoption seam:** first fresh selective execution, then migration. It isolates the existing-product journey, but splits the same installed semantics across two pieces and complicates rc.1 repair.
+
+The platform and care decision do not change: plain git plus Node, supported Codex and Claude hosts as proving subjects, no new dependency, milestone treatment with two independent judges, and no protected product code.
+
+### Re-cut completion test
+
+The current candidate must show: zero live pieces before ratification and exactly one `next`; pieces 1–12 in order; pieces 8–12 covered by milestones; every future piece names role calls, earliest informative runs, proof, at least two fresh tester roles, the five quality/structure rulings, and every required Business ruling; both shaped work records consumed; first surface named; no unconsumed supporting material; zero shaped screen captions; and state agreement. The exact command and output follow after the candidate is written.
+
+The first probe compared the capitalized piece name `Promise-conservation check` with the lowercase milestone line and returned one false `FAIL`. Product corrected the check to compare milestone names case-insensitively; no product file changed between the two runs.
+
+Command:
+
+```sh
+python3 - <<'PY'
+from pathlib import Path
+import re
+m = Path('map.md').read_text(); p = Path('product.md').read_text(); s = Path('state.md').read_text(); lines = m.splitlines()
+pieces = {n: next((line for line in lines if line.startswith(f'{n}. ')), '') for n in range(1, 13)}; future = [pieces[n] for n in range(8, 13)]
+quality = ('works', 'delivers the promise', 'good to use', 'quality hangs together', 'structure')
+def tester_count(line):
+    roles = line.split('fresh tester roles:', 1)[1].split('· acceptance rulings:', 1)[0]
+    return len([x for x in roles.replace(' and ', ',').split(',') if x.strip()])
+product_sets = {label: len(re.findall(rf'(?mi)^\s*{label}:', p)) for label in ('job', 'moment', 'claim')}
+screen_captions = len(re.findall(r'(?mi)^\s*screen:', p + '\n' + Path('work/shaping.md').read_text()))
+milestones = '\n'.join(lines[3:12]).lower()
+checks = {
+    'zero live before ratification': m.count('[LIVE') == 0,
+    'exactly one next and it is piece 8': m.count('[next') == 1 and '[next — Map awaiting ratification]' in pieces[8],
+    'pieces 1 through 12': all(pieces.values()),
+    'future pieces name role calls': all('role calls:' in x for x in future),
+    'future pieces name earliest informative runs': all('earliest informative run:' in x for x in future),
+    'future pieces have proof plans': all('proof plan:' in x for x in future),
+    'future pieces name at least two tester roles': all('fresh tester roles:' in x and tester_count(x) >= 2 for x in future),
+    'future pieces name quality and structure rulings': all('acceptance rulings:' in x and all(q in x for q in quality) for x in future),
+    'every affected future piece names Business ruling': all('Business `kept / broken / not judged`' in pieces[n] for n in range(8, 13)),
+    'milestones cover pieces 8 through 12': all(name.lower() in milestones for name in ('the right roles show up', 'the team finishes inside its limit', 'v11 converter', 'CI limit enforcement', 'Promise-conservation check')),
+    'first real user surface named': 'first real user surface' in m,
+    'both shaped work records consumed': all(x in m for x in ('work/shaping.md', 'work/separated-product-team.md')),
+    'all labeled product sets assigned': sum(product_sets.values()) == 0,
+    'all shaped screen captions assigned': screen_captions == 0,
+    'unconsumed material explicitly empty': '## Unconsumed shaped material\n- None' in m,
+    'state agrees no piece is live': 'No piece is live' in s,
+}
+print('population: pieces=12 future=5 milestones=5 labeled_product_sets=' + str(product_sets) + f' shaped_screen_captions={screen_captions}')
+for name, passed in checks.items(): print(f'{name}: {"PASS" if passed else "FAIL"}')
+raise SystemExit(0 if all(checks.values()) else 1)
+PY
+```
+
+Returned exit code 0 and:
+
+```text
+population: pieces=12 future=5 milestones=5 labeled_product_sets={'job': 0, 'moment': 0, 'claim': 0} shaped_screen_captions=0
+zero live before ratification: PASS
+exactly one next and it is piece 8: PASS
+pieces 1 through 12: PASS
+future pieces name role calls: PASS
+future pieces name earliest informative runs: PASS
+future pieces have proof plans: PASS
+future pieces name at least two tester roles: PASS
+future pieces name quality and structure rulings: PASS
+every affected future piece names Business ruling: PASS
+milestones cover pieces 8 through 12: PASS
+first real user surface named: PASS
+both shaped work records consumed: PASS
+all labeled product sets assigned: PASS
+all shaped screen captions assigned: PASS
+unconsumed material explicitly empty: PASS
+state agrees no piece is live: PASS
+```
+
+## Selective Map review receipt — opened before dispatch
+
+- Candidate: `map.md`, this Round 3 record, `product.md`, `state.md`, and the ratified Round 4 Shape record at the commit containing this receipt.
+- Fresh tester: `/root/selective_map_tester` — did not shape, map, contribute a product role, implement, or review either v6 candidate.
+- Judge: `/root/selective_map_judge` — a separate future carrier that did not shape, map, contribute, implement, test, or review either candidate.
+- Planned probe: execute the full re-cut completion population; challenge whether each new piece is independently runnable, whether the seam prevents irrelevant re-runs without hiding an integrated dependency, whether trigger decisions match `product.md`, and whether the proposed order preserves one owner interface and every original release requirement.
+- Planned controls: restore the one-piece map and reproduce cross-invalidation; move migration behind host proof and reproduce rc.1 semantic drift; mark Business or Experience inactive on either v6 piece; omit the second piece from the milestone; and try to advance piece 9 before piece 8 is Judged.
+- Skeptical attack: find one changed installed or executable home whose ownership or proof falls between the pieces.
+- Dispatch: only after this receipt and the completion command are committed.
+- Verdict and judgment: pending.
