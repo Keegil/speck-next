@@ -368,6 +368,8 @@ def static_contract_homes(kernel):
                       "assessment refusal", "upgrade [dir] --open-assessment",
                       "cannot override any other state",
                       "comment-touched line stays inactive",
+                      "multiline inline-code spans", "unmatched backtick run is literal",
+                      "only a plain current line can start a multiline span",
                       "unclosed live comment refuses"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
@@ -384,11 +386,16 @@ def static_contract_homes(kernel):
                         "before changing any repository byte", "complete non-Git path kinds and bytes",
                         "fieldless-current refusal and explicit recovery",
                         "flag-exclusion and argument-error tables",
-                        "inactive-container tables", "top-level `<!-- ... -->` comments"],
+                        "inactive-container tables", "top-level `<!-- ... -->` comments",
+                        "multiline inline-code spans",
+                        "unmatched or wrong-length backtick run is literal",
+                        "only a plain current line can start a multiline span"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
                       "before any repository byte changes", "upgrade [dir] --open-assessment",
-                      "comment-touched line stays inactive", "unclosed live comment refuses"],
+                      "comment-touched line stays inactive", "unclosed live comment refuses",
+                      "balanced inline-code span", "unmatched backtick is plain text",
+                      "only a plain current line can start a multiline span"],
         "capabilities.md": ["Selective product team", "live-host affordability",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container"],
@@ -976,6 +983,384 @@ def run_migration_matrix(kernel):
         results.append((
             "unclosed HTML comment makes ordinary and flagged upgrade refuse untouched",
             unclosed_ok,
+        ))
+
+        inline_literal_original = (
+            "# Inline-code literal product\n\n"
+            "The literal opener `<!--` is documentation, not a comment.\n\n"
+            + ASSESSMENT_BLOCK
+        )
+        inline_literal = refusal_repo(
+            "inline-code-literal", inline_literal_original,
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        inline_literal_run = run_cli(kernel, "upgrade", inline_literal)
+        inline_literal_ok = (
+            upgrade_report_ok(
+                inline_literal_run, "6.0.0-rc.2", "inline-code-literalfixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            (inline_literal / "product.md").read_text() == inline_literal_original and
+            marker_ok(inline_literal, source_checkout, surface_digest, ASSESSMENT_RECORD)
+        )
+        results.append((
+            "balanced inline-code literal leaves following current assessment live",
+            inline_literal_ok,
+        ))
+
+        unmatched_before_comment_original = (
+            "# Unmatched inline-code opener product\n\n"
+            "`unmatched opener before a real comment <!--\n"
+            + REJECTED_RC2_STATUS + "\n-->\n"
+        )
+        unmatched_before_comment = refusal_repo(
+            "unmatched-before-comment", unmatched_before_comment_original
+        )
+        refused, unmatched_before_comment_ok = run_atomic_refusal(
+            unmatched_before_comment
+        )
+        unmatched_before_comment_ok = (
+            unmatched_before_comment_ok and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (unmatched_before_comment / "product.md").read_text() ==
+            unmatched_before_comment_original
+        )
+        results.append((
+            "unmatched backtick exposes a later real comment and refuses ambiguity untouched",
+            unmatched_before_comment_ok,
+        ))
+
+        results.append((
+            "two-backtick span ignores shorter runs and shields comment-looking bytes",
+            current_after_history(
+                "two-backtick-span",
+                "Double ``one ` plus <!-- and --> stay literal`` span.",
+            ),
+        ))
+        results.append((
+            "three-backtick span ignores shorter runs and shields comment-looking bytes",
+            current_after_history(
+                "three-backtick-span",
+                "Triple ```one ` and two `` plus <!-- stay literal``` span.",
+            ),
+        ))
+        results.append((
+            "balanced multiline inline-code span shields comment-looking bytes",
+            current_after_history(
+                "multiline-inline-span",
+                "Documentation `starts here\ncontinues with <!-- as literal and closes here`.",
+            ),
+        ))
+
+        hidden_generated_original = (
+            "# Inline-hidden generated status product\n\n"
+            "Documentation `starts here\n"
+            + REJECTED_RC2_STATUS + "\n"
+            "and closes here`.\n"
+        )
+        hidden_generated = refusal_repo(
+            "inline-hidden-generated", hidden_generated_original
+        )
+        refused, hidden_generated_refusal = run_atomic_refusal(hidden_generated)
+        hidden_generated_refusal = (
+            hidden_generated_refusal and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (hidden_generated / "product.md").read_text() == hidden_generated_original
+        )
+        results.append((
+            "exact generated status inside multiline inline code stays inactive",
+            hidden_generated_refusal,
+        ))
+        hidden_generated_state = (hidden_generated / "state.md").read_bytes()
+        hidden_generated_dirt = (hidden_generated / "work/refusal-dirt.md").read_bytes()
+        opened = run_cli(kernel, "upgrade", hidden_generated, "--open-assessment")
+        hidden_generated_opened = (
+            upgrade_report_ok(
+                opened, "6.0.0-rc.2", "inline-hidden-generatedfixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            "--open-assessment preserved every existing product byte" in opened.stdout and
+            not has_resume_instruction(opened.stdout + opened.stderr) and
+            (hidden_generated / "product.md").read_text() ==
+            expected_product(hidden_generated_original) and
+            (hidden_generated / "state.md").read_bytes() == hidden_generated_state and
+            (hidden_generated / "work/refusal-dirt.md").read_bytes() ==
+            hidden_generated_dirt and
+            marker_ok(hidden_generated, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD)
+        )
+        results.append((
+            "inline-hidden generated history recovers without changing its literal bytes",
+            hidden_generated_opened,
+        ))
+
+        hidden_canonical_original = (
+            "# Inline-hidden canonical status product\n\n"
+            + ASSESSMENT_HEADING + "\n\n"
+            "Documentation `starts here\n"
+            + ASSESSMENT_PENDING + "\n"
+            "and closes here`.\n"
+            + ASSESSMENT_RECORD_LINE + "\n"
+        )
+        hidden_canonical = refusal_repo(
+            "inline-hidden-canonical", hidden_canonical_original,
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        refused, hidden_canonical_ordinary = run_atomic_refusal(hidden_canonical)
+        flagged, hidden_canonical_flagged = run_atomic_refusal(
+            hidden_canonical, "--open-assessment", plant=False
+        )
+        results.append((
+            "exact canonical status inside multiline inline code refuses both calls untouched",
+            hidden_canonical_ordinary and hidden_canonical_flagged and
+            "0 status fields" in refused.stderr and
+            not has_resume_instruction(refused.stdout + refused.stderr) and
+            not has_resume_instruction(flagged.stdout + flagged.stderr) and
+            (hidden_canonical / "product.md").read_text() == hidden_canonical_original,
+        ))
+
+        odd_escape_original = (
+            "# Odd backslash parity product\n\n"
+            "An escaped opener \\`<!--` remains plain text.\n"
+        )
+        odd_escape = refusal_repo("odd-backslash-parity", odd_escape_original)
+        refused, odd_escape_ordinary = run_atomic_refusal(odd_escape)
+        flagged, odd_escape_flagged = run_atomic_refusal(
+            odd_escape, "--open-assessment", plant=False
+        )
+        results.append((
+            "odd backslash parity cannot make a backtick shield a real comment",
+            odd_escape_ordinary and odd_escape_flagged and
+            "unclosed HTML comment" in refused.stderr and
+            "unclosed HTML comment" in flagged.stderr,
+        ))
+        results.append((
+            "even backslash parity leaves a balanced inline-code opener live",
+            current_after_history(
+                "even-backslash-parity",
+                "Two literal backslashes \\\\`<!--` precede current evidence.",
+            ),
+        ))
+        results.append((
+            "backslash inside inline code does not escape its exact closer",
+            current_after_history(
+                "backslash-before-closer",
+                "Inside `<!--\\` the backslash stays literal.",
+            ),
+        ))
+
+        wrong_length_original = (
+            "# Wrong backtick length product\n\n"
+            "A two-run ``<!--``` cannot close with a three-run.\n"
+        )
+        wrong_length = refusal_repo("wrong-backtick-length", wrong_length_original)
+        refused, wrong_length_ordinary = run_atomic_refusal(wrong_length)
+        flagged, wrong_length_flagged = run_atomic_refusal(
+            wrong_length, "--open-assessment", plant=False
+        )
+        results.append((
+            "shorter or longer backtick runs cannot close a code span",
+            wrong_length_ordinary and wrong_length_flagged and
+            "unclosed HTML comment" in refused.stderr and
+            "unclosed HTML comment" in flagged.stderr,
+        ))
+
+        multiline_unmatched_original = (
+            "# Multiline unmatched opener product\n\n"
+            "An unmatched ` opener starts here\n"
+            "plain continuation exposes <!-- as a real comment.\n"
+        )
+        multiline_unmatched = refusal_repo(
+            "multiline-unmatched", multiline_unmatched_original
+        )
+        refused, multiline_unmatched_ordinary = run_atomic_refusal(multiline_unmatched)
+        flagged, multiline_unmatched_flagged = run_atomic_refusal(
+            multiline_unmatched, "--open-assessment", plant=False
+        )
+        results.append((
+            "unmatched multiline opener cannot hide a real comment",
+            multiline_unmatched_ordinary and multiline_unmatched_flagged and
+            "unclosed HTML comment" in refused.stderr and
+            "unclosed HTML comment" in flagged.stderr,
+        ))
+
+        boundary_cases = {
+            "blank-line": "Opening `<!--\n\nclosing `",
+            "blockquote": "Opening `<!--\n> closing `",
+            "fence": "Opening `<!--\n```text\nclosing `\n```",
+            "ATX-heading": "Opening `<!--\n## closing `",
+            "setext-heading": "Opening `<!--\nHeading\n---\nclosing `",
+            "bullet-list": "Opening `<!--\n- closing `",
+            "ordered-list": "Opening `<!--\n1. closing `",
+            "indented-code": "Opening `<!--\n    closing `",
+            "non-comment-HTML": "Opening `<!--\n<div>closing `</div>",
+        }
+        for boundary_name, body in boundary_cases.items():
+            original = f"# {boundary_name} boundary product\n\n{body}\n"
+            repo = refusal_repo("inline-boundary-" + boundary_name.lower(), original)
+            refused, boundary_ok = run_atomic_refusal(repo)
+            results.append((
+                f"{boundary_name} boundary cannot close a multiline inline-code span",
+                boundary_ok and "unclosed HTML comment" in refused.stderr and
+                (repo / "product.md").read_text() == original,
+            ))
+
+        comment_first = "<!-- `-->` closes the real comment before backticks can act"
+        results.append((
+            "comment-first input owns backticks through its first close",
+            current_after_history("comment-before-inline", comment_first),
+        ))
+
+        comment_then_unmatched_original = (
+            "# Comment then unmatched inline opener product\n\n"
+            + ASSESSMENT_HEADING + "\n"
+            "<!-- retired history --> `unmatched on an inactive line\n"
+            + ASSESSMENT_PENDING + "\n"
+            + ASSESSMENT_RECORD_LINE + "\n"
+        )
+        comment_then_unmatched = refusal_repo(
+            "comment-then-unmatched-inline", comment_then_unmatched_original,
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        comment_then_unmatched_run = run_cli(
+            kernel, "upgrade", comment_then_unmatched
+        )
+        results.append((
+            "a comment-touched line cannot span inline code over later clean evidence",
+            upgrade_report_ok(
+                comment_then_unmatched_run, "6.0.0-rc.2",
+                "comment-then-unmatched-inlinefixture", source_checkout,
+                surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            (comment_then_unmatched / "product.md").read_text() ==
+            comment_then_unmatched_original and
+            marker_ok(comment_then_unmatched, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD),
+        ))
+
+        comment_then_balanced_original = (
+            "# Comment then balanced inline literal product\n\n"
+            "<!-- retired history --> `<!-- stays literal -->`\n\n"
+            + ASSESSMENT_BLOCK
+        )
+        comment_then_balanced = refusal_repo(
+            "comment-then-balanced-inline", comment_then_balanced_original,
+            assessment_field=ASSESSMENT_RECORD,
+        )
+        comment_then_balanced_run = run_cli(
+            kernel, "upgrade", comment_then_balanced
+        )
+        results.append((
+            "same-line code after a comment still shields comment-looking bytes",
+            upgrade_report_ok(
+                comment_then_balanced_run, "6.0.0-rc.2",
+                "comment-then-balanced-inlinefixture", source_checkout,
+                surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            (comment_then_balanced / "product.md").read_text() ==
+            comment_then_balanced_original and
+            marker_ok(comment_then_balanced, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD),
+        ))
+
+        quoted_and_fenced_inline = (
+            "```markdown\n"
+            "`<!--` stays fenced\n"
+            "```\n"
+            "> `<!--` stays quoted"
+        )
+        results.append((
+            "fences and blockquotes isolate inline-code and comment-looking bytes",
+            current_after_history("quoted-fenced-inline", quoted_and_fenced_inline),
+        ))
+
+        real_comment_after_inline = (
+            "Literal `<!--` then real history <!--\n"
+            + REJECTED_RC2_STATUS + "\n-->"
+        )
+        results.append((
+            "real comment after a balanced inline span still opens",
+            current_after_history("comment-after-inline", real_comment_after_inline),
+        ))
+
+        real_comment_after_multiline = (
+            "Documentation `starts here\n"
+            "continues and closes here` then real history <!--\n"
+            + REJECTED_RC2_STATUS + "\n-->"
+        )
+        results.append((
+            "text after a multiline closer is scanned while its touched line stays inactive",
+            current_after_history(
+                "comment-after-multiline-inline", real_comment_after_multiline
+            ),
+        ))
+
+        literal_recovery_original = (
+            "# Inline-literal recovery product\n\n"
+            "The literal opener `<!--` stays byte-identical.\n"
+        )
+        literal_recovery = refusal_repo(
+            "inline-literal-recovery", literal_recovery_original
+        )
+        refused, literal_recovery_refusal = run_atomic_refusal(literal_recovery)
+        literal_recovery_refusal = (
+            literal_recovery_refusal and
+            refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+            (literal_recovery / "product.md").read_text() == literal_recovery_original
+        )
+        results.append((
+            "balanced inline literal preserves ordinary ambiguity refusal",
+            literal_recovery_refusal,
+        ))
+        literal_recovery_state = (literal_recovery / "state.md").read_bytes()
+        literal_recovery_dirt = (literal_recovery / "work/refusal-dirt.md").read_bytes()
+        opened = run_cli(kernel, "upgrade", literal_recovery, "--open-assessment")
+        literal_recovery_opened = (
+            upgrade_report_ok(
+                opened, "6.0.0-rc.2", "inline-literal-recoveryfixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            "--open-assessment preserved every existing product byte" in opened.stdout and
+            not has_resume_instruction(opened.stdout + opened.stderr) and
+            (literal_recovery / "product.md").read_text() ==
+            expected_product(literal_recovery_original) and
+            (literal_recovery / "state.md").read_bytes() == literal_recovery_state and
+            (literal_recovery / "work/refusal-dirt.md").read_bytes() ==
+            literal_recovery_dirt and
+            marker_ok(literal_recovery, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD)
+        )
+        results.append((
+            "flagged recovery preserves the balanced inline literal and opens pending",
+            literal_recovery_opened,
+        ))
+
+        completed_inline_status = (
+            "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md"
+        )
+        completed_inline_original = (
+            "# Completed assessment after inline literal\n\n"
+            "The literal opener `<!--` remains documentation.\n\n"
+            + ASSESSMENT_HEADING + "\n\n"
+            + completed_inline_status + "\n"
+            + ASSESSMENT_RECORD_LINE + "\n"
+        )
+        completed_inline = refusal_repo(
+            "completed-after-inline", completed_inline_original,
+            assessment_field=ASSESSMENT_RECORD,
+            record_content=assessment_record("Resume Piece alpha from state.md."),
+        )
+        completed_inline_run = run_cli(kernel, "upgrade", completed_inline)
+        results.append((
+            "balanced inline literal leaves the completed live-piece route current",
+            upgrade_report_ok(
+                completed_inline_run, "6.0.0-rc.2",
+                "completed-after-inlinefixture", source_checkout, surface_digest,
+                "Next: review the reported paths and complete diff, commit the upgrade, then resume Piece alpha from state.md.",
+            ) and
+            (completed_inline / "product.md").read_text() == completed_inline_original and
+            marker_ok(completed_inline, source_checkout, surface_digest,
+                      ASSESSMENT_RECORD),
         ))
 
         recovery_path("commit-only fieldless recovery")

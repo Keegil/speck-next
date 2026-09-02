@@ -143,28 +143,88 @@ function migrationSource(version) {
   return Number(match[1]) < 6 ? "pre-v6" : "current";
 }
 
+function backtickRunLength(line, column) {
+  let end = column;
+  while (line[end] === "`") end += 1;
+  return end - column;
+}
+
+function escapedBacktickOpener(line, column) {
+  let backslashes = 0;
+  for (let index = column - 1; index >= 0 && line[index] === "\\"; index -= 1)
+    backslashes += 1;
+  return backslashes % 2 === 1;
+}
+
+const HTML_BLOCK_TAGS = "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul";
+const HTML_BLOCK_TAG = new RegExp(`^<\\/?(?:${HTML_BLOCK_TAGS})(?:[ \\t]|\\/?>|$)`, "i");
+
+function startsNonCommentHtmlBlock(line) {
+  const start = line.match(/^ {0,3}(.*)$/);
+  if (!start || !start[1].startsWith("<") || start[1].startsWith("<!--")) return false;
+  const text = start[1];
+  return /^(?:<(?:script|pre|style|textarea)(?:[ \t]|>|$)|<\?|<![A-Z]|<!\[CDATA\[)/i.test(text) ||
+    HTML_BLOCK_TAG.test(text);
+}
+
+function startsNewMarkdownBlock(line) {
+  if (/^[ \t]*$/.test(line)) return true;
+  if (/^(?: {4}| {0,3}\t)/.test(line)) return true;
+  if (/^[ \t]*>/.test(line)) return true;
+  if (/^ {0,3}(?:`{3,}|~{3,})/.test(line)) return true;
+  if (/^ {0,3}#{1,6}(?:[ \t]+|$)/.test(line)) return true;
+  if (/^ {0,3}(?:[-+*](?:[ \t]+|$)|\d{1,9}[.)](?:[ \t]+|$))/.test(line)) return true;
+  if (/^ {0,3}(?:=+|-+)[ \t]*$/.test(line)) return true;
+  if (/^ {0,3}(?:(?:\*[ \t]*){3,}|(?:_[ \t]*){3,}|(?:-[ \t]*){3,})$/.test(line)) return true;
+  return startsNonCommentHtmlBlock(line);
+}
+
+function findBalancedCodeSpanEnd(lines, lineIndex, column, runLength, allowMultiline) {
+  const endLine = allowMultiline ? lines.length : lineIndex + 1;
+  for (let index = lineIndex; index < endLine; index += 1) {
+    const line = lines[index];
+    if (index !== lineIndex && startsNewMarkdownBlock(line)) return null;
+    let cursor = index === lineIndex ? column + runLength : 0;
+    while (cursor < line.length) {
+      const tick = line.indexOf("`", cursor);
+      if (tick === -1) break;
+      const length = backtickRunLength(line, tick);
+      if (length === runLength) return { line: index, column: tick + length };
+      cursor = tick + length;
+    }
+  }
+  return null;
+}
+
 function activeMarkdownLines(content) {
   const lines = content.split("\n");
-  const active = [];
+  const active = Array(lines.length).fill(true);
   let fence = null;
   let htmlComment = false;
-  for (const line of lines) {
+  let codeSpanEnd = null;
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+    const line = lines[lineIndex];
     const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
     if (fence) {
-      active.push(false);
+      active[lineIndex] = false;
       if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = null;
       continue;
     }
     if (!htmlComment && /^[ \t]*>/.test(line)) {
-      active.push(false);
+      active[lineIndex] = false;
       continue;
     }
     if (!htmlComment && marker) {
       fence = marker[1];
-      active.push(false);
+      active[lineIndex] = false;
       continue;
     }
-    let cursor = 0;
+    let cursor = codeSpanEnd && codeSpanEnd.line === lineIndex ? codeSpanEnd.column : 0;
+    if (codeSpanEnd) {
+      active[lineIndex] = false;
+      if (codeSpanEnd.line > lineIndex) continue;
+      codeSpanEnd = null;
+    }
     let commentTouched = htmlComment;
     while (true) {
       if (htmlComment) {
@@ -175,7 +235,33 @@ function activeMarkdownLines(content) {
         cursor = close + 3;
       } else {
         const open = line.indexOf("<!--", cursor);
-        if (open === -1) break;
+        const tick = line.indexOf("`", cursor);
+        if (open === -1 && tick === -1) break;
+        if (tick !== -1 && (open === -1 || tick < open)) {
+          const length = backtickRunLength(line, tick);
+          if (escapedBacktickOpener(line, tick)) {
+            cursor = tick + length;
+            continue;
+          }
+          // A real comment makes its whole line inactive. Inline code later on
+          // that line may shield same-line literals, but cannot reach forward
+          // and suppress evidence on the next clean line.
+          const close = findBalancedCodeSpanEnd(
+            lines, lineIndex, tick, length, !commentTouched
+          );
+          if (!close) {
+            cursor = tick + length;
+            continue;
+          }
+          if (close.line === lineIndex) {
+            cursor = close.column;
+            continue;
+          }
+          for (let touched = lineIndex; touched <= close.line; touched += 1)
+            active[touched] = false;
+          codeSpanEnd = close;
+          break;
+        }
         htmlComment = true;
         commentTouched = true;
         // Starting at the opener's dashes also handles the valid short forms
@@ -183,7 +269,7 @@ function activeMarkdownLines(content) {
         cursor = open + 2;
       }
     }
-    active.push(!commentTouched);
+    if (commentTouched) active[lineIndex] = false;
   }
   if (htmlComment)
     assessmentError(
