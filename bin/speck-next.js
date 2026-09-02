@@ -65,11 +65,11 @@ function migrationSource(version) {
 }
 
 function ensureProductTeamAssessment(source) {
-  if (source === "current")
-    return "Product team migration: not needed (the repository already carries the selective contract).";
   const productPath = path.join(target, "product.md");
   if (!fs.existsSync(productPath))
     return "Product team migration: product.md is missing, so no product history or assessment was invented.";
+  if (source === "current")
+    return "Product team migration: not needed (the repository already carries the selective contract).";
   const current = fs.readFileSync(productPath, "utf8");
   if (current.includes(SELECTIVE_STATUS))
     return "Product team migration: the selective unassessed status is already present; product.md was unchanged.";
@@ -113,7 +113,7 @@ function installedFiles() {
 
 function gitRead(args) {
   try {
-    return execFileSync("git", args, { cwd: target, encoding: "utf8" }).trim();
+    return execFileSync("git", args, { cwd: target, encoding: "utf8" }).trimEnd();
   } catch { return ""; }
 }
 
@@ -136,6 +136,25 @@ function gitDiff() {
     }
   }
   return parts.join("\n");
+}
+
+function upgradeNext(changes, diff) {
+  const hasChanges = Boolean(changes || diff);
+  const productPath = path.join(target, "product.md");
+  if (!fs.existsSync(productPath)) {
+    return hasChanges
+      ? "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
+      : "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work.";
+  }
+  const assessmentPending = fs.readFileSync(productPath, "utf8").includes(SELECTIVE_STATUS);
+  if (assessmentPending) {
+    return hasChanges
+      ? "Next: review the reported paths and complete diff, commit the upgrade, then run the pending product-and-current-map assessment named in product.md before the next substantial piece."
+      : "Next: there are no upgrade changes to commit; finish the pending product-and-current-map assessment named in product.md before the next substantial piece.";
+  }
+  return hasChanges
+    ? "Next: review the reported paths and complete diff, commit the upgrade, then resume current work from state.md."
+    : "Next: there are no upgrade changes to commit; resume current work from state.md.";
 }
 
 if (cmd === "install") {
@@ -182,7 +201,7 @@ if (cmd === "install") {
   console.log(diff
     ? `Complete installed-surface plus product.md diff (working tree against HEAD):\n${diff}`
     : "Complete installed-surface plus product.md diff: empty.");
-  console.log("Next: review the reported paths and complete diff, commit the upgrade, then run the product-team assessment named in product.md before the next substantial piece.");
+  console.log(upgradeNext(changes, diff));
 } else {
   console.log(`speck-next v${VERSION} — a small kernel for building great products and proving them by running them.
 

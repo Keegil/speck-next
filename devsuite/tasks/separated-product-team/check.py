@@ -6,6 +6,12 @@ from datetime import date, timedelta
 
 RC1_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise."
 SELECTIVE_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order."
+NEXT_MISSING_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
+NEXT_MISSING_CLEAN = "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work."
+NEXT_PENDING_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then run the pending product-and-current-map assessment named in product.md before the next substantial piece."
+NEXT_PENDING_CLEAN = "Next: there are no upgrade changes to commit; finish the pending product-and-current-map assessment named in product.md before the next substantial piece."
+NEXT_CURRENT_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then resume current work from state.md."
+NEXT_CURRENT_CLEAN = "Next: there are no upgrade changes to commit; resume current work from state.md."
 CONTRIBUTION_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "earliest_run"}
 
 
@@ -329,6 +335,11 @@ def seed_upgrade_repo(root, version, commit, product=None, extra=None):
     subprocess.run(["git", "commit", "-q", "-m", "fixture baseline"], cwd=root, check=True)
 
 
+def commit_fixture(root, message):
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", message], cwd=root, check=True)
+
+
 def run_cli(kernel, command, target):
     return subprocess.run(["node", str(kernel / "bin/speck-next.js"), command, str(target)],
                           cwd=kernel, capture_output=True, text=True)
@@ -350,14 +361,15 @@ def marker(root):
     return json.loads((root / ".claude/speck-next.json").read_text())
 
 
-def upgrade_report_ok(run, prior_version, prior_commit, source_commit):
+def upgrade_report_ok(run, prior_version, prior_commit, source_commit, expected_next):
     output = run.stdout + run.stderr
+    next_lines = [line for line in run.stdout.splitlines() if line.startswith("Next:")]
     return (run.returncode == 0 and
             f"{prior_version} ({prior_commit}) -> 6.0.0-rc.2 ({source_commit})" in output and
             "Product team migration:" in output and
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
-            "Next:" in output)
+            next_lines == [expected_next] and run.stdout.rstrip().endswith(expected_next))
 
 
 def run_migration_matrix(kernel):
@@ -386,13 +398,18 @@ def run_migration_matrix(kernel):
         seed_upgrade_repo(v5, "5.4.1", "v5fixture", v5_product)
         first = run_cli(kernel, "upgrade", v5)
         first_hash = surface_hash(v5)
+        commit_fixture(v5, "accept first upgrade")
         second = run_cli(kernel, "upgrade", v5)
         second_hash = surface_hash(v5)
-        migrated_v5 = (upgrade_report_ok(first, "5.4.1", "v5fixture", source_commit) and
+        migrated_v5 = (upgrade_report_ok(first, "5.4.1", "v5fixture", source_commit,
+                                         NEXT_PENDING_CHANGED) and
                        (v5 / "product.md").read_text().startswith(v5_product) and
                        (v5 / "product.md").read_text().count(SELECTIVE_STATUS) == 1 and
                        marker(v5)["version"] == "6.0.0-rc.2" and first_hash == second_hash and
-                       second.returncode == 0 and "6.0.0-rc.2" in second.stdout)
+                       upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
+                                         NEXT_PENDING_CLEAN) and
+                       "Working-tree changes across the complete installed surface plus product.md: none." in second.stdout and
+                       "Complete installed-surface plus product.md diff: empty." in second.stdout)
         results.append(("v5 migration is selective and the second upgrade is byte-stable", migrated_v5))
         details.append(f"v5_second_hash={second_hash}")
 
@@ -405,7 +422,8 @@ def run_migration_matrix(kernel):
         first_hash = surface_hash(rc1)
         second = run_cli(kernel, "upgrade", rc1)
         second_hash = surface_hash(rc1)
-        rc1_ok = (upgrade_report_ok(first, "6.0.0-rc.1", "rc1fixture", source_commit) and
+        rc1_ok = (upgrade_report_ok(first, "6.0.0-rc.1", "rc1fixture", source_commit,
+                                   NEXT_PENDING_CHANGED) and
                   (rc1 / "product.md").read_text() == expected_rc2 and RC1_STATUS not in expected_rc2 and
                   first_hash == second_hash and marker(rc1)["version"] == "6.0.0-rc.2")
         results.append(("exact generated rc.1 prose is replaced and retry is byte-stable", rc1_ok))
@@ -419,7 +437,8 @@ def run_migration_matrix(kernel):
         first_hash = surface_hash(custom)
         second = run_cli(kernel, "upgrade", custom)
         custom_text = (custom / "product.md").read_text()
-        custom_ok = (upgrade_report_ok(first, "5.4.1", "customfixture", source_commit) and
+        custom_ok = (upgrade_report_ok(first, "5.4.1", "customfixture", source_commit,
+                                      NEXT_PENDING_CHANGED) and
                      custom_text.startswith(custom_product) and
                      "## Speck Next product-team assessment" in custom_text and
                      custom_text.count(SELECTIVE_STATUS) == 1 and first_hash == surface_hash(custom) and
@@ -430,9 +449,60 @@ def run_migration_matrix(kernel):
         missing.mkdir()
         seed_upgrade_repo(missing, "5.4.1", "missingfixture")
         run = run_cli(kernel, "upgrade", missing)
-        missing_ok = (upgrade_report_ok(run, "5.4.1", "missingfixture", source_commit) and
+        missing_ok = (upgrade_report_ok(run, "5.4.1", "missingfixture", source_commit,
+                                       NEXT_MISSING_CHANGED) and
                       not (missing / "product.md").exists() and "product.md is missing" in run.stdout)
-        results.append(("missing product.md stays missing", missing_ok))
+        results.append(("missing pre-v6 product stays missing and routes to Shape", missing_ok))
+
+        current = base / "current"
+        current.mkdir()
+        current_product = "# Current selective product\n\nThe assessment is complete.\n"
+        seed_upgrade_repo(current, "6.0.0-rc.2", "currentfixture", current_product,
+                          {"state.md": "# State\n\nCurrent work is here.\n"})
+        first = run_cli(kernel, "upgrade", current)
+        first_hash = surface_hash(current)
+        commit_fixture(current, "accept current upgrade")
+        second = run_cli(kernel, "upgrade", current)
+        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", "currentfixture", source_commit,
+                                        NEXT_CURRENT_CHANGED) and
+                      (current / "product.md").read_text() == current_product and
+                      upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
+                                        NEXT_CURRENT_CLEAN) and
+                      first_hash == surface_hash(current))
+        results.append(("assessed current product resumes from state without rerunning assessment", current_ok))
+
+        current_missing = base / "current-missing"
+        current_missing.mkdir()
+        seed_upgrade_repo(current_missing, "6.0.0-rc.2", "currentmissingfixture")
+        first = run_cli(kernel, "upgrade", current_missing)
+        commit_fixture(current_missing, "accept current missing-product upgrade")
+        second = run_cli(kernel, "upgrade", current_missing)
+        current_missing_ok = (
+            upgrade_report_ok(first, "6.0.0-rc.2", "currentmissingfixture", source_commit,
+                              NEXT_MISSING_CHANGED) and
+            "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
+            upgrade_report_ok(second, "6.0.0-rc.2", source_commit, source_commit,
+                              NEXT_MISSING_CLEAN) and
+            not (current_missing / "product.md").exists())
+        results.append(("missing current product stays missing and routes to Shape", current_missing_ok))
+
+        porcelain = base / "porcelain"
+        porcelain.mkdir()
+        init_repo(porcelain)
+        installed = run_cli(kernel, "install", porcelain)
+        write_file(porcelain, "product.md", "# Porcelain product\n")
+        write_file(porcelain, ".claude/speck-next.json", json.dumps({
+            "name": "speck-next", "version": "5.4.1", "commit": "porcelainfixture",
+            "installedAt": "2026-01-02T03:04:05.000Z",
+        }, indent=2) + "\n")
+        commit_fixture(porcelain, "porcelain fixture baseline")
+        run = run_cli(kernel, "upgrade", porcelain)
+        porcelain_ok = (
+            installed.returncode == 0 and
+            upgrade_report_ok(run, "5.4.1", "porcelainfixture", source_commit,
+                              NEXT_PENDING_CHANGED) and
+            "Working-tree changes across the complete installed surface plus product.md:\n M .claude/speck-next.json\n" in run.stdout)
+        results.append(("first unstaged changed path keeps both porcelain status columns", porcelain_ok))
 
         dirty = base / "dirty"
         dirty.mkdir()
@@ -443,7 +513,8 @@ def run_migration_matrix(kernel):
         write_file(dirty, "state.md", dirty_state)
         write_file(dirty, "work/inflight.md", dirty_work)
         run = run_cli(kernel, "upgrade", dirty)
-        dirty_ok = (upgrade_report_ok(run, "5.4.1", "dirtyfixture", source_commit) and
+        dirty_ok = (upgrade_report_ok(run, "5.4.1", "dirtyfixture", source_commit,
+                                     NEXT_PENDING_CHANGED) and
                     (dirty / "state.md").read_text() == dirty_state and
                     (dirty / "work/inflight.md").read_text() == dirty_work)
         results.append(("dirty unrelated work survives byte for byte", dirty_ok))
@@ -458,7 +529,8 @@ def run_migration_matrix(kernel):
         (retry / "product.md").rmdir()
         write_file(retry, "product.md", "# Recovered product\n")
         retried = run_cli(kernel, "upgrade", retry)
-        retry_ok = (marker_held and upgrade_report_ok(retried, "5.4.1", "retryfixture", source_commit) and
+        retry_ok = (marker_held and upgrade_report_ok(retried, "5.4.1", "retryfixture", source_commit,
+                                                     NEXT_PENDING_CHANGED) and
                     marker(retry)["version"] == "6.0.0-rc.2")
         results.append(("failed migration leaves the old marker and a retry completes", retry_ok))
 
