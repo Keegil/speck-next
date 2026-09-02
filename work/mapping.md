@@ -351,3 +351,37 @@ At `d2b2e66`, `/root/selective_map_tester` replayed the original 16 checks, both
 - Challenge: try to overturn the tester's favorable verdict against the ratified selective promise, the eight contract promises, both failed Map controls, every original v6 release requirement, and the complete file ownership seam. Judge the three ordering choices and whether Product's recommendation is the smallest independently runnable cut rather than method ceremony.
 - Dispatch: only after this receipt is committed.
 - Judgment: pending.
+
+### Selective Map judgment round 1 — sent back
+
+At `39ac08c`, `/root/selective_map_judge` challenged the favorable re-test and upheld the executable seam. It found two dropped release obligations. First, piece 9 had reduced the owner's exact four-person milestone roster and release-specific rulings to unnamed fresh people and generic qualities. Second, the public-detail scan sat only in piece 8 even though piece 9 changes executable release files afterward. Either omission could let the split release with less proof than the original authorized piece. Verdict: **SEND BACK**.
+
+Product restored both without changing the pieces or order. Piece 9 now names the four exact milestone experiences: first-time adoption, real product-building work, a second host/repository, and the worst day of missing contexts or mid-product migration. Its two independent judges must challenge the same records and rule the four qualities, milestone Business case, migration honesty, owner-attention cost, and distinct actions rather than duplicate prose. The final case-insensitive public-detail scan now covers the combined release diff after every piece-9 change; piece 8's earlier scan remains an incremental control, not release proof.
+
+### Release-conservation completion run
+
+Command: the 18-check completion command above, plus:
+
+```python
+roster = ('first-time adoption', 'real product-building work', 'second host/repository', 'worst day of missing contexts or mid-product migration')
+release_rulings = ('works', 'delivers the promise', 'good to use', 'quality hangs together', 'milestone Business case', 'migration honesty', 'owner-attention cost', 'distinct actions rather than duplicate prose')
+checks['exact milestone tester roster conserved'] = all(x in pieces[9] for x in roster)
+checks['exact milestone rulings conserved'] = 'two independent judges' in pieces[9] and all(x in pieces[9] for x in release_rulings)
+checks['combined final public-detail scan'] = 'case-insensitive public-detail scan over the combined release diff after every piece-9 change' in pieces[9]
+```
+
+Returned exit code 0 with the prior 18 `PASS` lines plus:
+
+```text
+exact milestone tester roster conserved: PASS
+exact milestone rulings conserved: PASS
+combined final public-detail scan: PASS
+```
+
+### Selective Map final re-test receipt — opened before dispatch
+
+- Candidate: the full prior control population plus the judge's two failures, repaired `map.md`, and the three release-conservation checks at the commit containing this receipt.
+- Re-tester: `/root/selective_map_tester`, replaying all 21 checks and both dropped-requirement controls.
+- Skeptical attack: compare every release condition in the owner's original plan and `work/separated-product-team.md` with the two current pieces; any unmatched condition sends the map back.
+- Re-judge: `/root/selective_map_judge`, after a sufficient re-test.
+- Verdict and judgment: pending.
