@@ -408,3 +408,21 @@ Engineering owns the same six homes: `AGENTS.md`, `CONTRACT.md`, `README.md`, `c
 **What changed or held:** The run changed no further Product decision. Ordinary ambiguity remains fail-closed; recovery is deliberate, executable, and unable to bypass other evidence. Selective routing, four-role upgrade assessment, all three routes, provenance, preservation, and Piece 8/Piece 9 separation held. No Product implementation change remains before Built.
 
 **Final deterministic boundary:** source method 17 files / 78,226 bytes; fresh install 19 files / 78,696 bytes; five skills; always-read before the final state rewrite 49,221 bytes. The new Built line replaces stale state rather than appending history, then the four-file sum is measured again. No governed host run or field-value claim is part of this result.
+
+## Review receipt — round 3
+
+**Built line and commit:** `state.md` at `f01337f` says:
+
+> **Built — Piece 8 “The right roles show up,” final repaired candidate:** product commits `10acad3`, `8bf17be`, `78857f9`, `737959a`, `99a0f38`, `9273500`, and `a20a537` cover exactly `AGENTS.md`, `.claude/skills/shape-product/SKILL.md`, `.claude/skills/shape-product/references/questions.md`, `.claude/skills/map-build/SKILL.md`, `.claude/skills/map-build/references/questions.md`, `templates/product.md`, `templates/map.md`, `templates/piece.md`, `templates/state.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. The commands and active-role returns in `work/right-roles-show-up.md` pass 26 routing, eight assessment, and 84 migration/refusal/recovery/argument subjects; the same-context control stays red. `wc -c AGENTS.md product.md map.md state.md` returned **49,308 bytes**, within 50,000. No product implementation commit follows `a20a537`.
+
+**Opened:** 2026-09-02, after `f01337f` and before either round-3 tester was dispatched.
+
+**Candidate:** exact product implementation ending at `a20a537`; later commits `37f83a7`, `f01337f`, and this receipt change only role evidence, state, and review records.
+
+**Fresh tester 1 — first-time builder:** a new carrier receives the product promise, installed candidate, and the required attacks from both prior judgments, never the role conclusions. They rerun a fresh installation, four contrasting call decisions, Product/Engineering separation, factual inactive entries, one Product synthesis, named-run and return landing blocks, uncertainty stop, and provenance comprehension. They confirm a healthy fresh marker records explicit `null`, ordinary later upgrade stays one-command, and `--open-assessment` cannot be used to force or bypass its state. They add one skeptical attack not named above.
+
+**Fresh tester 2 — mid-product upgrader:** another new carrier receives the supported v5, rc.1, rejected rc.2, custom, missing-product, dirty, retry, corrupt-state, pending, and all completion routes plus both earlier judges' exact attacks, never role conclusions. They independently create both a legitimate commit-only fieldless product and a deletion laundered through `99a0f38`; ordinary upgrade must refuse before all target bytes, print an executable recovery, and never resume. Following the printed flag must preserve history/unrelated dirt, open one pending record, reject repeat or incompatible use, and later reach the exact named route. They compare exact target snapshots and output, exercise bad arguments before target access, and add one skeptical attack.
+
+**Judge:** after both round-3 records are committed, a third fresh carrier challenges every tester claim and reruns both prior judgments' complete requirements plus each new skeptical attack. They separately rule works, delivers the promise, good to use, quality hangs together, and sound structure; every open item gets a destination.
+
+**Excluded:** every carrier in the first two receipts and judgments; `/root/piece8_retest_builder`, `/root/piece8_retest_upgrader`, `/root/piece8_judge_round2`; every Product, Business, Experience, Engineering, specialist, builder, and auditor carrier; and any honest replacement. The two round-3 testers and judge are distinct from one another and this whole set.
