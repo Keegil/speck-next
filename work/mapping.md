@@ -352,6 +352,12 @@ At `d2b2e66`, `/root/selective_map_tester` replayed the original 16 checks, both
 - Dispatch: only after this receipt is committed.
 - Judgment: pending.
 
+### Selective Map final judgment — sufficient
+
+At `2f21837`, `/root/selective_map_judge` replayed both prior release-proof failures, challenged the 21-check population, compared all three cuts again, and attacked the split for an extra owner beat or a piece-level green masquerading as release. The exact milestone roster and rulings now stand; the combined leak scan runs after every piece-9 change; piece 9 cannot start before the Judged rc.2 contract; neither piece can become `6.0.0` without the milestone hearing, Business ruling, two judges, and owner grade; and the split adds one autonomous piece review but no owner sign-off. The judge again found the executable seam smaller and safer than either alternative. Judgment: **SUFFICIENT**.
+
+The only remaining Map condition is the owner's ratification of the reviewed order. If the owner selects the recommended two-piece seam unchanged, no further Map-only re-test is required.
+
 ### Selective Map judgment round 1 — sent back
 
 At `39ac08c`, `/root/selective_map_judge` challenged the favorable re-test and upheld the executable seam. It found two dropped release obligations. First, piece 9 had reduced the owner's exact four-person milestone roster and release-specific rulings to unnamed fresh people and generic qualities. Second, the public-detail scan sat only in piece 8 even though piece 9 changes executable release files afterward. Either omission could let the split release with less proof than the original authorized piece. Verdict: **SEND BACK**.

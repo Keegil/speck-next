@@ -2,7 +2,7 @@
 
 ## What's true now
 
-The owner has ratified selective separation after its running cost failure. Shape is closed and Map has been re-cut into a candidate with two executable boundaries: install and migrate the right role contract, then prove real separated carriers finish inside the limit. Product selected that seam after distinct Business, Experience, and Engineering Map contributions; their dissent and assumptions are preserved in [work/mapping.md](work/mapping.md). No piece is live while the re-cut awaits its completion run, fresh test, judgment, and owner ratification. The previous governed Codex run remains failed at 266,484 gross tokens against 250,000; the redesign keeps that gross cap binding and adds a 200,000-fresh cap. The installed `6.0.0-rc.1` candidate remains Business **broken** and the released version remains v5.4.1.
+The owner has ratified selective separation after its running cost failure. Shape is closed and Map has been re-cut into two executable boundaries: install and migrate the right role contract, then prove real separated carriers finish inside the limit. Product selected that seam after distinct Business, Experience, and Engineering Map contributions; their dissent and assumptions are preserved in [work/mapping.md](work/mapping.md). The 21-condition completion population passed, the fresh tester found the repaired map sufficient, and the independent judge ruled it sufficient at `2f21837`. No piece is live until the owner ratifies the reviewed order. The previous governed Codex run remains failed at 266,484 gross tokens against 250,000; the redesign keeps that gross cap binding and adds a 200,000-fresh cap. The installed `6.0.0-rc.1` candidate remains Business **broken** and the released version remains v5.4.1.
 
 The kernel is at **v5.4.1**, and its vocabulary is defined: a full census of the 124 rule-carrying terms across the loaded pages left one word undefined — `sufficient` — and the owner's selection of a drafted option closed it the same night (recorded as exactly that in decisions.md; the sentence is on both pages that carry the landing gate). Every page an agent loads is written in a builder's words: the method page (`AGENTS.md`), five skills — `shape-product`, `map-build`, `craft`, `experience`, `judge` — with four references, six template skeletons, and the installer. The method's shape: five phases, shape → map → build → experience → judge, where the last two are one review — fresh testers use the product and decide as users do, and a judge who built and tested nothing challenges every verdict before it counts. States: Shaped → Built → Judged → Live, with *proven* as plain speech for all four rulings standing on evidence.
 
@@ -18,11 +18,11 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The installed v6 candidate is blocked from Built, milestone judgment, merge, tag, and publish by Business's **broken** operating-cost ruling. No further governed run is authorized. The candidate Map must pass its completion check, fresh test, independent judgment, and owner ratification. After that, piece 8 may change installed semantics and deterministic controls; piece 9 still cannot start a complete governed attempt until every isolated component admission passes.
+The installed v6 candidate is blocked from Built, milestone judgment, merge, tag, and publish by Business's **broken** operating-cost ruling. No further governed run is authorized. The candidate Map has passed completion, fresh test, and independent judgment; owner ratification is its last condition. After that, piece 8 may change installed semantics and deterministic controls; piece 9 still cannot start a complete governed attempt until every isolated component admission passes.
 
 ## What needs the owner
 
-Nothing until Product returns with the reviewed ordering choices. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+One decision: select the reviewed two-piece executable seam, keep one integrated piece, or split fresh adoption from migration. Product recommends the executable seam because it isolates failures without cutting the installed contract in half. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
