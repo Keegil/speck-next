@@ -19,6 +19,12 @@ const ASSESSMENT_HEADING = "## Speck Next upgrade assessment";
 const ASSESSMENT_RECORD = "work/product-team-assessment.md";
 const ASSESSMENT_RECORD_LINE = `**Record:** \`${ASSESSMENT_RECORD}\``;
 const ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending";
+const PRODUCT_TEAM_HEADING = "## Product team";
+const PRODUCT_TEAM_ROLES = ["Product", "Business", "Experience", "Engineering"];
+const CONDITIONAL_ROLE_FIELDS = [
+  "Protects", "Call when", "May stay out when", "Evidence expires", "Material changes",
+];
+const TRIVIAL_PRODUCT_TEAM_VALUES = new Set(["tbd", "todo", "none", "n/a", "placeholder"]);
 const ASSESSMENT_BLOCK = `${ASSESSMENT_HEADING}\n\n${ASSESSMENT_PENDING}\n${ASSESSMENT_RECORD_LINE}\n`;
 const RECOVERABLE_FIELDLESS_VERSION = "6.0.0-rc.2";
 
@@ -283,6 +289,80 @@ function assessmentError(message, repair = "Next: restore consistent assessment 
   die(`refusing: ${message}\nNothing in the repository changed.\n${repair}`);
 }
 
+function unusableProductTeamValue(value) {
+  const trimmed = value.trim();
+  return !trimmed || /^\[[^\]]*\]$/.test(trimmed) ||
+    TRIVIAL_PRODUCT_TEAM_VALUES.has(trimmed.toLowerCase());
+}
+
+function validateCompletedProductTeam(lines, active) {
+  const headings = lines.flatMap((line, index) =>
+    active[index] && line === PRODUCT_TEAM_HEADING ? [index] : []
+  );
+  if (headings.length !== 1) {
+    const issue = headings.length === 0
+      ? "Product team section: missing"
+      : `Product team section: duplicate (${headings.length} current sections)`;
+    incompleteProductTeamError([issue]);
+  }
+
+  const start = headings[0];
+  let end = lines.length;
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (active[index] && /^##[ \t]+[^#]/.test(lines[index])) { end = index; break; }
+  }
+
+  const rows = Object.fromEntries(PRODUCT_TEAM_ROLES.map(role => [role, []]));
+  const rolePattern = /^- \*\*(Product|Business|Experience|Engineering)\*\* —(.*)$/;
+  for (let index = start + 1; index < end; index += 1) {
+    if (!active[index]) continue;
+    const match = lines[index].match(rolePattern);
+    if (match) rows[match[1]].push(match[2].trim());
+  }
+
+  const issues = [];
+  for (const role of ["Product", "Engineering"]) {
+    if (rows[role].length === 0) issues.push(`${role}: responsibility missing`);
+    else if (rows[role].length > 1) issues.push(`${role}: duplicate row`);
+    else if (unusableProductTeamValue(rows[role][0]))
+      issues.push(`${role}: responsibility unusable`);
+  }
+
+  const escapedLabels = CONDITIONAL_ROLE_FIELDS.map(label =>
+    label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  );
+  const fieldPattern = new RegExp(
+    `(?:^| · )(${escapedLabels.join("|")}):(.*?)(?= · (?:${escapedLabels.join("|")}):|$)`,
+    "g"
+  );
+  for (const role of ["Business", "Experience"]) {
+    if (rows[role].length === 0) {
+      for (const field of CONDITIONAL_ROLE_FIELDS) issues.push(`${role}.${field}: missing`);
+      continue;
+    }
+    if (rows[role].length > 1) {
+      issues.push(`${role}: duplicate row`);
+      continue;
+    }
+    const fields = Object.fromEntries(CONDITIONAL_ROLE_FIELDS.map(field => [field, []]));
+    for (const match of rows[role][0].matchAll(fieldPattern)) fields[match[1]].push(match[2]);
+    for (const field of CONDITIONAL_ROLE_FIELDS) {
+      if (fields[field].length === 0) issues.push(`${role}.${field}: missing`);
+      else if (fields[field].length > 1) issues.push(`${role}.${field}: duplicate`);
+      else if (unusableProductTeamValue(fields[field][0]))
+        issues.push(`${role}.${field}: unusable`);
+    }
+  }
+  if (issues.length) incompleteProductTeamError(issues);
+}
+
+function incompleteProductTeamError(issues) {
+  assessmentError(
+    `the completed upgrade assessment cannot proceed because product.md does not contain one usable Product team definition:\n- ${issues.join("\n- ")}`,
+    `Next: restore ${ASSESSMENT_PENDING}, finish product.md's Product team section with the existing four-role assessment evidence, commit product.md, ${ASSESSMENT_RECORD}, and state.md together, then run the upgrade again.`
+  );
+}
+
 function parseAssessment(content, required = false) {
   const { lines, active } = activeMarkdownLines(content);
   const headings = lines.flatMap((line, index) => active[index] && line === ASSESSMENT_HEADING ? [index] : []);
@@ -329,6 +409,8 @@ function parseAssessment(content, required = false) {
     const recordPath = path.join(target, ASSESSMENT_RECORD);
     if (!fs.existsSync(recordPath) || !fs.statSync(recordPath).isFile())
       assessmentError(`the upgrade assessment says complete, but ${ASSESSMENT_RECORD} is missing.`);
+    if (assessment.route === "Map" || assessment.route === "resume")
+      validateCompletedProductTeam(lines, active);
   }
   return assessment;
 }

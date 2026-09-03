@@ -13,6 +13,8 @@ ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending"
 ASSESSMENT_BLOCK = f"{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n"
 ASSESSMENT_COMPLETE_SHAPE = "**Speck Next upgrade assessment:** complete — Shape reopened"
 ASSESSMENT_COMPLETE_MAP = "**Speck Next upgrade assessment:** complete — Map reopened"
+PRODUCT_TEAM_FIELDS = ("Protects", "Call when", "May stay out when", "Evidence expires",
+                       "Material changes")
 NEXT_MISSING_CHANGED = "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
 NEXT_MISSING_CLEAN = "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work."
 NEXT_PENDING_CHANGED = f"Next: review the reported paths and complete diff, commit the upgrade, then complete {ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md."
@@ -370,7 +372,8 @@ def static_contract_homes(kernel):
                       "comment-touched line stays inactive",
                       "multiline inline-code spans", "unmatched backtick run is literal",
                       "only a plain current line can start a multiline span",
-                      "unclosed live comment refuses"],
+                      "unclosed live comment refuses", "exactly one usable row",
+                      "Product-team section", "values as opaque", "restore pending"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -389,13 +392,17 @@ def static_contract_homes(kernel):
                         "inactive-container tables", "top-level `<!-- ... -->` comments",
                         "multiline inline-code spans",
                         "unmatched or wrong-length backtick run is literal",
-                        "only a plain current line can start a multiline span"],
+                        "only a plain current line can start a multiline span",
+                        "Product-team required-value and duplicate tables",
+                        "completed Map and resume routes", "values as opaque"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
                       "before any repository byte changes", "upgrade [dir] --open-assessment",
                       "comment-touched line stays inactive", "unclosed live comment refuses",
                       "balanced inline-code span", "unmatched backtick is plain text",
-                      "only a plain current line can start a multiline span"],
+                      "only a plain current line can start a multiline span",
+                      "one row per role", "completed Map or resume route",
+                      "owner bytes are never generated or normalized"],
         "capabilities.md": ["Selective product team", "live-host affordability",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container"],
@@ -617,8 +624,39 @@ def run_migration_matrix(kernel):
                 content.endswith(f"## Route\n{route}\n")
             )
 
-        def complete_pending(repo, status, route, state, retained_history=""):
+        def product_team(product=None, business=None, experience=None, engineering=None):
+            product = "Keeps the promises and product order coherent." if product is None else product
+            engineering = ("Keeps feasibility, safety, reversibility, and operation honest."
+                           if engineering is None else engineering)
+            business = business or {
+                "Protects": "sustainable adoption and operating cost",
+                "Call when": "a change affects adoption, price, revenue, cost, or durable value",
+                "May stay out when": "current measured evidence rules out those effects",
+                "Evidence expires": "when that evidence ages past one milestone",
+                "Material changes": "a new audience, channel, price, or cost model",
+            }
+            experience = experience or {
+                "Protects": "the journeys, surfaces, behavior, and declared feel",
+                "Call when": "a change alters what a person sees, understands, or does",
+                "May stay out when": "a current observed journey proves no user-facing effect",
+                "Evidence expires": "when the observed journey or surface changes",
+                "Material changes": "a new journey, surface, audience, or interaction",
+            }
+            def conditional_row(role, fields):
+                values = " · ".join(f"{field}: {fields[field]}" for field in fields)
+                return f"- **{role}** — {values}\n"
+            return ("## Product team\n"
+                    f"- **Product** — {product}\n" +
+                    conditional_row("Business", business) +
+                    conditional_row("Experience", experience) +
+                    f"- **Engineering** — {engineering}\n")
+
+        def complete_pending(repo, status, route, state, retained_history="",
+                             team=None):
             product = (repo / "product.md").read_text().replace(ASSESSMENT_PENDING, status, 1)
+            if team is None:
+                team = product_team()
+            product = product.replace(ASSESSMENT_HEADING, team + "\n" + ASSESSMENT_HEADING, 1)
             if retained_history:
                 product += "\n" + retained_history
             write_file(repo, "product.md", product)
@@ -626,10 +664,10 @@ def run_migration_matrix(kernel):
             write_file(repo, "state.md", state)
             commit_fixture(repo, "complete product-team assessment")
 
-        def seeded_pending(name):
+        def seeded_pending(name, original="# Existing product\n"):
             repo = base / name
             repo.mkdir()
-            seed_upgrade_repo(repo, "5.4.1", f"{name}fixture", "# Existing product\n",
+            seed_upgrade_repo(repo, "5.4.1", f"{name}fixture", original,
                               {"map.md": "# Map\n\n- [ ] Piece alpha — live\n",
                                "state.md": "# State\n\nPiece alpha is live.\n"})
             first = run_cli(kernel, "upgrade", repo)
@@ -1343,6 +1381,7 @@ def run_migration_matrix(kernel):
         completed_inline_original = (
             "# Completed assessment after inline literal\n\n"
             "The literal opener `<!--` remains documentation.\n\n"
+            + product_team() + "\n"
             + ASSESSMENT_HEADING + "\n\n"
             + completed_inline_status + "\n"
             + ASSESSMENT_RECORD_LINE + "\n"
@@ -1743,6 +1782,224 @@ def run_migration_matrix(kernel):
                 before == surface_hash(repo) and
                 (not retained or retained in (repo / "product.md").read_text()))
             results.append((f"completed assessment follows the {name} route", route_ok))
+
+        owner_prose = ("# Owner-shaped product\n\n"
+                       "These promises, punctuation, and spacing belong to the owner.\n")
+        for name, status, route, state, expected_next, retained in route_specs:
+            repo = seeded_pending(f"complete-{name.lower()}-twin", owner_prose)
+            complete_pending(repo, status, route, state, retained)
+            before = repository_snapshot(repo)
+            run = run_cli(kernel, "upgrade", repo)
+            twin_ok = (
+                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                                  surface_digest, expected_next, surface_digest) and
+                owner_prose in (repo / "product.md").read_text() and
+                before == repository_snapshot(repo)
+            )
+            results.append((f"canonical {name} twin preserves custom product prose byte for byte",
+                            twin_ok))
+
+        def completed_team_repo(name, team, status=None):
+            status = status or (
+                "**Speck Next upgrade assessment:** complete — resumed Piece alpha from state.md"
+            )
+            route = ("Map reopened." if status == ASSESSMENT_COMPLETE_MAP else
+                     "Shape reopened." if status == ASSESSMENT_COMPLETE_SHAPE else
+                     "Resume Piece alpha from state.md.")
+            state = ("# State\n\nMap is reopened.\n" if status == ASSESSMENT_COMPLETE_MAP else
+                     "# State\n\nShape is reopened.\n" if status == ASSESSMENT_COMPLETE_SHAPE else
+                     "# State\n\nPiece alpha is live.\n")
+            repo = seeded_pending(name)
+            complete_pending(repo, status, route, state, team=team)
+            return repo
+
+        def product_team_refusal(label, team, expected, status=None, flagged=False):
+            slug = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+            repo = completed_team_repo("team-refusal-" + slug, team, status)
+            refused, atomic = run_atomic_refusal(repo)
+            output = refused.stdout + refused.stderr
+            accepted = (atomic and all(needle in output for needle in expected) and
+                        "finish product.md's Product team section" in output and
+                        ASSESSMENT_PENDING in output and
+                        "continue Map from state.md" not in output and
+                        not has_resume_instruction(output))
+            results.append((f"{label} refuses with exact fields and full target unchanged",
+                            accepted))
+            if flagged:
+                flagged_run, flagged_atomic = run_atomic_refusal(
+                    repo, "--open-assessment", plant=False
+                )
+                flagged_output = flagged_run.stdout + flagged_run.stderr
+                results.append((
+                    f"--open-assessment cannot override {label}",
+                    flagged_atomic and all(needle in flagged_output for needle in expected) and
+                    "continue Map from state.md" not in flagged_output and
+                    not has_resume_instruction(flagged_output),
+                ))
+
+        canonical_team = product_team()
+        canonical_rows = canonical_team.split("\n", 1)[1]
+        product_team_refusal(
+            "empty Product-team resume",
+            "## Product team\n",
+            ["Product: responsibility missing", "Business.Protects: missing",
+             "Experience.Material changes: missing", "Engineering: responsibility missing"],
+            flagged=True,
+        )
+        product_engineering_only = (
+            "## Product team\n"
+            "- **Product** — Keeps the promises and product order coherent.\n"
+            "- **Engineering** — Keeps safe operation honest.\n"
+        )
+        product_team_refusal(
+            "Product-and-Engineering-only resume",
+            product_engineering_only,
+            ["Business.Protects: missing", "Experience.Protects: missing"],
+        )
+        product_team_refusal(
+            "empty Product-team Map route",
+            "## Product team\n",
+            ["Product: responsibility missing", "Business.Protects: missing"],
+            status=ASSESSMENT_COMPLETE_MAP,
+            flagged=True,
+        )
+
+        incomplete_shape = completed_team_repo(
+            "incomplete-team-shape", "## Product team\n", ASSESSMENT_COMPLETE_SHAPE
+        )
+        incomplete_shape_before = repository_snapshot(incomplete_shape)
+        incomplete_shape_run = run_cli(kernel, "upgrade", incomplete_shape)
+        results.append((
+            "an incomplete Product team may proceed only through completed Shape reopened",
+            upgrade_report_ok(
+                incomplete_shape_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                surface_digest,
+                "Next: there are no upgrade changes to commit; continue Shape from state.md.",
+                surface_digest,
+            ) and incomplete_shape_before == repository_snapshot(incomplete_shape),
+        ))
+
+        def without_role(team, role):
+            return "\n".join(
+                line for line in team.split("\n")
+                if not line.startswith(f"- **{role}** —")
+            )
+
+        for role in ("Product", "Engineering"):
+            product_team_refusal(
+                f"missing {role} responsibility", without_role(canonical_team, role),
+                [f"{role}: responsibility missing"],
+            )
+            for variant, value in (("blank", ""), ("bracket placeholder", "[responsibility]"),
+                                   ("filler", "TBD")):
+                args = {"product": None, "engineering": None}
+                args[role.lower()] = value
+                product_team_refusal(
+                    f"{variant} {role} responsibility", product_team(**args),
+                    [f"{role}: responsibility unusable"],
+                )
+        for filler in ("TODO", "none", "N/A", "placeholder"):
+            product_team_refusal(
+                f"explicit filler {filler} Product responsibility",
+                product_team(product=filler),
+                ["Product: responsibility unusable"],
+            )
+
+        canonical_conditional = {
+            "Business": {
+                "Protects": "sustainable adoption and operating cost",
+                "Call when": "a change affects adoption, price, revenue, cost, or durable value",
+                "May stay out when": "current measured evidence rules out those effects",
+                "Evidence expires": "when that evidence ages past one milestone",
+                "Material changes": "a new audience, channel, price, or cost model",
+            },
+            "Experience": {
+                "Protects": "the journeys, surfaces, behavior, and declared feel",
+                "Call when": "a change alters what a person sees, understands, or does",
+                "May stay out when": "a current observed journey proves no user-facing effect",
+                "Evidence expires": "when the observed journey or surface changes",
+                "Material changes": "a new journey, surface, audience, or interaction",
+            },
+        }
+        for role in ("Business", "Experience"):
+            for field in PRODUCT_TEAM_FIELDS:
+                for variant, value in (("missing", None), ("blank", ""),
+                                       ("bracket placeholder", f"[{field}]"),
+                                       ("filler", "TBD")):
+                    values = dict(canonical_conditional[role])
+                    if value is None:
+                        values.pop(field)
+                    else:
+                        values[field] = value
+                    kwargs = {role.lower(): values}
+                    expected_kind = "missing" if value is None else "unusable"
+                    product_team_refusal(
+                        f"{variant} {role} {field}", product_team(**kwargs),
+                        [f"{role}.{field}: {expected_kind}"],
+                    )
+
+        product_team_refusal(
+            "duplicate Product-team section", canonical_team + "\n" + canonical_team,
+            ["Product team section: duplicate (2 current sections)"],
+        )
+        for role in ("Product", "Business", "Experience", "Engineering"):
+            row = next(line for line in canonical_team.splitlines()
+                       if line.startswith(f"- **{role}** —"))
+            duplicated = canonical_team.replace(row, row + "\n" + row, 1)
+            product_team_refusal(
+                f"duplicate {role} row", duplicated, [f"{role}: duplicate row"]
+            )
+
+        def duplicate_field_team(role, field):
+            team = canonical_team
+            row = next(line for line in team.splitlines()
+                       if line.startswith(f"- **{role}** —"))
+            start = row.index(f"{field}: ")
+            end = row.find(" · ", start)
+            if end == -1:
+                end = len(row)
+            changed = row[:end] + f" · {field}: duplicate value" + row[end:]
+            return team.replace(row, changed, 1)
+
+        for role in ("Business", "Experience"):
+            for field in PRODUCT_TEAM_FIELDS:
+                product_team_refusal(
+                    f"duplicate {role} {field}", duplicate_field_team(role, field),
+                    [f"{role}.{field}: duplicate"],
+                )
+
+        inline_role_impostors = canonical_rows.replace("- **", "**")
+        hidden_rows = {
+            "blockquote": "\n".join("> " + line for line in canonical_rows.splitlines()) + "\n",
+            "fence": "```markdown\n" + canonical_rows + "```\n",
+            "HTML comment": "<!--\n" + canonical_rows + "-->\n",
+            "multiline inline code": ("`hidden role declarations begin\n" +
+                                      inline_role_impostors +
+                                      "hidden role declarations end`\n"),
+        }
+        for container, hidden in hidden_rows.items():
+            product_team_refusal(
+                f"{container} Product-team row impostors",
+                "## Product team\n" + hidden,
+                ["Product: responsibility missing", "Business.Protects: missing",
+                 "Experience.Protects: missing", "Engineering: responsibility missing"],
+            )
+            live_after = "## Product team\n" + hidden + canonical_rows
+            repo = completed_team_repo(
+                "live-after-" + re.sub(r"[^a-z0-9]+", "-", container.lower()),
+                live_after,
+            )
+            before = repository_snapshot(repo)
+            run = run_cli(kernel, "upgrade", repo)
+            results.append((
+                f"current Product-team rows after closed {container} remain usable",
+                upgrade_report_ok(
+                    run, "6.0.0-rc.2", source_checkout, source_checkout,
+                    surface_digest,
+                    "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                    surface_digest,
+                ) and before == repository_snapshot(repo),
+            ))
 
         corruptions = {
             "missing product": None,
