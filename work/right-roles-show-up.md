@@ -644,3 +644,23 @@ The implementation carrier ended with one successful host turn and no error even
 **Excluded:** `/root`; every Product, Business, Experience, Engineering, specialist, builder, and auditor carrier, including `/root/piece8_business`, `/root/piece8_experience`, `/root/piece8_engineering`, `/root/piece8_migration_audit`, `codex-cli:01a0647e-1b1e-7ab0-85f6-285e7219da72`, `codex-cli:01a0647e-1b1e-77b2-8d99-32bf09b1bede`, `codex-cli:01a0647e-1b1e-75c0-a580-fd49c4c991aa`, and `codex-cli:01a06485-5574-7413-8ac9-7ff6c50e767c`; and every tester or judge in rounds 1–4. The two round-5 testers and judge are distinct from one another and the complete excluded set.
 
 **Run owner:** `/root`. Testers and judge are read-only against the shared tree and use disposable Git repositories for every running subject. No governed host or Piece 9 run belongs to this review.
+
+## Fresh testing — round 5
+
+### First-time builder — carrier `codex-cli:01a064ad-6a6d-7260-a689-55ef5025c20c`
+
+**Running product:** candidate `edab731` through fresh installed repositories. The tester received the product promise, Built line, committed receipt, and prior judgments' running requirements, never the product-role conclusions.
+
+The committed support run passed 26 routing, eight assessment, and 210 migration/refusal subjects. The same-context control stayed red. Four fresh repositories exercised Product plus Engineering only, Business added, Experience added, and all four called. Factual inactive entries carried dated direct evidence, hashes, and expiry; every setup correctly stopped before synthesis or code when the tester had only one carrier. False-inactive repair, informative-run and return blocks, continued staffing, replacement lineage, contributor exclusion, provenance, all three upgrade routes, and public abstraction held. Fresh installation measured 19 files / 81,010 bytes; the source surface was 17 files / 80,540 bytes; always-read files measured 47,415 / 50,000 bytes. Exact and substring public-detail controls each caught ten planted names and zero candidate additions.
+
+Their free attack used structurally complete but vague Product-team values. The upgrader accepted the values, as the recorded mechanical boundary requires, but the next piece treated the conditions as uncertain and the evidence as unsupported, called Business and Experience, and stopped before synthesis or code. **Verdict: SUFFICIENT.** No finding needs a destination.
+
+### Mid-product upgrader — carrier `codex-cli:01a064ad-6a6d-77e3-b55d-45336bbfda68`
+
+**Running product:** candidate `edab731` against 33 disposable repositories and five source checkouts covering v5, generated rc.1, rejected/current/fieldless rc.2, custom, missing, dirty, retry, corrupt, pending, Shape, Map, resume, recovery, provenance, Markdown containers, inline code, and argument failures. The tester received the same cold review surface and no role conclusions.
+
+The committed support run passed 26/8/210 and the same-context control stayed red. Every named existing path otherwise behaved correctly: refusals preserved the complete target, product, marker, unrelated dirt, and porcelain bytes; distinct checkouts with byte-identical installed surfaces shared method hash `1eb7042f…c899979` while retaining their own source labels.
+
+Two running findings remain. First, a CRLF-only `product.md` containing the exact canonical pending block was treated as if no assessment evidence survived. Ordinary upgrade refused without changing the target, but following its printed `--open-assessment` action appended a second pending block and mixed 14 CRLF lines with five bare-LF lines. Second, a completed resume whose Product responsibility contained only U+200B was accepted and printed the named resume action, while a spaces-only twin correctly failed as unusable. The first finding can duplicate lifecycle state; the second lets an invisible blank satisfy a required role definition. **Verdict: INSUFFICIENT. Route: Build.** Preserve both failures as controls, repair the upgrader and Piece 8 suite, then require a new Built line and receipt.
+
+The two testers were distinct from every excluded contributor and from one another. Both left the shared repository unchanged and removed their disposable repositories. Their host-reported use was 4,479,613 gross / 4,349,056 cached / 130,557 fresh tokens for the first-time builder and 2,955,140 gross / 2,806,016 cached / 149,124 fresh for the upgrader. These are review-cost evidence for Piece 9, not Piece 8 acceptance evidence.
