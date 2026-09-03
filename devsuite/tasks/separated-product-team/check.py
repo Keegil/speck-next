@@ -373,7 +373,8 @@ def static_contract_homes(kernel):
                       "multiline inline-code spans", "unmatched backtick run is literal",
                       "only a plain current line can start a multiline span",
                       "unclosed live comment refuses", "exactly one usable row",
-                      "Product-team section", "values as opaque", "restore pending"],
+                      "Product-team section", "values as opaque", "restore pending",
+                      "LF, CRLF, lone CR", "last line ending", "default-ignorable"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
         ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
@@ -394,7 +395,8 @@ def static_contract_homes(kernel):
                         "unmatched or wrong-length backtick run is literal",
                         "only a plain current line can start a multiline span",
                         "Product-team required-value and duplicate tables",
-                        "completed Map and resume routes", "values as opaque"],
+                        "completed Map and resume routes", "values as opaque",
+                        "LF, CRLF, lone CR", "last existing line ending", "default-ignorable"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
                       "before any repository byte changes", "upgrade [dir] --open-assessment",
@@ -402,7 +404,8 @@ def static_contract_homes(kernel):
                       "balanced inline-code span", "unmatched backtick is plain text",
                       "only a plain current line can start a multiline span",
                       "one row per role", "completed Map or resume route",
-                      "owner bytes are never generated or normalized"],
+                      "owner bytes are never generated or normalized",
+                      "LF, CRLF, lone CR", "last existing line ending", "default-ignorable"],
         "capabilities.md": ["Selective product team", "live-host affordability",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container"],
@@ -735,6 +738,152 @@ def run_migration_matrix(kernel):
                 write_file(repo, ASSESSMENT_RECORD, record_content)
             commit_fixture(repo, f"{name} refusal baseline")
             return repo
+
+        round_five_crlf_original = (
+            "# CRLF canonical pending product\r\n\r\n" +
+            ASSESSMENT_BLOCK.replace("\n", "\r\n")
+        )
+        round_five_crlf = refusal_repo(
+            "round-five-crlf-canonical-pending", round_five_crlf_original
+        )
+        round_five_crlf_run = run_cli(kernel, "upgrade", round_five_crlf)
+        round_five_crlf_product = (round_five_crlf / "product.md").read_bytes()
+        round_five_crlf_ok = (
+            upgrade_report_ok(
+                round_five_crlf_run, "6.0.0-rc.2",
+                "round-five-crlf-canonical-pendingfixture", source_checkout,
+                surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            round_five_crlf_product == round_five_crlf_original.encode() and
+            round_five_crlf_product.count(ASSESSMENT_HEADING.encode()) == 1 and
+            round_five_crlf_product.count(ASSESSMENT_PENDING.encode()) == 1
+        )
+        if round_five_crlf_run.returncode == 0:
+            commit_fixture(round_five_crlf, "accept canonical CRLF pending upgrade")
+            flagged, flag_atomic = run_atomic_refusal(
+                round_five_crlf, "--open-assessment"
+            )
+            round_five_crlf_ok = (
+                round_five_crlf_ok and flag_atomic and
+                "without --open-assessment" in flagged.stderr and
+                not has_resume_instruction(flagged.stdout + flagged.stderr)
+            )
+        results.append((
+            "round-five CRLF canonical pending stays single and the flag cannot override it",
+            round_five_crlf_ok,
+        ))
+
+        def assessment_bytes(ending):
+            return ASSESSMENT_BLOCK.replace("\n", ending).encode()
+
+        def appended_product_bytes(original, ending):
+            original_bytes = original.encode()
+            separator = ending if original.endswith(("\r", "\n")) else ending + ending
+            return original_bytes + separator.encode() + assessment_bytes(ending)
+
+        def one_style(data, ending):
+            if ending == "\r\n":
+                return re.search(br"(?<!\r)\n|\r(?!\n)", data) is None
+            if ending == "\r":
+                return b"\n" not in data
+            return b"\r" not in data
+
+        def fieldless_recovery_with_ending(label, original, ending):
+            repo = refusal_repo(label, original)
+            refused, refusal_atomic = run_atomic_refusal(repo)
+            refusal_ok = (
+                refusal_atomic and refused.stderr.rstrip().endswith(AMBIGUITY_RETRY) and
+                (repo / "product.md").read_bytes() == original.encode()
+            )
+            opened = run_cli(kernel, "upgrade", repo, "--open-assessment")
+            actual = (repo / "product.md").read_bytes()
+            expected = appended_product_bytes(original, ending)
+            opened_ok = (
+                upgrade_report_ok(
+                    opened, "6.0.0-rc.2", f"{label}fixture", source_checkout,
+                    surface_digest, NEXT_PENDING_CHANGED,
+                ) and
+                "--open-assessment preserved every existing product byte" in opened.stdout and
+                not has_resume_instruction(opened.stdout + opened.stderr) and
+                actual == expected and actual.startswith(original.encode()) and
+                one_style(actual, ending) and
+                actual.count(ASSESSMENT_HEADING.encode()) == 1 and
+                actual.count(ASSESSMENT_PENDING.encode()) == 1 and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD)
+            )
+            results.append((
+                f"{label} refuses atomically then appends one byte-exact {ending.encode()!r} block",
+                refusal_ok and opened_ok,
+            ))
+
+        fieldless_recovery_with_ending(
+            "CRLF fieldless recovery with final newline",
+            "# CRLF recovery product\r\n\r\nOwner bytes stay fixed.\r\n",
+            "\r\n",
+        )
+        fieldless_recovery_with_ending(
+            "CRLF fieldless recovery without final newline",
+            "# CRLF recovery without final newline\r\n\r\nOwner bytes stay fixed.",
+            "\r\n",
+        )
+
+        lone_cr_pending_original = (
+            "# Lone-CR canonical pending product\r\r" +
+            ASSESSMENT_BLOCK.replace("\n", "\r")
+        )
+        lone_cr_pending = refusal_repo(
+            "lone-cr-canonical-pending", lone_cr_pending_original
+        )
+        lone_cr_pending_run = run_cli(kernel, "upgrade", lone_cr_pending)
+        lone_cr_pending_bytes = (lone_cr_pending / "product.md").read_bytes()
+        lone_cr_pending_ok = (
+            upgrade_report_ok(
+                lone_cr_pending_run, "6.0.0-rc.2",
+                "lone-cr-canonical-pendingfixture", source_checkout,
+                surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            lone_cr_pending_bytes == lone_cr_pending_original.encode() and
+            one_style(lone_cr_pending_bytes, "\r") and
+            lone_cr_pending_bytes.count(ASSESSMENT_HEADING.encode()) == 1 and
+            lone_cr_pending_bytes.count(ASSESSMENT_PENDING.encode()) == 1
+        )
+        results.append((
+            "lone-CR canonical pending is recognized without a product write or duplicate",
+            lone_cr_pending_ok,
+        ))
+        fieldless_recovery_with_ending(
+            "lone-CR fieldless recovery",
+            "# Lone-CR recovery product\r\rOwner bytes stay fixed.\r",
+            "\r",
+        )
+
+        mixed_generated_original = (
+            "# Mixed-delimiter generated product\r\n"
+            "Owner LF line\n" + REJECTED_RC2_STATUS + "\r"
+            "Trailing owner text"
+        )
+        mixed_generated = refusal_repo(
+            "mixed-delimiter-generated-line", mixed_generated_original,
+            version="5.4.1",
+        )
+        mixed_generated_run = run_cli(kernel, "upgrade", mixed_generated)
+        mixed_generated_expected_prefix = mixed_generated_original.replace(
+            REJECTED_RC2_STATUS, "", 1
+        )
+        mixed_generated_expected = appended_product_bytes(
+            mixed_generated_expected_prefix, "\r"
+        )
+        mixed_generated_actual = (mixed_generated / "product.md").read_bytes()
+        results.append((
+            "generated-line removal blanks only matched text and preserves every delimiter byte",
+            upgrade_report_ok(
+                mixed_generated_run, "5.4.1", "mixed-delimiter-generated-linefixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            mixed_generated_actual == mixed_generated_expected and
+            mixed_generated_actual.startswith(mixed_generated_expected_prefix.encode()) and
+            mixed_generated_actual.count(ASSESSMENT_HEADING.encode()) == 1,
+        ))
 
         def recovery_path(name, marker_extra=None, flag_before=False):
             original = f"# {name} product\n\nExisting promises stay byte-identical.\n"
@@ -1840,6 +1989,21 @@ def run_migration_matrix(kernel):
         canonical_team = product_team()
         canonical_rows = canonical_team.split("\n", 1)[1]
         product_team_refusal(
+            "round-five U+200B-only Product responsibility",
+            product_team(product="\u200b"),
+            ["Product: responsibility unusable"],
+        )
+        product_team_refusal(
+            "U+2060-only Engineering responsibility",
+            product_team(engineering="\u2060"),
+            ["Engineering: responsibility unusable"],
+        )
+        product_team_refusal(
+            "invisible-split TBD Product responsibility",
+            product_team(product="T\u200bBD"),
+            ["Product: responsibility unusable"],
+        )
+        product_team_refusal(
             "empty Product-team resume",
             "## Product team\n",
             ["Product: responsibility missing", "Business.Protects: missing",
@@ -1937,6 +2101,37 @@ def run_migration_matrix(kernel):
                         f"{variant} {role} {field}", product_team(**kwargs),
                         [f"{role}.{field}: {expected_kind}"],
                     )
+
+        invisible_business = dict(canonical_conditional["Business"])
+        invisible_business["Protects"] = "\ufe0f"
+        product_team_refusal(
+            "U+FE0F-only Business Protects",
+            product_team(business=invisible_business),
+            ["Business.Protects: unusable"],
+        )
+
+        visible_product = "Keeps\u200b the owner's visible responsibility."
+        visible_team_repo = completed_team_repo(
+            "visible-product-with-default-ignorable",
+            product_team(product=visible_product),
+        )
+        visible_before = repository_snapshot(visible_team_repo)
+        visible_product_before = (visible_team_repo / "product.md").read_bytes()
+        visible_run = run_cli(kernel, "upgrade", visible_team_repo)
+        visible_output = visible_run.stdout + visible_run.stderr
+        results.append((
+            "visible Product text containing U+200B stays accepted and byte-identical",
+            upgrade_report_ok(
+                visible_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                surface_digest,
+                "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                surface_digest,
+            ) and
+            repository_snapshot(visible_team_repo) == visible_before and
+            (visible_team_repo / "product.md").read_bytes() == visible_product_before and
+            visible_product.encode() in visible_product_before and
+            "responsibility unusable" not in visible_output,
+        ))
 
         product_team_refusal(
             "duplicate Product-team section", canonical_team + "\n" + canonical_team,

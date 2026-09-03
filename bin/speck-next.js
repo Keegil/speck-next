@@ -202,8 +202,33 @@ function findBalancedCodeSpanEnd(lines, lineIndex, column, runLength, allowMulti
   return null;
 }
 
+function logicalLineRecords(content) {
+  const records = [];
+  let start = 0;
+  for (let index = 0; index < content.length; index += 1) {
+    let ending = "";
+    if (content[index] === "\r") {
+      ending = content[index + 1] === "\n" ? "\r\n" : "\r";
+    } else if (content[index] === "\n") {
+      ending = "\n";
+    } else {
+      continue;
+    }
+    records.push({ text: content.slice(start, index), ending });
+    if (ending === "\r\n") index += 1;
+    start = index + 1;
+  }
+  records.push({ text: content.slice(start), ending: "" });
+  return records;
+}
+
+function joinLogicalLineRecords(records) {
+  return records.map(record => record.text + record.ending).join("");
+}
+
 function activeMarkdownLines(content) {
-  const lines = content.split("\n");
+  const records = logicalLineRecords(content);
+  const lines = records.map(record => record.text);
   const active = Array(lines.length).fill(true);
   let fence = null;
   let htmlComment = false;
@@ -282,7 +307,7 @@ function activeMarkdownLines(content) {
       "product.md contains an unclosed HTML comment, so its current assessment evidence cannot be determined.",
       "Next: close the HTML comment without changing the intended current assessment fields, then run the upgrade again."
     );
-  return { lines, active };
+  return { records, lines, active };
 }
 
 function assessmentError(message, repair = "Next: restore consistent assessment evidence, then run the upgrade again.") {
@@ -290,7 +315,7 @@ function assessmentError(message, repair = "Next: restore consistent assessment 
 }
 
 function unusableProductTeamValue(value) {
-  const trimmed = value.trim();
+  const trimmed = value.replace(/\p{Default_Ignorable_Code_Point}/gu, "").trim();
   return !trimmed || /^\[[^\]]*\]$/.test(trimmed) ||
     TRIVIAL_PRODUCT_TEAM_VALUES.has(trimmed.toLowerCase());
 }
@@ -416,17 +441,24 @@ function parseAssessment(content, required = false) {
 }
 
 function removeGeneratedLine(content, generated) {
-  const { lines, active } = activeMarkdownLines(content);
+  const { records, lines, active } = activeMarkdownLines(content);
   const matches = lines.flatMap((line, index) => active[index] && line === generated ? [index] : []);
   if (matches.length > 1)
     assessmentError(`product.md contains ${matches.length} current copies of a generated upgrade status; its origin is ambiguous.`);
-  if (matches.length === 1) lines[matches[0]] = "";
-  return { content: lines.join("\n"), removed: matches.length === 1 };
+  if (matches.length === 0) return { content, removed: false };
+  records[matches[0]].text = "";
+  return { content: joinLogicalLineRecords(records), removed: true };
 }
 
 function appendAssessment(content) {
-  const prefix = content.endsWith("\n") ? "\n" : "\n\n";
-  return content + prefix + ASSESSMENT_BLOCK;
+  const records = logicalLineRecords(content);
+  const ending = records.reduce(
+    (nearest, record) => record.ending || nearest,
+    "\n"
+  );
+  const prefix = /[\r\n]$/.test(content) ? ending : ending + ending;
+  const block = ASSESSMENT_BLOCK.replace(/\n/g, ending);
+  return content + prefix + block;
 }
 
 function hasOwn(object, key) {
