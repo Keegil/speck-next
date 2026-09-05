@@ -1799,6 +1799,180 @@ exec "$REAL_GIT" "$@"
             setup_ok=exact_path_snapshot(unborn_index_path) == ("missing",),
         )
 
+        linked_active_repo = fresh_repo("private-report-index-linked-active")
+        linked_active_label = "linked-active-index-fixture"
+        seed_reporting_index_upgrade(linked_active_repo, linked_active_label)
+        add_reporting_index_untracked(linked_active_repo, linked_active_label)
+        linked_active_path = git_metadata_path(linked_active_repo, "index")
+        linked_active_outside = base / "private-report-index-linked-active-outside"
+        linked_active_outside.mkdir()
+        linked_active_referent = linked_active_outside / "index.actual"
+        shutil.move(linked_active_path, linked_active_referent)
+        os.chmod(linked_active_referent, 0o640)
+        (linked_active_outside / "sentinel.bin").write_bytes(
+            b"\xff\x00linked-active-index-outside\r\n"
+        )
+        os.symlink(linked_active_referent.resolve(), linked_active_path)
+        linked_precondition_env = git_metadata_env()
+        linked_precondition_args = [
+            "git", "--no-pager", "--literal-pathspecs",
+            "-c", "core.fsmonitor=false", "-c", "core.splitIndex=false",
+            "-c", "core.hooksPath=", "-c", "diff.external=",
+        ]
+        linked_precondition_status = subprocess.run(
+            linked_precondition_args + [
+                "status", "--porcelain=v1", "-z", "--untracked-files=all",
+            ],
+            cwd=linked_active_repo, capture_output=True,
+            env=linked_precondition_env,
+        )
+        linked_precondition_diff = subprocess.run(
+            linked_precondition_args + [
+                "diff", "--no-ext-diff", "--no-textconv", "--no-color", "--",
+            ],
+            cwd=linked_active_repo, capture_output=True,
+            env=linked_precondition_env,
+        )
+        linked_active_git_ok = (
+            linked_precondition_status.returncode == 0 and
+            not linked_precondition_status.stderr and
+            b"owner/untracked.bin" in linked_precondition_status.stdout and
+            linked_precondition_diff.returncode == 0 and
+            not linked_precondition_diff.stderr
+        )
+        linked_active_before = repo_baseline(linked_active_repo)
+        linked_active_git_dir_before = exact_path_snapshot(linked_active_repo / ".git")
+        linked_active_link_before = exact_path_snapshot(linked_active_path)
+        linked_active_referent_before = exact_path_snapshot(linked_active_referent)
+        linked_active_outside_before = exact_path_snapshot(linked_active_outside)
+        linked_active_family_before = index_family_snapshot(linked_active_repo)
+        linked_active_failure_sequence = base / "linked-active-index-failure-sequence.log"
+        linked_active_failure_log = base / "linked-active-index-failure-private.log"
+        linked_active_failed = run_cli_args(
+            kernel, "upgrade", linked_active_repo,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_FAILURE": "untracked",
+                 "P8_GIT_SEQUENCE_LOG": str(linked_active_failure_sequence),
+                 "P8_GIT_INDEX_LOG": str(linked_active_failure_log)},
+        )
+        linked_active_sequence = (
+            linked_active_failure_sequence.read_text().splitlines()
+            if linked_active_failure_sequence.exists() else []
+        )
+        linked_active_failure_ok = (
+            calm_failure(linked_active_failed) and
+            "git diff --no-index failed" in linked_active_failed.stderr and
+            "diff:0" in linked_active_sequence and "diff:1" in linked_active_sequence and
+            linked_active_sequence.index("diff:0") < linked_active_sequence.index("diff:1") and
+            private_index_log_ok(linked_active_failure_log, linked_active_path) and
+            repo_unchanged(linked_active_repo, linked_active_before) and
+            exact_path_snapshot(linked_active_repo / ".git") == linked_active_git_dir_before and
+            exact_path_snapshot(linked_active_path) == linked_active_link_before and
+            exact_path_snapshot(linked_active_referent) == linked_active_referent_before and
+            exact_path_snapshot(linked_active_outside) == linked_active_outside_before and
+            index_family_snapshot(linked_active_repo) == linked_active_family_before and
+            not transaction_dirt(linked_active_repo)
+        )
+        linked_active_clean_log = base / "linked-active-index-clean-private.log"
+        linked_active_clean = run_cli_args(
+            kernel, "upgrade", linked_active_repo,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_INDEX_LOG": str(linked_active_clean_log)},
+        )
+        linked_active_clean_ok = (
+            upgrade_report_ok(
+                linked_active_clean, "5.4.1", linked_active_label,
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and not linked_active_clean.stderr and
+            private_index_log_ok(linked_active_clean_log, linked_active_path) and
+            exact_path_snapshot(linked_active_repo / ".git") == linked_active_git_dir_before and
+            exact_path_snapshot(linked_active_path) == linked_active_link_before and
+            exact_path_snapshot(linked_active_referent) == linked_active_referent_before and
+            exact_path_snapshot(linked_active_outside) == linked_active_outside_before and
+            index_family_snapshot(linked_active_repo) == linked_active_family_before and
+            (linked_active_repo / "owner/tracked.bin").read_bytes() == b"\x00\xffindex-tracked\r\n" and
+            (linked_active_repo / "owner/untracked.bin").read_bytes() == b"\xfe\x00index-untracked\r\n" and
+            not transaction_dirt(linked_active_repo)
+        )
+        linked_active_after_clean = repo_baseline(linked_active_repo)
+        linked_active_product_after_clean = (linked_active_repo / "product.md").read_bytes()
+        linked_active_porcelain_after_clean = porcelain_v1_z(linked_active_repo)
+        linked_active_retry_log = base / "linked-active-index-retry-private.log"
+        linked_active_retry = run_cli_args(
+            kernel, "upgrade", linked_active_repo,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_INDEX_LOG": str(linked_active_retry_log)},
+        )
+        linked_active_retry_ok = (
+            linked_active_retry.returncode == 0 and not linked_active_retry.stderr and
+            private_index_log_ok(linked_active_retry_log, linked_active_path) and
+            repo_unchanged(linked_active_repo, linked_active_after_clean) and
+            porcelain_v1_z(linked_active_repo) == linked_active_porcelain_after_clean and
+            (linked_active_repo / "product.md").read_bytes() == linked_active_product_after_clean and
+            exact_path_snapshot(linked_active_repo / ".git") == linked_active_git_dir_before and
+            exact_path_snapshot(linked_active_path) == linked_active_link_before and
+            exact_path_snapshot(linked_active_referent) == linked_active_referent_before and
+            exact_path_snapshot(linked_active_outside) == linked_active_outside_before and
+            index_family_snapshot(linked_active_repo) == linked_active_family_before and
+            not transaction_dirt(linked_active_repo)
+        )
+        results.append((
+            "a supported linked active index is read privately through late failure, clean upgrade, and stable retry without changing its link, referent, or index family",
+            linked_active_git_ok and linked_active_failure_ok and
+            linked_active_clean_ok and linked_active_retry_ok,
+        ))
+
+        def invalid_linked_index_refusal(name, referent_kind):
+            repo = fresh_repo(name)
+            label = f"{name}-fixture"
+            seed_reporting_index_upgrade(repo, label)
+            active = git_metadata_path(repo, "index")
+            outside = base / f"{name}-outside"
+            outside.mkdir()
+            shutil.move(active, outside / "original-index.bin")
+            if referent_kind == "dangling":
+                referent = outside / "missing-index"
+            else:
+                referent = outside / "index-directory"
+                referent.mkdir()
+                (referent / "sentinel.bin").write_bytes(
+                    b"\xff\x00non-file-index-referent\r\n"
+                )
+            os.symlink(referent.resolve(), active)
+            tree_before = repository_snapshot(repo)
+            git_dir_before = exact_path_snapshot(repo / ".git")
+            outside_before = exact_path_snapshot(outside)
+            link_before = exact_path_snapshot(active)
+            family_before = index_family_snapshot(repo)
+            product_before = (repo / "product.md").read_bytes()
+            marker_before = (repo / ".claude/speck-next.json").read_bytes()
+            run = run_cli(kernel, "upgrade", repo)
+            return (
+                calm_failure(run) and not run.stdout and
+                "does not resolve to a readable regular file" in run.stderr and
+                repository_snapshot(repo) == tree_before and
+                exact_path_snapshot(repo / ".git") == git_dir_before and
+                exact_path_snapshot(outside) == outside_before and
+                exact_path_snapshot(active) == link_before and
+                index_family_snapshot(repo) == family_before and
+                (repo / "product.md").read_bytes() == product_before and
+                (repo / ".claude/speck-next.json").read_bytes() == marker_before and
+                not transaction_dirt(repo)
+            )
+
+        results.append((
+            "a dangling active-index link refuses atomically before any product or Git byte changes",
+            invalid_linked_index_refusal(
+                "private-report-index-linked-dangling", "dangling"
+            ),
+        ))
+        results.append((
+            "an active-index link to a non-file refuses atomically before any product or Git byte changes",
+            invalid_linked_index_refusal(
+                "private-report-index-linked-non-file", "non-file"
+            ),
+        ))
+
         ignored_repo = fresh_repo("ignored-directory")
         seed_upgrade_repo(ignored_repo, "5.4.1", "ignored-directory-fixture", "# Ignored product\n")
         (ignored_repo / ".git/info").mkdir(parents=True, exist_ok=True)

@@ -925,13 +925,19 @@ function Transaction(plan) {
 Transaction.prototype.prepareReportIndex = function prepareReportIndex() {
   const source = targetGitIndexPath();
   const existing = lstatOptional(source);
-  if (existing && (existing.isSymbolicLink() || !existing.isFile()))
-    transactionError("refusing: the repository's Git index is not a regular file, so Speck Next cannot report this upgrade safely. Nothing was touched.");
   this.reportIndex = path.join(this.transactionRoot, "report-index");
   if (!existing) return;
+  let logical;
+  try {
+    logical = fs.statSync(source);
+  } catch {
+    transactionError("refusing: the repository's Git index does not resolve to a readable regular file, so Speck Next cannot report this upgrade safely. Nothing was touched.");
+  }
+  if (!logical.isFile())
+    transactionError("refusing: the repository's Git index does not resolve to a readable regular file, so Speck Next cannot report this upgrade safely. Nothing was touched.");
   try {
     fs.copyFileSync(source, this.reportIndex);
-    applyMode(this.reportIndex, existing.mode);
+    applyMode(this.reportIndex, logical.mode);
   } catch {
     transactionError("refusing: Speck Next could not copy the Git index into its private reporting transaction. Nothing was touched.");
   }
