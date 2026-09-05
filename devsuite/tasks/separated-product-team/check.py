@@ -898,6 +898,48 @@ def run_path_transaction_controls(kernel):
             "map.md" in carried_paths,
         ))
 
+        aliased_map = fresh_repo("carried-map-aliases-method")
+        seed_upgrade_repo(
+            aliased_map, "5.4.1", "carried-map-alias-fixture", "# Alias product\n",
+            {"AGENTS.md": "# Owner method bytes\n"},
+        )
+        os.symlink("AGENTS.md", aliased_map / "map.md")
+        commit_fixture(aliased_map, "link carried map to planned method file")
+        aliased_map_before = repo_baseline(aliased_map)
+        aliased_map_bytes = (aliased_map / "map.md").read_bytes()
+        aliased_map_run = run_cli(kernel, "upgrade", aliased_map)
+        results.append((
+            "a carried map linked to a planned method root refuses before that root can change its logical bytes",
+            calm_failure(aliased_map_run) and
+            "carried map.md overlaps planned method root AGENTS.md" in aliased_map_run.stderr and
+            repo_unchanged(aliased_map, aliased_map_before) and
+            (aliased_map / "map.md").read_bytes() == aliased_map_bytes and
+            not transaction_dirt(aliased_map),
+        ))
+
+        outside_map = base / "carried-map-outside.md"
+        outside_map.write_bytes(b"# Outside owner map\n\x00\xff")
+        linked_outside_map = fresh_repo("carried-map-outside")
+        seed_upgrade_repo(
+            linked_outside_map, "5.4.1", "carried-map-outside-fixture",
+            "# Outside-link product\n",
+        )
+        os.symlink(outside_map, linked_outside_map / "map.md")
+        commit_fixture(linked_outside_map, "link carried map outside product")
+        outside_map_before = exact_path_snapshot(outside_map)
+        outside_map_target = os.readlink(linked_outside_map / "map.md")
+        linked_outside_run = run_cli(kernel, "upgrade", linked_outside_map)
+        results.append((
+            "a carried map linked outside planned roots stays linked and byte-identical through a stable retry",
+            linked_outside_run.returncode == 0 and not linked_outside_run.stderr and
+            (linked_outside_map / "map.md").is_symlink() and
+            os.readlink(linked_outside_map / "map.md") == outside_map_target and
+            exact_path_snapshot(outside_map) == outside_map_before and
+            "map.md" in linked_outside_run.stdout and
+            stable_retry(linked_outside_map, linked_outside_run) and
+            exact_path_snapshot(outside_map) == outside_map_before,
+        ))
+
         outside_skills = base / "outside-skills"
         outside_skills.mkdir()
         write_file(outside_skills, "custom/sentinel.txt", "outside skills stay\n")

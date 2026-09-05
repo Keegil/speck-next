@@ -518,6 +518,24 @@ function plannedRoot(candidate) {
   return { relative: candidate.relative, kind: candidate.kind };
 }
 
+function refuseCarriedMapAlias(plan, roots) {
+  if (plan.writes.has("map.md")) return;
+  const mapAbsolute = ensureTargetRelative("map.md");
+  const mapEntry = lstatOptional(mapAbsolute);
+  if (!mapEntry || !mapEntry.isSymbolicLink()) return;
+  const linkTarget = fs.readlinkSync(mapAbsolute);
+  const linkedPath = path.resolve(path.dirname(mapAbsolute), linkTarget);
+  const resolvedReferent = fs.realpathSync.native(mapAbsolute);
+  for (const root of roots) {
+    const planned = ensureTargetRelative(root.relative);
+    const overlaps = [linkedPath, resolvedReferent].some(candidate =>
+      pathInside(planned, candidate) || pathInside(candidate, planned)
+    );
+    if (overlaps)
+      transactionError(`refusing: carried map.md overlaps planned method root ${normalizedRelative(root.relative)}, so replacing that root could change the owner's map through its link. Nothing was touched.`);
+  }
+}
+
 function markerSourceCheckout(marker) {
   return marker && (marker.sourceCheckout || marker.commit) || null;
 }
@@ -549,6 +567,7 @@ function transactionPlan(existingMarker, migration) {
     if (!primaryRoots.has(key)) primaryRoots.set(key, { relative: root.relative, kind: root.kind, members: [] });
     primaryRoots.get(key).members.push(candidate.relative);
   }
+  refuseCarriedMapAlias(plan, [...primaryRoots.values()]);
   const markerRoot = plannedRoot({ relative: MARKER, kind: "file" });
   return {
     ...plan,
