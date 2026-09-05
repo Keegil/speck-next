@@ -98,9 +98,12 @@ def can_start(plan, stage):
     if stage not in STAGE_ORDER or set(plan) != set(STAGE_ORDER):
         return False
     index = STAGE_ORDER.index(stage)
-    if any(plan[name].get("status") != "complete" for name in STAGE_ORDER[:index]):
-        return False
-    return all(plan[name].get("status") == "reserved" for name in STAGE_ORDER[index:])
+    for position, name in enumerate(STAGE_ORDER):
+        expected_status = "complete" if position < index else "reserved"
+        expected = {**STAGE_LIMITS[name], "status": expected_status}
+        if plan.get(name) != expected:
+            return False
+    return True
 
 
 def write_json(path, value):

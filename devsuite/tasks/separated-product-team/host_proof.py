@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Verify role contexts from runner-owned or canonical host records."""
-import json, os, pathlib, re, sys, tempfile
+import json, math, os, pathlib, re, sys, tempfile
 
 ROLES = ("Business", "Experience", "Engineering")
 STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
@@ -8,7 +8,7 @@ STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution",
 NEEDLES = {"Business": "business-evidence.md", "Experience": "experience-evidence.md", "Engineering": "pulse.py"}
 USAGE_FIELDS = ("gross", "cached", "fresh", "responses")
 PROBE_NAMES = ("contributions", "product", "business", "engineering")
-ADMISSION_FIELDS = ("driver", "model", "candidate", "runner_sha256", "packet_schema",
+ADMISSION_FIELDS = ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
                     "source_manifest_sha256")
 
 
@@ -37,16 +37,22 @@ def add_usage(*values):
 
 
 def usage_delta(after, before):
-    value = {field: int(after.get(field, 0) or 0) - int(before.get(field, 0) or 0)
+    value = {field: usage_integer(after, field) - usage_integer(before, field)
              for field in USAGE_FIELDS}
     if any(amount < 0 for amount in value.values()):
         raise ValueError("usage counters moved backwards")
     return value
 
 
+def usage_integer(usage, field):
+    if field not in usage or type(usage[field]) is not int or usage[field] < 0:
+        raise ValueError(f"missing or malformed usage field: {field}")
+    return usage[field]
+
+
 def codex_usage_rows(rows):
     """Return one Codex session's cumulative usage without double-counting reasoning."""
-    latest = {}
+    latest = None
     responses = 0
     for event in rows:
         payload = event.get("payload", {})
@@ -54,14 +60,20 @@ def codex_usage_rows(rows):
             candidate = payload.get("info", {}).get("total_token_usage", {})
             if candidate:
                 latest = candidate
+        if event.get("type") == "turn.completed" and isinstance(event.get("usage"), dict):
+            latest = event["usage"]
         if ((event.get("type") == "event_msg" and payload.get("type") == "task_complete") or
                 event.get("type") == "turn.completed"):
             responses += 1
-    input_tokens = int(latest.get("input_tokens", 0) or 0)
-    cached = int(latest.get("cached_input_tokens", 0) or 0)
-    output = int(latest.get("output_tokens", 0) or 0)
-    gross = int(latest.get("total_tokens", input_tokens + output) or 0)
-    return {"gross": gross, "cached": cached, "fresh": input_tokens - cached + output,
+    if latest is None:
+        raise ValueError("Codex stage reported no usage")
+    input_tokens = usage_integer(latest, "input_tokens")
+    cached = usage_integer(latest, "cached_input_tokens")
+    output = usage_integer(latest, "output_tokens")
+    gross = usage_integer(latest, "total_tokens")
+    if cached > input_tokens or gross != input_tokens + output:
+        raise ValueError("inconsistent Codex usage totals")
+    return {"gross": gross, "cached": cached, "fresh": gross - cached,
             "responses": responses}
 
 
@@ -77,10 +89,10 @@ def claude_usage_rows(rows):
             responses += 1
     gross = cached = fresh = 0
     for usage in messages.values():
-        uncached = int(usage.get("input_tokens", 0) or 0)
-        created = int(usage.get("cache_creation_input_tokens", 0) or 0)
-        read = int(usage.get("cache_read_input_tokens", 0) or 0)
-        output = int(usage.get("output_tokens", 0) or 0)
+        uncached = usage_integer(usage, "input_tokens")
+        created = usage_integer(usage, "cache_creation_input_tokens")
+        read = usage_integer(usage, "cache_read_input_tokens")
+        output = usage_integer(usage, "output_tokens")
         gross += uncached + created + read + output
         cached += read
         fresh += uncached + created + output
@@ -88,6 +100,13 @@ def claude_usage_rows(rows):
 
 
 def stage_verdict(usage, elapsed, limits, complete):
+    if (set(USAGE_FIELDS) - set(usage) or
+            any(type(usage[field]) is not int or usage[field] < 0 for field in USAGE_FIELDS)):
+        return {"status": "invalid", "reasons": ["usage"], "usage": dict(usage),
+                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
+    if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
+        return {"status": "invalid", "reasons": ["wall"], "usage": dict(usage),
+                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
     reasons = []
     for field in ("gross", "fresh", "responses"):
         if int(usage.get(field, 0) or 0) > int(limits[field]):
@@ -397,19 +416,19 @@ def self_test(verbose=True):
         events = base / "events.jsonl"
         events.write_text(json.dumps({"session_id": root_id}) + "\n")
         root = projects / "encoded" / f"{root_id}.jsonl"; root.parent.mkdir()
-        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
+        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
                         json.dumps({"message": {"content": [{"tool_use_id": "t1"}]}, "toolUseResult": {"agentId": agent, "outputFile": str(projects / "child.jsonl")}}) + "\n")
         child = projects / "child.jsonl"
-        child.write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md. First real run held. Business ruling: broken"}]}}) + "\n")
+        child.write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md. First real run held. Business ruling: broken"}]}}) + "\n")
         good = native_claude(clone, events, {"Business": agent}, projects)
         broken_text = child.read_text()
         child.write_text(broken_text.replace("Business ruling: broken", "Business ruling: not judged"))
         not_judged = native_claude(clone, events, {"Business": agent}, projects)
         child.write_text(broken_text)
         grandchild = projects / "grandchild.jsonl"
-        grandchild.write_text(json.dumps({"agentId": "agent-helper", "message": {"role": "assistant", "id": "g1", "usage": {"output_tokens": 7}, "content": []}}) + "\n")
+        grandchild.write_text(json.dumps({"agentId": "agent-helper", "message": {"role": "assistant", "id": "g1", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 7}, "content": []}}) + "\n")
         child.write_text(child.read_text() +
-                         json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c2", "content": [{"type": "tool_use", "id": "nested", "name": "Agent", "input": {"name": "helper"}}]}}) + "\n" +
+                         json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c2", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0}, "content": [{"type": "tool_use", "id": "nested", "name": "Agent", "input": {"name": "helper"}}]}}) + "\n" +
                          json.dumps({"agentId": agent, "message": {"content": [{"tool_use_id": "nested"}]}, "toolUseResult": {"agentId": "agent-helper", "outputFile": str(grandchild)}}) + "\n")
         nested = native_claude(clone, events, {"Business": agent}, projects)
         forged = clone / "forged"; forged.mkdir(); (forged / "child.jsonl").write_text(child.read_text())
@@ -420,10 +439,13 @@ def self_test(verbose=True):
         codex_roles = base / "codex-roles" / "sessions"; codex_roles.mkdir(parents=True)
         codex_events = base / "codex-events.jsonl"
         codex_events.write_text(json.dumps({"type": "thread.started", "thread_id": root_id}) + "\n")
-        (codex_root / f"{root_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n")
+        (codex_root / f"{root_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n" +
+                                                            json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
         role_id = "role-business"
-        (codex_roles / f"{role_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": role_id, "cwd": str(base)}}) + "\n")
-        (codex_roles / "role-helper.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": "role-helper", "parent_thread_id": role_id, "cwd": str(base)}}) + "\n")
+        (codex_roles / f"{role_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": role_id, "cwd": str(base)}}) + "\n" +
+                                                        json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
+        (codex_roles / "role-helper.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": "role-helper", "parent_thread_id": role_id, "cwd": str(base)}}) + "\n" +
+                                                                json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
         codex_state = base / "codex-state.json"
         codex_state.write_text(json.dumps({"root": str(clone), "role_cwd": str(base),
                                            "home": str(codex_roles.parent), "root_home": str(codex_root.parent),

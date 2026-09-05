@@ -4511,6 +4511,13 @@ def run_piece9_transport_controls():
         subjects.append((label, passed, kind))
         print(f"  [{'ok' if passed else 'RED'}] {kind}: {label}")
 
+    def raises_value_error(function, *arguments):
+        try:
+            function(*arguments)
+        except ValueError:
+            return True
+        return False
+
     codex_rows = [{
         "type": "event_msg",
         "payload": {"type": "token_count", "info": {"total_token_usage": {
@@ -4526,6 +4533,27 @@ def run_piece9_transport_controls():
     subject("Codex cached-input mutant changes fresh usage", lambda: host.codex_usage_rows(codex_mutant) != {
         "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
     }, "mutant rejected")
+    codex_missing = copy.deepcopy(codex_rows)
+    codex_missing[0]["payload"]["info"]["total_token_usage"].pop("cached_input_tokens")
+    subject("Codex missing raw usage field fails closed",
+            lambda: raises_value_error(host.codex_usage_rows, codex_missing), "mutant rejected")
+    codex_inconsistent = copy.deepcopy(codex_rows)
+    codex_inconsistent[0]["payload"]["info"]["total_token_usage"]["total_tokens"] = 111
+    subject("Codex total unequal to input plus output fails closed",
+            lambda: raises_value_error(host.codex_usage_rows, codex_inconsistent), "mutant rejected")
+    for label, field, value in (
+            ("negative", "input_tokens", -1),
+            ("boolean", "output_tokens", False),
+            ("malformed", "total_tokens", "110")):
+        changed = copy.deepcopy(codex_rows)
+        changed[0]["payload"]["info"]["total_token_usage"][field] = value
+        subject(f"Codex {label} raw usage field fails closed",
+                lambda changed=changed: raises_value_error(host.codex_usage_rows, changed),
+                "mutant rejected")
+    codex_cached_over = copy.deepcopy(codex_rows)
+    codex_cached_over[0]["payload"]["info"]["total_token_usage"]["cached_input_tokens"] = 101
+    subject("Codex cached input above input fails closed",
+            lambda: raises_value_error(host.codex_usage_rows, codex_cached_over), "mutant rejected")
 
     claude_rows = [{"message": {"role": "assistant", "id": "m1", "usage": {
         "input_tokens": 20, "cache_creation_input_tokens": 5,
@@ -4539,6 +4567,24 @@ def run_piece9_transport_controls():
     subject("Claude cache-read mutant changes fresh usage", lambda: host.claude_usage_rows(claude_mutant) != {
         "gross": 100, "cached": 70, "fresh": 30, "responses": 1,
     }, "mutant rejected")
+    claude_missing = copy.deepcopy(claude_rows)
+    claude_missing[0]["message"]["usage"].pop("cache_creation_input_tokens")
+    subject("Claude missing raw usage field fails closed",
+            lambda: raises_value_error(host.claude_usage_rows, claude_missing), "mutant rejected")
+    claude_negative = copy.deepcopy(claude_rows)
+    claude_negative[0]["message"]["usage"]["cache_read_input_tokens"] = -1
+    subject("Claude negative raw usage field fails closed",
+            lambda: raises_value_error(host.claude_usage_rows, claude_negative), "mutant rejected")
+    claude_boolean = copy.deepcopy(claude_rows)
+    claude_boolean[0]["message"]["usage"]["output_tokens"] = True
+    subject("Claude boolean raw usage field fails closed",
+            lambda: raises_value_error(host.claude_usage_rows, claude_boolean), "mutant rejected")
+    claude_incomplete = claude_rows[:1]
+    subject("invocation without a terminal assistant result is incomplete",
+            lambda: host.claude_usage_rows(claude_incomplete)["responses"] == 0 and
+                    host.stage_verdict(host.claude_usage_rows(claude_incomplete), 1,
+                                       {"gross": 100, "fresh": 30, "wall": 2, "responses": 1},
+                                       complete=False)["status"] == "incomplete", "mutant rejected")
 
     with tempfile.TemporaryDirectory(prefix="speck-piece9-packets-") as folder:
         root = pathlib.Path(folder)
@@ -4584,6 +4630,12 @@ def run_piece9_transport_controls():
     subject("a missing downstream reservation blocks an earlier stage",
             lambda: missing_reservation is not None and not broker.can_start(missing_reservation, "product_select"),
             "mutant rejected")
+    inflated_reservation = copy.deepcopy(plan) if plan is not None else None
+    if inflated_reservation:
+        inflated_reservation["engineering"]["gross"] += 1
+    subject("an inflated downstream ceiling blocks an earlier stage",
+            lambda: inflated_reservation is not None and not broker.can_start(inflated_reservation, "product_select"),
+            "mutant rejected")
 
     exact_usage = {"gross": 100, "cached": 40, "fresh": 60, "responses": 1}
     limits = {"gross": 100, "fresh": 60, "wall": 10, "responses": 1}
@@ -4595,17 +4647,28 @@ def run_piece9_transport_controls():
     subject("an incomplete response at the ceiling stops incomplete",
             lambda: host.stage_verdict(exact_usage, 10, limits, complete=False)["status"] == "incomplete",
             "mutant rejected")
+    subject("a non-finite wall time fails closed",
+            lambda: host.stage_verdict(exact_usage, float("nan"), limits, complete=True)["status"] == "invalid",
+            "mutant rejected")
+    subject("a resumed counter regression fails closed",
+            lambda: raises_value_error(host.usage_delta,
+                                       {"gross": 99, "cached": 40, "fresh": 59, "responses": 1},
+                                       exact_usage), "mutant rejected")
+    double_response = dict(exact_usage, responses=2)
+    subject("two terminal response markers fail a one-response stage",
+            lambda: host.stage_verdict(double_response, 10, limits, complete=True)["status"] == "over",
+            "mutant rejected")
 
     probe_names = ("contributions", "product", "business", "engineering")
     expected_admission = {
-        "driver": "codex", "model": "fixture-model", "candidate": "candidate-a",
+        "driver": "codex", "host": "fixture-host", "model": "fixture-model", "candidate": "candidate-a",
         "runner_sha256": "runner-a", "packet_schema": "piece9-packet-v1",
         "source_manifest_sha256": "source-a",
     }
     receipt = dict(expected_admission, probes={name: {"status": "passed"} for name in probe_names})
     subject("four matching probe receipts admit the frozen candidate",
             lambda: host.admission_ok(receipt, expected_admission), "clean")
-    for field in ("driver", "model", "candidate", "runner_sha256", "packet_schema",
+    for field in ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
                   "source_manifest_sha256"):
         changed = copy.deepcopy(receipt)
         changed[field] += "-changed"
