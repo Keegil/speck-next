@@ -2,13 +2,13 @@
 
 ## What's true now
 
-The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live and its first Codex contribution probe failed both token limits after three distinct role answers. The released version remains v5.4.1.
+The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live. Its first Codex contribution probe produced three distinct product actions but failed both token limits; its one permitted compact-controller repair was then rejected by an independent no-model attack before a second probe spent anything. The released version remains v5.4.1.
 
 - **Works:** sufficient — packed npm installation, native Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 deterministic population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, informative returns, native discovery, and owner-file preservation held.
 - **Good to use:** sufficient — first-use and worst-day testers kept the path; one owner-skill invocation recovered from an initial wrong path guess.
 - **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's current execution design; one measured, no-budget-increase repair is permitted. Milestone value remains `not judged`.
+- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's controller design, whose one permitted repair is spent and closed. Milestone value remains `not judged`.
 - **Structure:** straining — both judges accepted the product; Product conservatively carries the second judge's finding that the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -21,15 +21,15 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The milestone, merge, tag, and publish remain blocked. Piece 9's first Codex contribution stage used 82,138 gross / 49,370 fresh tokens against 54,000 / 32,000. One compact-packet repair may repeat that probe; another failure reopens the execution design instead of raising the limits.
+The milestone, merge, tag, and publish remain blocked. Candidate `fc8c1a1` passed its own 92-subject population, but an independent replay could remove required predecessor evidence, bind an unrelated successful command as the product run, and rescue ambiguous canonical Codex output from a convenience file. The controller cannot support another model run or a release claim.
 
 ## What needs the owner
 
-Nothing. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
+One decision: replace the rejected probe/controller plan with a native product proof, narrowing Claude from a duplicate full build to an independent discovery-and-product parity test. Standing, non-blocking: the v5-era fixture milestone's felt grade ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-Engineering removes duplicated evidence, narrows packets to verified decision-relevant source excerpts, isolates each Codex carrier's mutable home, and corrects terminal-response and timing attribution. Every no-model floor must pass before one repeat of the contribution probe. A pass resumes the ordered admissions; a failure stops the harness design and returns a simpler release choice to the owner. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
+Product presents the native proof in plain language for owner ratification. If selected, Engineering removes the rejected controller rather than repairing it; Codex performs one real separated build, Claude independently discovers and tests the same installed method and product, and fresh review follows. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves here with the next density work · the four rules stacked without a heading stay filed with that work · the self-measurement strain moves to the computed-check piece.
 
@@ -43,4 +43,4 @@ Queued behind their triggers: the v11 converter · CI limit enforcement · the p
 - **The campaign adoption (v5.1.0):** [work/campaign-adoption.md](work/campaign-adoption.md) and its records.
 - **v5.0.0 and earlier:** [work/v5-hearing.md](work/v5-hearing.md), [docs/reviews/](docs/reviews/), and the owner's verbatim rulings in [decisions.md](decisions.md).
 
-Business and Experience remain continuously involved through Piece 9 and the v6 milestone because their handled concerns missed repeatedly. Piece 9 still owes component admission, bounded Codex and Claude evidence, observable product action, and a new Business ruling. The first live contribution group produced three distinct actions in about 53 seconds but exceeded both token ceilings; its preserved record and active-role returns are in [work/separated-product-team.md](work/separated-product-team.md). The unresolved structural tension remains explicit: Piece 8 consumed the twentieth installed entry, and Piece 9 gets only one evidence-backed repair before field value outranks further harness work.
+Business and Experience remain continuously involved through Piece 9 and the v6 milestone because their handled concerns missed repeatedly. The first live contribution group produced three distinct actions in about 53 seconds but exceeded both token ceilings; its one allowed repair failed the independent attacks recorded in [work/separated-product-team.md](work/separated-product-team.md). The unresolved structural tension is now resolved against more harness work: Piece 8 consumed the twentieth installed entry, and field value outranks repairing a controller that can mistake missing evidence or `pwd` for a product run.
