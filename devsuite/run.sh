@@ -3,6 +3,7 @@
 #   ./devsuite/run.sh               run all tasks with a live agent (DEVSUITE_DRIVER=codex|claude)
 #   ./devsuite/run.sh --control     no agent; every task's KEY check must go RED (proves checks can fail)
 #   ./devsuite/run.sh --ungoverned  strip AGENTS.md/CLAUDE.md/.claude from the clone first (control arm)
+#   ./devsuite/run.sh --probe NAME separated-product-team  run one isolated Piece 9 admission probe
 #   ./devsuite/run.sh bug-hunt      run one task
 #
 # Honest measurement note: live drivers also carry the owner's global agent
@@ -15,28 +16,42 @@ REPO="$(pwd)"
 SUITE="$REPO/devsuite"
 RUNS="${DEVSUITE_RUNS:-/tmp/claude-501/devsuite-runs}/run-$(date +%s)"
 DRIVER="${DEVSUITE_DRIVER:-codex}"
+MODEL="${DEVSUITE_MODEL:-}"
+EFFORT="${DEVSUITE_EFFORT:-high}"
 CONTROL=0
 UNGOVERNED=0
+PROBE=""
 TASKS=()
-ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""
+ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
 cleanup_role_home() {
   if [ -n "$ACTIVE_DRIVER_PID" ]; then kill "$ACTIVE_DRIVER_PID" 2>/dev/null || true; wait "$ACTIVE_DRIVER_PID" 2>/dev/null || true; fi
   if [ -n "$ACTIVE_BROKER_PID" ]; then kill "$ACTIVE_BROKER_PID" 2>/dev/null || true; wait "$ACTIVE_BROKER_PID" 2>/dev/null || true; fi
   if [ -n "$ACTIVE_BROKER_STATE" ] && [ -f "$ACTIVE_BROKER_STATE" ] && [ -n "$ACTIVE_BROKER_TOOL" ]; then
     python3 "$ACTIVE_BROKER_TOOL" cleanup "$ACTIVE_BROKER_STATE" >/dev/null 2>&1 || true
   fi
-  ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""
+  if [ -n "$ACTIVE_TEMP_HOME" ] && [ -d "$ACTIVE_TEMP_HOME" ]; then
+    case "$ACTIVE_TEMP_HOME" in /tmp/speck-piece9-baseline-home.*|/private/tmp/speck-piece9-baseline-home.*) trash "$ACTIVE_TEMP_HOME" >/dev/null 2>&1 || true ;; esac
+  fi
+  ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
 }
 trap cleanup_role_home EXIT
 trap 'cleanup_role_home; exit 130' INT TERM
-for arg in "$@"; do
-  case "$arg" in
+while [ $# -gt 0 ]; do
+  case "$1" in
     --control) CONTROL=1 ;;
     --ungoverned) UNGOVERNED=1 ;;
-    *) TASKS+=("$arg") ;;
+    --probe) shift; [ $# -gt 0 ] || { echo "--probe requires contributions, product, business, or engineering" >&2; exit 2; }; PROBE="$1" ;;
+    *) TASKS+=("$1") ;;
   esac
+  shift
 done
 [ ${#TASKS[@]} -eq 0 ] && TASKS=(small-change bug-hunt honest-state review-integrity separated-product-team)
+if [ -n "$PROBE" ] && { [ ${#TASKS[@]} -ne 1 ] || [ "${TASKS[0]}" != "separated-product-team" ] || [ "$CONTROL" = 1 ] || [ "$UNGOVERNED" = 1 ]; }; then
+  echo "--probe runs one governed separated-product-team task" >&2; exit 2
+fi
+if [ -z "$MODEL" ]; then
+  case "$DRIVER" in codex) MODEL="gpt-5.6-sol" ;; claude) MODEL="claude-sonnet-4-6" ;; esac
+fi
 mkdir -p "$RUNS"
 
 pass=0; fail=0
@@ -47,7 +62,9 @@ for task in "${TASKS[@]}"; do
   CLONE="$RUNS/$task"
   git clone -q "$REPO" "$CLONE"
   if [ "$UNGOVERNED" = 1 ]; then
-    rm -f "$CLONE/AGENTS.md" "$CLONE/CLAUDE.md" && rm -rf "$CLONE/.claude"
+    [ ! -e "$CLONE/AGENTS.md" ] || trash "$CLONE/AGENTS.md"
+    [ ! -e "$CLONE/CLAUDE.md" ] || trash "$CLONE/CLAUDE.md"
+    [ ! -e "$CLONE/.claude" ] || trash "$CLONE/.claude"
   fi
   if [ "$CONTROL" = 1 ]; then
     bash "$T/setup.sh" "$CLONE" --control || { echo "FAIL  $task (planting failed — a task on an unplanted repo proves nothing)"; fail=$((fail+1)); continue; }
@@ -65,30 +82,7 @@ for task in "${TASKS[@]}"; do
       export GIT_WORK_TREE="$CLONE"
       export SPECK_DEVSUITE_ROLE_DRIVER="$DRIVER"
       if [ "$UNGOVERNED" = 0 ]; then
-        if [ "$DRIVER" = "codex" ]; then
-          BROKER_CONTROL="$(mktemp -d "$RUNS/.role-broker.XXXXXX")"
-          python3 "$T/role-broker.py" serve "$CLONE" "$BROKER_CONTROL" > "$BROKER_CONTROL/broker.log" 2> "$BROKER_CONTROL/broker.stderr.log" & BROKER_PID=$!
-          BROKER_READY=0
-          for _ in 1 2 3 4 5 6 7 8 9 10; do
-            if [ -f "$BROKER_CONTROL/state.json" ] && python3 -c 'import json,sys; raise SystemExit(0 if json.load(open(sys.argv[1])).get("startup_phase") == "ready" else 1)' "$BROKER_CONTROL/state.json" 2>/dev/null; then BROKER_READY=1; break; fi
-            sleep 0.2
-          done
-          ACTIVE_BROKER_PID="$BROKER_PID"; ACTIVE_BROKER_STATE="$BROKER_CONTROL/state.json"; ACTIVE_BROKER_TOOL="$T/role-broker.py"
-          if [ "$BROKER_READY" != 1 ]; then
-            echo "FAIL  $task (role broker failed before credential-safe state existed)"; fail=$((fail+1)); cleanup_role_home; continue
-          fi
-          PROMPT="$PROMPT
-
-This governed fixture ends after working behavior and the active roles' first-run returns. Do not open Experience testing, judgment, or review. Use exactly one Business, one Experience, and one Engineering context; never retry, fall back, or create another context.
-
-This task's files and method are the complete context; do not load optional skills or investigate the harness. Batch work to protect the 250,000-token aggregate cap. You elect each context through synchronous file IPC. Write all three initial request JSON files before waiting for any response. Each is shaped {\"role\":\"Business\",\"stage\":\"contribution\",\"brief\":\"at least 80 characters naming direct product evidence and the bounded question\"} at \`.devsuite-role-ipc/requests/business-contribution.json\`, with equivalent Experience and Engineering files. Wait once for all three matching response files. The runner transports your exact briefs to fresh host contexts and returns each host-issued \`carrier\` and verbatim \`contribution\`; it chooses neither. Record the returned carriers and use the contributions. Do not invoke Codex or another agent from the shell.
-
-Commit the Product synthesis before code. Then request \`engineering-implement.json\` with role Engineering, stage implement, and the committed handoff in brief; the same Engineering carrier owns code. After its smallest mixed-gap CLI run, write all three return requests before one wait: \`business-return.json\`, \`experience-return.json\`, and \`engineering-return.json\`, each with stage return and the observed output in its brief. Record what changed or held, Business's binding ruling with evidence, and all contributor exclusions. Then stop immediately."
-        else
-          PROMPT="$PROMPT
-
-This governed fixture ends after working behavior and the active roles' first-run returns. Use exactly three native Agent contexts named pulse-business, pulse-experience, and pulse-engineering; never retry or duplicate one. Record each host-issued Agent result \`agentId\` as its carrier. Product commits synthesis before code, the same Engineering agent implements, and the same three agents return to the smallest mixed-gap CLI run. Record what changed or held, Business's binding ruling with evidence, and all exclusions, then stop. Do not open Experience testing, judgment, or review."
-        fi
+        BROKER_CONTROL="$(mktemp -d "$RUNS/.piece9-controller.XXXXXX")"
       fi
     fi
     # stdin closed (an open pipe once hung a session for 79 minutes waiting on it),
@@ -96,19 +90,20 @@ This governed fixture ends after working behavior and the active roles' first-ru
     DEADLINE="${DEVSUITE_TASK_TIMEOUT:-1500}"
     if [ "$task" = "separated-product-team" ] && [ "$DEADLINE" -gt 900 ]; then DEADLINE=900; fi
     if [ "$task" = "separated-product-team" ]; then
-      # This task needs host-issued dispatch evidence. The runner only captures
-      # structured events; the governed agent must decide to summon the roles.
-      case "$DRIVER" in
-        codex)
-          if [ -n "$BROKER_CONTROL" ]; then
-            ROOT_CODEX_HOME="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["root_home"])' "$BROKER_CONTROL/state.json")"
-            CODEX_HOME="$ROOT_CODEX_HOME" codex exec --json --sandbox workspace-write --skip-git-repo-check --ignore-user-config -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$!
-          else
-            codex exec --json --sandbox workspace-write --skip-git-repo-check -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$!
-          fi ;;
-        claude) (cd "$CLONE" && claude -p "$PROMPT" --allowedTools "Bash,Read,Write,Edit,Glob,Grep,Agent" --output-format stream-json --verbose < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log") & DPID=$! ;;
-        *) echo "unknown driver: $DRIVER"; exit 2 ;;
-      esac
+      if [ "$UNGOVERNED" = 0 ]; then
+        MODE="full"; [ -n "$PROBE" ] && MODE="probe:$PROBE"
+        ADMISSION_ROOT="${DEVSUITE_ADMISSION_DIR:-${DEVSUITE_RUNS:-/tmp/claude-501/devsuite-runs}/piece9-admission}"
+        python3 "$T/role-broker.py" controller "$CLONE" "$BROKER_CONTROL" "$MODE" "$DRIVER" "$MODEL" "$EFFORT" "$ADMISSION_ROOT" "$T/prompt.txt" "$REPO" > "$CLONE/.driver.log" 2> "$CLONE/.driver.stderr.log" & DPID=$!
+      else
+        case "$DRIVER" in
+          codex)
+            ACTIVE_TEMP_HOME="$(mktemp -d /tmp/speck-piece9-baseline-home.XXXXXX)"
+            cp "$HOME/.codex/auth.json" "$ACTIVE_TEMP_HOME/auth.json"
+            CODEX_HOME="$ACTIVE_TEMP_HOME" codex exec --json --sandbox workspace-write --skip-git-repo-check --ignore-user-config -m "$MODEL" -c "model_reasoning_effort=\"$EFFORT\"" -c features.multi_agent=false -C "$CLONE" -o "$CLONE/.driver.log" "$PROMPT" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log" & DPID=$! ;;
+          claude) (cd "$CLONE" && claude -p "$PROMPT" --output-format stream-json --verbose --model "$MODEL" --effort "$EFFORT" --setting-sources user --tools "Bash,Read,Write,Edit" < /dev/null > "$CLONE/.driver.events.jsonl" 2> "$CLONE/.driver.stderr.log") & DPID=$! ;;
+          *) echo "unknown driver: $DRIVER"; exit 2 ;;
+        esac
+      fi
     else
       case "$DRIVER" in
         codex)  codex exec --sandbox workspace-write -C "$CLONE" "$PROMPT" < /dev/null > "$CLONE/.driver.log" 2>&1 & DPID=$! ;;
@@ -143,28 +138,23 @@ This governed fixture ends after working behavior and the active roles' first-ru
         break
       fi
     done
-    wait "$DPID" 2>/dev/null
+    wait "$DPID" 2>/dev/null; DRIVER_RC=$?
     ACTIVE_DRIVER_PID=""
-    if [ -n "$BROKER_CONTROL" ]; then
-      touch "$BROKER_CONTROL/stop"
-      wait "$BROKER_PID" 2>/dev/null
-    fi
     if [ "$task" = "separated-product-team" ]; then
       STATE_ARG="-"; [ -n "$BROKER_CONTROL" ] && STATE_ARG="$BROKER_CONTROL/state.json"
       python3 "$T/host_proof.py" metrics "$DRIVER" "$CLONE" "$CLONE/.driver.events.jsonl" "$STATE_ARG" "$SECONDS_WAITED" "$TOKEN_LIMIT" > "$CLONE/.driver.metrics.json"
-      echo "  [measure] separated-product-team elapsed=${SECONDS_WAITED}s tokens=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("tokens",0))' "$CLONE/.driver.metrics.json") limit=${TOKEN_LIMIT}"
+      echo "  [measure] separated-product-team elapsed=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("elapsed_seconds",0))' "$CLONE/.driver.metrics.json")s tokens=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("tokens",0))' "$CLONE/.driver.metrics.json") limit=${TOKEN_LIMIT}"
     fi
   fi
   if [ -n "$BROKER_CONTROL" ]; then export SPECK_DEVSUITE_BROKER_STATE="$BROKER_CONTROL/state.json"; fi
-  if python3 "$T/check.py" "$CLONE"; then
+  if [ -n "$PROBE" ] && [ "$task" = "separated-product-team" ]; then
+    if [ "$DRIVER_RC" = 0 ]; then echo "PASS  $task probe:$PROBE"; pass=$((pass+1)); else echo "FAIL  $task probe:$PROBE"; fail=$((fail+1)); fi
+  elif python3 "$T/check.py" "$CLONE"; then
     echo "PASS  $task"; pass=$((pass+1))
   else
     echo "FAIL  $task"; fail=$((fail+1))
   fi
-  if [ -n "$BROKER_CONTROL" ] && [ -f "$BROKER_CONTROL/state.json" ]; then
-    python3 "$T/role-broker.py" cleanup "$BROKER_CONTROL/state.json" || echo "  [RED] broker credential-home cleanup failed"
-  fi
-  ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""
+  cleanup_role_home
   unset GIT_DIR GIT_WORK_TREE SPECK_DEVSUITE_ROLE_DRIVER SPECK_DEVSUITE_BROKER_STATE
 done
 echo "----"

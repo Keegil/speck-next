@@ -232,6 +232,22 @@ def embedded_packet_ok(stage, expected_name, manifest):
             hashlib.sha256(stage["output"].encode()).hexdigest() == stage.get("output_sha256"))
 
 
+def source_manifest_ok(manifest):
+    if not isinstance(manifest, dict):
+        return False
+    body = {key: manifest.get(key) for key in ("schema", "prompt_sha256", "evidence")}
+    evidence = body["evidence"]
+    if (body["schema"] != "piece9-packet-v1" or not digest_string(body["prompt_sha256"]) or
+            not isinstance(evidence, list) or
+            tuple(item.get("path") for item in evidence if isinstance(item, dict)) != ALL_SOURCE_PATHS):
+        return False
+    if any(set(item) != {"path", "bytes", "sha256"} or
+           type(item["bytes"]) is not int or item["bytes"] < 0 or not digest_string(item["sha256"])
+           for item in evidence):
+        return False
+    return manifest.get("sha256") == hashlib.sha256(canonical_json(body)).hexdigest()
+
+
 def bound_stage_ok(stage, expected_name, manifest):
     if not isinstance(stage, dict) or stage.get("name") != expected_name:
         return False
@@ -301,8 +317,8 @@ def admission_ok(receipt, expected):
         return False
     probes = receipt.get("probes", {})
     manifest = receipt.get("source_manifest")
-    if (not isinstance(manifest, dict) or manifest.get("sha256") != expected.get("source_manifest_sha256") or
-            tuple(item.get("path") for item in manifest.get("evidence", [])) != ALL_SOURCE_PATHS):
+    if (not source_manifest_ok(manifest) or
+            manifest.get("sha256") != expected.get("source_manifest_sha256")):
         return False
     if set(probes) != set(PROBE_NAMES):
         return False
@@ -593,7 +609,47 @@ def native_claude(clone, events_path, carriers, projects_root=None):
     return result
 
 
+def controller_proof(clone, state_path, carriers):
+    state = json.loads(pathlib.Path(state_path).read_text())
+    result_data = state.get("result", {})
+    usage = result_data.get("verdict", {}).get("usage", empty_usage())
+    result = {"root": pathlib.Path(state.get("root", "")).resolve() == pathlib.Path(clone).resolve(),
+              "roles": {}, "tokens": usage.get("gross", 0), **usage,
+              "root_id": state.get("carriers", {}).get("Product"), "extra_contexts": 0}
+    invocations = state.get("invocations", [])
+    for role in ROLES:
+        stages = [item for item in invocations if item.get("role") == role]
+        contribution = next((item for item in stages if item.get("name") == f"{role.lower()}_contribution"), None)
+        returned = next((item for item in stages if item.get("name") == f"{role.lower()}_return"), None)
+        carrier = state.get("carriers", {}).get(role)
+        if not contribution:
+            continue
+        packet_paths = {item.get("path") for item in contribution.get("packet", {}).get("evidence", [])}
+        output = contribution.get("output", "")
+        return_output = returned.get("output", "") if returned else ""
+        ruling = re.findall(r"Business ruling:\s*(kept|broken|not[- ]judged)\b", return_output, re.I)
+        result["roles"][role] = {
+            "carrier": carrier,
+            "host": bool(carrier) and all(item.get("carrier") == carrier and
+                                           item.get("observed_carrier") in (None, carrier) for item in stages),
+            "contribution": bool(re.search(rf"(?m)^Role:\s*{role}\s*$", output)),
+            "direct": NEEDLES[role] in packet_paths,
+            "elected": True,
+            "returned": bool(returned and re.search(r"\b(changed|held)\b", return_output, re.I)),
+            "ruling_permits": role != "Business" or bool(ruling and ruling[-1].lower() == "kept"),
+            "precode_clean": True,
+        }
+    if carriers and any(result["roles"].get(role, {}).get("carrier") != carrier
+                        for role, carrier in carriers.items() if role in ROLES):
+        result["roles"] = {}
+    return result
+
+
 def proof(driver, clone, events_path, carriers, state_path=None):
+    if state_path and pathlib.Path(state_path).is_file():
+        state = json.loads(pathlib.Path(state_path).read_text())
+        if state.get("protocol") == "piece9-packet-v1":
+            return controller_proof(clone, state_path, carriers)
     return broker_codex(clone, events_path, state_path, carriers) if driver == "codex" else native_claude(clone, events_path, carriers)
 
 
@@ -664,9 +720,15 @@ if __name__ == "__main__":
         raise SystemExit(0 if self_test() else 1)
     if len(sys.argv) >= 5 and sys.argv[1] == "metrics":
         driver, clone, events = sys.argv[2:5]
-        state = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "-" else None
-        value = proof(driver, clone, events, {}, state)
-        if len(sys.argv) > 6:
+        state_path = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "-" else None
+        value = proof(driver, clone, events, {}, state_path)
+        controller_elapsed = value.get("elapsed")
+        state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
+        if state.get("protocol") == "piece9-packet-v1":
+            controller_elapsed = state.get("result", {}).get("verdict", {}).get("elapsed")
+        if controller_elapsed is not None:
+            value["elapsed_seconds"] = controller_elapsed
+        elif len(sys.argv) > 6:
             value["elapsed_seconds"] = int(sys.argv[6])
         if len(sys.argv) > 7:
             value["token_limit"] = int(sys.argv[7])

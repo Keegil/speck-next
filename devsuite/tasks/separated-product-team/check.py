@@ -27,6 +27,16 @@ CONTRIBUTION_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "prop
 ASSESSMENT_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "active_decision"}
 
 
+def package_version(root):
+    value = json.loads((pathlib.Path(root) / "package.json").read_text()).get("version")
+    if not isinstance(value, str) or not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", value):
+        raise ValueError("package.json has no usable version")
+    return value
+
+
+TARGET_VERSION = package_version(pathlib.Path(__file__).resolve().parents[3])
+
+
 def role_facts(**changes):
     facts = {
         "condition": False,
@@ -436,8 +446,8 @@ def static_contract_homes(kernel):
         print(f"  [{'ok' if absent else 'RED'}] obsolete universal rule absent: {relative}")
         good = good and absent
     version = json.loads((kernel / "package.json").read_text()).get("version")
-    version_ok = version == "6.0.0-rc.2"
-    print(f"  [{'ok' if version_ok else 'RED'}] package version is 6.0.0-rc.2")
+    version_ok = version == TARGET_VERSION
+    print(f"  [{'ok' if version_ok else 'RED'}] package version is {TARGET_VERSION}")
     return good and version_ok
 
 
@@ -604,7 +614,7 @@ def marker_ok(root, source_checkout, surface_digest, assessment_record=None):
     actual = marker(root)
     expected = {
         "name": "speck-next",
-        "version": "6.0.0-rc.2",
+        "version": TARGET_VERSION,
         "sourceCheckout": source_checkout,
         "methodSurfaceSha256": surface_digest,
         "upgradeAssessmentRecord": assessment_record,
@@ -618,7 +628,7 @@ def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surfa
     output = run.stdout + run.stderr
     next_lines = [line for line in run.stdout.splitlines() if line.startswith("Next:")]
     return (run.returncode == 0 and
-            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in output and
+            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance(TARGET_VERSION, source_checkout, surface_digest)}" in output and
             "Product team migration:" in output and
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
@@ -1367,7 +1377,7 @@ def run_path_transaction_controls(kernel):
             snapshot_digest(grouped_outside) == grouped_before and
             not (grouped_claude / ".claude").is_symlink() and
             not (grouped_claude / ".claude/speck-next.json").is_symlink() and
-            marker(grouped_claude)["version"] == "6.0.0-rc.2",
+            marker(grouped_claude)["version"] == TARGET_VERSION,
         ))
 
         non_dir_link = fresh_repo("linked-non-directory")
@@ -2541,7 +2551,7 @@ exec "$REAL_GIT" "$@"
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and not git_attack_clean.stderr and
             upgrade_report_ok(
-                git_attack_retry, "6.0.0-rc.2", source_checkout,
+                git_attack_retry, TARGET_VERSION, source_checkout,
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
                 prior_digest=surface_digest,
             ) and not git_attack_retry.stderr and
@@ -2696,7 +2706,7 @@ def run_migration_matrix(kernel):
 
         missing_field = object()
 
-        def refusal_repo(name, product, version="6.0.0-rc.2",
+        def refusal_repo(name, product, version=TARGET_VERSION,
                          assessment_field=missing_field, record_content=None, marker_extra=None):
             repo = fixed_current(name)
             prior = {
@@ -2729,7 +2739,7 @@ def run_migration_matrix(kernel):
         round_five_crlf_product = (round_five_crlf / "product.md").read_bytes()
         round_five_crlf_ok = (
             upgrade_report_ok(
-                round_five_crlf_run, "6.0.0-rc.2",
+                round_five_crlf_run, TARGET_VERSION,
                 "round-five-crlf-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2779,7 +2789,7 @@ def run_migration_matrix(kernel):
             expected = appended_product_bytes(original, ending)
             opened_ok = (
                 upgrade_report_ok(
-                    opened, "6.0.0-rc.2", f"{label}fixture", source_checkout,
+                    opened, TARGET_VERSION, f"{label}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -2817,7 +2827,7 @@ def run_migration_matrix(kernel):
         lone_cr_pending_bytes = (lone_cr_pending / "product.md").read_bytes()
         lone_cr_pending_ok = (
             upgrade_report_ok(
-                lone_cr_pending_run, "6.0.0-rc.2",
+                lone_cr_pending_run, TARGET_VERSION,
                 "lone-cr-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2884,7 +2894,7 @@ def run_migration_matrix(kernel):
             prior_checkout = marker_extra.get("sourceCheckout") if marker_extra else f"{name}fixture"
             prior_digest = marker_extra.get("methodSurfaceSha256") if marker_extra else None
             opened_ok = (
-                upgrade_report_ok(opened, "6.0.0-rc.2", prior_checkout, source_checkout,
+                upgrade_report_ok(opened, TARGET_VERSION, prior_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CHANGED, prior_digest) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
                 not has_resume_instruction(opened.stdout + opened.stderr) and
@@ -2904,7 +2914,7 @@ def run_migration_matrix(kernel):
             ordinary = run_cli(kernel, "upgrade", repo)
             retry_ok = (
                 second_flag_ok and "without --open-assessment" in second_flag.stderr and
-                upgrade_report_ok(ordinary, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(ordinary, TARGET_VERSION, source_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                 (repo / "product.md").read_text() == expected_product(original)
             )
@@ -2920,7 +2930,7 @@ def run_migration_matrix(kernel):
             completed = run_cli(kernel, "upgrade", repo)
             expected_next = "Next: there are no upgrade changes to commit; resume Piece alpha from state.md."
             completed_ok = (
-                upgrade_report_ok(completed, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(completed, TARGET_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(),
                                      "Resume Piece alpha from state.md.") and
@@ -2930,7 +2940,7 @@ def run_migration_matrix(kernel):
                             completed_ok))
             return repo
 
-        def flag_exclusion(name, product, version="6.0.0-rc.2",
+        def flag_exclusion(name, product, version=TARGET_VERSION,
                            assessment_field=missing_field, record_content=None):
             repo = refusal_repo(
                 "flag-exclusion-" + name,
@@ -2974,7 +2984,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", commented_generated, "--open-assessment")
         commented_generated_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "commented-generated-statusfixture",
+                opened, TARGET_VERSION, "commented-generated-statusfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3065,7 +3075,7 @@ def run_migration_matrix(kernel):
             current = run_cli(kernel, "upgrade", repo)
             return (
                 upgrade_report_ok(
-                    current, "6.0.0-rc.2", f"{name}fixture", source_checkout,
+                    current, TARGET_VERSION, f"{name}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 not has_resume_instruction(current.stdout + current.stderr) and
@@ -3163,7 +3173,7 @@ def run_migration_matrix(kernel):
         inline_literal_run = run_cli(kernel, "upgrade", inline_literal)
         inline_literal_ok = (
             upgrade_report_ok(
-                inline_literal_run, "6.0.0-rc.2", "inline-code-literalfixture",
+                inline_literal_run, TARGET_VERSION, "inline-code-literalfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             (inline_literal / "product.md").read_text() == inline_literal_original and
@@ -3242,7 +3252,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", hidden_generated, "--open-assessment")
         hidden_generated_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "inline-hidden-generatedfixture",
+                opened, TARGET_VERSION, "inline-hidden-generatedfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3396,7 +3406,7 @@ def run_migration_matrix(kernel):
         results.append((
             "a comment-touched line cannot span inline code over later clean evidence",
             upgrade_report_ok(
-                comment_then_unmatched_run, "6.0.0-rc.2",
+                comment_then_unmatched_run, TARGET_VERSION,
                 "comment-then-unmatched-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3421,7 +3431,7 @@ def run_migration_matrix(kernel):
         results.append((
             "same-line code after a comment still shields comment-looking bytes",
             upgrade_report_ok(
-                comment_then_balanced_run, "6.0.0-rc.2",
+                comment_then_balanced_run, TARGET_VERSION,
                 "comment-then-balanced-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3485,7 +3495,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", literal_recovery, "--open-assessment")
         literal_recovery_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "inline-literal-recoveryfixture",
+                opened, TARGET_VERSION, "inline-literal-recoveryfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3523,7 +3533,7 @@ def run_migration_matrix(kernel):
         results.append((
             "balanced inline literal leaves the completed live-piece route current",
             upgrade_report_ok(
-                completed_inline_run, "6.0.0-rc.2",
+                completed_inline_run, TARGET_VERSION,
                 "completed-after-inlinefixture", source_checkout, surface_digest,
                 "Next: review the reported paths and complete diff, commit the upgrade, then resume Piece alpha from state.md.",
             ) and
@@ -3594,7 +3604,7 @@ def run_migration_matrix(kernel):
         optional_dir = refusal_repo("optional-directory", "# Optional-directory product\n")
         opened = run_cli_args(kernel, "upgrade", "--open-assessment", cwd=optional_dir)
         optional_dir_ok = (
-            upgrade_report_ok(opened, "6.0.0-rc.2", "optional-directoryfixture",
+            upgrade_report_ok(opened, TARGET_VERSION, "optional-directoryfixture",
                               source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
             marker_ok(optional_dir, source_checkout, surface_digest, ASSESSMENT_RECORD) and
             (optional_dir / "product.md").read_text() ==
@@ -3627,11 +3637,11 @@ def run_migration_matrix(kernel):
         init_repo(fresh)
         run = run_cli(kernel, "install", fresh)
         installed = [p for p in fresh.rglob("*") if p.is_file() and ".git" not in p.parts]
-        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == "6.0.0-rc.2" and
+        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == TARGET_VERSION and
                     marker_ok(fresh, source_checkout, surface_digest) and
                     not (fresh / "product.md").exists() and
                     len(installed) <= 20 and sum(p.stat().st_size for p in installed) <= 100_000 and
-                    f"Installed Speck Next {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in run.stdout and
+                    f"Installed Speck Next {provenance(TARGET_VERSION, source_checkout, surface_digest)}" in run.stdout and
                     "Installed paths:" in run.stdout and "Next:" in run.stdout)
         results.append(("fresh install reports its surface and leaves product.md missing", fresh_ok))
 
@@ -3754,7 +3764,7 @@ def run_migration_matrix(kernel):
             outside_marker.read_text() == marker_before and
             (marker_link / ".claude" / "speck-next.json").is_file() and
             not (marker_link / ".claude" / "speck-next.json").is_symlink() and
-            marker(marker_link)["version"] == "6.0.0-rc.2",
+            marker(marker_link)["version"] == TARGET_VERSION,
         ))
 
         ignored_upgrade = base / "ignored-upgrade"
@@ -3882,7 +3892,7 @@ exec "$REAL_GIT" "$@"
                        (v5 / "product.md").read_text() == expected_product(v5_product) and
                        marker_ok(v5, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                        first_hash == second_hash and
-                       upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                       upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
                                          surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                        "Working-tree changes across the complete installed surface plus product.md: none." in second.stdout and
                        "Complete installed-surface plus product.md diff: empty." in second.stdout)
@@ -3902,7 +3912,7 @@ exec "$REAL_GIT" "$@"
                                    surface_digest, NEXT_PENDING_CHANGED) and
                   (rc1 / "product.md").read_text() == expected_rc2 and RC1_STATUS not in expected_rc2 and
                   first_hash == second_hash and
-                  upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                  upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
                                     surface_digest, NEXT_PENDING_CHANGED, surface_digest) and
                   marker_ok(rc1, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("exact generated rc.1 prose is replaced and retry is byte-stable", rc1_ok))
@@ -3942,11 +3952,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current)
         first_hash = surface_hash(current)
         second = run_cli(kernel, "upgrade", current)
-        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+        current_ok = (upgrade_report_ok(first, TARGET_VERSION, source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       (current / "product.md").read_text() == current_product and
                       marker_ok(current, source_checkout, surface_digest) and
-                      upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                      upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       first_hash == surface_hash(current))
         results.append(("explicit-null current product resumes without an assessment", current_ok))
@@ -3955,11 +3965,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current_missing)
         second = run_cli(kernel, "upgrade", current_missing)
         current_missing_ok = (
-            upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+            upgrade_report_ok(first, TARGET_VERSION, source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
             marker_ok(current_missing, source_checkout, surface_digest) and
-            upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+            upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             not (current_missing / "product.md").exists())
         results.append(("explicit-null current repository with no product stays missing and routes to Shape",
@@ -4046,7 +4056,7 @@ exec "$REAL_GIT" "$@"
         results.append(("rejected rc.2 generated status becomes explicit while its quote stays inert", rejected_ok))
 
         fieldless_canonical = refusal_repo(
-            "fieldless-canonical", "# Current product\n\n" + ASSESSMENT_BLOCK
+            "fieldless-canonical", "# Current product\n\n" + ASSESSMENT_BLOCK, "6.0.0-rc.2"
         )
         run = run_cli(kernel, "upgrade", fieldless_canonical)
         fieldless_canonical_ok = (
@@ -4057,7 +4067,7 @@ exec "$REAL_GIT" "$@"
         results.append(("fieldless current marker uses surviving canonical evidence",
                         fieldless_canonical_ok))
 
-        fieldless_missing = refusal_repo("fieldless-missing-product", None)
+        fieldless_missing = refusal_repo("fieldless-missing-product", None, "6.0.0-rc.2")
         run = run_cli(kernel, "upgrade", fieldless_missing)
         fieldless_missing_ok = (
             upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-missing-productfixture",
@@ -4136,7 +4146,7 @@ exec "$REAL_GIT" "$@"
             before = surface_hash(repo)
             run = run_cli(kernel, "upgrade", repo)
             route_ok = (
-                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(run, TARGET_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(), route) and
@@ -4152,7 +4162,7 @@ exec "$REAL_GIT" "$@"
             before = repository_snapshot(repo)
             run = run_cli(kernel, "upgrade", repo)
             twin_ok = (
-                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(run, TARGET_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 owner_prose in (repo / "product.md").read_text() and
                 before == repository_snapshot(repo)
@@ -4248,7 +4258,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "an incomplete Product team may proceed only through completed Shape reopened",
             upgrade_report_ok(
-                incomplete_shape_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                incomplete_shape_run, TARGET_VERSION, source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; continue Shape from state.md.",
                 surface_digest,
@@ -4334,7 +4344,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "visible Product text containing U+200B stays accepted and byte-identical",
             upgrade_report_ok(
-                visible_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                visible_run, TARGET_VERSION, source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                 surface_digest,
@@ -4401,7 +4411,7 @@ exec "$REAL_GIT" "$@"
             results.append((
                 f"current Product-team rows after closed {container} remain usable",
                 upgrade_report_ok(
-                    run, "6.0.0-rc.2", source_checkout, source_checkout,
+                    run, TARGET_VERSION, source_checkout, source_checkout,
                     surface_digest,
                     "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                     surface_digest,
@@ -4477,8 +4487,8 @@ exec "$REAL_GIT" "$@"
             digest_one == digest_two and
             marker_ok(install_one, checkout_one, digest_one) and
             marker_ok(install_two, checkout_two, digest_two) and
-            provenance("6.0.0-rc.2", checkout_one, digest_one) in first.stdout and
-            provenance("6.0.0-rc.2", checkout_two, digest_two) in second.stdout)
+            provenance(TARGET_VERSION, checkout_one, digest_one) in first.stdout and
+            provenance(TARGET_VERSION, checkout_two, digest_two) in second.stdout)
         results.append(("different source checkouts identify one identical installed method surface", provenance_ok))
 
     good = True
@@ -4517,6 +4527,11 @@ def run_piece9_transport_controls():
         except ValueError:
             return True
         return False
+
+    with tempfile.TemporaryDirectory(prefix="speck-piece9-version-") as folder:
+        pathlib.Path(folder, "package.json").write_text('{"version":"6.0.0"}\n')
+        subject("destination version follows a simulated final package",
+                lambda: package_version(folder) == "6.0.0", "clean")
 
     codex_rows = [{
         "type": "event_msg",
@@ -4635,6 +4650,13 @@ def run_piece9_transport_controls():
                 previous = hashlib.sha256(output.encode()).hexdigest()
                 receipt_packets[(probe_name, stage_name)] = receipt_packet
                 receipt_outputs[(probe_name, stage_name)] = output
+        live_root = root / "live-product"
+        write_file(live_root, broker.SOURCE_PATHS["engineering"], "changed implementation\n")
+        later_packet = broker.make_packet(
+            root, "run", "Engineering", "run changed implementation",
+            broker.SOURCE_ALLOWLIST[("run", "Engineering")], lineage=(source_digest,))
+        subject("post-implementation packets remain bound to the immutable source snapshot",
+                lambda: broker.verify_packet(later_packet), "clean")
 
     subject("three contribution intervals have one common overlap",
             lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
@@ -4795,6 +4817,10 @@ def run_piece9_transport_controls():
     forged_packet["probes"]["product"]["stages"][0]["packet"]["body"]["brief"] += " changed"
     subject("a receipt whose embedded packet bytes do not match its digest blocks admission",
             lambda: not host.admission_ok(forged_packet, expected_admission), "mutant rejected")
+    forged_manifest = copy.deepcopy(receipt)
+    forged_manifest["source_manifest"]["evidence"][0]["bytes"] += 1
+    subject("a mutated manifest body cannot retain its claimed digest",
+            lambda: not host.admission_ok(forged_manifest, expected_admission), "mutant rejected")
 
     historic = {"gross": 266484, "cached": 210432, "fresh": 56052, "responses": 2}
     full_limits = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 99}
