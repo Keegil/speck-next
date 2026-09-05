@@ -2,13 +2,13 @@
 
 ## What's true now
 
-The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live. Its first Codex contribution probe produced three distinct product actions but failed both token limits; its one permitted compact-controller repair was then rejected by an independent no-model attack before a second probe spent anything. The released version remains v5.4.1.
+The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live. Its rejected controller is gone. The standalone ungoverned Codex baseline built the requested additive, pressure-free weekly view correctly in 150 seconds and inside its limit; the governed build must now produce a materially better product decision, not extra role prose. The released version remains v5.4.1.
 
 - **Works:** sufficient — packed npm installation, native Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 deterministic population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, informative returns, native discovery, and owner-file preservation held.
 - **Good to use:** sufficient — first-use and worst-day testers kept the path; one owner-skill invocation recovered from an initial wrong path guess.
 - **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's controller design, whose one permitted repair is spent and closed. Milestone value remains `not judged`.
+- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's closed controller design. The replacement native proof and milestone value remain `not judged`.
 - **Structure:** straining — both judges accepted the product; Product conservatively carries the second judge's finding that the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -21,7 +21,7 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The milestone, merge, tag, and publish remain blocked. Candidate `fc8c1a1` passed its own 92-subject population, but an independent replay could remove required predecessor evidence, bind an unrelated successful command as the product run, and rescue ambiguous canonical Codex output from a convenience file. Product selected a native Codex build as the replacement proof; `c057f64` removed the rejected controller and restored the four task files to their pre-controller boundary without breaking Piece 8.
+The milestone, merge, tag, and publish remain blocked. The ungoverned baseline already made the central additive, pressure-free choice, so missing paperwork cannot establish v6's value. The native governed build must change the product for a named Business or Experience reason and stay inside the whole-run limit; an equally good governed result fails Piece 9 honestly.
 
 ## What needs the owner
 
@@ -29,7 +29,7 @@ Nothing until the v6 milestone's felt grade. Standing, non-blocking: the v5-era 
 
 ## What happens next
 
-Run the ungoverned Codex baseline, then one native governed Codex build to test whether the separated roles changed the product inside the whole-run limit. Claude independently discovers and tests the same installed method and product; a fresh Codex tester and independent judge close the piece. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
+Run one native governed Codex build against the completed baseline to test whether the separated roles change the product inside the whole-run limit. Claude independently discovers and tests the same installed method and product; a fresh Codex tester and independent judge close the piece. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves here with the next density work · the four rules stacked without a heading stay filed with that work · the self-measurement strain moves to the computed-check piece.
 
@@ -44,3 +44,5 @@ Queued behind their triggers: the v11 converter · CI limit enforcement · the p
 - **v5.0.0 and earlier:** [work/v5-hearing.md](work/v5-hearing.md), [docs/reviews/](docs/reviews/), and the owner's verbatim rulings in [decisions.md](decisions.md).
 
 Business and Experience remain continuously involved through Piece 9 and the v6 milestone because their handled concerns missed repeatedly. The first live contribution group produced three distinct actions in about 53 seconds but exceeded both token ceilings; its one allowed repair failed the independent attacks recorded in [work/separated-product-team.md](work/separated-product-team.md). The unresolved structural tension is now resolved against more harness work: Piece 8 consumed the twentieth installed entry, and field value outranks repairing a controller that can mistake missing evidence or `pwd` for a product run.
+
+The valid ungoverned carrier `01a07274-0397-75a0-8d4c-962aa83c745a` ran in a standalone repository with no Speck files or method paths. It used 201,084 gross / 179,072 cached / 22,012 fresh tokens and committed only `pulse.py` at `014deef`. Both the existing fourteen-day command and the new rolling seven-day command ran on mixed-gap data. It independently preserved the old command and avoided streaks, praise, completion scoring, and price claims. It also added an energy-range summary not required by the request; whether that is a real Experience miss or a harmless addition remains unsettled until the governed comparison and fresh review.
