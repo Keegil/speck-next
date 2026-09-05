@@ -2,7 +2,7 @@
 
 ## What's true now
 
-Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map reopened around Piece 9, now “The team earns its place.” Fresh tester `/root/result_shape_map_tester` sent the first re-cut back; Product restored the already-locked active-return promise and moved product use before code. A second fresh tester then used both preserved Pulse products blind. It chose the governed build before unblinding: its fixed-date week worked across mixed, complete, and empty journals while the strong control failed the same core command, and the old view remained identical. The tester found the difference material. The governed product is reviewable, its v0.9 cost experiment remains failed, and further governed Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
+Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map reopened around Piece 9, now “The team earns its place.” Fresh tester `/root/result_shape_map_tester` sent the first re-cut back; Product restored the locked active-return promise and moved product use before code. A second fresh tester used both preserved Pulse products blind and chose the governed build before unblinding: its fixed-date week worked across mixed, complete, and empty journals while the strong control failed the same core command, and the old view remained identical. Business and Experience returned through their original carriers; Business ruled the prospective route `kept`, and Experience resolved its concern while narrowing the causal claim. The product is reviewable, v0.9 remains failed, and further Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
 
 - **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
@@ -19,7 +19,7 @@ Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. T
 
 ## What's blocked
 
-The milestone and release are blocked on the called Business and Experience carriers returning on the new blind record, then the repaired Shape/Map challenge and owner ratification, then Piece 9's kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
+The milestone and release are blocked on the repaired Shape/Map challenge, separate judgment, and owner ratification, then Piece 9's kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
 
 ## What needs the owner
 
@@ -27,7 +27,7 @@ Nothing before the final milestone grade and plain-language v6 ratification. The
 
 ## What happens next
 
-Business and Experience return on the committed blind record. A fresh challenge and separate judge then test the exact prospective promise; if they keep it, the owner ratifies it and Engineering changes every live rule home. No more governed Pulse build runs. After release, upgrade the waiting private product without changing its live-work truth.
+Dispatch the committed repaired Shape/Map challenge, then a separate judge. If they keep the exact prospective promise, show it to the owner for ratification and have Engineering change every live rule home. No more governed Pulse build runs. After release, upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 

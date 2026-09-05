@@ -139,6 +139,12 @@ The prospective change now concerns only cost and acceptance: fresh use and inde
 
 The tester's second defect changes the evidence order. Both Pulse products already run, and Business and Experience named their blind comparison as the earliest informative evidence. That comparison now happens before any installed-method code. If it does not find a material improvement, Product stops the kernel change. The committed receipt lives in the Piece 9 work record below; Business and Experience return on that direct record before a repaired Shape/Map challenge.
 
+### Repaired Shape evidence
+
+At `9471b28`, a contributor-excluded tester used both preserved products blind and chose the governed result before unblinding. It completed the exact historical-week job across mixed, complete, and empty journals; the strong control failed that command; the existing fourteen-day output remained byte-identical; and neither product mutated data. The tester called the difference material while explicitly refusing to claim the method was necessary or cheapest. The same Business and Experience carriers then returned on that earliest evidence. Business ruled the prospective route `kept`; Experience found its concern resolved; both preserved the narrower causal claim, every failed cost result, active-role returns, and closed further Pulse spend. Full evidence and returns live in the Piece 9 record and its linked tester record.
+
+The repaired candidate now receives a new fresh challenge under the committed joint receipt in `work/separated-product-team.md`. The exact result-first contract remains unratified until that test and a separate judgment stand and the owner sees its plain-language text.
+
 ### Redesigned Shape tester round 1 — sent back
 
 Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:

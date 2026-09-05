@@ -466,3 +466,9 @@ At `ae8eeb6`, fresh tester `/root/result_shape_map_tester` found that the re-cut
 Piece 9 stays one piece and retains the owner's two-piece order, but its internal order changes. A committed receipt now sends the preserved products to blind, contributor-excluded use first. If the governed result is not materially better, Piece 9 stops before kernel code. If it is, the same Business and Experience carriers return on that evidence; then a new fresh tester and separate judge challenge the repaired Shape/Map, and the owner sees the exact result-first promise for ratification. Engineering begins only after those gates.
 
 The active-return promise remains exactly as ratified. Later post-Built testers remain separate and exercise the installed method itself; the pre-code comparison cannot count twice.
+
+### Repaired Map evidence
+
+At `9471b28`, the receipted blind comparison ran before code. The governed product completed the historical-week job on three journal states while the strong control failed it; legacy behavior and data integrity held. Business and Experience returned through their original carriers. Business ruled the prospective route `kept`, Experience resolved its active concern, and both refused universal-causality or cheapest-method claims. No Pulse rebuild is authorized.
+
+The same new fresh carrier now replays the first Shape/Map tester's complete condition population under the committed joint receipt in `work/separated-product-team.md`. A separate judge follows only if the re-test is sufficient. Engineering still waits for both and the owner's later ratification.
