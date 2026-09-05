@@ -6,13 +6,16 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { execFileSync, execSync } = require("child_process");
+const { spawnSync } = require("child_process");
 
 const SRC = path.join(__dirname, "..");
 const VERSION = require(path.join(SRC, "package.json")).version;
 const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills"), "templates"];
 const MARKER = path.join(".claude", "speck-next.json");
-const REPORTED_PATHS = [...SURFACE, MARKER, "map.md", "product.md"];
+const BASE_REPORTED_PATHS = [...SURFACE, MARKER, "map.md", "product.md"];
+const STALE_SKILL = path.join(".claude", "skills", "independent-review");
+const PRESERVE_ROOT_PREFIX = ".speck-next-preserved";
+const MAP_TEMPLATE = "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n";
 const RC1_UNIVERSAL_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise.";
 const REJECTED_RC2_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order.";
 const ASSESSMENT_HEADING = "## Speck Next upgrade assessment";
@@ -27,8 +30,16 @@ const CONDITIONAL_ROLE_FIELDS = [
 const TRIVIAL_PRODUCT_TEAM_VALUES = new Set(["tbd", "todo", "none", "n/a", "placeholder"]);
 const ASSESSMENT_BLOCK = `${ASSESSMENT_HEADING}\n\n${ASSESSMENT_PENDING}\n${ASSESSMENT_RECORD_LINE}\n`;
 const RECOVERABLE_FIELDLESS_VERSION = "6.0.0-rc.2";
+const NULL_DEVICE = process.platform === "win32" ? "NUL" : "/dev/null";
+const REPORT_TIMEOUT_MS = 10000;
+const GENERATED_FILE_MODE = 0o644;
 
 function die(msg) { console.error(msg); process.exit(1); }
+function transactionError(message) {
+  const error = new Error(message);
+  error.speckMessage = message;
+  throw error;
+}
 
 function parseCli(argv) {
   const [command, ...args] = argv.slice(2);
@@ -56,11 +67,339 @@ function parseCli(argv) {
   return { command, target: path.resolve(paths[0] || "."), openAssessment };
 }
 
-const { command: cmd, target, openAssessment } = parseCli(process.argv);
+const { command: cmd, target: requestedTarget, openAssessment } = parseCli(process.argv);
+const targetDisplay = requestedTarget;
+const target = (cmd === "install" || cmd === "upgrade") && fs.existsSync(requestedTarget)
+  ? fs.realpathSync.native(requestedTarget)
+  : requestedTarget;
+
+function resolvedTarget() { return target; }
 
 function sourceCommit() {
-  try { return execSync("git rev-parse --short HEAD", { cwd: SRC, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); }
-  catch { return null; }
+  const run = spawnSync("git", [
+    "--no-pager",
+    "--literal-pathspecs",
+    "-c", "core.fsmonitor=false",
+    "-c", "core.hooksPath=",
+    "-c", "diff.external=",
+    "rev-parse", "--short", "HEAD",
+  ], {
+    cwd: SRC,
+    encoding: "utf8",
+    env: gitReportEnv(),
+    timeout: REPORT_TIMEOUT_MS,
+  });
+  if (run.error || run.signal || run.status !== 0 || String(run.stderr || "").trim()) return null;
+  return String(run.stdout || "").trim() || null;
+}
+
+function normalizedRelative(relative) {
+  return relative.split(path.sep).join("/");
+}
+
+function reportedPaths(extra = []) {
+  return [...new Set([...BASE_REPORTED_PATHS, ...extra.map(normalizedRelative)])];
+}
+
+function lstatOptional(absolute) {
+  try { return fs.lstatSync(absolute); }
+  catch (error) {
+    if (error.code === "ENOENT" || error.code === "ENOTDIR") return null;
+    throw error;
+  }
+}
+
+function statOptional(absolute) {
+  try { return fs.statSync(absolute); }
+  catch (error) {
+    if (error.code === "ENOENT" || error.code === "ENOTDIR") return null;
+    throw error;
+  }
+}
+
+function readlinkOptional(absolute) {
+  try { return fs.readlinkSync(absolute); }
+  catch (error) {
+    if (error.code === "EINVAL" || error.code === "ENOENT" || error.code === "ENOTDIR") return null;
+    throw error;
+  }
+}
+
+function pathInside(base, candidate) {
+  const relative = path.relative(base, candidate);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+function ensureTargetRelative(relative) {
+  const root = resolvedTarget();
+  const absolute = path.resolve(root, relative);
+  if (!pathInside(root, absolute))
+    transactionError(`refusing: internal write target escaped the selected product (${normalizedRelative(relative)}). Nothing was touched.`);
+  return absolute;
+}
+
+function snapshotPathState(relative) {
+  const absolute = ensureTargetRelative(relative);
+  const stat = lstatOptional(absolute);
+  if (!stat) return { state: "missing" };
+  if (stat.isSymbolicLink()) return { state: "link", mode: stat.mode, target: fs.readlinkSync(absolute) };
+  if (stat.isDirectory()) return { state: "dir", mode: stat.mode, entries: listTreeEntries(absolute) };
+  if (stat.isFile()) return { state: "file", mode: stat.mode, bytes: fs.readFileSync(absolute) };
+  return { state: `other:${stat.mode}` };
+}
+
+function listTreeEntries(root) {
+  const entries = [];
+  function visit(relative) {
+    const absolute = relative ? path.join(root, relative) : root;
+    const stat = fs.lstatSync(absolute);
+    const label = relative ? normalizedRelative(relative) : ".";
+    if (stat.isSymbolicLink()) {
+      entries.push([label, `link:${stat.mode}`, Buffer.from(fs.readlinkSync(absolute))]);
+      return;
+    }
+    if (stat.isDirectory()) {
+      entries.push([label, `directory:${stat.mode}`, Buffer.alloc(0)]);
+      for (const name of fs.readdirSync(absolute).sort()) visit(relative ? path.join(relative, name) : name);
+      return;
+    }
+    if (stat.isFile()) {
+      entries.push([label, `file:${stat.mode}`, fs.readFileSync(absolute)]);
+      return;
+    }
+    entries.push([label, `other:${stat.mode}`, Buffer.alloc(0)]);
+  }
+  if (fs.existsSync(root)) visit("");
+  return entries;
+}
+
+function snapshotRoot(relative, expectedKind) {
+  const absolute = ensureTargetRelative(relative);
+  const stat = lstatOptional(absolute);
+  if (!stat) return { state: "missing" };
+  if (stat.isSymbolicLink()) {
+    const targetText = fs.readlinkSync(absolute);
+    const followed = statOptional(absolute);
+    if (!followed) return { state: "dangling-link", target: targetText };
+    if (expectedKind === "dir") {
+      return { state: followed.isDirectory() ? "linked-dir" : "linked-non-dir", target: targetText };
+    }
+    return { state: followed.isFile() ? "linked-file" : "linked-non-file", target: targetText };
+  }
+  if (expectedKind === "dir") {
+    if (stat.isDirectory()) return { state: "dir" };
+    return { state: stat.isFile() ? "file" : "non-directory-path" };
+  }
+  if (stat.isFile()) return { state: "file" };
+  return { state: stat.isDirectory() ? "dir" : "non-file-path" };
+}
+
+function sameSnapshot(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function applyMode(absolute, mode) {
+  fs.chmodSync(absolute, mode & 0o7777);
+}
+
+function copyLogicalTree(source, destination, deferredDirectoryModes = null) {
+  const stat = fs.lstatSync(source);
+  if (stat.isSymbolicLink()) {
+    ensureParent(destination);
+    fs.symlinkSync(fs.readlinkSync(source), destination);
+    return;
+  }
+  if (stat.isDirectory()) {
+    fs.mkdirSync(destination, { recursive: true });
+    for (const name of fs.readdirSync(source).sort())
+      copyLogicalTree(path.join(source, name), path.join(destination, name), deferredDirectoryModes);
+    if (deferredDirectoryModes) deferredDirectoryModes.set(destination, stat.mode);
+    else applyMode(destination, stat.mode);
+    return;
+  }
+  if (!stat.isFile())
+    transactionError(`refusing: ${normalizedRelative(path.relative(resolvedTarget(), source))} contains an unsupported filesystem entry. Nothing was touched.`);
+  ensureParent(destination);
+  fs.copyFileSync(source, destination);
+  applyMode(destination, stat.mode);
+}
+
+function safeLinkedDirectorySource(transaction, relative) {
+  const absolute = ensureTargetRelative(relative);
+  const resolved = fs.realpathSync.native(absolute);
+  const product = resolvedTarget();
+  if (pathInside(resolved, product) || pathInside(resolved, transaction.stageRoot) || pathInside(resolved, transaction.backupRoot))
+    transactionError(`refusing: ${normalizedRelative(relative)} points into the selected product or its private transaction roots, so Speck Next cannot safely localize it. Nothing was touched.`);
+  return resolved;
+}
+
+function copyDirectoryChildren(source, destination, excluded = new Set(), deferredDirectoryModes = null) {
+  for (const name of fs.readdirSync(source).sort()) {
+    if (excluded.has(name)) continue;
+    copyLogicalTree(path.join(source, name), path.join(destination, name), deferredDirectoryModes);
+  }
+}
+
+function removeExisting(pathname) {
+  const stat = lstatOptional(pathname);
+  if (!stat) return;
+  if (stat.isDirectory() && !stat.isSymbolicLink()) {
+    makeTreeRemovable(pathname);
+    fs.rmSync(pathname, { recursive: true, force: true });
+    return;
+  }
+  fs.unlinkSync(pathname);
+}
+
+function makeTreeRemovable(pathname) {
+  const stat = lstatOptional(pathname);
+  if (!stat || stat.isSymbolicLink() || !stat.isDirectory()) return;
+  applyMode(pathname, stat.mode | 0o700);
+  for (const name of fs.readdirSync(pathname))
+    makeTreeRemovable(path.join(pathname, name));
+}
+
+function renamePreservingMode(source, destination) {
+  const stat = fs.lstatSync(source);
+  const directoryMode = stat.isDirectory() && !stat.isSymbolicLink() ? stat.mode : null;
+  if (directoryMode !== null) applyMode(source, directoryMode | 0o700);
+  try {
+    fs.renameSync(source, destination);
+  } catch (error) {
+    if (directoryMode !== null && lstatOptional(source)) applyMode(source, directoryMode);
+    throw error;
+  }
+  if (directoryMode !== null) applyMode(destination, directoryMode);
+}
+
+function writeMarkerLast(bytes) {
+  const marker = ensureTargetRelative(MARKER);
+  const parent = path.dirname(marker);
+  const parentStat = fs.lstatSync(parent);
+  const parentMode = parentStat.mode;
+  applyMode(parent, parentMode | 0o700);
+  try {
+    fs.writeFileSync(marker, bytes);
+    applyMode(marker, GENERATED_FILE_MODE);
+  } finally {
+    applyMode(parent, parentMode);
+  }
+}
+
+function hashPathTree(absolute) {
+  const digest = crypto.createHash("sha256");
+  function visit(current, relative) {
+    const stat = fs.lstatSync(current);
+    digest.update(normalizedRelative(relative));
+    digest.update("\0");
+    if (stat.isSymbolicLink()) {
+      digest.update("link\0");
+      digest.update(Buffer.from(fs.readlinkSync(current)));
+      digest.update("\0");
+      return;
+    }
+    if (stat.isDirectory()) {
+      digest.update(`dir:${stat.mode}\0`);
+      for (const name of fs.readdirSync(current).sort())
+        visit(path.join(current, name), relative ? path.join(relative, name) : name);
+      return;
+    }
+    if (stat.isFile()) {
+      digest.update(`file:${stat.mode}\0`);
+      digest.update(fs.readFileSync(current));
+      digest.update("\0");
+      return;
+    }
+    digest.update(`other:${stat.mode}\0`);
+  }
+  visit(absolute, "");
+  return digest.digest("hex").slice(0, 12);
+}
+
+function ensureParent(absolute) {
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+}
+
+function preservedEntryName(relative) {
+  const label = normalizedRelative(relative)
+    .replace(/^\.+/, "")
+    .replace(/[\\/]/g, "__")
+    .replace(/[^A-Za-z0-9._-]+/g, "-");
+  return label || "root";
+}
+
+function ensureStageDirectory(transaction, root, stagePath, relative) {
+  const stat = lstatOptional(stagePath);
+  if (!stat) {
+    const targetRelative = path.join(root.relative, relative);
+    const existing = snapshotRoot(targetRelative, "dir");
+    if (existing.state.startsWith("linked-") || existing.state === "dangling-link")
+      transaction.noteLocalization(targetRelative, existing.target || readlinkOptional(ensureTargetRelative(targetRelative)));
+    fs.mkdirSync(stagePath, { recursive: true });
+    if (existing.state === "dir") {
+      const source = ensureTargetRelative(targetRelative);
+      transaction.deferStageMode(stagePath, fs.lstatSync(source).mode);
+      copyDirectoryChildren(source, stagePath, new Set(), transaction.stageDirectoryModes);
+    }
+    if (existing.state === "linked-dir") {
+      const source = safeLinkedDirectorySource(transaction, targetRelative);
+      transaction.deferStageMode(stagePath, fs.statSync(source).mode);
+      copyDirectoryChildren(source, stagePath, new Set(), transaction.stageDirectoryModes);
+    }
+    return;
+  }
+  if (stat.isDirectory()) return;
+  if (!stat.isSymbolicLink()) {
+    transaction.planPreservation(path.join(root.relative, relative), stagePath);
+    removeExisting(stagePath);
+    fs.mkdirSync(stagePath, { recursive: true });
+    return;
+  }
+  const targetRelative = path.join(root.relative, relative);
+  const existing = snapshotRoot(targetRelative, "dir");
+  transaction.noteLocalization(targetRelative, existing.target || readlinkOptional(ensureTargetRelative(targetRelative)));
+  removeExisting(stagePath);
+  fs.mkdirSync(stagePath, { recursive: true });
+  if (existing.state === "linked-dir") {
+    const source = safeLinkedDirectorySource(transaction, targetRelative);
+    transaction.deferStageMode(stagePath, fs.statSync(source).mode);
+    copyDirectoryChildren(source, stagePath, new Set(), transaction.stageDirectoryModes);
+  }
+}
+
+function overlayFile(transaction, root, relative, entry) {
+  const stagePath = path.join(root.stage, relative);
+  const parent = path.dirname(relative);
+  if (parent !== ".") {
+    const parts = parent.split(path.sep);
+    let walked = "";
+    let current = root.stage;
+    for (const part of parts) {
+      walked = walked ? path.join(walked, part) : part;
+      current = path.join(current, part);
+      ensureStageDirectory(transaction, root, current, walked);
+    }
+  }
+  const existing = lstatOptional(stagePath);
+  if (existing) {
+    if (existing.isSymbolicLink()) {
+      transaction.noteLocalization(path.join(root.relative, relative), fs.readlinkSync(stagePath));
+      removeExisting(stagePath);
+    } else if (existing.isDirectory()) {
+      transaction.planPreservation(path.join(root.relative, relative), stagePath);
+      removeExisting(stagePath);
+    } else {
+      removeExisting(stagePath);
+    }
+  }
+  ensureParent(stagePath);
+  fs.writeFileSync(stagePath, entry.bytes);
+  applyMode(stagePath, entry.mode);
+}
+
+function removeStagePath(transaction, root, relative) {
+  const stagePath = path.join(root.stage, relative);
+  removeExisting(stagePath);
 }
 
 function surfaceManifest(root) {
@@ -79,35 +418,103 @@ function surfaceManifest(root) {
 function surfaceDigest(root, manifest) {
   const digest = crypto.createHash("sha256");
   for (const relative of manifest) {
+    const parts = relative.split(path.sep);
+    let walked = root;
+    for (let index = 0; index < parts.length - 1; index += 1) {
+      walked = path.join(walked, parts[index]);
+      const stat = fs.lstatSync(walked);
+      if (!stat.isDirectory() || stat.isSymbolicLink())
+        transactionError(`refusing: the staged method path ${normalizedRelative(relative)} is not a fully local directory chain. Nothing was touched.`);
+    }
+    const absolute = path.join(root, relative);
+    const leaf = fs.lstatSync(absolute);
+    if (!leaf.isFile() || leaf.isSymbolicLink())
+      transactionError(`refusing: the staged method file ${normalizedRelative(relative)} is not a local regular file. Nothing was touched.`);
     digest.update(relative.split(path.sep).join("/"));
     digest.update("\0");
-    digest.update(fs.readFileSync(path.join(root, relative)));
+    digest.update(fs.readFileSync(absolute));
     digest.update("\0");
   }
   return digest.digest("hex");
 }
 
-function copySurface() {
+function desiredWrites(migration, markerBytes) {
   const sourceCheckout = sourceCommit();
   const manifest = surfaceManifest(SRC);
   const methodSurfaceSha256 = surfaceDigest(SRC, manifest);
-  for (const item of SURFACE) {
-    const from = path.join(SRC, item), to = path.join(target, item);
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.cpSync(from, to, { recursive: true });
+  const writes = new Map();
+  for (const relative of manifest)
+    writes.set(relative, {
+      kind: "file",
+      bytes: fs.readFileSync(path.join(SRC, relative)),
+      mode: fs.statSync(path.join(SRC, relative)).mode,
+      source: "method",
+    });
+  const targetMap = path.join(target, "map.md");
+  const mapEntry = lstatOptional(targetMap);
+  const linkedMapTarget = mapEntry && mapEntry.isSymbolicLink() ? statOptional(targetMap) : null;
+  if (!mapEntry || (!mapEntry.isFile() && !(mapEntry.isSymbolicLink() && linkedMapTarget && linkedMapTarget.isFile())))
+    writes.set("map.md", { kind: "file", bytes: Buffer.from(MAP_TEMPLATE), mode: GENERATED_FILE_MODE, source: "map" });
+  if (migration.productContent !== null)
+    writes.set("product.md", {
+      kind: "file",
+      bytes: Buffer.from(migration.productContent),
+      mode: lstatOptional(path.join(target, "product.md")).mode,
+      source: "product",
+    });
+  writes.set(MARKER, { kind: "file", bytes: markerBytes, mode: GENERATED_FILE_MODE, source: "marker" });
+  return { sourceCheckout, manifest, methodSurfaceSha256, writes };
+}
+
+function candidateRoots(plan) {
+  const roots = [
+    { relative: "AGENTS.md", kind: "file" },
+    { relative: "CLAUDE.md", kind: "file" },
+    { relative: ".claude", kind: "dir" },
+    { relative: "templates", kind: "dir" },
+  ];
+  if (plan.writes.has("map.md")) roots.push({ relative: "map.md", kind: "file" });
+  if (plan.writes.has("product.md")) roots.push({ relative: "product.md", kind: "file" });
+  return roots;
+}
+
+function plannedRoot(candidate) {
+  const parts = candidate.relative.split(path.sep);
+  let prefix = "";
+  let firstMissing = null;
+  for (let index = 0; index < parts.length; index += 1) {
+    prefix = prefix ? path.join(prefix, parts[index]) : parts[index];
+    const absolute = ensureTargetRelative(prefix);
+    const stat = lstatOptional(absolute);
+    if (!stat) {
+      if (!firstMissing) firstMissing = prefix;
+      continue;
+    }
+    const walkingFurther = index < parts.length - 1;
+    if (stat.isSymbolicLink()) {
+      const expectedKind = walkingFurther ? "dir" : candidate.kind;
+      snapshotRoot(prefix, expectedKind);
+      return { relative: prefix, kind: expectedKind };
+    }
+    if (walkingFurther && !stat.isDirectory())
+      return { relative: prefix, kind: "dir" };
+    if (!walkingFurther) {
+      if (candidate.kind === "dir" && !stat.isDirectory())
+        return { relative: prefix, kind: "dir" };
+      if (candidate.kind === "file" && !stat.isFile())
+        return { relative: prefix, kind: "file" };
+    }
   }
-  const copiedDigest = surfaceDigest(target, manifest);
-  if (copiedDigest !== methodSurfaceSha256)
-    die(`refusing: copied method bytes do not match the source method surface. The version marker was not changed.`);
-  return { sourceCheckout, methodSurfaceSha256 };
+  if (candidate.kind === "dir" && firstMissing)
+    return { relative: firstMissing, kind: "dir" };
+  return { relative: candidate.relative, kind: candidate.kind };
 }
 
 function markerSourceCheckout(marker) {
   return marker && (marker.sourceCheckout || marker.commit) || null;
 }
 
-function writeMarker(existing, provenance, assessmentRecord) {
-  const markerPath = path.join(target, MARKER);
+function markerBytes(existing, provenance, assessmentRecord) {
   let installedAt = new Date().toISOString();
   if (existing && existing.version === VERSION &&
       markerSourceCheckout(existing) === provenance.sourceCheckout && existing.installedAt)
@@ -120,21 +527,581 @@ function writeMarker(existing, provenance, assessmentRecord) {
     upgradeAssessmentRecord: assessmentRecord,
   };
   next.installedAt = installedAt;
-  fs.mkdirSync(path.dirname(markerPath), { recursive: true });
-  fs.writeFileSync(markerPath, JSON.stringify(next, null, 2) + "\n");
+  return Buffer.from(JSON.stringify(next, null, 2) + "\n");
 }
 
-function retireReplacedSkills() {
-  // v4.0.0 migration: independent-review split into the experience and judge skills; copy never deletes, so the upgrader must.
-  const old = path.join(target, ".claude", "skills", "independent-review");
-  if (fs.existsSync(old)) fs.rmSync(old, { recursive: true });
+function transactionPlan(existingMarker, migration) {
+  const plan = desiredWrites(migration, Buffer.alloc(0));
+  const marker = markerBytes(existingMarker, plan, migration.assessmentRecord);
+  plan.writes.set(MARKER, { kind: "file", bytes: marker, source: "marker" });
+  const primaryRoots = new Map();
+  for (const candidate of candidateRoots(plan)) {
+    const root = plannedRoot(candidate);
+    const key = normalizedRelative(root.relative);
+    if (!primaryRoots.has(key)) primaryRoots.set(key, { relative: root.relative, kind: root.kind, members: [] });
+    primaryRoots.get(key).members.push(candidate.relative);
+  }
+  const markerRoot = plannedRoot({ relative: MARKER, kind: "file" });
+  return {
+    ...plan,
+    markerBytes: marker,
+    primaryRoots: [...primaryRoots.values()].sort((left, right) => normalizedRelative(left.relative).localeCompare(normalizedRelative(right.relative))),
+    markerRoot,
+  };
 }
 
-function ensureMap() {
-  // v2.0.0 file-contract migration: every governed repo carries map.md; the upgrader owns this.
-  const mapPath = path.join(target, "map.md");
-  if (!fs.existsSync(mapPath))
-    fs.writeFileSync(mapPath, "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n");
+function gitReportEnv() {
+  const env = { ...process.env };
+  for (const key of Object.keys(env)) {
+    if (key.startsWith("GIT_")) delete env[key];
+  }
+  env.GIT_OPTIONAL_LOCKS = "0";
+  env.GIT_NO_LAZY_FETCH = "1";
+  env.GIT_CONFIG_NOSYSTEM = "1";
+  env.GIT_CONFIG_GLOBAL = NULL_DEVICE;
+  env.GIT_PAGER = "cat";
+  env.PAGER = "cat";
+  env.LC_ALL = "C";
+  return env;
+}
+
+let gitReportOverridesCache = null;
+
+function gitReportOverrides() {
+  if (gitReportOverridesCache) return gitReportOverridesCache;
+  const args = [
+    "--no-pager",
+    "--literal-pathspecs",
+    "-c", "core.fsmonitor=false",
+    "-c", "core.hooksPath=",
+    "-c", "diff.external=",
+    "config",
+    "--null",
+    "--name-only",
+    "--get-regexp",
+    "^filter\\..*\\.(clean|process|required)$",
+  ];
+  const run = spawnSync("git", args, {
+    cwd: resolvedTarget(),
+    encoding: "utf8",
+    env: gitReportEnv(),
+    timeout: REPORT_TIMEOUT_MS,
+  });
+  if (run.error || String(run.stderr || "").trim())
+    transactionError("refusing: git config inspection failed while securing upgrade reporting, so Speck Next stopped before reporting a partial result. Nothing was touched.");
+  if (![0, 1].includes(run.status))
+    transactionError("refusing: git config inspection failed while securing upgrade reporting, so Speck Next stopped before reporting a partial result. Nothing was touched.");
+  const prefixes = new Set();
+  for (const key of String(run.stdout || "").split("\0").filter(Boolean)) {
+    const match = key.match(/^(filter\..*)\.(clean|process|required)$/);
+    if (match) prefixes.add(match[1]);
+  }
+  gitReportOverridesCache = [...prefixes].sort().flatMap(prefix => [
+    "-c", `${prefix}.clean=`,
+    "-c", `${prefix}.process=`,
+    "-c", `${prefix}.required=false`,
+  ]);
+  return gitReportOverridesCache;
+}
+
+function gitReportRun(args, label) {
+  const run = spawnSync("git", [
+    "--no-pager",
+    "--literal-pathspecs",
+    "-c", "core.fsmonitor=false",
+    "-c", "core.hooksPath=",
+    "-c", "diff.external=",
+    ...gitReportOverrides(),
+    ...args,
+  ], {
+    cwd: resolvedTarget(),
+    encoding: "utf8",
+    env: gitReportEnv(),
+    timeout: REPORT_TIMEOUT_MS,
+  });
+  if (run.error || run.signal || run.status === null || String(run.stderr || "").trim())
+    transactionError(`refusing: git ${label} failed, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.`);
+  return run;
+}
+
+function gitRead(args, label, allowedStatuses = [0]) {
+  const run = gitReportRun(args, label);
+  if (!allowedStatuses.includes(run.status))
+    transactionError(`refusing: git ${label} failed, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.`);
+  return String(run.stdout || "").trimEnd();
+}
+
+function trackedDiff(paths) {
+  return gitRead(["diff", "--no-ext-diff", "--no-textconv", "--no-color", "--", ...paths], "diff");
+}
+
+function quotedDiffPath(relative) {
+  return normalizedRelative(relative).replace(/\\/g, "\\\\").replace(/\t/g, "\\t").replace(/\n/g, "\\n");
+}
+
+function untrackedLinkDiff(relative) {
+  const quoted = quotedDiffPath(relative);
+  const targetText = fs.readlinkSync(ensureTargetRelative(relative));
+  return [
+    `diff --git a/${quoted} b/${quoted}`,
+    "new file mode 120000",
+    "--- /dev/null",
+    `+++ b/${quoted}`,
+    "@@ -0,0 +1 @@",
+    `+${targetText}`,
+  ].join("\n");
+}
+
+function porcelainZ(args, label, allowedStatuses = [0]) {
+  const run = gitReportRun(args, label);
+  if (!allowedStatuses.includes(run.status))
+    transactionError(`refusing: git ${label} failed, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.`);
+  return String(run.stdout || "");
+}
+
+function reportStatusEntries(paths) {
+  const raw = porcelainZ(
+    ["status", "--porcelain=v1", "-z", "--ignored=matching", "--untracked-files=all", "--", ...paths],
+    "status"
+  );
+  return raw.split("\0").filter(Boolean);
+}
+
+function untrackedPaths(paths) {
+  const seen = new Set();
+  const files = [];
+  function addPhysicalLeaves(relative) {
+    const absolute = ensureTargetRelative(relative.replace(/\/$/, ""));
+    const stat = lstatOptional(absolute);
+    if (!stat) return;
+    if (stat.isDirectory() && !stat.isSymbolicLink()) {
+      for (const name of fs.readdirSync(absolute).sort())
+        addPhysicalLeaves(path.join(relative.replace(/\/$/, ""), name));
+      return;
+    }
+    const normalized = normalizedRelative(relative.replace(/\/$/, ""));
+    if (seen.has(normalized)) return;
+    seen.add(normalized);
+    files.push(normalized);
+  }
+  for (const entry of reportStatusEntries(paths)) {
+    if (!/^(?:\?\?|!!) /.test(entry)) continue;
+    const file = entry.slice(3);
+    addPhysicalLeaves(file);
+  }
+  return files.sort();
+}
+
+function untrackedDiff(paths) {
+  const parts = [];
+  for (const file of untrackedPaths(paths)) {
+    if (fs.lstatSync(ensureTargetRelative(file)).isSymbolicLink()) {
+      parts.push(untrackedLinkDiff(file));
+      continue;
+    }
+    const run = gitReportRun(["diff", "--no-index", "--no-ext-diff", "--no-textconv", "--no-color", "--", "/dev/null", file], "diff --no-index");
+    if (![0, 1].includes(run.status))
+      transactionError("refusing: git diff --no-index failed while reporting untracked upgrade files, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.");
+    if (run.status === 0) continue;
+    const addition = String(run.stdout || "");
+    if (!addition.trim())
+      transactionError("refusing: git diff --no-index returned no readable output for an untracked upgrade file, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.");
+    parts.push(addition.trim());
+  }
+  return parts.join("\n");
+}
+
+function gitChanges(paths) {
+  return porcelainZ(
+    ["status", "--porcelain=v1", "--ignored=matching", "--untracked-files=all", "--", ...paths],
+    "status"
+  ).trimEnd();
+}
+
+function gitDiff(paths) {
+  const parts = [];
+  const tracked = trackedDiff(paths);
+  if (tracked) parts.push(tracked);
+  const untracked = untrackedDiff(paths);
+  if (untracked) parts.push(untracked);
+  return parts.join("\n");
+}
+
+function installEntries(root) {
+  const files = [];
+  function visit(relative) {
+    const absolute = path.join(root, relative);
+    const stat = lstatOptional(absolute);
+    if (!stat) return;
+    if (stat.isDirectory() && !stat.isSymbolicLink()) {
+      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
+      return;
+    }
+    files.push(relative);
+  }
+  for (const relative of [...SURFACE, "map.md", MARKER]) visit(relative);
+  return files.sort();
+}
+
+function stagedInstalledEntries(stageRoot) {
+  const files = [];
+  function visit(relative) {
+    const absolute = relative ? path.join(stageRoot, relative) : stageRoot;
+    const stat = lstatOptional(absolute);
+    if (!stat) return;
+    if (stat.isDirectory() && !stat.isSymbolicLink()) {
+      for (const name of fs.readdirSync(absolute).sort())
+        visit(relative ? path.join(relative, name) : name);
+      return;
+    }
+    files.push(normalizedRelative(relative));
+  }
+  visit("");
+  return files.filter(Boolean).sort();
+}
+
+function installedSurfaceEntries(stageRoot) {
+  const files = [];
+  function visit(relative) {
+    const absolute = path.join(stageRoot, relative);
+    const stat = lstatOptional(absolute);
+    if (!stat) return;
+    if (stat.isDirectory() && !stat.isSymbolicLink()) {
+      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
+      return;
+    }
+    files.push(normalizedRelative(relative));
+  }
+  for (const relative of SURFACE) visit(relative);
+  visit("map.md");
+  files.push(normalizedRelative(MARKER));
+  return [...new Set(files)].sort();
+}
+
+function buildStageRoot(transaction, root) {
+  const stagePath = path.join(transaction.stageRoot, root.relative);
+  const existing = snapshotRoot(root.relative, root.kind);
+  root.before = existing;
+  root.beforePath = snapshotPathState(root.relative);
+  root.stage = stagePath;
+  if (root.kind === "file") {
+    const entry = transaction.writes.get(root.relative);
+    if (!entry) transactionError(`refusing: internal file plan missing ${normalizedRelative(root.relative)}. Nothing was touched.`);
+    if (existing.state.startsWith("linked-") || existing.state === "dangling-link")
+      transaction.noteLocalization(root.relative, existing.target || readlinkOptional(ensureTargetRelative(root.relative)));
+    else if (existing.state === "dir" || existing.state === "non-file-path")
+      transaction.planPreservation(root.relative, ensureTargetRelative(root.relative));
+    ensureParent(stagePath);
+    fs.writeFileSync(stagePath, entry.bytes);
+    applyMode(stagePath, entry.mode);
+    return;
+  }
+  fs.mkdirSync(stagePath, { recursive: true });
+  if (existing.state.startsWith("linked-") || existing.state === "dangling-link")
+    transaction.noteLocalization(root.relative, existing.target || readlinkOptional(ensureTargetRelative(root.relative)));
+  else if (existing.state === "file" || existing.state === "non-directory-path")
+    transaction.planPreservation(root.relative, ensureTargetRelative(root.relative));
+  let logicalSource = null;
+  if (existing.state === "dir") logicalSource = ensureTargetRelative(root.relative);
+  if (existing.state === "linked-dir") logicalSource = safeLinkedDirectorySource(transaction, root.relative);
+  if (logicalSource) {
+    transaction.deferStageMode(
+      stagePath,
+      (existing.state === "dir" ? fs.lstatSync(logicalSource) : fs.statSync(logicalSource)).mode
+    );
+    copyDirectoryChildren(logicalSource, stagePath, new Set(), transaction.stageDirectoryModes);
+  }
+  if (root.relative === ".claude" && (existing.state === "dir" || existing.state === "linked-dir")) {
+    const markerLeaf = snapshotRoot(MARKER, "file");
+    if (markerLeaf.state.startsWith("linked-") || markerLeaf.state === "dangling-link")
+      transaction.noteLocalization(MARKER, markerLeaf.target || readlinkOptional(ensureTargetRelative(MARKER)));
+    else if (markerLeaf.state === "dir" || markerLeaf.state === "non-file-path")
+      transaction.planPreservation(MARKER, path.join(stagePath, path.basename(MARKER)));
+    removeExisting(path.join(stagePath, path.basename(MARKER)));
+  }
+  for (const [relative, entry] of transaction.writes) {
+    if (relative === MARKER) continue;
+    if (!relative.startsWith(root.relative + path.sep) && relative !== root.relative) continue;
+    const child = relative === root.relative ? "" : path.relative(root.relative, relative);
+    overlayFile(transaction, root, child, entry);
+  }
+  const retired = [STALE_SKILL].filter(relative =>
+    relative.startsWith(root.relative + path.sep) || relative === root.relative
+  );
+  for (const relative of retired) {
+    const child = relative === root.relative ? "" : path.relative(root.relative, relative);
+    if (child) removeStagePath(transaction, root, child);
+  }
+  transaction.applyStageModes(stagePath);
+}
+
+function Transaction(plan) {
+  this.primaryRoots = plan.primaryRoots.map(root => ({ ...root }));
+  this.markerRoot = { relative: plan.markerRoot.relative, kind: plan.markerRoot.kind };
+  this.writes = plan.writes;
+  this.manifest = plan.manifest;
+  this.methodSurfaceSha256 = plan.methodSurfaceSha256;
+  this.sourceCheckout = plan.sourceCheckout;
+  this.markerBytes = plan.markerBytes;
+  const root = resolvedTarget();
+  const parent = path.dirname(root);
+  const rootDev = fs.statSync(root).dev;
+  const parentDev = fs.statSync(parent).dev;
+  const transactionParent = rootDev === parentDev ? parent : root;
+  this.transactionRoot = fs.mkdtempSync(path.join(transactionParent, `.${path.basename(root)}.speck-next-transaction-`));
+  try {
+    if (fs.statSync(this.transactionRoot).dev !== rootDev)
+      transactionError("refusing: Speck Next could not stage the upgrade on the selected product's filesystem. Nothing was touched.");
+    this.stageRoot = path.join(this.transactionRoot, "stage");
+    this.backupRoot = path.join(this.transactionRoot, "backup");
+    this.preserveStageRoot = path.join(this.transactionRoot, "preserve");
+    fs.mkdirSync(this.stageRoot, { recursive: true });
+    fs.mkdirSync(this.backupRoot, { recursive: true });
+    fs.mkdirSync(this.preserveStageRoot, { recursive: true });
+  } catch (error) {
+    removeExisting(this.transactionRoot);
+    throw error;
+  }
+  this.replacedLinks = [];
+  this.replacedLinkSet = new Set();
+  this.preserved = [];
+  this.preservedSet = new Set();
+  this.preserveRoot = null;
+  this.applied = [];
+  this.appliedPreservations = [];
+  this.stageDirectoryModes = new Map();
+  this.markerCovered = this.primaryRoots.some(root => MARKER === root.relative || MARKER.startsWith(root.relative + path.sep));
+  this.markerBefore = null;
+  this.markerBeforePath = null;
+}
+
+Transaction.prototype.deferStageMode = function deferStageMode(absolute, mode) {
+  this.stageDirectoryModes.set(absolute, mode);
+};
+
+Transaction.prototype.applyStageModes = function applyStageModes(root) {
+  const entries = [...this.stageDirectoryModes.entries()]
+    .filter(([absolute]) => pathInside(root, absolute))
+    .sort(([left], [right]) => right.split(path.sep).length - left.split(path.sep).length);
+  for (const [absolute, mode] of entries) {
+    const stat = lstatOptional(absolute);
+    if (stat && stat.isDirectory() && !stat.isSymbolicLink()) applyMode(absolute, mode);
+    this.stageDirectoryModes.delete(absolute);
+  }
+};
+
+Transaction.prototype.noteLocalization = function noteLocalization(relative, linkTarget) {
+  const key = normalizedRelative(relative);
+  if (this.replacedLinkSet.has(key)) return;
+  this.replacedLinkSet.add(key);
+  this.replacedLinks.push({ relative: key, target: linkTarget || "(dangling link)" });
+};
+
+Transaction.prototype.planPreservation = function planPreservation(relative) {
+  const key = normalizedRelative(relative);
+  if (this.preservedSet.has(key)) return;
+  const source = arguments.length > 1 ? arguments[1] : ensureTargetRelative(relative);
+  const stat = lstatOptional(source);
+  if (!stat || stat.isSymbolicLink()) return;
+  const preserveSource = path.join(this.preserveStageRoot, relative);
+  ensureParent(preserveSource);
+  copyLogicalTree(source, preserveSource);
+  this.preservedSet.add(key);
+  this.preserved.push({
+    relative: key,
+    entryName: `${preservedEntryName(relative)}--${hashPathTree(source)}`,
+    destinationRelative: null,
+    preserveSource,
+  });
+};
+
+Transaction.prototype.choosePreserveRoot = function choosePreserveRoot() {
+  if (!this.preserved.length) return;
+  for (let index = 1; index < 1000; index += 1) {
+    const relative = index === 1 ? PRESERVE_ROOT_PREFIX : `${PRESERVE_ROOT_PREFIX}-${index}`;
+    const absolute = ensureTargetRelative(relative);
+    const stat = lstatOptional(absolute);
+    if (stat && (stat.isSymbolicLink() || !stat.isDirectory())) continue;
+    let usable = true;
+    for (const entry of this.preserved) {
+      if (lstatOptional(path.join(absolute, entry.entryName))) {
+        usable = false;
+        break;
+      }
+    }
+    if (!usable) continue;
+    this.preserveRoot = {
+      relative,
+      beforePath: snapshotPathState(relative),
+      existed: Boolean(stat && stat.isDirectory()),
+    };
+    for (const entry of this.preserved)
+      entry.destinationRelative = normalizedRelative(path.join(relative, entry.entryName));
+    return;
+  }
+  transactionError("refusing: Speck Next could not find a usable .speck-next-preserved root for incompatible owner bytes. Nothing was touched.");
+};
+
+Transaction.prototype.prepare = function prepare() {
+  for (const root of this.primaryRoots) buildStageRoot(this, root);
+  if (!this.markerCovered) {
+    this.markerBefore = snapshotRoot(MARKER, "file");
+    this.markerBeforePath = snapshotPathState(MARKER);
+    if (this.markerBefore.state.startsWith("linked-") || this.markerBefore.state === "dangling-link")
+      this.noteLocalization(MARKER, this.markerBefore.target || readlinkOptional(ensureTargetRelative(MARKER)));
+    else if (this.markerBefore.state === "dir" || this.markerBefore.state === "non-file-path")
+      this.planPreservation(MARKER);
+  }
+  this.choosePreserveRoot();
+  const stagedDigest = surfaceDigest(this.stageRoot, this.manifest);
+  if (stagedDigest !== this.methodSurfaceSha256)
+    transactionError("refusing: the staged method bytes do not match the source method surface. Nothing was touched.");
+  if (this.writes.has("product.md")) {
+    const stagedProduct = fs.readFileSync(path.join(this.stageRoot, "product.md"));
+    if (!stagedProduct.equals(this.writes.get("product.md").bytes))
+      transactionError("refusing: the staged product bytes do not match the planned product migration. Nothing was touched.");
+  }
+  if (this.writes.has("map.md")) {
+    const stagedMap = fs.readFileSync(path.join(this.stageRoot, "map.md"));
+    if (!stagedMap.equals(this.writes.get("map.md").bytes))
+      transactionError("refusing: the staged starter map bytes do not match the planned migration. Nothing was touched.");
+  }
+};
+
+Transaction.prototype.planSummary = function planSummary() {
+  return {
+    roots: this.primaryRoots.map(root => ({
+      relative: normalizedRelative(root.relative),
+      kind: root.kind,
+      before: root.before ? root.before.state : snapshotRoot(root.relative, root.kind).state,
+    })),
+    markerRoot: { relative: normalizedRelative(this.markerRoot.relative), kind: this.markerRoot.kind },
+    localizedLinks: this.replacedLinks.slice(),
+    preserved: this.preserved.slice(),
+  };
+};
+
+Transaction.prototype.revalidate = function revalidate() {
+  for (const root of this.primaryRoots) {
+    const current = snapshotPathState(root.relative);
+    if (!sameSnapshot(current, root.beforePath))
+      transactionError(`refusing: ${normalizedRelative(root.relative)} changed while Speck Next was staging the upgrade, so it stopped before replacing anything. Nothing was touched.`);
+  }
+  if (!this.markerCovered) {
+    const currentMarker = snapshotPathState(MARKER);
+    if (!sameSnapshot(currentMarker, this.markerBeforePath))
+      transactionError(`refusing: ${normalizedRelative(MARKER)} changed while Speck Next was staging the upgrade, so it stopped before replacing anything. Nothing was touched.`);
+  }
+  if (this.preserveRoot) {
+    const currentPreserveRoot = snapshotPathState(this.preserveRoot.relative);
+    if (!sameSnapshot(currentPreserveRoot, this.preserveRoot.beforePath))
+      transactionError(`refusing: ${normalizedRelative(this.preserveRoot.relative)} changed while Speck Next was staging the upgrade, so it stopped before replacing anything. Nothing was touched.`);
+  }
+};
+
+Transaction.prototype.swapRoot = function swapRoot(relative) {
+  const absolute = ensureTargetRelative(relative);
+  const backup = path.join(this.backupRoot, relative);
+  fs.mkdirSync(path.dirname(backup), { recursive: true });
+  if (lstatOptional(absolute)) {
+    renamePreservingMode(absolute, backup);
+    this.applied.push({ relative, backup, existed: true });
+  } else {
+    this.applied.push({ relative, backup, existed: false });
+  }
+};
+
+Transaction.prototype.apply = function apply() {
+  try {
+    this.revalidate();
+    for (let index = 0; index < this.primaryRoots.length; index += 1) {
+      const root = this.primaryRoots[index];
+      this.swapRoot(root.relative);
+      const stagePath = path.join(this.stageRoot, root.relative);
+      fs.mkdirSync(path.dirname(ensureTargetRelative(root.relative)), { recursive: true });
+      renamePreservingMode(stagePath, ensureTargetRelative(root.relative));
+    }
+    if (!this.markerCovered)
+      this.swapRoot(MARKER);
+    if (this.preserveRoot) {
+      const preserveRootAbsolute = ensureTargetRelative(this.preserveRoot.relative);
+      if (!this.preserveRoot.existed) fs.mkdirSync(preserveRootAbsolute, { recursive: true });
+      for (const entry of this.preserved) {
+        if (!lstatOptional(entry.preserveSource))
+          transactionError(`refusing: ${entry.relative} disappeared before it could be preserved. Nothing was touched.`);
+        const destination = ensureTargetRelative(entry.destinationRelative);
+        ensureParent(destination);
+        renamePreservingMode(entry.preserveSource, destination);
+        this.appliedPreservations.push({ source: entry.preserveSource, destination });
+      }
+    }
+    ensureParent(ensureTargetRelative(MARKER));
+    writeMarkerLast(this.markerBytes);
+    this.appliedMarkerOnly = !this.markerCovered;
+  } catch (error) {
+    this.rollback();
+    throw error;
+  }
+};
+
+Transaction.prototype.rollback = function rollback() {
+  for (let index = this.appliedPreservations.length - 1; index >= 0; index -= 1) {
+    const entry = this.appliedPreservations[index];
+    fs.mkdirSync(path.dirname(entry.source), { recursive: true });
+    if (lstatOptional(entry.destination)) renamePreservingMode(entry.destination, entry.source);
+  }
+  if (this.preserveRoot && !this.preserveRoot.existed) {
+    const absolute = ensureTargetRelative(this.preserveRoot.relative);
+    if (lstatOptional(absolute) && fs.readdirSync(absolute).length === 0) fs.rmdirSync(absolute);
+  }
+  this.appliedPreservations = [];
+  for (let index = this.applied.length - 1; index >= 0; index -= 1) {
+    const entry = this.applied[index];
+    const absolute = ensureTargetRelative(entry.relative);
+    removeExisting(absolute);
+    if (entry.existed) {
+      fs.mkdirSync(path.dirname(absolute), { recursive: true });
+      renamePreservingMode(entry.backup, absolute);
+    }
+  }
+  this.applied = [];
+  this.cleanup();
+};
+
+Transaction.prototype.cleanup = function cleanup() {
+  removeExisting(this.transactionRoot);
+};
+
+function applyInstalledSurface(existingMarker, migration) {
+  const plan = transactionPlan(existingMarker, migration);
+  const transaction = new Transaction(plan);
+  try {
+    const productExists = plan.writes.has("product.md") || entryExists(path.join(target, "product.md"));
+    transaction.prepare();
+    const installedEntries = stagedInstalledEntries(transaction.stageRoot);
+    transaction.apply();
+    const extraReportPaths = transaction.replacedLinks.map(link => link.relative);
+    if (transaction.preserveRoot) extraReportPaths.push(transaction.preserveRoot.relative);
+    const reportPaths = reportedPaths(extraReportPaths);
+    const changes = gitChanges(reportPaths);
+    const diff = gitDiff(reportPaths);
+    transaction.cleanup();
+    return {
+      sourceCheckout: transaction.sourceCheckout,
+      methodSurfaceSha256: transaction.methodSurfaceSha256,
+      changes,
+      diff,
+      localizedLinks: transaction.replacedLinks,
+      preserved: transaction.preserved,
+      installedEntries,
+      productExists,
+    };
+  } catch (error) {
+    transaction.rollback();
+    throw error;
+  } finally {
+    transaction.cleanup();
+  }
 }
 
 function normalizedVersion(version) {
@@ -580,61 +1547,25 @@ function planProductTeamAssessment(source, prior, openAssessmentRequested) {
   return { message, assessment, assessmentRecord: ASSESSMENT_RECORD, productContent };
 }
 
-function applyProductTeamAssessment(plan) {
-  if (plan.productContent !== null)
-    fs.writeFileSync(path.join(target, "product.md"), plan.productContent);
-}
-
 function versionWithProvenance(version, sourceCheckout, methodSurfaceSha256) {
   return `${version} (source checkout ${sourceCheckout || "not recorded"}; method surface ${methodSurfaceSha256 ? `sha256:${methodSurfaceSha256}` : "not recorded"})`;
 }
 
-function installedFiles() {
-  const files = [];
-  function visit(relative) {
-    const absolute = path.join(target, relative);
-    if (!fs.existsSync(absolute)) return;
-    const stat = fs.statSync(absolute);
-    if (stat.isDirectory()) {
-      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
-    } else files.push(relative);
-  }
-  for (const root of [...SURFACE, "map.md"]) visit(root);
-  files.push(MARKER);
-  return files.sort();
+function localizationLines(localizedLinks) {
+  return localizedLinks.map(link =>
+    `Localized linked path ${link.relative} into this repository; it previously pointed to ${JSON.stringify(link.target)} and that linked destination was left unchanged.`
+  );
 }
 
-function gitRead(args) {
-  try {
-    return execFileSync("git", args, { cwd: target, encoding: "utf8" }).trimEnd();
-  } catch { return ""; }
+function preservationLines(preserved) {
+  return preserved.map(entry =>
+    `Preserved incompatible path ${entry.relative} at ${entry.destinationRelative}; the original path now carries the required local Speck Next entry.`
+  );
 }
 
-function gitChanges() {
-  return gitRead(["status", "--short", "--", ...REPORTED_PATHS]);
-}
-
-function gitDiff() {
-  const parts = [];
-  const tracked = gitRead(["diff", "--", ...REPORTED_PATHS]);
-  if (tracked) parts.push(tracked);
-  const untracked = gitRead(["ls-files", "--others", "--exclude-standard", "--", ...REPORTED_PATHS]);
-  for (const file of untracked.split("\n").filter(Boolean)) {
-    try {
-      execFileSync("git", ["diff", "--no-index", "--", "/dev/null", file], { cwd: target, encoding: "utf8" });
-    } catch (err) {
-      if (err.status !== 1) continue;
-      const addition = String(err.stdout || "").trim();
-      if (addition) parts.push(addition);
-    }
-  }
-  return parts.join("\n");
-}
-
-function upgradeNext(changes, diff, assessment) {
+function upgradeNext(changes, diff, assessment, productExists) {
   const hasChanges = Boolean(changes || diff);
-  const productPath = path.join(target, "product.md");
-  if (!fs.existsSync(productPath)) {
+  if (!productExists) {
     return hasChanges
       ? "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
       : "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work.";
@@ -666,23 +1597,26 @@ function upgradeNext(changes, diff, assessment) {
 
 if (cmd === "install") {
   if (!fs.existsSync(target)) die(`no such directory: ${target}`);
-  if (!fs.existsSync(path.join(target, ".git"))) die(`not a git repository: ${target} (git init first)`);
-  if (path.resolve(SRC) === target) die("refusing: that's the kernel repo itself");
+  if (!fs.existsSync(path.join(target, ".git"))) die(`not a git repository: ${targetDisplay} (git init first)`);
+  if (fs.realpathSync.native(SRC) === resolvedTarget()) die("refusing: that's the kernel repo itself");
   if (fs.existsSync(path.join(target, "AGENTS.md")) || fs.existsSync(path.join(target, "CLAUDE.md")))
-    die(`refusing: ${target} already carries agent instructions.\n` +
+    die(`refusing: ${targetDisplay} already carries agent instructions.\n` +
         `If it's a Speck Next repo, use: npx github:Keegil/speck-next upgrade\n` +
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
-  const provenance = copySurface();
-  ensureMap();
-  writeMarker(null, provenance, null);
-  const files = installedFiles();
-  console.log(`Installed Speck Next ${versionWithProvenance(VERSION, provenance.sourceCheckout, provenance.methodSurfaceSha256)} into ${target} — ${files.length} files on disk (method files, the version marker, and an empty starter map).`);
-  console.log(`Installed paths:\n${files.join("\n")}`);
-  console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
+  try {
+    const install = applyInstalledSurface(null, { message: "", assessment: null, assessmentRecord: null, productContent: null });
+    for (const line of localizationLines(install.localizedLinks)) console.log(line);
+    for (const line of preservationLines(install.preserved)) console.log(line);
+    console.log(`Installed Speck Next ${versionWithProvenance(VERSION, install.sourceCheckout, install.methodSurfaceSha256)} into ${targetDisplay} — ${install.installedEntries.length} installed or carried-forward files on disk.`);
+    console.log(`Installed paths:\n${install.installedEntries.join("\n")}`);
+    console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
+  } catch (error) {
+    die(error.speckMessage || error.message);
+  }
 } else if (cmd === "upgrade") {
   const markerPath = path.join(target, MARKER);
   if (!fs.existsSync(markerPath))
-    die(`refusing: ${target} doesn't look like a Speck Next repo (no ${MARKER}).\n` +
+    die(`refusing: ${targetDisplay} doesn't look like a Speck Next repo (no ${MARKER}).\n` +
         `Fresh repo? Use: npx github:Keegil/speck-next install\n` +
         `Old-Speck repo? Converting it is a later version's job. Nothing was touched.`);
   let prior;
@@ -692,24 +1626,24 @@ if (cmd === "install") {
   if (source === "unknown")
     die(`refusing: ${MARKER} carries an unknown version (${JSON.stringify(prior.version)}). Nothing was touched.`);
   const migration = planProductTeamAssessment(source, prior, openAssessment);
-  const provenance = copySurface();
-  retireReplacedSkills();
-  ensureMap();
-  applyProductTeamAssessment(migration);
-  writeMarker(prior, provenance, migration.assessmentRecord);
-  const changes = gitChanges();
-  const diff = gitDiff();
-  const from = versionWithProvenance(prior.version, markerSourceCheckout(prior), prior.methodSurfaceSha256 || null);
-  const to = versionWithProvenance(VERSION, provenance.sourceCheckout, provenance.methodSurfaceSha256);
-  console.log(`Upgraded Speck Next ${from} -> ${to} in ${target}.`);
-  console.log(migration.message);
-  console.log(changes
-    ? `Working-tree changes across the complete installed surface plus product.md:\n${changes}`
-    : "Working-tree changes across the complete installed surface plus product.md: none.");
-  console.log(diff
-    ? `Complete installed-surface plus product.md diff (working tree against HEAD):\n${diff}`
-    : "Complete installed-surface plus product.md diff: empty.");
-  console.log(upgradeNext(changes, diff, migration.assessment));
+  try {
+    const upgraded = applyInstalledSurface(prior, migration);
+    const from = versionWithProvenance(prior.version, markerSourceCheckout(prior), prior.methodSurfaceSha256 || null);
+    const to = versionWithProvenance(VERSION, upgraded.sourceCheckout, upgraded.methodSurfaceSha256);
+    for (const line of localizationLines(upgraded.localizedLinks)) console.log(line);
+    for (const line of preservationLines(upgraded.preserved)) console.log(line);
+    console.log(`Upgraded Speck Next ${from} -> ${to} in ${targetDisplay}.`);
+    console.log(migration.message);
+    console.log(upgraded.changes
+      ? `Working-tree changes across the complete installed surface plus product.md:\n${upgraded.changes}`
+      : "Working-tree changes across the complete installed surface plus product.md: none.");
+    console.log(upgraded.diff
+      ? `Complete installed-surface plus product.md diff (working tree against HEAD):\n${upgraded.diff}`
+      : "Complete installed-surface plus product.md diff: empty.");
+    console.log(upgradeNext(upgraded.changes, upgraded.diff, migration.assessment, upgraded.productExists));
+  } catch (error) {
+    die(error.speckMessage || error.message);
+  }
 } else {
   console.log(`speck-next v${VERSION} — a small kernel for building great products and proving them by running them.
 

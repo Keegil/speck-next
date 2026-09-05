@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
-import copy, hashlib, importlib.util, json, os, pathlib, re, shutil, subprocess, sys, tempfile
+import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
 from datetime import date, timedelta
 
 
@@ -464,9 +464,10 @@ def commit_fixture(root, message):
     subprocess.run(["git", "commit", "-q", "-m", message], cwd=root, check=True)
 
 
-def run_cli_args(kernel, *arguments, cwd=None):
+def run_cli_args(kernel, *arguments, cwd=None, env=None):
+    merged_env = None if env is None else dict(os.environ, **env)
     return subprocess.run(["node", str(kernel / "bin/speck-next.js"), *map(str, arguments)],
-                          cwd=cwd or kernel, capture_output=True, text=True)
+                          cwd=cwd or kernel, capture_output=True, text=True, env=merged_env)
 
 
 def run_cli(kernel, command, target, *arguments):
@@ -493,16 +494,24 @@ def repository_snapshot(root):
         if ".git" in relative.parts:
             continue
         info = item.lstat()
+        mode = info.st_mode & 0o7777
         if item.is_symlink():
-            kind, payload = "link", os.readlink(item).encode()
+            kind, payload = f"link:{mode:o}", os.readlink(item).encode()
         elif item.is_dir():
-            kind, payload = "directory", b""
+            kind, payload = f"directory:{mode:o}", b""
         elif item.is_file():
-            kind, payload = "file", item.read_bytes()
+            kind, payload = f"file:{mode:o}", item.read_bytes()
         else:
             kind, payload = f"other:{info.st_mode}", b""
         entries.append((relative.as_posix(), kind, payload))
     return tuple(entries)
+
+
+def snapshot_digest(root):
+    digest = hashlib.sha256()
+    for relative, kind, payload in repository_snapshot(root):
+        digest.update(relative.encode() + b"\0" + kind.encode() + b"\0" + payload + b"\0")
+    return digest.hexdigest()
 
 
 def porcelain_v1_z(root):
@@ -512,19 +521,31 @@ def porcelain_v1_z(root):
     ).stdout
 
 
+def repo_baseline(root):
+    return {
+        "tree": repository_snapshot(root),
+        "porcelain": porcelain_v1_z(root),
+    }
+
+
+def repo_unchanged(root, before):
+    return (
+        repository_snapshot(root) == before["tree"] and
+        porcelain_v1_z(root) == before["porcelain"]
+    )
+
+
 def refusal_baseline(root):
     return {
         "marker": (root / ".claude/speck-next.json").read_bytes(),
-        "tree": repository_snapshot(root),
-        "porcelain": porcelain_v1_z(root),
+        **repo_baseline(root),
     }
 
 
 def snapshot_unchanged(root, before):
     return (
         (root / ".claude/speck-next.json").read_bytes() == before["marker"] and
-        repository_snapshot(root) == before["tree"] and
-        porcelain_v1_z(root) == before["porcelain"]
+        repo_unchanged(root, before)
     )
 
 
@@ -589,6 +610,511 @@ def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surfa
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
             next_lines == [expected_next] and run.stdout.rstrip().endswith(expected_next))
+
+
+def run_path_transaction_controls(kernel):
+    source_checkout = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"], cwd=kernel,
+        check=True, capture_output=True, text=True,
+    ).stdout.strip()
+    surface_digest = method_surface_sha256(kernel)
+    results = []
+
+    with tempfile.TemporaryDirectory(prefix="speck-piece8-paths-") as temporary:
+        base = pathlib.Path(temporary)
+
+        def fresh_repo(name):
+            repo = base / name
+            repo.mkdir()
+            init_repo(repo)
+            return repo
+
+        def transaction_dirt(repo):
+            sibling = list(repo.parent.glob(f".{repo.name}.speck-next-transaction-*"))
+            nested = list(repo.glob(f".{repo.name}.speck-next-transaction-*"))
+            return sibling + nested
+
+        def calm_failure(run):
+            output = run.stdout + run.stderr
+            forbidden = (
+                "Installed Speck Next", "Upgraded Speck Next",
+                "Working-tree changes across", "Complete installed-surface",
+                "commit the upgrade", "Next:",
+            )
+            return (
+                run.returncode != 0 and
+                all(item not in output for item in forbidden) and
+                not has_resume_instruction(output) and
+                "Error:" not in output and " at " not in run.stderr
+            )
+
+        def stable_retry(repo, first):
+            before = repo_baseline(repo)
+            retry = run_cli(kernel, "upgrade", repo)
+            return (
+                first.returncode == 0 and retry.returncode == 0 and
+                repo_unchanged(repo, before) and not transaction_dirt(repo)
+            )
+
+        outside_skills = base / "outside-skills"
+        outside_skills.mkdir()
+        write_file(outside_skills, "custom/sentinel.txt", "outside skills stay\n")
+        linked_skills = fresh_repo("linked-skills")
+        (linked_skills / ".claude").mkdir()
+        os.symlink(outside_skills, linked_skills / ".claude/skills")
+        outside_before = snapshot_digest(outside_skills)
+        linked_skills_run = run_cli(kernel, "install", linked_skills)
+        results.append((
+            "absolute .claude/skills link localizes once, preserves its referent, reports carried files, and retries byte-stably",
+            linked_skills_run.returncode == 0 and not linked_skills_run.stderr and
+            'Localized linked path .claude/skills into this repository;' in linked_skills_run.stdout and
+            ".claude/skills/custom/sentinel.txt" in linked_skills_run.stdout and
+            snapshot_digest(outside_skills) == outside_before and
+            (linked_skills / ".claude/skills").is_dir() and
+            not (linked_skills / ".claude/skills").is_symlink() and
+            (linked_skills / ".claude/skills/custom/sentinel.txt").read_text() == "outside skills stay\n" and
+            stable_retry(linked_skills, linked_skills_run),
+        ))
+
+        relative_templates = fresh_repo("relative-templates")
+        relative_outside = base / "relative-template-source"
+        relative_outside.mkdir()
+        write_file(relative_outside, "custom.txt", "relative referent\n")
+        os.symlink("../relative-template-source", relative_templates / "templates")
+        relative_before = snapshot_digest(relative_outside)
+        relative_run = run_cli(kernel, "install", relative_templates)
+        results.append((
+            "relative templates link becomes local without changing its sibling referent",
+            relative_run.returncode == 0 and not relative_run.stderr and
+            'Localized linked path templates into this repository;' in relative_run.stdout and
+            snapshot_digest(relative_outside) == relative_before and
+            not (relative_templates / "templates").is_symlink() and
+            (relative_templates / "templates/custom.txt").read_text() == "relative referent\n" and
+            "templates/custom.txt" in relative_run.stdout,
+        ))
+
+        grouped_claude = fresh_repo("grouped-claude-path")
+        grouped_outside = base / "grouped-claude-source"
+        (grouped_outside / "skills/custom").mkdir(parents=True)
+        write_file(grouped_outside, "custom.txt", "grouped custom\n")
+        write_file(grouped_outside, "skills/custom/note.txt", "custom skill\n")
+        write_file(grouped_outside, "speck-next.json", '{"old": true}\n')
+        os.symlink(grouped_outside, grouped_claude / ".claude")
+        grouped_before = snapshot_digest(grouped_outside)
+        grouped_run = run_cli(kernel, "install", grouped_claude)
+        results.append((
+            "grouped .claude link localizes as one root, forces a local marker, and reports every carried leaf",
+            grouped_run.returncode == 0 and not grouped_run.stderr and
+            'Localized linked path .claude into this repository;' in grouped_run.stdout and
+            ".claude/custom.txt" in grouped_run.stdout and
+            ".claude/skills/custom/note.txt" in grouped_run.stdout and
+            snapshot_digest(grouped_outside) == grouped_before and
+            not (grouped_claude / ".claude").is_symlink() and
+            not (grouped_claude / ".claude/speck-next.json").is_symlink() and
+            marker(grouped_claude)["version"] == "6.0.0-rc.2",
+        ))
+
+        non_dir_link = fresh_repo("linked-non-directory")
+        outside_file = base / "linked-template-file"
+        outside_file.write_bytes(b"outside file bytes\x00\xff")
+        os.symlink(outside_file, non_dir_link / "templates")
+        outside_file_before = (outside_file.read_bytes(), outside_file.lstat().st_mode)
+        non_dir_run = run_cli(kernel, "install", non_dir_link)
+        results.append((
+            "a directory destination linked to a regular file localizes and discloses without touching the file",
+            non_dir_run.returncode == 0 and not non_dir_run.stderr and
+            'Localized linked path templates into this repository;' in non_dir_run.stdout and
+            (outside_file.read_bytes(), outside_file.lstat().st_mode) == outside_file_before and
+            (non_dir_link / "templates").is_dir() and not (non_dir_link / "templates").is_symlink(),
+        ))
+
+        dangling = fresh_repo("dangling-links")
+        (dangling / ".claude").mkdir()
+        os.symlink("../missing-skills", dangling / ".claude/skills")
+        os.symlink("missing-templates", dangling / "templates")
+        dangling_run = run_cli(kernel, "install", dangling)
+        results.append((
+            "dangling grouped and direct links become local without raw path errors",
+            dangling_run.returncode == 0 and not dangling_run.stderr and
+            dangling_run.stdout.count("Localized linked path") == 2 and
+            (dangling / ".claude/skills").is_dir() and not (dangling / ".claude/skills").is_symlink() and
+            (dangling / "templates").is_dir() and not (dangling / "templates").is_symlink(),
+        ))
+
+        self_link = fresh_repo("templates-self-link")
+        os.symlink(".", self_link / "templates")
+        self_before = repo_baseline(self_link)
+        self_run = run_cli(kernel, "install", self_link)
+        results.append((
+            "templates pointing at the product root refuses without recursion or residue",
+            calm_failure(self_run) and "points into the selected product" in self_run.stderr and
+            repo_unchanged(self_link, self_before) and not transaction_dirt(self_link),
+        ))
+
+        internal_link = fresh_repo("internal-owner-link")
+        write_file(internal_link, "owner/templates/custom.txt", "internal owner bytes\n")
+        os.symlink("owner/templates", internal_link / "templates")
+        internal_before = snapshot_digest(internal_link / "owner")
+        internal_run = run_cli(kernel, "install", internal_link)
+        results.append((
+            "an in-product link outside the method surface localizes without changing its source",
+            internal_run.returncode == 0 and not internal_run.stderr and
+            snapshot_digest(internal_link / "owner") == internal_before and
+            (internal_link / "templates/custom.txt").read_text() == "internal owner bytes\n" and
+            not (internal_link / "templates").is_symlink(),
+        ))
+
+        target_repo = fresh_repo("resolved-target")
+        target_link = base / "resolved-target-link"
+        os.symlink(target_repo, target_link)
+        target_link_run = run_cli(kernel, "install", target_link)
+        results.append((
+            "a command-target link resolves once to the physical product and remains supported",
+            target_link_run.returncode == 0 and not target_link_run.stderr and
+            (target_repo / "AGENTS.md").is_file() and target_link.is_symlink() and
+            str(target_link) in target_link_run.stdout,
+        ))
+
+        kernel_link = base / "kernel-target-link"
+        os.symlink(kernel, kernel_link)
+        kernel_status_before = subprocess.run(
+            ["git", "status", "--short"], cwd=kernel,
+            check=True, capture_output=True, text=True,
+        ).stdout
+        kernel_link_run = run_cli(kernel, "install", kernel_link)
+        kernel_status_after = subprocess.run(
+            ["git", "status", "--short"], cwd=kernel,
+            check=True, capture_output=True, text=True,
+        ).stdout
+        results.append((
+            "a command-target link cannot bypass the kernel-self-install refusal",
+            kernel_link_run.returncode != 0 and "kernel repo itself" in kernel_link_run.stderr and
+            kernel_status_after == kernel_status_before and not transaction_dirt(kernel),
+        ))
+
+        wrong_claude = fresh_repo("wrong-claude-root")
+        (wrong_claude / ".claude").write_bytes(b"owner claude root\x00")
+        wrong_claude_run = run_cli(kernel, "install", wrong_claude)
+        wrong_claude_preserve = next(wrong_claude.glob(".speck-next-preserved*"), None)
+        results.append((
+            "a regular .claude root is preserved intact before the local method directory replaces it",
+            wrong_claude_run.returncode == 0 and not wrong_claude_run.stderr and
+            wrong_claude_preserve is not None and
+            any(item.read_bytes() == b"owner claude root\x00" for item in wrong_claude_preserve.iterdir() if item.is_file()) and
+            (wrong_claude / ".claude").is_dir() and
+            "Preserved incompatible path .claude at" in wrong_claude_run.stdout,
+        ))
+
+        wrong_skills = fresh_repo("wrong-skills-ancestor")
+        (wrong_skills / ".claude").mkdir()
+        (wrong_skills / ".claude/skills").write_bytes(b"owner skills ancestor\x00")
+        wrong_skills_run = run_cli(kernel, "install", wrong_skills)
+        wrong_skills_preserve = next(wrong_skills.glob(".speck-next-preserved*"), None)
+        results.append((
+            "a regular .claude/skills ancestor is staged, preserved intact, and replaced calmly",
+            wrong_skills_run.returncode == 0 and not wrong_skills_run.stderr and
+            wrong_skills_preserve is not None and
+            any(item.read_bytes() == b"owner skills ancestor\x00" for item in wrong_skills_preserve.iterdir() if item.is_file()) and
+            (wrong_skills / ".claude/skills").is_dir() and
+            "Preserved incompatible path .claude/skills at" in wrong_skills_run.stdout,
+        ))
+
+        wrong_map = fresh_repo("wrong-generated-map")
+        write_file(wrong_map, "map.md/owner.bin", "owner map directory\n")
+        wrong_map_run = run_cli(kernel, "install", wrong_map)
+        wrong_map_preserve = next(wrong_map.glob(".speck-next-preserved*"), None)
+        results.append((
+            "a wrong-kind generated map is preserved before a truthful starter map is installed",
+            wrong_map_run.returncode == 0 and not wrong_map_run.stderr and
+            (wrong_map / "map.md").is_file() and
+            (wrong_map / "map.md").read_text().startswith("# Map") and
+            wrong_map_preserve is not None and
+            any((item / "owner.bin").is_file() for item in wrong_map_preserve.iterdir() if item.is_dir()) and
+            "Preserved incompatible path map.md at" in wrong_map_run.stdout,
+        ))
+
+        mode_repo = fresh_repo("owner-modes")
+        seed_upgrade_repo(
+            mode_repo, "5.4.1", "owner-modes-fixture", "# Private product\n",
+            {".claude/skills/custom/note.txt": "custom skill\n",
+             "templates/custom.txt": "custom template\n"},
+        )
+        for directory in (mode_repo / ".claude", mode_repo / ".claude/skills", mode_repo / "templates"):
+            os.chmod(directory, 0o700)
+        os.chmod(mode_repo / "product.md", 0o600)
+        mode_run = run_cli(kernel, "upgrade", mode_repo)
+        results.append((
+            "upgrade preserves owner directory modes and the rewritten product file mode",
+            mode_run.returncode == 0 and not mode_run.stderr and
+            all((directory.stat().st_mode & 0o777) == 0o700 for directory in
+                (mode_repo / ".claude", mode_repo / ".claude/skills", mode_repo / "templates")) and
+            (mode_repo / "product.md").stat().st_mode & 0o777 == 0o600,
+        ))
+
+        readonly_repo = fresh_repo("readonly-roots")
+        write_file(readonly_repo, ".claude/skills/custom/readonly/note.txt", "readonly custom\n")
+        for directory in (
+            readonly_repo / ".claude/skills/custom/readonly",
+            readonly_repo / ".claude/skills/custom",
+            readonly_repo / ".claude/skills",
+            readonly_repo / ".claude",
+        ):
+            os.chmod(directory, 0o555)
+        readonly_run = run_cli(kernel, "install", readonly_repo)
+        results.append((
+            "readonly owner directories remain readonly while staging and cleanup stay removable",
+            readonly_run.returncode == 0 and not readonly_run.stderr and
+            (readonly_repo / ".claude").stat().st_mode & 0o777 == 0o555 and
+            (readonly_repo / ".claude/skills").stat().st_mode & 0o777 == 0o555 and
+            (readonly_repo / ".claude/skills/custom/readonly/note.txt").read_text() == "readonly custom\n" and
+            not transaction_dirt(readonly_repo),
+        ))
+
+        preload = base / "path-fault-preload.js"
+        preload.write_text(r'''const fs = require("fs");
+const path = require("path");
+const op = process.env.P8_FAULT || "";
+const target = process.env.P8_TARGET ? fs.realpathSync.native(process.env.P8_TARGET) : "";
+const log = process.env.P8_FAULT_LOG || "";
+const originals = {
+  appendFileSync: fs.appendFileSync.bind(fs), copyFileSync: fs.copyFileSync.bind(fs),
+  lstatSync: fs.lstatSync.bind(fs), mkdirSync: fs.mkdirSync.bind(fs),
+  mkdtempSync: fs.mkdtempSync.bind(fs), readFileSync: fs.readFileSync.bind(fs),
+  renameSync: fs.renameSync.bind(fs), statSync: fs.statSync.bind(fs),
+  writeFileSync: fs.writeFileSync.bind(fs),
+};
+let fired = false;
+function text(value) { return String(value); }
+function staged(value) { return text(value).includes(".speck-next-transaction-") && text(value).includes(path.sep + "stage" + path.sep); }
+function fire(label) {
+  if (fired) return false;
+  fired = true;
+  if (log) originals.appendFileSync(log, label + "\n");
+  return true;
+}
+fs.copyFileSync = function(source, destination, ...rest) {
+  if (op === "copy" && staged(destination) && fire("copy")) throw new Error("forced staged copy failure");
+  return originals.copyFileSync(source, destination, ...rest);
+};
+fs.readFileSync = function(file, ...rest) {
+  if (op === "digest" && staged(file) && text(file).endsWith(path.sep + "AGENTS.md") && fire("digest"))
+    throw new Error("forced staged digest failure");
+  return originals.readFileSync(file, ...rest);
+};
+fs.renameSync = function(source, destination, ...rest) {
+  if (op === "record" && staged(source) && log) originals.appendFileSync(log, text(destination) + "\n");
+  if (op === "apply" && staged(source) && fire("apply")) throw new Error("forced staged apply failure");
+  return originals.renameSync(source, destination, ...rest);
+};
+fs.writeFileSync = function(file, bytes, ...rest) {
+  if (op === "marker" && target && path.resolve(text(file)) === path.join(target, ".claude", "speck-next.json") && fire("marker"))
+    throw new Error("forced marker failure");
+  return originals.writeFileSync(file, bytes, ...rest);
+};
+fs.statSync = function(file, ...rest) {
+  const result = originals.statSync(file, ...rest);
+  if (op === "mount" && target && path.resolve(text(file)) === path.dirname(target)) {
+    return new Proxy(result, { get(object, key) {
+      if (key === "dev") return Number(object.dev) + 1;
+      const value = Reflect.get(object, key, object);
+      return typeof value === "function" ? value.bind(object) : value;
+    }});
+  }
+  return result;
+};
+fs.mkdtempSync = function(prefix, ...rest) {
+  if (op === "mount" && log) originals.appendFileSync(log, text(prefix) + "\n");
+  return originals.mkdtempSync(prefix, ...rest);
+};
+''')
+
+        def preload_env(repo, operation, log):
+            return {
+                "NODE_OPTIONS": f"--require={preload}",
+                "P8_FAULT": operation,
+                "P8_TARGET": str(repo.resolve()),
+                "P8_FAULT_LOG": str(log),
+            }
+
+        record_repo = fresh_repo("one-claude-root")
+        record_outside = base / "one-claude-source"
+        (record_outside / "custom").mkdir(parents=True)
+        write_file(record_outside, "custom/note.txt", "record root\n")
+        (record_repo / ".claude").mkdir()
+        os.symlink(record_outside, record_repo / ".claude/skills")
+        record_log = base / "one-claude-renames.log"
+        record_run = run_cli_args(kernel, "install", record_repo,
+                                  env=preload_env(record_repo, "record", record_log))
+        recorded_destinations = record_log.read_text().splitlines() if record_log.exists() else []
+        resolved_record_repo = record_repo.resolve()
+        claude_destinations = [pathlib.Path(item) for item in recorded_destinations
+                               if pathlib.Path(item).is_relative_to(resolved_record_repo / ".claude")]
+        results.append((
+            "all .claude descendants apply through one .claude transaction root",
+            record_run.returncode == 0 and not record_run.stderr and
+            claude_destinations == [resolved_record_repo / ".claude"] and
+            not any(item == resolved_record_repo / ".claude/skills" for item in claude_destinations),
+        ))
+
+        mount_repo = fresh_repo("mount-root-fallback")
+        mount_log = base / "mount-root.log"
+        mount_run = run_cli_args(kernel, "install", mount_repo,
+                                 env=preload_env(mount_repo, "mount", mount_log))
+        mount_prefixes = mount_log.read_text().splitlines() if mount_log.exists() else []
+        results.append((
+            "a product-root mount stages in one hidden in-product transaction and cleans it",
+            mount_run.returncode == 0 and not mount_run.stderr and len(mount_prefixes) == 1 and
+            pathlib.Path(mount_prefixes[0]).parent == mount_repo.resolve() and
+            not transaction_dirt(mount_repo),
+        ))
+
+        for operation in ("copy", "digest", "apply", "marker"):
+            repo = fresh_repo(f"fault-{operation}")
+            outside = base / f"fault-{operation}-outside"
+            outside.mkdir()
+            write_file(outside, "sentinel.txt", f"{operation} outside bytes\n")
+            os.symlink(outside, repo / "templates")
+            repo_before = repo_baseline(repo)
+            outside_before = snapshot_digest(outside)
+            fault_log = base / f"fault-{operation}.log"
+            failed = run_cli_args(kernel, "install", repo,
+                                  env=preload_env(repo, operation, fault_log))
+            results.append((
+                f"injected {operation} failure rolls back target topology and leaves the referent unchanged",
+                fault_log.exists() and fault_log.read_text().splitlines() == [operation] and
+                calm_failure(failed) and repo_unchanged(repo, repo_before) and
+                snapshot_digest(outside) == outside_before and not transaction_dirt(repo),
+            ))
+
+        real_git = shutil.which("git")
+        if real_git is None:
+            raise AssertionError("git executable not found")
+        wrapper_dir = base / "git-failure-wrapper"
+        wrapper_dir.mkdir()
+        wrapper = wrapper_dir / "git"
+        wrapper.write_text(
+            "#!/bin/sh\nset -eu\nREAL_GIT=" + shlex.quote(real_git) + "\n" + r'''
+command=""
+no_index=0
+for arg in "$@"; do
+  [ "$arg" = "status" ] && command="status"
+  [ "$arg" = "diff" ] && command="diff"
+  [ "$arg" = "--no-index" ] && no_index=1
+done
+case "${P8_GIT_FAILURE:-}" in
+  status) [ "$command" = "status" ] && { echo forced status failure >&2; exit 71; } ;;
+  tracked) [ "$command" = "diff" ] && [ "$no_index" = 0 ] && { echo forced tracked diff failure >&2; exit 72; } ;;
+  untracked) [ "$command" = "diff" ] && [ "$no_index" = 1 ] && { echo forced untracked diff failure >&2; exit 73; } ;;
+esac
+exec "$REAL_GIT" "$@"
+''')
+        wrapper.chmod(0o755)
+
+        for operation in ("status", "tracked", "untracked"):
+            repo = fresh_repo(f"git-fault-{operation}")
+            outside = base / f"git-fault-{operation}-outside"
+            outside.mkdir()
+            write_file(outside, "sentinel.txt", f"{operation} outside bytes\n")
+            os.symlink(outside, repo / "templates")
+            repo_before = repo_baseline(repo)
+            outside_before = snapshot_digest(outside)
+            failed = run_cli_args(
+                kernel, "install", repo,
+                env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                     "P8_GIT_FAILURE": operation},
+            )
+            results.append((
+                f"checked Git {operation} failure rolls back before any success or next action",
+                calm_failure(failed) and
+                ("git status failed" in failed.stderr if operation == "status" else
+                 "git diff" in failed.stderr and "failed" in failed.stderr) and
+                repo_unchanged(repo, repo_before) and snapshot_digest(outside) == outside_before and
+                not transaction_dirt(repo),
+            ))
+
+        ignored_repo = fresh_repo("ignored-directory")
+        seed_upgrade_repo(ignored_repo, "5.4.1", "ignored-directory-fixture", "# Ignored product\n")
+        (ignored_repo / ".git/info").mkdir(parents=True, exist_ok=True)
+        write_file(ignored_repo, ".git/info/exclude", "templates/\n")
+        ignored_run = run_cli(kernel, "upgrade", ignored_repo)
+        results.append((
+            "a whole ignored installed directory has complete leaf diffs instead of a directory no-index failure",
+            ignored_run.returncode == 0 and not ignored_run.stderr and
+            "templates/piece.md" in ignored_run.stdout and
+            "diff --git a/templates/piece.md b/templates/piece.md" in ignored_run.stdout,
+        ))
+
+        ignored_link_repo = fresh_repo("ignored-symlink")
+        seed_upgrade_repo(ignored_link_repo, "5.4.1", "ignored-symlink-fixture", "# Ignored link product\n")
+        ignored_link_outside = base / "ignored-symlink-outside"
+        ignored_link_outside.mkdir()
+        write_file(ignored_link_outside, "sentinel.txt", "ignored link outside\n")
+        (ignored_link_repo / ".claude/skills").mkdir(parents=True)
+        os.symlink(ignored_link_outside, ignored_link_repo / ".claude/skills/custom-link")
+        (ignored_link_repo / ".git/info").mkdir(parents=True, exist_ok=True)
+        write_file(ignored_link_repo, ".git/info/exclude", ".claude/skills/custom-link\n")
+        ignored_link_before = snapshot_digest(ignored_link_outside)
+        ignored_link_run = run_cli(kernel, "upgrade", ignored_link_repo)
+        results.append((
+            "an ignored untracked symlink is reported as a symlink without dereferencing it",
+            ignored_link_run.returncode == 0 and not ignored_link_run.stderr and
+            "new file mode 120000" in ignored_link_run.stdout and
+            ".claude/skills/custom-link" in ignored_link_run.stdout and
+            snapshot_digest(ignored_link_outside) == ignored_link_before and
+            (ignored_link_repo / ".claude/skills/custom-link").is_symlink(),
+        ))
+
+        git_attack = fresh_repo("local-git-attack")
+        seed_upgrade_repo(git_attack, "5.4.1", "local-git-attack-fixture", "# Git attack product\n")
+        attack_dir = git_attack / "attack"
+        attack_dir.mkdir()
+        attack_log = base / "local-git-attack.log"
+        helper = attack_dir / "helper.sh"
+        helper.write_text("#!/bin/sh\necho invoked >> " + shlex.quote(str(attack_log)) + "\ncat\n")
+        helper.chmod(0o755)
+        write_file(git_attack, ".gitattributes", "*.md diff=attack filter=attack\n")
+        commit_fixture(git_attack, "attack fixtures before arming local config")
+        for key, value in (
+            ("core.fsmonitor", str(helper)),
+            ("diff.external", str(helper)),
+            ("diff.attack.textconv", str(helper)),
+            ("filter.attack.clean", str(helper)),
+            ("filter.attack.process", str(helper)),
+            ("filter.attack.required", "true"),
+        ):
+            subprocess.run(["git", "config", key, value], cwd=git_attack, check=True)
+        index_path = git_attack / ".git/index"
+        index_before = index_path.read_bytes()
+        inherited_trace = base / "inherited-git-trace.json"
+        git_attack_run = run_cli_args(
+            kernel, "upgrade", git_attack,
+            env={"GIT_TRACE2_EVENT": str(inherited_trace), "GIT_PAGER": str(helper)},
+        )
+        results.append((
+            "source provenance and reports ignore inherited Git state and local helper config without refreshing the index",
+            upgrade_report_ok(
+                git_attack_run, "5.4.1", "local-git-attack-fixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and not git_attack_run.stderr and
+            not attack_log.exists() and not inherited_trace.exists() and
+            index_path.read_bytes() == index_before,
+        ))
+
+        no_test_switches = not re.search(
+            r"SPECK_NEXT_(?:TEST|INJECT)|P8_(?:FAULT|TARGET|GIT_FAILURE)",
+            (kernel / "bin/speck-next.js").read_text(),
+        )
+        results.append((
+            "production installer has no ambient test or injected-failure switch",
+            no_test_switches,
+        ))
+
+    good = True
+    for label, passed in results:
+        print(f"  [{'ok' if passed else 'RED'}] {label}")
+        good = good and passed
+    print(f"  [measure] path-transaction subjects={len(results)}")
+    return good
 
 
 def run_migration_matrix(kernel):
@@ -1656,6 +2182,239 @@ def run_migration_matrix(kernel):
                     "Installed paths:" in run.stdout and "Next:" in run.stdout)
         results.append(("fresh install reports its surface and leaves product.md missing", fresh_ok))
 
+        real_git = shutil.which("git")
+        if real_git is None:
+            raise AssertionError("git executable not found")
+
+        def git_wrapper_env(name, body):
+            wrapper_dir = base / name
+            wrapper_dir.mkdir()
+            wrapper = wrapper_dir / "git"
+            wrapper.write_text(
+                "#!/bin/sh\nset -eu\nREAL_GIT=" + shlex.quote(real_git) + "\n" +
+                body.strip() + "\n"
+            )
+            wrapper.chmod(0o755)
+            return {"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"]}
+
+        linked_templates = base / "linked-templates"
+        linked_templates.mkdir()
+        init_repo(linked_templates)
+        outside_templates = base / "outside-templates"
+        (outside_templates / "piece.md" / "inner").mkdir(parents=True)
+        write_file(outside_templates, "piece.md/inner/note.txt", "outside wrong-kind descendant\n")
+        write_file(outside_templates, "map.md", "outside templates history\n")
+        os.symlink(outside_templates, linked_templates / "templates")
+        outside_templates_before = snapshot_digest(outside_templates)
+        linked_templates_run = run_cli(kernel, "install", linked_templates)
+        preserved_root = next(linked_templates.glob(".speck-next-preserved*"), None)
+        results.append((
+            "linked templates localize from staged bytes and archive a wrong-kind descendant without touching the referent",
+            linked_templates_run.returncode == 0 and
+            'Localized linked path templates into this repository;' in linked_templates_run.stdout and
+            "Preserved incompatible path templates/piece.md at .speck-next-preserved" in linked_templates_run.stdout and
+            snapshot_digest(outside_templates) == outside_templates_before and
+            (linked_templates / "templates").is_dir() and
+            not (linked_templates / "templates").is_symlink() and
+            (linked_templates / "templates" / "piece.md").is_file() and
+            preserved_root is not None and
+            any(path.name.startswith("templates__piece.md--")
+                for path in preserved_root.iterdir()),
+        ))
+
+        preserved_retry = base / "preserved-retry"
+        preserved_retry.mkdir()
+        init_repo(preserved_retry)
+        occupied_templates = base / "occupied-templates"
+        (occupied_templates / "piece.md").mkdir(parents=True)
+        write_file(occupied_templates, "piece.md/note.txt", "wrong kind\n")
+        os.symlink(occupied_templates, preserved_retry / "templates")
+        write_file(preserved_retry, ".speck-next-preserved", "occupied root\n")
+        retry_run = run_cli(kernel, "install", preserved_retry)
+        retry_root = preserved_retry / ".speck-next-preserved-2"
+        results.append((
+            "wrong-kind preservation retries past an occupied .speck-next-preserved root",
+            retry_run.returncode == 0 and
+            "Preserved incompatible path templates/piece.md at .speck-next-preserved-2/" in retry_run.stdout and
+            retry_root.is_dir() and
+            any(path.name.startswith("templates__piece.md--")
+                for path in retry_root.iterdir()),
+        ))
+
+        grouped_claude = base / "grouped-claude"
+        grouped_claude.mkdir()
+        init_repo(grouped_claude)
+        outside_claude = base / "outside-claude"
+        (outside_claude / "skills" / "custom" / "readonly" / "deep").mkdir(parents=True)
+        write_file(outside_claude, "skills/custom/readonly/deep/note.txt", "custom skill stays\n")
+        write_file(outside_claude, "speck-next.json", '{"old": true}\n')
+        os.chmod(outside_claude / "skills" / "custom", 0o555)
+        os.chmod(outside_claude / "skills" / "custom" / "readonly", 0o555)
+        os.chmod(outside_claude / "skills" / "custom" / "readonly" / "deep", 0o555)
+        os.symlink(outside_claude, grouped_claude / ".claude")
+        grouped_claude_before = snapshot_digest(outside_claude)
+        grouped_claude_run = run_cli(kernel, "install", grouped_claude)
+        results.append((
+            "grouped .claude localization preserves custom skills, tolerates readonly directories, and forces the marker local",
+            grouped_claude_run.returncode == 0 and
+            'Localized linked path .claude into this repository;' in grouped_claude_run.stdout and
+            snapshot_digest(outside_claude) == grouped_claude_before and
+            (grouped_claude / ".claude").is_dir() and
+            not (grouped_claude / ".claude").is_symlink() and
+            (grouped_claude / ".claude" / "speck-next.json").is_file() and
+            not (grouped_claude / ".claude" / "speck-next.json").is_symlink() and
+            (grouped_claude / ".claude" / "skills" / "custom" / "readonly" / "deep" / "note.txt").read_text() == "custom skill stays\n",
+        ))
+
+        readonly_leaf = base / "readonly-leaf"
+        readonly_leaf.mkdir()
+        init_repo(readonly_leaf)
+        readonly_outside = base / "readonly-leaf-outside"
+        (readonly_outside / "skills" / "experience" / "references").mkdir(parents=True)
+        write_file(readonly_outside, "skills/experience/references/walk.md", "old walk bytes\n")
+        os.chmod(readonly_outside / "skills" / "experience" / "references" / "walk.md", 0o444)
+        os.symlink(readonly_outside, readonly_leaf / ".claude")
+        readonly_leaf_run = run_cli(kernel, "install", readonly_leaf)
+        current_walk = (kernel / ".claude/skills/experience/references/walk.md").read_text()
+        installed_walk = readonly_leaf / ".claude/skills/experience/references/walk.md"
+        results.append((
+            "canonical readonly staged files are recreated with current bytes and mode",
+            readonly_leaf_run.returncode == 0 and
+            installed_walk.read_text() == current_walk and
+            (installed_walk.stat().st_mode & 0o777) == 0o644 and
+            not installed_walk.is_symlink(),
+        ))
+
+        marker_link = base / "marker-link"
+        marker_link.mkdir()
+        init_repo(marker_link)
+        (marker_link / ".claude").mkdir()
+        outside_marker = base / "outside-marker.json"
+        outside_marker.write_text('{"old": true}\n')
+        os.symlink(outside_marker, marker_link / ".claude" / "speck-next.json")
+        marker_before = outside_marker.read_text()
+        marker_link_run = run_cli(kernel, "install", marker_link)
+        results.append((
+            "a linked marker localizes into the repository without changing its former target",
+            marker_link_run.returncode == 0 and
+            'Localized linked path .claude/speck-next.json into this repository;' in marker_link_run.stdout and
+            outside_marker.read_text() == marker_before and
+            (marker_link / ".claude" / "speck-next.json").is_file() and
+            not (marker_link / ".claude" / "speck-next.json").is_symlink() and
+            marker(marker_link)["version"] == "6.0.0-rc.2",
+        ))
+
+        ignored_upgrade = base / "ignored-upgrade"
+        ignored_upgrade.mkdir()
+        init_repo(ignored_upgrade)
+        (ignored_upgrade / ".git" / "info").mkdir(parents=True, exist_ok=True)
+        write_file(ignored_upgrade, ".git/info/exclude", "templates/piece.md\n")
+        write_file(ignored_upgrade, ".claude/speck-next.json", json.dumps({
+            "name": "speck-next",
+            "version": "5.4.1",
+            "commit": "ignored-upgradefixture",
+            "installedAt": "2026-01-02T03:04:05.000Z",
+        }, indent=2) + "\n")
+        write_file(ignored_upgrade, "product.md", "# Ignored upgrade product\n")
+        write_file(ignored_upgrade, "templates/piece.md", "ignored owner bytes\n")
+        commit_fixture(ignored_upgrade, "ignored upgrade baseline")
+        ignored_run = run_cli(kernel, "upgrade", ignored_upgrade)
+        results.append((
+            "ignored untracked installed files stay visible in the complete surface status and diff",
+            upgrade_report_ok(
+                ignored_run, "5.4.1", "ignored-upgradefixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            "!! templates/piece.md" in ignored_run.stdout and
+            "diff --git a/templates/piece.md b/templates/piece.md" in ignored_run.stdout,
+        ))
+
+        fresh_report_fail = base / "fresh-report-fail"
+        fresh_report_fail.mkdir()
+        init_repo(fresh_report_fail)
+        fresh_report_before = repo_baseline(fresh_report_fail)
+        fail_status_env = git_wrapper_env(
+            "git-fail-status",
+            """
+for arg in "$@"; do
+  if [ "$arg" = "status" ]; then
+    echo forced status failure >&2
+    exit 1
+  fi
+done
+exec "$REAL_GIT" "$@"
+""",
+        )
+        failed_install = run_cli_args(kernel, "install", fresh_report_fail, env=fail_status_env)
+        results.append((
+            "late install report failures roll back every byte and first-missing ancestor",
+            failed_install.returncode != 0 and
+            "git status failed" in failed_install.stderr and
+            repo_unchanged(fresh_report_fail, fresh_report_before) and
+            not (fresh_report_fail / ".claude").exists() and
+            not (fresh_report_fail / "templates").exists(),
+        ))
+
+        linked_fail = base / "linked-report-fail"
+        linked_fail.mkdir()
+        init_repo(linked_fail)
+        linked_fail_outside = base / "linked-report-fail-outside"
+        (linked_fail_outside / "piece.md").mkdir(parents=True)
+        write_file(linked_fail_outside, "piece.md/note.txt", "outside bytes\n")
+        os.symlink(linked_fail_outside, linked_fail / "templates")
+        linked_fail_before = repo_baseline(linked_fail)
+        linked_fail_outside_before = snapshot_digest(linked_fail_outside)
+        failed_linked = run_cli_args(kernel, "install", linked_fail, env=fail_status_env)
+        results.append((
+            "late report failures after staged preservation restore the repo and leave linked referents unchanged",
+            failed_linked.returncode != 0 and
+            "git status failed" in failed_linked.stderr and
+            repo_unchanged(linked_fail, linked_fail_before) and
+            snapshot_digest(linked_fail_outside) == linked_fail_outside_before and
+            (linked_fail / "templates").is_symlink(),
+        ))
+
+        git_attack = base / "git-attack"
+        git_attack.mkdir()
+        seed_upgrade_repo(
+            git_attack, "5.4.1", "git-attackfixture",
+            "# Git attack product\n",
+        )
+        attack_scripts = git_attack / "attack"
+        attack_scripts.mkdir()
+        attack_log = git_attack / "attack.log"
+        diff_attack = attack_scripts / "external-diff.sh"
+        diff_attack.write_text("#!/bin/sh\necho external-diff >> \"$1\"\n")
+        diff_attack.chmod(0o755)
+        textconv_attack = attack_scripts / "textconv.sh"
+        textconv_attack.write_text("#!/bin/sh\necho textconv >> \"$1\"\ncat \"$2\"\n")
+        textconv_attack.chmod(0o755)
+        filter_attack = attack_scripts / "filter.sh"
+        filter_attack.write_text("#!/bin/sh\necho filter >> \"$1\"\ncat\n")
+        filter_attack.chmod(0o755)
+        write_file(git_attack, ".gitattributes",
+                   "*.md diff=attack\n*.md filter=attack\n")
+        commit_fixture(git_attack, "git attack config")
+        subprocess.run(["git", "config", "diff.external",
+                        f"{diff_attack} {attack_log}"], cwd=git_attack, check=True)
+        subprocess.run(["git", "config", "diff.attack.textconv",
+                        f"{textconv_attack} {attack_log}"], cwd=git_attack, check=True)
+        subprocess.run(["git", "config", "filter.attack.clean",
+                        f"{filter_attack} {attack_log}"], cwd=git_attack, check=True)
+        subprocess.run(["git", "config", "filter.attack.process",
+                        f"{filter_attack} {attack_log}"], cwd=git_attack, check=True)
+        subprocess.run(["git", "config", "filter.attack.required", "true"],
+                       cwd=git_attack, check=True)
+        git_attack_run = run_cli(kernel, "upgrade", git_attack)
+        results.append((
+            "upgrade reporting ignores local diff, textconv, and filter Git config",
+            upgrade_report_ok(
+                git_attack_run, "5.4.1", "git-attackfixture",
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and
+            not attack_log.exists(),
+        ))
+
         v5 = base / "v5"
         v5.mkdir()
         v5_product = "# Existing product\n\nPromise and history stay here.\n"
@@ -2285,11 +3044,18 @@ def piece8_controls(kernel_arg):
     homes_ok = static_contract_homes(kernel)
     roles_ok = run_role_controls()
     assessments_ok = run_assessment_controls()
+    paths_ok = run_path_transaction_controls(kernel)
     migration_ok = run_migration_matrix(kernel)
-    passed = homes_ok and roles_ok and assessments_ok and migration_ok
+    passed = homes_ok and roles_ok and assessments_ok and paths_ok and migration_ok
     print(f"Piece 8 controls: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
+
+if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-path-controls":
+    if len(sys.argv) != 3:
+        print("usage: check.py --piece-8-path-controls KERNEL", file=sys.stderr)
+        sys.exit(2)
+    sys.exit(0 if run_path_transaction_controls(pathlib.Path(sys.argv[2]).resolve()) else 1)
 
 if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-controls":
     if len(sys.argv) != 3:
