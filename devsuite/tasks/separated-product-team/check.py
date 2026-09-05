@@ -4491,6 +4491,146 @@ exec "$REAL_GIT" "$@"
     return good
 
 
+def run_piece9_transport_controls():
+    """Pure controls for the fixed Piece 9 transport; no host model is started."""
+    module_dir = pathlib.Path(__file__).resolve().parent
+    host_spec = importlib.util.spec_from_file_location("piece9_host_proof", module_dir / "host_proof.py")
+    host = importlib.util.module_from_spec(host_spec)
+    host_spec.loader.exec_module(host)
+    broker_spec = importlib.util.spec_from_file_location("piece9_role_broker", module_dir / "role-broker.py")
+    broker = importlib.util.module_from_spec(broker_spec)
+    broker_spec.loader.exec_module(broker)
+
+    subjects = []
+
+    def subject(label, predicate, kind):
+        try:
+            passed = bool(predicate())
+        except Exception:
+            passed = False
+        subjects.append((label, passed, kind))
+        print(f"  [{'ok' if passed else 'RED'}] {kind}: {label}")
+
+    codex_rows = [{
+        "type": "event_msg",
+        "payload": {"type": "token_count", "info": {"total_token_usage": {
+            "input_tokens": 100, "cached_input_tokens": 60,
+            "output_tokens": 10, "reasoning_output_tokens": 4, "total_tokens": 110,
+        }}},
+    }, {"type": "event_msg", "payload": {"type": "task_complete", "last_agent_message": "{}"}}]
+    subject("Codex usage splits gross, cached, and fresh", lambda: host.codex_usage_rows(codex_rows) == {
+        "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
+    }, "clean")
+    codex_mutant = copy.deepcopy(codex_rows)
+    codex_mutant[0]["payload"]["info"]["total_token_usage"]["cached_input_tokens"] = 0
+    subject("Codex cached-input mutant changes fresh usage", lambda: host.codex_usage_rows(codex_mutant) != {
+        "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
+    }, "mutant rejected")
+
+    claude_rows = [{"message": {"role": "assistant", "id": "m1", "usage": {
+        "input_tokens": 20, "cache_creation_input_tokens": 5,
+        "cache_read_input_tokens": 70, "output_tokens": 5,
+    }}}, {"type": "result", "subtype": "success", "session_id": "claude-fixture", "result": "{}"}]
+    subject("Claude usage splits gross, cached, and fresh", lambda: host.claude_usage_rows(claude_rows) == {
+        "gross": 100, "cached": 70, "fresh": 30, "responses": 1,
+    }, "clean")
+    claude_mutant = copy.deepcopy(claude_rows)
+    claude_mutant[0]["message"]["usage"]["cache_read_input_tokens"] = 0
+    subject("Claude cache-read mutant changes fresh usage", lambda: host.claude_usage_rows(claude_mutant) != {
+        "gross": 100, "cached": 70, "fresh": 30, "responses": 1,
+    }, "mutant rejected")
+
+    with tempfile.TemporaryDirectory(prefix="speck-piece9-packets-") as folder:
+        root = pathlib.Path(folder)
+        write_file(root, "evidence/one.txt", "one\n")
+        packet = None
+        try:
+            packet = broker.make_packet(root, "contributions", "Business", "bounded brief", ["evidence/one.txt"])
+        except Exception:
+            pass
+        subject("path-confined packet verifies its exact bytes and SHA-256",
+                lambda: packet is not None and broker.verify_packet(packet), "clean")
+        changed_packet = copy.deepcopy(packet) if packet is not None else None
+        if changed_packet:
+            changed_packet["evidence"][0]["content_base64"] += "A"
+        subject("one-byte packet mutation is rejected",
+                lambda: changed_packet is not None and not broker.verify_packet(changed_packet), "mutant rejected")
+
+    subject("three contribution intervals have one common overlap",
+            lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
+    subject("serial contribution intervals are rejected",
+            lambda: not host.intervals_overlap([(0.0, 1.0), (1.0, 2.0), (2.0, 3.0)]), "mutant rejected")
+
+    expected_carriers = {"Product": "p", "Business": "b", "Experience": "x", "Engineering": "e"}
+    subject("Product and role carriers remain continuous across their stages",
+            lambda: host.continuity_ok(expected_carriers, dict(expected_carriers)), "clean")
+    product_swap = dict(expected_carriers, Product="p2")
+    subject("Product carrier swap is rejected",
+            lambda: not host.continuity_ok(expected_carriers, product_swap), "mutant rejected")
+    role_swap = dict(expected_carriers, Engineering="e2")
+    subject("role carrier swap is rejected",
+            lambda: not host.continuity_ok(expected_carriers, role_swap), "mutant rejected")
+
+    plan = None
+    try:
+        plan = broker.reservation_plan()
+    except Exception:
+        pass
+    subject("all downstream component allowances are reserved before selection",
+            lambda: plan is not None and broker.can_start(plan, "product_select"), "clean")
+    missing_reservation = copy.deepcopy(plan) if plan is not None else None
+    if missing_reservation:
+        missing_reservation["product_close"]["status"] = "missing"
+    subject("a missing downstream reservation blocks an earlier stage",
+            lambda: missing_reservation is not None and not broker.can_start(missing_reservation, "product_select"),
+            "mutant rejected")
+
+    exact_usage = {"gross": 100, "cached": 40, "fresh": 60, "responses": 1}
+    limits = {"gross": 100, "fresh": 60, "wall": 10, "responses": 1}
+    subject("a completed response exactly at every ceiling passes",
+            lambda: host.stage_verdict(exact_usage, 10, limits, complete=True)["status"] == "passed", "clean")
+    one_over = dict(exact_usage, gross=101)
+    subject("one token over a ceiling fails",
+            lambda: host.stage_verdict(one_over, 10, limits, complete=True)["status"] == "over", "mutant rejected")
+    subject("an incomplete response at the ceiling stops incomplete",
+            lambda: host.stage_verdict(exact_usage, 10, limits, complete=False)["status"] == "incomplete",
+            "mutant rejected")
+
+    probe_names = ("contributions", "product", "business", "engineering")
+    expected_admission = {
+        "driver": "codex", "model": "fixture-model", "candidate": "candidate-a",
+        "runner_sha256": "runner-a", "packet_schema": "piece9-packet-v1",
+        "source_manifest_sha256": "source-a",
+    }
+    receipt = dict(expected_admission, probes={name: {"status": "passed"} for name in probe_names})
+    subject("four matching probe receipts admit the frozen candidate",
+            lambda: host.admission_ok(receipt, expected_admission), "clean")
+    for field in ("driver", "model", "candidate", "runner_sha256", "packet_schema",
+                  "source_manifest_sha256"):
+        changed = copy.deepcopy(receipt)
+        changed[field] += "-changed"
+        subject(f"{field} receipt mismatch blocks admission",
+                lambda changed=changed: not host.admission_ok(changed, expected_admission), "mutant rejected")
+    missing_probe = copy.deepcopy(receipt)
+    missing_probe["probes"].pop("engineering")
+    subject("a missing isolated probe blocks full-run admission",
+            lambda: not host.admission_ok(missing_probe, expected_admission), "mutant rejected")
+
+    historic = {"gross": 266484, "cached": 210432, "fresh": 56052, "responses": 2}
+    full_limits = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 99}
+    subject("historic 266,484-gross incomplete run stays failed on gross",
+            lambda: host.stage_verdict(historic, 110, full_limits, complete=False)["status"] == "over",
+            "standing red")
+
+    good = all(passed for _, passed, _ in subjects)
+    counts = {kind: sum(1 for _, _, actual in subjects if actual == kind)
+              for kind in ("clean", "mutant rejected", "standing red")}
+    print(f"  [measure] piece9-control subjects={len(subjects)} clean={counts['clean']} "
+          f"mutants={counts['mutant rejected']} standing={counts['standing red']}")
+    print(f"Piece 9 transport controls: {'PASS' if good else 'FAIL'}")
+    return good
+
+
 def piece8_controls(kernel_arg):
     kernel = pathlib.Path(kernel_arg).resolve()
     print("Piece 8 deterministic controls")
@@ -4509,6 +4649,9 @@ if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-path-controls":
         print("usage: check.py --piece-8-path-controls KERNEL", file=sys.stderr)
         sys.exit(2)
     sys.exit(0 if run_path_transaction_controls(pathlib.Path(sys.argv[2]).resolve()) else 1)
+
+if len(sys.argv) == 2 and sys.argv[1] == "--piece-9-controls":
+    sys.exit(0 if run_piece9_transport_controls() else 1)
 
 if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-controls":
     if len(sys.argv) != 3:
