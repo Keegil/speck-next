@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify role contexts from runner-owned or canonical host records."""
 import json, math, os, pathlib, re, sys, tempfile
+import base64, hashlib
 
 ROLES = ("Business", "Experience", "Engineering")
 STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
@@ -33,6 +34,27 @@ PROBE_STAGES = {
     "business": ("business_contribution", "business_return"),
     "engineering": ("engineering_contribution", "engineering_implement",
                     "engineering_run", "engineering_return"),
+}
+SOURCE_PATHS = {
+    "product": "examples/pulse/product.md",
+    "business": "examples/pulse/evidence/business-evidence.md",
+    "experience": "examples/pulse/evidence/experience-evidence.md",
+    "engineering": "examples/pulse/pulse.py",
+}
+ALL_SOURCE_PATHS = tuple(SOURCE_PATHS.values())
+SOURCE_ALLOWLIST = {
+    ("source-manifest", "runner"): ALL_SOURCE_PATHS,
+    ("product_select", "Product"): ALL_SOURCE_PATHS,
+    ("contribution", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
+    ("contribution", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
+    ("contribution", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("product_synthesis", "Product"): ALL_SOURCE_PATHS,
+    ("implement", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("run", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("return", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
+    ("return", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
+    ("return", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("product_close", "Product"): ALL_SOURCE_PATHS,
 }
 
 
@@ -109,7 +131,7 @@ def claude_usage_rows(rows):
         message = row.get("message", {})
         if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
             messages[message["id"]] = message.get("usage", {})
-        if row.get("type") == "result" and row.get("subtype") not in ("error", "error_max_turns"):
+        if row.get("type") == "result" and row.get("subtype") == "success":
             responses += 1
     gross = cached = fresh = 0
     for usage in messages.values():
@@ -165,10 +187,58 @@ def digest_string(value):
     return isinstance(value, str) and bool(re.fullmatch(r"[0-9a-f]{64}", value))
 
 
-def bound_stage_ok(stage, expected_name):
+def canonical_json(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+
+
+def expected_packet_identity(stage_name):
+    parts = stage_name.split("_", 1)
+    role = parts[0].title()
+    suffix = parts[1] if len(parts) == 2 else ""
+    packet_stage = {"contribution": "contribution", "return": "return",
+                    "select": "product_select", "synthesis": "product_synthesis",
+                    "implement": "implement", "run": "run", "close": "product_close"}.get(suffix)
+    return packet_stage, role
+
+
+def embedded_packet_ok(stage, expected_name, manifest):
+    packet = stage.get("packet")
+    if not isinstance(packet, dict) or not isinstance(packet.get("body"), dict):
+        return False
+    body = packet["body"]
+    if packet.get("sha256") != hashlib.sha256(canonical_json(body)).hexdigest():
+        return False
+    packet_stage, role = expected_packet_identity(expected_name)
+    if body.get("stage") != packet_stage or body.get("role") != role:
+        return False
+    if tuple(item.get("path") for item in body.get("evidence", [])) != SOURCE_ALLOWLIST.get((packet_stage, role)):
+        return False
+    manifest_items = {item.get("path"): item for item in manifest.get("evidence", [])}
+    try:
+        for item in body["evidence"]:
+            content = base64.b64decode(item["content_base64"], validate=True)
+            if (len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"] or
+                    {key: item[key] for key in ("path", "bytes", "sha256")} != manifest_items[item["path"]]):
+                return False
+        for item in body.get("generated", []):
+            content = item["content"].encode()
+            if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
+                return False
+    except (KeyError, TypeError, ValueError):
+        return False
+    return (body.get("schema") == "piece9-packet-v1" and body.get("lineage") == stage.get("input_lineage") and
+            stage.get("packet_sha256") == packet.get("sha256") and
+            isinstance(stage.get("output"), str) and
+            hashlib.sha256(stage["output"].encode()).hexdigest() == stage.get("output_sha256"))
+
+
+def bound_stage_ok(stage, expected_name, manifest):
     if not isinstance(stage, dict) or stage.get("name") != expected_name:
         return False
-    if not digest_string(stage.get("packet_sha256")) or not digest_string(stage.get("output_sha256")):
+    if not isinstance(stage.get("carrier"), str) or not stage["carrier"]:
+        return False
+    if (not digest_string(stage.get("packet_sha256")) or not digest_string(stage.get("output_sha256")) or
+            not embedded_packet_ok(stage, expected_name, manifest)):
         return False
     lineage = stage.get("input_lineage")
     if not isinstance(lineage, list) or not lineage or not all(digest_string(value) for value in lineage):
@@ -179,7 +249,8 @@ def bound_stage_ok(stage, expected_name):
             interval[1] < interval[0]):
         return False
     verdict = stage.get("verdict")
-    if not isinstance(verdict, dict) or verdict.get("status") != "passed":
+    if (not isinstance(verdict, dict) or verdict.get("status") != "passed" or
+            verdict.get("usage", {}).get("responses") != 1):
         return False
     usage = verdict.get("usage")
     limits = verdict.get("limits")
@@ -196,11 +267,43 @@ def probe_stage_limits(probe, stage):
     return PROBE_LIMITS[probe]
 
 
+def probe_evidence_ok(name, probe, source_digest):
+    stages = probe["stages"]
+    intervals = [stage["interval"] for stage in stages]
+    if name == "contributions":
+        if not intervals_overlap(intervals) or len({stage["carrier"] for stage in stages}) != 3:
+            return False
+        elapsed = max(end for _, end in intervals) - min(start for start, _ in intervals)
+    else:
+        if any(left[1] > right[0] for left, right in zip(intervals, intervals[1:])):
+            return False
+        elapsed = sum(end - start for start, end in intervals)
+        if len({stage["carrier"] for stage in stages}) != 1:
+            return False
+    previous = None
+    for stage in stages:
+        lineage = stage["input_lineage"]
+        if (lineage[0] != source_digest or
+                (name != "contributions" and previous is not None and previous not in lineage)):
+            return False
+        previous = stage["output_sha256"]
+    usage = add_usage(*(stage["verdict"]["usage"] for stage in stages))
+    verdict = probe["verdict"]
+    return (verdict.get("usage") == usage and
+            type(verdict.get("elapsed")) in (int, float) and
+            math.isclose(verdict["elapsed"], elapsed, rel_tol=0, abs_tol=1e-9) and
+            stage_verdict(usage, elapsed, PROBE_LIMITS[name], True).get("status") == "passed")
+
+
 def admission_ok(receipt, expected):
     if not all(receipt.get(field) == expected.get(field) and expected.get(field)
                for field in ADMISSION_FIELDS):
         return False
     probes = receipt.get("probes", {})
+    manifest = receipt.get("source_manifest")
+    if (not isinstance(manifest, dict) or manifest.get("sha256") != expected.get("source_manifest_sha256") or
+            tuple(item.get("path") for item in manifest.get("evidence", [])) != ALL_SOURCE_PATHS):
+        return False
     if set(probes) != set(PROBE_NAMES):
         return False
     for name in PROBE_NAMES:
@@ -217,9 +320,11 @@ def admission_ok(receipt, expected):
             return False
         stages = probe.get("stages")
         if (not isinstance(stages, list) or len(stages) != len(PROBE_STAGES[name]) or
-                not all(bound_stage_ok(stage, stage_name)
+                not all(bound_stage_ok(stage, stage_name, manifest)
                         and stage.get("verdict", {}).get("limits") == probe_stage_limits(name, stage_name)
                         for stage, stage_name in zip(stages, PROBE_STAGES[name]))):
+            return False
+        if not probe_evidence_ok(name, probe, expected["source_manifest_sha256"]):
             return False
     return True
 

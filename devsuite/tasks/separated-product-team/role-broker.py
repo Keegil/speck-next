@@ -18,27 +18,9 @@ STAGE_ORDER = host_proof.STAGE_ORDER
 STAGE_LIMITS = host_proof.STAGE_LIMITS
 PROBE_LIMITS = host_proof.PROBE_LIMITS
 FULL_LIMITS = host_proof.FULL_LIMITS
-SOURCE_PATHS = {
-    "product": "examples/pulse/product.md",
-    "business": "examples/pulse/evidence/business-evidence.md",
-    "experience": "examples/pulse/evidence/experience-evidence.md",
-    "engineering": "examples/pulse/pulse.py",
-}
-ALL_SOURCE_PATHS = tuple(SOURCE_PATHS.values())
-SOURCE_ALLOWLIST = {
-    ("source-manifest", "runner"): ALL_SOURCE_PATHS,
-    ("product_select", "Product"): ALL_SOURCE_PATHS,
-    ("contribution", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
-    ("contribution", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
-    ("contribution", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("product_synthesis", "Product"): ALL_SOURCE_PATHS,
-    ("implement", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("run", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("return", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
-    ("return", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
-    ("return", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("product_close", "Product"): ALL_SOURCE_PATHS,
-}
+SOURCE_PATHS = host_proof.SOURCE_PATHS
+ALL_SOURCE_PATHS = host_proof.ALL_SOURCE_PATHS
+SOURCE_ALLOWLIST = host_proof.SOURCE_ALLOWLIST
 
 
 def canonical_json(value):

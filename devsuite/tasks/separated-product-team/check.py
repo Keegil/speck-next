@@ -4616,6 +4616,25 @@ def run_piece9_transport_controls():
                 lambda: raises_value_error(broker.make_packet, root, "contribution", "Business",
                                            "bounded brief", ("examples/pulse/product.md", "check.py")),
                 "mutant rejected")
+        prompt_digest = "c" * 64
+        manifest = broker.source_manifest(root, prompt_digest)
+        source_digest = manifest["sha256"]
+        receipt_packets = {}
+        receipt_outputs = {}
+        for probe_name, stage_names in host.PROBE_STAGES.items():
+            previous = None
+            for stage_name in stage_names:
+                packet_stage, packet_role = host.expected_packet_identity(stage_name)
+                lineage = [source_digest]
+                if previous is not None and probe_name != "contributions":
+                    lineage.append(previous)
+                receipt_packet = broker.make_packet(
+                    root, packet_stage, packet_role, "bounded probe stage",
+                    broker.SOURCE_ALLOWLIST[(packet_stage, packet_role)], lineage=lineage)
+                output = f"output:{probe_name}:{stage_name}"
+                previous = hashlib.sha256(output.encode()).hexdigest()
+                receipt_packets[(probe_name, stage_name)] = receipt_packet
+                receipt_outputs[(probe_name, stage_name)] = output
 
     subject("three contribution intervals have one common overlap",
             lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
@@ -4691,21 +4710,37 @@ def run_piece9_transport_controls():
         "source_manifest_sha256": "source-a",
     }
     digest = "a" * 64
-    def receipt_stage(probe, name):
+    expected_admission["source_manifest_sha256"] = source_digest
+    def receipt_stage(probe, name, index):
         limits = host.probe_stage_limits(probe, name)
         usage = {"gross": 10, "cached": 4, "fresh": 6, "responses": 1}
-        return {"name": name, "packet_sha256": digest, "input_lineage": [digest],
-                "output_sha256": digest, "interval": [0.0, 1.0],
+        if probe == "contributions":
+            interval = [index * 0.1, 1.0 + index * 0.1]
+            lineage = [source_digest]
+        else:
+            interval = [index * 2.0, index * 2.0 + 1.0]
+            lineage = [source_digest] + ([digest] if index else [])
+        embedded = receipt_packets[(probe, name)]
+        output = receipt_outputs[(probe, name)]
+        return {"name": name, "carrier": name if probe == "contributions" else probe,
+                "packet_sha256": embedded["sha256"], "packet": embedded,
+                "input_lineage": embedded["lineage"], "output": output,
+                "output_sha256": hashlib.sha256(output.encode()).hexdigest(), "interval": interval,
                 "verdict": host.stage_verdict(usage, 1.0, limits, True)}
     probes = {}
     for name in probe_names:
         usage = {"gross": 10 * len(host.PROBE_STAGES[name]), "cached": 4 * len(host.PROBE_STAGES[name]),
                  "fresh": 6 * len(host.PROBE_STAGES[name]), "responses": len(host.PROBE_STAGES[name])}
+        stages = [receipt_stage(name, stage, index)
+                  for index, stage in enumerate(host.PROBE_STAGES[name])]
+        elapsed = ((max(stage["interval"][1] for stage in stages) -
+                    min(stage["interval"][0] for stage in stages)) if name == "contributions"
+                   else sum(stage["interval"][1] - stage["interval"][0] for stage in stages))
         probes[name] = {**expected_admission, "name": name, "status": "passed",
                         "limits": host.PROBE_LIMITS[name],
-                        "verdict": host.stage_verdict(usage, 2.0, host.PROBE_LIMITS[name], True),
-                        "stages": [receipt_stage(name, stage) for stage in host.PROBE_STAGES[name]]}
-    receipt = dict(expected_admission, probes=probes)
+                        "verdict": host.stage_verdict(usage, elapsed, host.PROBE_LIMITS[name], True),
+                        "stages": stages}
+    receipt = dict(expected_admission, source_manifest=manifest, probes=probes)
     subject("four matching probe receipts admit the frozen candidate",
             lambda: host.admission_ok(receipt, expected_admission), "clean")
     for field in ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
@@ -4734,6 +4769,32 @@ def run_piece9_transport_controls():
     empty_probe_usage["probes"]["business"]["verdict"]["usage"] = {}
     subject("a passed probe without usage blocks admission",
             lambda: not host.admission_ok(empty_probe_usage, expected_admission), "mutant rejected")
+    hidden_stage_spend = copy.deepcopy(receipt)
+    hidden_stage_spend["probes"]["engineering"]["stages"][0]["verdict"]["usage"] = {
+        "gross": 50000, "cached": 20000, "fresh": 30000, "responses": 1,
+    }
+    subject("probe totals cannot hide spend recorded by a stage",
+            lambda: not host.admission_ok(hidden_stage_spend, expected_admission), "mutant rejected")
+    broken_continuity = copy.deepcopy(receipt)
+    broken_continuity["probes"]["business"]["stages"][1]["carrier"] = "replacement"
+    subject("probe carrier replacement blocks admission",
+            lambda: not host.admission_ok(broken_continuity, expected_admission), "mutant rejected")
+    serial_probe = copy.deepcopy(receipt)
+    serial_probe["probes"]["contributions"]["stages"][1]["interval"] = [2.0, 3.0]
+    subject("serial contribution probe blocks admission",
+            lambda: not host.admission_ok(serial_probe, expected_admission), "mutant rejected")
+    unchained_probe = copy.deepcopy(receipt)
+    unchained_probe["probes"]["product"]["stages"][1]["input_lineage"] = [source_digest]
+    subject("a resumed probe stage must inherit the prior output digest",
+            lambda: not host.admission_ok(unchained_probe, expected_admission), "mutant rejected")
+    absent_response = copy.deepcopy(receipt)
+    absent_response["probes"]["business"]["stages"][0]["verdict"]["usage"]["responses"] = 0
+    subject("a stage without exactly one terminal result blocks admission",
+            lambda: not host.admission_ok(absent_response, expected_admission), "mutant rejected")
+    forged_packet = copy.deepcopy(receipt)
+    forged_packet["probes"]["product"]["stages"][0]["packet"]["body"]["brief"] += " changed"
+    subject("a receipt whose embedded packet bytes do not match its digest blocks admission",
+            lambda: not host.admission_ok(forged_packet, expected_admission), "mutant rejected")
 
     historic = {"gross": 266484, "cached": 210432, "fresh": 56052, "responses": 2}
     full_limits = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 99}
