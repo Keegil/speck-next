@@ -480,3 +480,7 @@ At `63421fa`, fresh tester `/root/result_shape_map_retester` found the re-cut su
 ### Repaired Map judgment — sufficient
 
 At `be9cc92`, independent judge `/root/result_shape_map_judge` ruled Map sufficient. Product evidence precedes code; no Pulse rebuild is allowed; the release still requires fresh Codex adoption, real Codex product-building, Claude second-host use, the worst-day migration/context case, two judges, Business, owner grade, budgets, and the final leak scan. The judge found no equally independent cheaper route and required no rerun. Engineering waits only for owner ratification of the exact prospective promise.
+
+### Round 6 — owner ratification
+
+After seeing the full judged promise, the owner selected it verbatim with **“Lock it, then keep going until you have released Speck Next v6, bro! No insane detours and methodology circle jerk, not in here when building Speck Next, and not in the products using Speck Next.”** The two-piece order, Codex-first/Claude-supported release proof, exact milestone roster, Business block, owner grade, budgets, and final leak scan remain. Piece 9 becomes Shaped and live. Engineering may implement the prospective kernel rule; another Pulse build remains forbidden.

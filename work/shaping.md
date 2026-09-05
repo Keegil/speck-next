@@ -153,6 +153,16 @@ At `63421fa`, fresh tester `/root/result_shape_map_retester` found the narrowed 
 
 At `be9cc92`, independent judge `/root/result_shape_map_judge` ruled Shape sufficient. The material product difference stands only for the tested fixture; the candidate does not claim universal necessity, cheapest causality, or field value. Fresh review still establishes greatness, Business remains binding, active returns remain locked, authorization stops further work, and every old cost failure stays failed. No rerun is required. The exact prospective promise now waits only for the owner's plain-language ratification.
 
+### Round 5 — owner ratification
+
+Product printed the complete judged promise in plain language: separated Product and Engineering thinking; selective Business and Experience calls; required active-role returns; fresh use and independent judgment deciding sufficiency; visible cost and a binding Business ruling; prospectively enforceable limits stopping further model work; no duplicate build after a running result without a concrete product finding or new claim; old failures staying failed; small changes staying small; and Product remaining the owner's one interface.
+
+**Owner selection, verbatim:**
+
+> Lock it, then keep going until you have released Speck Next v6, bro! No insane detours and methodology circle jerk, not in here when building Speck Next, and not in the products using Speck Next.
+
+This ratifies the exact result-first anti-loop promise after its fresh test and judgment. Shape closes. No new Pulse build is authorized.
+
 ### Redesigned Shape tester round 1 — sent back
 
 Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:

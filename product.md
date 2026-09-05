@@ -2,7 +2,7 @@
 
 We're building the small kernel that runs repositories like this one: the method page (`AGENTS.md`), a handful of skills, the upgrader from old Speck, and the state generator. It's for one owner and his agents, across all his product repositories.
 
-What makes it good, and the promises that define success, live in [CONTRACT.md](CONTRACT.md) — eight promises, each with a check that can fail. A great running product comes first. Owner attention, elapsed time, and model cost then tell Business whether the method earned its place and which sufficient path to prefer; a token estimate cannot erase valid product evidence. This repository runs under its own method: kernel work follows the loop, gets proven by running, gets independently reviewed, and lands in `state.md` honestly.
+What makes it good, and the promises that define success, live in [CONTRACT.md](CONTRACT.md) — eight promises, each with a check that can fail. A great running product comes first. Owner attention, elapsed time, and model cost then tell Business whether the method earned its place and which sufficient path to prefer; a token estimate cannot erase valid product evidence. Once a real result exists, only a concrete product finding or a new product claim can authorize another build—method and cost findings stay visible but never create duplicate product work. This repository runs under its own method: kernel work follows the loop, gets proven by running, gets independently reviewed, and lands in `state.md` honestly.
 
 ## Product team
 
