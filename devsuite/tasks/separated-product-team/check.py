@@ -515,9 +515,15 @@ def snapshot_digest(root):
 
 
 def porcelain_v1_z(root):
+    env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    env.update({
+        "GIT_OPTIONAL_LOCKS": "0", "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull, "GIT_PAGER": "cat", "PAGER": "cat",
+        "LC_ALL": "C",
+    })
     return subprocess.run(
         ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"],
-        cwd=root, check=True, capture_output=True,
+        cwd=root, check=True, capture_output=True, env=env,
     ).stdout
 
 
@@ -656,6 +662,242 @@ def run_path_transaction_controls(kernel):
                 repo_unchanged(repo, before) and not transaction_dirt(repo)
             )
 
+        def install_report(run):
+            summary = re.search(
+                r" — (\d+) installed or carried-forward files on disk\.", run.stdout
+            )
+            listing = re.search(r"Installed paths:\n(.*?)\nNext:", run.stdout, re.DOTALL)
+            return (
+                int(summary.group(1)) if summary else None,
+                listing.group(1).splitlines() if listing else [],
+            )
+
+        def exact_path_snapshot(path):
+            try:
+                info = path.lstat()
+            except FileNotFoundError:
+                return ("missing",)
+            mode = info.st_mode & 0o7777
+            if path.is_symlink():
+                return (f"link:{mode:o}", os.readlink(path).encode())
+            if path.is_dir():
+                return (f"directory:{mode:o}", repository_snapshot(path))
+            if path.is_file():
+                return (f"file:{mode:o}", path.read_bytes())
+            return (f"other:{info.st_mode}",)
+
+        manifest_files = []
+        for manifest_root in ("AGENTS.md", "CLAUDE.md", ".claude/skills", "templates"):
+            absolute = kernel / manifest_root
+            if absolute.is_dir():
+                manifest_files.extend(
+                    item.relative_to(kernel).as_posix()
+                    for item in absolute.rglob("*") if item.is_file()
+                )
+            else:
+                manifest_files.append(manifest_root)
+        manifest_files = sorted(manifest_files)
+        manifest_directories = set()
+        for relative in manifest_files:
+            parent = pathlib.PurePosixPath(relative).parent
+            while parent != pathlib.PurePosixPath("."):
+                manifest_directories.add(parent.as_posix())
+                parent = parent.parent
+        manifest_positions = (
+            [(relative, "file") for relative in manifest_files] +
+            [(relative, "directory") for relative in sorted(manifest_directories)] +
+            [(".claude/speck-next.json", "file"), ("map.md", "file"),
+             ("product.md", "product"),
+             (".claude/skills/independent-review", "retired")]
+        )
+        manifest_positions = sorted(set(manifest_positions))
+        link_forms = (
+            "absolute-sibling", "relative-sibling", "dangling",
+            "absolute-in-product", "relative-in-product",
+        )
+        exercised_forms = set()
+
+        def installed_manifest_digest(root):
+            digest = hashlib.sha256()
+            for relative in manifest_files:
+                digest.update(relative.encode() + b"\0" +
+                              (root / relative).read_bytes() + b"\0")
+            return digest.hexdigest()
+
+        def v5_marker_bytes(label):
+            return (json.dumps({
+                "name": "speck-next", "version": "5.4.1", "commit": label,
+                "installedAt": "2026-01-02T03:04:05.000Z",
+            }, indent=2) + "\n").encode()
+
+        def seed_manifest_link_case(index, relative, expected_kind):
+            slug = re.sub(r"[^a-z0-9]+", "-", relative.lower()).strip("-") or "root"
+            repo = fresh_repo(f"manifest-{index:02d}-{slug}")
+            form = link_forms[index % len(link_forms)]
+            if relative in {".claude", ".claude/speck-next.json"} and form == "dangling":
+                form = "absolute-sibling"
+            if relative == "map.md":
+                form = "dangling"
+            if relative == "product.md" and form == "dangling":
+                form = "relative-sibling"
+            exercised_forms.add(form)
+            target_path = repo / relative
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            prior_label = f"manifest-{index:02d}"
+            if relative != ".claude" and relative != ".claude/speck-next.json":
+                write_file(repo, ".claude/speck-next.json", v5_marker_bytes(prior_label).decode())
+            if relative != "product.md":
+                write_file(repo, "product.md", f"# Manifest product {index}\n")
+            write_file(repo, "owner/tracked.txt", f"tracked owner text {index}\n")
+            (repo / "owner/tracked.bin").write_bytes(bytes((0, 255, index % 251, 10)))
+
+            source = None
+            link_target = None
+            if form == "dangling":
+                missing = repo / "owner-link-sources" / f"missing-{index}"
+                missing.parent.mkdir(parents=True, exist_ok=True)
+                link_target = os.path.relpath(missing, target_path.parent)
+            else:
+                internal = "in-product" in form
+                source = ((repo / "owner-link-sources") if internal else
+                          (base / "manifest-referents")) / f"{index:02d}-{slug}"
+                source.parent.mkdir(parents=True, exist_ok=True)
+                if expected_kind in {"directory", "retired"}:
+                    source.mkdir()
+                    write_file(source, "owner-sentinel.txt", f"referent directory {index}\n")
+                    if relative == ".claude":
+                        write_file(source, "speck-next.json", v5_marker_bytes(prior_label).decode())
+                else:
+                    if relative == ".claude/speck-next.json":
+                        source.write_bytes(v5_marker_bytes(prior_label))
+                    elif relative == "product.md":
+                        source.write_text(f"# Linked manifest product {index}\n")
+                    else:
+                        source.write_bytes(f"referent file {index}\n".encode() + b"\x00\xff")
+                link_target = (str(source.resolve()) if form.startswith("absolute-") else
+                               os.path.relpath(source, target_path.parent))
+            os.symlink(link_target, target_path)
+            commit_fixture(repo, f"manifest link baseline {index}")
+            write_file(repo, "owner/untracked.txt", f"untracked owner text {index}\n")
+            (repo / "owner/untracked.bin").write_bytes(bytes((255, 0, index % 251, 13, 10)))
+            return repo, form, source, prior_label
+
+        generated_position_results = []
+        for index, (relative, expected_kind) in enumerate(manifest_positions):
+            repo, form, source, prior_label = seed_manifest_link_case(
+                index, relative, expected_kind
+            )
+            target_path = repo / relative
+            source_before = exact_path_snapshot(source) if source is not None else None
+            selected_before = repo_baseline(repo)
+            original_product = (source.read_bytes() if relative == "product.md" and source else
+                                (repo / "product.md").read_bytes())
+            first = run_cli(kernel, "upgrade", repo)
+
+            if expected_kind == "product":
+                failed_cleanly = (
+                    first.returncode != 0 and "product.md exists but is not a regular file" in first.stderr and
+                    "Installed Speck Next" not in first.stdout and "Upgraded Speck Next" not in first.stdout and
+                    "Working-tree changes across" not in first.stdout and
+                    "Complete installed-surface" not in first.stdout and
+                    "commit the upgrade" not in (first.stdout + first.stderr) and
+                    not has_resume_instruction(first.stdout + first.stderr) and
+                    "Error:" not in first.stderr and " at " not in first.stderr and
+                    repo_unchanged(repo, selected_before) and not transaction_dirt(repo) and
+                    (source is None or exact_path_snapshot(source) == source_before)
+                )
+                target_path.unlink()
+                target_path.write_bytes(original_product)
+                first = run_cli(kernel, "upgrade", repo)
+                expected_disclosure = True
+            else:
+                failed_cleanly = True
+                expected_disclosure = (
+                    (f"Removed stale linked method path {relative};" in first.stdout)
+                    if expected_kind == "retired" else
+                    (f"Localized linked path {relative} into this repository;" in first.stdout)
+                )
+
+            target_kind_ok = (
+                (expected_kind == "retired" and not target_path.exists() and not target_path.is_symlink()) or
+                (expected_kind == "directory" and target_path.is_dir() and not target_path.is_symlink()) or
+                (expected_kind in {"file", "product"} and target_path.is_file() and
+                 not target_path.is_symlink())
+            )
+            source_after_first = exact_path_snapshot(source) if source is not None else None
+            first_success = (
+                first.returncode == 0 and not first.stderr and expected_disclosure and target_kind_ok and
+                installed_manifest_digest(repo) == surface_digest and
+                marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
+                (repo / "product.md").read_bytes().startswith(original_product) and
+                (repo / "owner/tracked.txt").read_text() == f"tracked owner text {index}\n" and
+                (repo / "owner/tracked.bin").read_bytes() == bytes((0, 255, index % 251, 10)) and
+                (repo / "owner/untracked.txt").read_text() == f"untracked owner text {index}\n" and
+                (repo / "owner/untracked.bin").read_bytes() == bytes((255, 0, index % 251, 13, 10)) and
+                (source is None or source_after_first == source_before) and
+                not transaction_dirt(repo)
+            )
+            before_retry = repo_baseline(repo)
+            retry = run_cli(kernel, "upgrade", repo)
+            retry_stable = (
+                retry.returncode == 0 and not retry.stderr and repo_unchanged(repo, before_retry) and
+                (source is None or exact_path_snapshot(source) == source_before) and
+                not transaction_dirt(repo)
+            )
+            passed = failed_cleanly and first_success and retry_stable
+            generated_position_results.append((relative, form, passed))
+            label = (f"manifest-derived {form} link at {relative} refuses untouched, then its "
+                     "repaired upgrade retries byte-stably" if expected_kind == "product" else
+                     f"manifest-derived {form} link at {relative} is contained and its "
+                     "successful upgrade retries byte-stably")
+            results.append((label, passed))
+
+        results.append((
+            "manifest-derived generator covers every copied leaf, ancestor, marker, map, migrated product, stale path, and link form",
+            len(manifest_files) == 17 and len(manifest_directories) == 11 and
+            len(generated_position_results) == len(manifest_positions) == 32 and
+            {relative for relative, _, _ in generated_position_results} ==
+            {relative for relative, _ in manifest_positions} and
+            exercised_forms == set(link_forms),
+        ))
+
+        truthful_fresh = fresh_repo("truthful-fresh-list")
+        truthful_run = run_cli(kernel, "install", truthful_fresh)
+        actual_fresh_paths = sorted(
+            item.relative_to(truthful_fresh).as_posix()
+            for item in truthful_fresh.rglob("*")
+            if ".git" not in item.relative_to(truthful_fresh).parts and
+            (item.is_file() or item.is_symlink())
+        )
+        reported_fresh_count, reported_fresh_paths = install_report(truthful_run)
+        results.append((
+            "fresh install count and Installed paths exactly match the physical product files",
+            truthful_run.returncode == 0 and not truthful_run.stderr and
+            reported_fresh_count == len(actual_fresh_paths) and
+            reported_fresh_paths == actual_fresh_paths and
+            ".claude/speck-next.json" in reported_fresh_paths,
+        ))
+
+        carried_map = fresh_repo("carried-owner-map")
+        write_file(carried_map, "map.md", "# Existing owner map\n")
+        os.chmod(carried_map / "map.md", 0o600)
+        carried_map_run = run_cli(kernel, "install", carried_map)
+        actual_carried_paths = sorted(
+            item.relative_to(carried_map).as_posix()
+            for item in carried_map.rglob("*")
+            if ".git" not in item.relative_to(carried_map).parts and
+            (item.is_file() or item.is_symlink())
+        )
+        carried_count, carried_paths = install_report(carried_map_run)
+        results.append((
+            "a pre-existing valid map is carried forward byte-for-byte and included in the exact install list",
+            carried_map_run.returncode == 0 and not carried_map_run.stderr and
+            (carried_map / "map.md").read_text() == "# Existing owner map\n" and
+            (carried_map / "map.md").stat().st_mode & 0o777 == 0o600 and
+            carried_count == len(actual_carried_paths) and carried_paths == actual_carried_paths and
+            "map.md" in carried_paths,
+        ))
+
         outside_skills = base / "outside-skills"
         outside_skills.mkdir()
         write_file(outside_skills, "custom/sentinel.txt", "outside skills stay\n")
@@ -764,6 +1006,20 @@ def run_path_transaction_controls(kernel):
             not (internal_link / "templates").is_symlink(),
         ))
 
+        cross_root = fresh_repo("cross-method-root-link")
+        write_file(cross_root, ".claude/skills/owner.txt", "cross-root owner bytes\n")
+        os.symlink(".claude/skills", cross_root / "templates")
+        cross_root_before = repo_baseline(cross_root)
+        cross_root_source_before = exact_path_snapshot(cross_root / ".claude/skills")
+        cross_root_run = run_cli(kernel, "install", cross_root)
+        results.append((
+            "a linked directory overlapping another planned method root refuses before either side changes",
+            calm_failure(cross_root_run) and "another planned method root" in cross_root_run.stderr and
+            repo_unchanged(cross_root, cross_root_before) and
+            exact_path_snapshot(cross_root / ".claude/skills") == cross_root_source_before and
+            not transaction_dirt(cross_root),
+        ))
+
         target_repo = fresh_repo("resolved-target")
         target_link = base / "resolved-target-link"
         os.symlink(target_repo, target_link)
@@ -775,21 +1031,19 @@ def run_path_transaction_controls(kernel):
             str(target_link) in target_link_run.stdout,
         ))
 
+        disposable_kernel = fresh_repo("kernel-self-copy")
+        (disposable_kernel / "bin").mkdir()
+        shutil.copy2(kernel / "bin/speck-next.js", disposable_kernel / "bin/speck-next.js")
+        shutil.copy2(kernel / "package.json", disposable_kernel / "package.json")
         kernel_link = base / "kernel-target-link"
-        os.symlink(kernel, kernel_link)
-        kernel_status_before = subprocess.run(
-            ["git", "status", "--short"], cwd=kernel,
-            check=True, capture_output=True, text=True,
-        ).stdout
-        kernel_link_run = run_cli(kernel, "install", kernel_link)
-        kernel_status_after = subprocess.run(
-            ["git", "status", "--short"], cwd=kernel,
-            check=True, capture_output=True, text=True,
-        ).stdout
+        os.symlink(disposable_kernel, kernel_link)
+        kernel_before = repo_baseline(disposable_kernel)
+        kernel_link_run = run_cli(disposable_kernel, "install", kernel_link)
         results.append((
             "a command-target link cannot bypass the kernel-self-install refusal",
             kernel_link_run.returncode != 0 and "kernel repo itself" in kernel_link_run.stderr and
-            kernel_status_after == kernel_status_before and not transaction_dirt(kernel),
+            repo_unchanged(disposable_kernel, kernel_before) and
+            not transaction_dirt(disposable_kernel),
         ))
 
         wrong_claude = fresh_repo("wrong-claude-root")
@@ -880,7 +1134,7 @@ const originals = {
   appendFileSync: fs.appendFileSync.bind(fs), copyFileSync: fs.copyFileSync.bind(fs),
   lstatSync: fs.lstatSync.bind(fs), mkdirSync: fs.mkdirSync.bind(fs),
   mkdtempSync: fs.mkdtempSync.bind(fs), readFileSync: fs.readFileSync.bind(fs),
-  renameSync: fs.renameSync.bind(fs), statSync: fs.statSync.bind(fs),
+  renameSync: fs.renameSync.bind(fs), rmSync: fs.rmSync.bind(fs), statSync: fs.statSync.bind(fs),
   writeFileSync: fs.writeFileSync.bind(fs),
 };
 let fired = false;
@@ -905,6 +1159,15 @@ fs.renameSync = function(source, destination, ...rest) {
   if (op === "record" && staged(source) && log) originals.appendFileSync(log, text(destination) + "\n");
   if (op === "apply" && staged(source) && fire("apply")) throw new Error("forced staged apply failure");
   return originals.renameSync(source, destination, ...rest);
+};
+fs.rmSync = function(file, ...rest) {
+  if (op === "cleanup" && text(file).includes(".speck-next-transaction-") &&
+      path.basename(text(file)).includes(".speck-next-transaction-") && !fired) {
+    const result = originals.rmSync(file, ...rest);
+    fire("cleanup");
+    throw new Error("forced cleanup completion report failure");
+  }
+  return originals.rmSync(file, ...rest);
 };
 fs.writeFileSync = function(file, bytes, ...rest) {
   if (op === "marker" && target && path.resolve(text(file)) === path.join(target, ".claude", "speck-next.json") && fire("marker"))
@@ -935,6 +1198,44 @@ fs.mkdtempSync = function(prefix, ...rest) {
                 "P8_TARGET": str(repo.resolve()),
                 "P8_FAULT_LOG": str(log),
             }
+
+        def full_fault_fixture(name):
+            repo = fresh_repo(name)
+            prior_label = f"{name}-fixture"
+            write_file(repo, ".claude/speck-next.json", v5_marker_bytes(prior_label).decode())
+            write_file(repo, ".claude/custom-owner.txt", f"{name} grouped owner text\n")
+            write_file(repo, "product.md", f"# {name} product\n")
+            write_file(repo, "owner/tracked.txt", f"{name} tracked text\n")
+            (repo / "owner/tracked.bin").write_bytes(b"\x00\xfftracked\r\n")
+            outside = base / f"{name}-referent"
+            outside.mkdir()
+            write_file(outside, "sentinel.txt", f"{name} referent text\n")
+            (outside / "sentinel.bin").write_bytes(b"\xff\x00referent\n")
+            os.symlink(outside, repo / "templates")
+            commit_fixture(repo, f"{name} full-state baseline")
+            write_file(repo, "owner/untracked.txt", f"{name} untracked text\n")
+            (repo / "owner/untracked.bin").write_bytes(b"\xfe\x00untracked\r\n")
+            return repo, outside, prior_label
+
+        def full_clean_retry(repo, outside, prior_label, outside_before, index_before):
+            clean = run_cli(kernel, "upgrade", repo)
+            report_ok = upgrade_report_ok(
+                clean, "5.4.1", prior_label, source_checkout, surface_digest,
+                NEXT_PENDING_CHANGED,
+            )
+            clean_ok = (
+                report_ok and not clean.stderr and
+                exact_path_snapshot(outside) == outside_before and
+                (repo / "owner/tracked.bin").read_bytes() == b"\x00\xfftracked\r\n" and
+                (repo / "owner/untracked.bin").read_bytes() == b"\xfe\x00untracked\r\n" and
+                (repo / ".git/index").read_bytes() == index_before and
+                not transaction_dirt(repo)
+            )
+            stable_ok = stable_retry(repo, clean) if clean_ok else False
+            passed = clean_ok and stable_ok and \
+                exact_path_snapshot(outside) == outside_before and \
+                (repo / ".git/index").read_bytes() == index_before
+            return passed
 
         record_repo = fresh_repo("one-claude-root")
         record_outside = base / "one-claude-source"
@@ -968,23 +1269,62 @@ fs.mkdtempSync = function(prefix, ...rest) {
             not transaction_dirt(mount_repo),
         ))
 
+        first_missing = fresh_repo("first-missing-claude-rollback")
+        first_missing_outside = base / "first-missing-claude-referent"
+        first_missing_outside.mkdir()
+        write_file(first_missing_outside, "sentinel.txt", "first missing referent\n")
+        os.symlink(first_missing_outside, first_missing / "templates")
+        first_missing_before = repo_baseline(first_missing)
+        first_missing_source_before = exact_path_snapshot(first_missing_outside)
+        first_missing_log = base / "first-missing-marker.log"
+        first_missing_run = run_cli_args(
+            kernel, "install", first_missing,
+            env=preload_env(first_missing, "marker", first_missing_log),
+        )
+        results.append((
+            "a marker failure after applying a previously missing .claude root restores its exact absence",
+            first_missing_log.exists() and first_missing_log.read_text().splitlines() == ["marker"] and
+            calm_failure(first_missing_run) and repo_unchanged(first_missing, first_missing_before) and
+            exact_path_snapshot(first_missing_outside) == first_missing_source_before and
+            not (first_missing / ".claude").exists() and not transaction_dirt(first_missing),
+        ))
+
         for operation in ("copy", "digest", "apply", "marker"):
-            repo = fresh_repo(f"fault-{operation}")
-            outside = base / f"fault-{operation}-outside"
-            outside.mkdir()
-            write_file(outside, "sentinel.txt", f"{operation} outside bytes\n")
-            os.symlink(outside, repo / "templates")
+            repo, outside, prior_label = full_fault_fixture(f"fault-{operation}")
             repo_before = repo_baseline(repo)
-            outside_before = snapshot_digest(outside)
+            outside_before = exact_path_snapshot(outside)
+            index_before = (repo / ".git/index").read_bytes()
             fault_log = base / f"fault-{operation}.log"
-            failed = run_cli_args(kernel, "install", repo,
+            failed = run_cli_args(kernel, "upgrade", repo,
                                   env=preload_env(repo, operation, fault_log))
-            results.append((
-                f"injected {operation} failure rolls back target topology and leaves the referent unchanged",
+            negative_ok = (
                 fault_log.exists() and fault_log.read_text().splitlines() == [operation] and
                 calm_failure(failed) and repo_unchanged(repo, repo_before) and
-                snapshot_digest(outside) == outside_before and not transaction_dirt(repo),
+                exact_path_snapshot(outside) == outside_before and
+                (repo / ".git/index").read_bytes() == index_before and not transaction_dirt(repo)
+            )
+            retry_ok = full_clean_retry(
+                repo, outside, prior_label, outside_before, index_before
+            )
+            results.append((
+                f"full-state injected {operation} failure rolls back every owner byte and then retries cleanly twice",
+                negative_ok and retry_ok,
             ))
+
+        cleanup_repo = fresh_repo("cleanup-reported-failure")
+        write_file(cleanup_repo, ".claude/custom.txt", "owner custom survives cleanup\n")
+        cleanup_log = base / "fault-cleanup.log"
+        cleanup_run = run_cli_args(
+            kernel, "install", cleanup_repo,
+            env=preload_env(cleanup_repo, "cleanup", cleanup_log),
+        )
+        results.append((
+            "cleanup verifies completed removal before treating a reported removal error as rollback-worthy",
+            cleanup_log.exists() and cleanup_log.read_text().splitlines() == ["cleanup"] and
+            cleanup_run.returncode == 0 and not cleanup_run.stderr and
+            (cleanup_repo / ".claude/custom.txt").read_text() == "owner custom survives cleanup\n" and
+            ".claude/custom.txt" in cleanup_run.stdout and not transaction_dirt(cleanup_repo),
+        ))
 
         real_git = shutil.which("git")
         if real_git is None:
@@ -1011,25 +1351,28 @@ exec "$REAL_GIT" "$@"
         wrapper.chmod(0o755)
 
         for operation in ("status", "tracked", "untracked"):
-            repo = fresh_repo(f"git-fault-{operation}")
-            outside = base / f"git-fault-{operation}-outside"
-            outside.mkdir()
-            write_file(outside, "sentinel.txt", f"{operation} outside bytes\n")
-            os.symlink(outside, repo / "templates")
+            repo, outside, prior_label = full_fault_fixture(f"git-fault-{operation}")
             repo_before = repo_baseline(repo)
-            outside_before = snapshot_digest(outside)
+            outside_before = exact_path_snapshot(outside)
+            index_before = (repo / ".git/index").read_bytes()
             failed = run_cli_args(
-                kernel, "install", repo,
+                kernel, "upgrade", repo,
                 env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
                      "P8_GIT_FAILURE": operation},
             )
-            results.append((
-                f"checked Git {operation} failure rolls back before any success or next action",
+            negative_ok = (
                 calm_failure(failed) and
                 ("git status failed" in failed.stderr if operation == "status" else
                  "git diff" in failed.stderr and "failed" in failed.stderr) and
-                repo_unchanged(repo, repo_before) and snapshot_digest(outside) == outside_before and
-                not transaction_dirt(repo),
+                repo_unchanged(repo, repo_before) and exact_path_snapshot(outside) == outside_before and
+                (repo / ".git/index").read_bytes() == index_before and not transaction_dirt(repo)
+            )
+            retry_ok = full_clean_retry(
+                repo, outside, prior_label, outside_before, index_before
+            )
+            results.append((
+                f"full-state checked Git {operation} failure rolls back and then retries cleanly twice",
+                negative_ok and retry_ok,
             ))
 
         ignored_repo = fresh_repo("ignored-directory")
@@ -1072,8 +1415,40 @@ exec "$REAL_GIT" "$@"
         helper = attack_dir / "helper.sh"
         helper.write_text("#!/bin/sh\necho invoked >> " + shlex.quote(str(attack_log)) + "\ncat\n")
         helper.chmod(0o755)
+        attack_referent = base / "local-git-attack-referent"
+        attack_referent.mkdir()
+        write_file(attack_referent, "sentinel.txt", "git attack referent\n")
+        (attack_referent / "sentinel.bin").write_bytes(b"\xff\x00git-attack\n")
+        os.symlink(attack_referent, git_attack / "templates")
         write_file(git_attack, ".gitattributes", "*.md diff=attack filter=attack\n")
         commit_fixture(git_attack, "attack fixtures before arming local config")
+        write_file(git_attack, "owner/untracked.txt", "git attack untracked\n")
+        (git_attack / "owner/untracked.bin").write_bytes(b"\x00\xfeuntracked\n")
+
+        def hostile_porcelain(root):
+            safe_env = {key: value for key, value in os.environ.items()
+                        if not key.startswith("GIT_")}
+            safe_env.update({
+                "GIT_OPTIONAL_LOCKS": "0", "GIT_CONFIG_NOSYSTEM": "1",
+                "GIT_CONFIG_GLOBAL": os.devnull, "GIT_PAGER": "cat", "PAGER": "cat",
+                "LC_ALL": "C",
+            })
+            return subprocess.run([
+                real_git, "--no-pager", "--literal-pathspecs",
+                "-c", "core.fsmonitor=false", "-c", "core.hooksPath=",
+                "-c", "diff.external=", "-c", "diff.attack.textconv=",
+                "-c", "filter.attack.clean=", "-c", "filter.attack.process=",
+                "-c", "filter.attack.required=false",
+                "status", "--porcelain=v1", "-z", "--untracked-files=all",
+            ], cwd=root, check=True, capture_output=True, env=safe_env).stdout
+
+        def hostile_repo_baseline(root):
+            return {"tree": repository_snapshot(root), "porcelain": hostile_porcelain(root)}
+
+        def hostile_repo_unchanged(root, before):
+            return (repository_snapshot(root) == before["tree"] and
+                    hostile_porcelain(root) == before["porcelain"])
+
         for key, value in (
             ("core.fsmonitor", str(helper)),
             ("diff.external", str(helper)),
@@ -1085,19 +1460,55 @@ exec "$REAL_GIT" "$@"
             subprocess.run(["git", "config", key, value], cwd=git_attack, check=True)
         index_path = git_attack / ".git/index"
         index_before = index_path.read_bytes()
-        inherited_trace = base / "inherited-git-trace.json"
-        git_attack_run = run_cli_args(
+        config_before = (git_attack / ".git/config").read_bytes()
+        attack_before = hostile_repo_baseline(git_attack)
+        attack_referent_before = exact_path_snapshot(attack_referent)
+        failed_trace = base / "failed-inherited-git-trace.json"
+        git_attack_failed = run_cli_args(
             kernel, "upgrade", git_attack,
-            env={"GIT_TRACE2_EVENT": str(inherited_trace), "GIT_PAGER": str(helper)},
+            env={
+                "PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                "P8_GIT_FAILURE": "status",
+                "GIT_TRACE2_EVENT": str(failed_trace), "GIT_PAGER": str(helper),
+            },
+        )
+        git_attack_failed_ok = (
+            calm_failure(git_attack_failed) and "git status failed" in git_attack_failed.stderr and
+            hostile_repo_unchanged(git_attack, attack_before) and
+            exact_path_snapshot(attack_referent) == attack_referent_before and
+            (git_attack / ".git/config").read_bytes() == config_before and
+            index_path.read_bytes() == index_before and not attack_log.exists() and
+            not failed_trace.exists() and not transaction_dirt(git_attack)
+        )
+        clean_trace = base / "clean-inherited-git-trace.json"
+        git_attack_clean = run_cli_args(
+            kernel, "upgrade", git_attack,
+            env={"GIT_TRACE2_EVENT": str(clean_trace), "GIT_PAGER": str(helper)},
+        )
+        clean_before_retry = hostile_repo_baseline(git_attack)
+        retry_trace = base / "retry-inherited-git-trace.json"
+        git_attack_retry = run_cli_args(
+            kernel, "upgrade", git_attack,
+            env={"GIT_TRACE2_EVENT": str(retry_trace), "GIT_PAGER": str(helper)},
         )
         results.append((
-            "source provenance and reports ignore inherited Git state and local helper config without refreshing the index",
+            "hostile local and inherited Git state stays inert through failure rollback, clean retry, and stable retry",
+            git_attack_failed_ok and
             upgrade_report_ok(
-                git_attack_run, "5.4.1", "local-git-attack-fixture",
+                git_attack_clean, "5.4.1", "local-git-attack-fixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
-            ) and not git_attack_run.stderr and
-            not attack_log.exists() and not inherited_trace.exists() and
-            index_path.read_bytes() == index_before,
+            ) and not git_attack_clean.stderr and
+            upgrade_report_ok(
+                git_attack_retry, "6.0.0-rc.2", source_checkout,
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+                prior_digest=surface_digest,
+            ) and not git_attack_retry.stderr and
+            hostile_repo_unchanged(git_attack, clean_before_retry) and
+            not attack_log.exists() and
+            not any(path.exists() for path in (failed_trace, clean_trace, retry_trace)) and
+            exact_path_snapshot(attack_referent) == attack_referent_before and
+            (git_attack / ".git/config").read_bytes() == config_before and
+            index_path.read_bytes() == index_before and not transaction_dirt(git_attack),
         ))
 
         no_test_switches = not re.search(

@@ -230,6 +230,11 @@ function safeLinkedDirectorySource(transaction, relative) {
   const product = resolvedTarget();
   if (pathInside(resolved, product) || pathInside(resolved, transaction.stageRoot) || pathInside(resolved, transaction.backupRoot))
     transactionError(`refusing: ${normalizedRelative(relative)} points into the selected product or its private transaction roots, so Speck Next cannot safely localize it. Nothing was touched.`);
+  for (const root of transaction.primaryRoots) {
+    const planned = ensureTargetRelative(root.relative);
+    if (pathInside(planned, resolved) || pathInside(resolved, planned))
+      transactionError(`refusing: ${normalizedRelative(relative)} points into another planned method root (${normalizedRelative(root.relative)}), so Speck Next cannot keep that linked destination unchanged. Nothing was touched.`);
+  }
   return resolved;
 }
 
@@ -399,6 +404,9 @@ function overlayFile(transaction, root, relative, entry) {
 
 function removeStagePath(transaction, root, relative) {
   const stagePath = path.join(root.stage, relative);
+  const stat = lstatOptional(stagePath);
+  if (stat && stat.isSymbolicLink())
+    transaction.noteRetiredLink(path.join(root.relative, relative), fs.readlinkSync(stagePath));
   removeExisting(stagePath);
 }
 
@@ -727,7 +735,7 @@ function gitDiff(paths) {
   return parts.join("\n");
 }
 
-function installEntries(root) {
+function installEntries(root, extra = []) {
   const files = [];
   function visit(relative) {
     const absolute = path.join(root, relative);
@@ -737,44 +745,10 @@ function installEntries(root) {
       for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
       return;
     }
-    files.push(relative);
-  }
-  for (const relative of [...SURFACE, "map.md", MARKER]) visit(relative);
-  return files.sort();
-}
-
-function stagedInstalledEntries(stageRoot) {
-  const files = [];
-  function visit(relative) {
-    const absolute = relative ? path.join(stageRoot, relative) : stageRoot;
-    const stat = lstatOptional(absolute);
-    if (!stat) return;
-    if (stat.isDirectory() && !stat.isSymbolicLink()) {
-      for (const name of fs.readdirSync(absolute).sort())
-        visit(relative ? path.join(relative, name) : name);
-      return;
-    }
     files.push(normalizedRelative(relative));
   }
-  visit("");
-  return files.filter(Boolean).sort();
-}
-
-function installedSurfaceEntries(stageRoot) {
-  const files = [];
-  function visit(relative) {
-    const absolute = path.join(stageRoot, relative);
-    const stat = lstatOptional(absolute);
-    if (!stat) return;
-    if (stat.isDirectory() && !stat.isSymbolicLink()) {
-      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(relative, name));
-      return;
-    }
-    files.push(normalizedRelative(relative));
-  }
-  for (const relative of SURFACE) visit(relative);
-  visit("map.md");
-  files.push(normalizedRelative(MARKER));
+  for (const relative of ["AGENTS.md", "CLAUDE.md", ".claude", "templates", "map.md", ...extra])
+    visit(relative);
   return [...new Set(files)].sort();
 }
 
@@ -864,6 +838,8 @@ function Transaction(plan) {
   }
   this.replacedLinks = [];
   this.replacedLinkSet = new Set();
+  this.retiredLinks = [];
+  this.retiredLinkSet = new Set();
   this.preserved = [];
   this.preservedSet = new Set();
   this.preserveRoot = null;
@@ -895,6 +871,13 @@ Transaction.prototype.noteLocalization = function noteLocalization(relative, lin
   if (this.replacedLinkSet.has(key)) return;
   this.replacedLinkSet.add(key);
   this.replacedLinks.push({ relative: key, target: linkTarget || "(dangling link)" });
+};
+
+Transaction.prototype.noteRetiredLink = function noteRetiredLink(relative, linkTarget) {
+  const key = normalizedRelative(relative);
+  if (this.retiredLinkSet.has(key)) return;
+  this.retiredLinkSet.add(key);
+  this.retiredLinks.push({ relative: key, target: linkTarget || "(dangling link)" });
 };
 
 Transaction.prototype.planPreservation = function planPreservation(relative) {
@@ -977,6 +960,7 @@ Transaction.prototype.planSummary = function planSummary() {
     })),
     markerRoot: { relative: normalizedRelative(this.markerRoot.relative), kind: this.markerRoot.kind },
     localizedLinks: this.replacedLinks.slice(),
+    retiredLinks: this.retiredLinks.slice(),
     preserved: this.preserved.slice(),
   };
 };
@@ -1012,36 +996,31 @@ Transaction.prototype.swapRoot = function swapRoot(relative) {
 };
 
 Transaction.prototype.apply = function apply() {
-  try {
-    this.revalidate();
-    for (let index = 0; index < this.primaryRoots.length; index += 1) {
-      const root = this.primaryRoots[index];
-      this.swapRoot(root.relative);
-      const stagePath = path.join(this.stageRoot, root.relative);
-      fs.mkdirSync(path.dirname(ensureTargetRelative(root.relative)), { recursive: true });
-      renamePreservingMode(stagePath, ensureTargetRelative(root.relative));
-    }
-    if (!this.markerCovered)
-      this.swapRoot(MARKER);
-    if (this.preserveRoot) {
-      const preserveRootAbsolute = ensureTargetRelative(this.preserveRoot.relative);
-      if (!this.preserveRoot.existed) fs.mkdirSync(preserveRootAbsolute, { recursive: true });
-      for (const entry of this.preserved) {
-        if (!lstatOptional(entry.preserveSource))
-          transactionError(`refusing: ${entry.relative} disappeared before it could be preserved. Nothing was touched.`);
-        const destination = ensureTargetRelative(entry.destinationRelative);
-        ensureParent(destination);
-        renamePreservingMode(entry.preserveSource, destination);
-        this.appliedPreservations.push({ source: entry.preserveSource, destination });
-      }
-    }
-    ensureParent(ensureTargetRelative(MARKER));
-    writeMarkerLast(this.markerBytes);
-    this.appliedMarkerOnly = !this.markerCovered;
-  } catch (error) {
-    this.rollback();
-    throw error;
+  this.revalidate();
+  for (let index = 0; index < this.primaryRoots.length; index += 1) {
+    const root = this.primaryRoots[index];
+    this.swapRoot(root.relative);
+    const stagePath = path.join(this.stageRoot, root.relative);
+    fs.mkdirSync(path.dirname(ensureTargetRelative(root.relative)), { recursive: true });
+    renamePreservingMode(stagePath, ensureTargetRelative(root.relative));
   }
+  if (!this.markerCovered)
+    this.swapRoot(MARKER);
+  if (this.preserveRoot) {
+    const preserveRootAbsolute = ensureTargetRelative(this.preserveRoot.relative);
+    if (!this.preserveRoot.existed) fs.mkdirSync(preserveRootAbsolute, { recursive: true });
+    for (const entry of this.preserved) {
+      if (!lstatOptional(entry.preserveSource))
+        transactionError(`refusing: ${entry.relative} disappeared before it could be preserved. Nothing was touched.`);
+      const destination = ensureTargetRelative(entry.destinationRelative);
+      ensureParent(destination);
+      renamePreservingMode(entry.preserveSource, destination);
+      this.appliedPreservations.push({ source: entry.preserveSource, destination });
+    }
+  }
+  ensureParent(ensureTargetRelative(MARKER));
+  writeMarkerLast(this.markerBytes);
+  this.appliedMarkerOnly = !this.markerCovered;
 };
 
 Transaction.prototype.rollback = function rollback() {
@@ -1069,7 +1048,17 @@ Transaction.prototype.rollback = function rollback() {
 };
 
 Transaction.prototype.cleanup = function cleanup() {
-  removeExisting(this.transactionRoot);
+  let failure = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      removeExisting(this.transactionRoot);
+      return;
+    } catch (error) {
+      if (!lstatOptional(this.transactionRoot)) return;
+      failure = error;
+    }
+  }
+  throw failure;
 };
 
 function applyInstalledSurface(existingMarker, migration) {
@@ -1078,8 +1067,10 @@ function applyInstalledSurface(existingMarker, migration) {
   try {
     const productExists = plan.writes.has("product.md") || entryExists(path.join(target, "product.md"));
     transaction.prepare();
-    const installedEntries = stagedInstalledEntries(transaction.stageRoot);
     transaction.apply();
+    const installedEntries = installEntries(
+      resolvedTarget(), transaction.replacedLinks.map(link => link.relative)
+    );
     const extraReportPaths = transaction.replacedLinks.map(link => link.relative);
     if (transaction.preserveRoot) extraReportPaths.push(transaction.preserveRoot.relative);
     const reportPaths = reportedPaths(extraReportPaths);
@@ -1092,6 +1083,7 @@ function applyInstalledSurface(existingMarker, migration) {
       changes,
       diff,
       localizedLinks: transaction.replacedLinks,
+      retiredLinks: transaction.retiredLinks,
       preserved: transaction.preserved,
       installedEntries,
       productExists,
@@ -1557,6 +1549,12 @@ function localizationLines(localizedLinks) {
   );
 }
 
+function retiredLinkLines(retiredLinks) {
+  return retiredLinks.map(link =>
+    `Removed stale linked method path ${link.relative}; it previously pointed to ${JSON.stringify(link.target)} and that linked destination was left unchanged.`
+  );
+}
+
 function preservationLines(preserved) {
   return preserved.map(entry =>
     `Preserved incompatible path ${entry.relative} at ${entry.destinationRelative}; the original path now carries the required local Speck Next entry.`
@@ -1606,6 +1604,7 @@ if (cmd === "install") {
   try {
     const install = applyInstalledSurface(null, { message: "", assessment: null, assessmentRecord: null, productContent: null });
     for (const line of localizationLines(install.localizedLinks)) console.log(line);
+    for (const line of retiredLinkLines(install.retiredLinks)) console.log(line);
     for (const line of preservationLines(install.preserved)) console.log(line);
     console.log(`Installed Speck Next ${versionWithProvenance(VERSION, install.sourceCheckout, install.methodSurfaceSha256)} into ${targetDisplay} — ${install.installedEntries.length} installed or carried-forward files on disk.`);
     console.log(`Installed paths:\n${install.installedEntries.join("\n")}`);
@@ -1631,6 +1630,7 @@ if (cmd === "install") {
     const from = versionWithProvenance(prior.version, markerSourceCheckout(prior), prior.methodSurfaceSha256 || null);
     const to = versionWithProvenance(VERSION, upgraded.sourceCheckout, upgraded.methodSurfaceSha256);
     for (const line of localizationLines(upgraded.localizedLinks)) console.log(line);
+    for (const line of retiredLinkLines(upgraded.retiredLinks)) console.log(line);
     for (const line of preservationLines(upgraded.preserved)) console.log(line);
     console.log(`Upgraded Speck Next ${from} -> ${to} in ${targetDisplay}.`);
     console.log(migration.message);
