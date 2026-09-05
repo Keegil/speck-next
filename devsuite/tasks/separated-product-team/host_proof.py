@@ -32,7 +32,7 @@ def add_usage(*values):
     total = empty_usage()
     for value in values:
         for field in USAGE_FIELDS:
-            total[field] += int(value.get(field, 0) or 0)
+            total[field] += usage_integer(value, field)
     return total
 
 
@@ -70,8 +70,8 @@ def codex_usage_rows(rows):
     input_tokens = usage_integer(latest, "input_tokens")
     cached = usage_integer(latest, "cached_input_tokens")
     output = usage_integer(latest, "output_tokens")
-    gross = usage_integer(latest, "total_tokens")
-    if cached > input_tokens or gross != input_tokens + output:
+    gross = input_tokens + output
+    if ("total_tokens" in latest and usage_integer(latest, "total_tokens") != gross) or cached > input_tokens:
         raise ValueError("inconsistent Codex usage totals")
     return {"gross": gross, "cached": cached, "fresh": gross - cached,
             "responses": responses}
@@ -96,6 +96,8 @@ def claude_usage_rows(rows):
         gross += uncached + created + read + output
         cached += read
         fresh += uncached + created + output
+    if responses and not messages:
+        raise ValueError("Claude stage completed without assistant usage")
     return {"gross": gross, "cached": cached, "fresh": fresh, "responses": responses}
 
 
@@ -104,9 +106,15 @@ def stage_verdict(usage, elapsed, limits, complete):
             any(type(usage[field]) is not int or usage[field] < 0 for field in USAGE_FIELDS)):
         return {"status": "invalid", "reasons": ["usage"], "usage": dict(usage),
                 "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
+    if usage["cached"] > usage["gross"] or usage["fresh"] != usage["gross"] - usage["cached"]:
+        return {"status": "invalid", "reasons": ["usage"], "usage": dict(usage),
+                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
     if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
         return {"status": "invalid", "reasons": ["wall"], "usage": dict(usage),
                 "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
+    if type(complete) is not bool:
+        return {"status": "invalid", "reasons": ["complete"], "usage": dict(usage),
+                "elapsed": elapsed, "limits": dict(limits), "complete": False}
     reasons = []
     for field in ("gross", "fresh", "responses"):
         if int(usage.get(field, 0) or 0) > int(limits[field]):

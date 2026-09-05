@@ -4528,6 +4528,12 @@ def run_piece9_transport_controls():
     subject("Codex usage splits gross, cached, and fresh", lambda: host.codex_usage_rows(codex_rows) == {
         "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
     }, "clean")
+    codex_canonical = copy.deepcopy(codex_rows)
+    codex_canonical[0]["payload"]["info"]["total_token_usage"].pop("total_tokens")
+    subject("Codex canonical usage without a redundant total is accepted",
+            lambda: host.codex_usage_rows(codex_canonical) == {
+                "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
+            }, "clean")
     codex_mutant = copy.deepcopy(codex_rows)
     codex_mutant[0]["payload"]["info"]["total_token_usage"]["cached_input_tokens"] = 0
     subject("Codex cached-input mutant changes fresh usage", lambda: host.codex_usage_rows(codex_mutant) != {
@@ -4579,6 +4585,8 @@ def run_piece9_transport_controls():
     claude_boolean[0]["message"]["usage"]["output_tokens"] = True
     subject("Claude boolean raw usage field fails closed",
             lambda: raises_value_error(host.claude_usage_rows, claude_boolean), "mutant rejected")
+    subject("Claude terminal result without assistant usage fails closed",
+            lambda: raises_value_error(host.claude_usage_rows, claude_rows[1:]), "mutant rejected")
     claude_incomplete = claude_rows[:1]
     subject("invocation without a terminal assistant result is incomplete",
             lambda: host.claude_usage_rows(claude_incomplete)["responses"] == 0 and
@@ -4641,7 +4649,7 @@ def run_piece9_transport_controls():
     limits = {"gross": 100, "fresh": 60, "wall": 10, "responses": 1}
     subject("a completed response exactly at every ceiling passes",
             lambda: host.stage_verdict(exact_usage, 10, limits, complete=True)["status"] == "passed", "clean")
-    one_over = dict(exact_usage, gross=101)
+    one_over = dict(exact_usage, gross=101, fresh=61)
     subject("one token over a ceiling fails",
             lambda: host.stage_verdict(one_over, 10, limits, complete=True)["status"] == "over", "mutant rejected")
     subject("an incomplete response at the ceiling stops incomplete",
@@ -4658,6 +4666,16 @@ def run_piece9_transport_controls():
     subject("two terminal response markers fail a one-response stage",
             lambda: host.stage_verdict(double_response, 10, limits, complete=True)["status"] == "over",
             "mutant rejected")
+    inconsistent_split = dict(exact_usage, cached=99)
+    subject("an internally inconsistent gross-cached-fresh split fails closed",
+            lambda: host.stage_verdict(inconsistent_split, 10, limits, complete=True)["status"] == "invalid",
+            "mutant rejected")
+    subject("a non-boolean completion marker fails closed",
+            lambda: host.stage_verdict(exact_usage, 10, limits, complete=1)["status"] == "invalid",
+            "mutant rejected")
+    malformed_aggregate = dict(exact_usage, responses=True)
+    subject("aggregate usage never coerces boolean counters",
+            lambda: raises_value_error(host.add_usage, malformed_aggregate), "mutant rejected")
 
     probe_names = ("contributions", "product", "business", "engineering")
     expected_admission = {
