@@ -2,13 +2,13 @@
 
 ## What's true now
 
-The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live at setup and will run Codex first; Claude's local credential is renewed and its native discovery path is green. The released version remains v5.4.1.
+The owner has ratified selective separation and its two-piece executable seam. Shape and Map are closed. Piece 8, “The right roles show up,” is **Judged sufficient** at candidate `2ece4a6` on two independent lines. Piece 9, “The team finishes inside its limit,” is live and its first Codex contribution probe failed both token limits after three distinct role answers. The released version remains v5.4.1.
 
 - **Works:** sufficient — packed npm installation, native Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 deterministic population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, informative returns, native discovery, and owner-file preservation held.
 - **Good to use:** sufficient — first-use and worst-day testers kept the path; one owner-skill invocation recovered from an initial wrong path guess.
 - **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration; Piece 9 and milestone value remain `not judged`.
+- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's current execution design; one measured, no-budget-increase repair is permitted. Milestone value remains `not judged`.
 - **Structure:** straining — both judges accepted the product; Product conservatively carries the second judge's finding that the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -21,7 +21,7 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The milestone, merge, tag, and publish remain blocked until Piece 9 proves distinct product action inside both token limits on Codex and Claude, every control stays red, and the milestone hearing succeeds.
+The milestone, merge, tag, and publish remain blocked. Piece 9's first Codex contribution stage used 82,138 gross / 49,370 fresh tokens against 54,000 / 32,000. One compact-packet repair may repeat that probe; another failure reopens the execution design instead of raising the limits.
 
 ## What needs the owner
 
@@ -29,7 +29,7 @@ Nothing. Standing, non-blocking: the v5-era fixture milestone's felt grade ([wor
 
 ## What happens next
 
-Set up Piece 9 with distinct Business, Experience, and Engineering carriers, then Product commits one bounded synthesis before Engineering changes the runner. Keep every no-model control red; admit the four component probes before the Codex-first and Claude-parity product runs. After v6 is released, run that released upgrader on the waiting private product repository, preserve its live-work truth, verify the installed surface and next action, and commit the migration there.
+Engineering removes duplicated evidence, narrows packets to verified decision-relevant source excerpts, isolates each Codex carrier's mutable home, and corrects terminal-response and timing attribution. Every no-model floor must pass before one repeat of the contribution probe. A pass resumes the ordered admissions; a failure stops the harness design and returns a simpler release choice to the owner. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves here with the next density work · the four rules stacked without a heading stay filed with that work · the self-measurement strain moves to the computed-check piece.
 
@@ -43,4 +43,4 @@ Queued behind their triggers: the v11 converter · CI limit enforcement · the p
 - **The campaign adoption (v5.1.0):** [work/campaign-adoption.md](work/campaign-adoption.md) and its records.
 - **v5.0.0 and earlier:** [work/v5-hearing.md](work/v5-hearing.md), [docs/reviews/](docs/reviews/), and the owner's verbatim rulings in [decisions.md](decisions.md).
 
-Business and Experience remain continuously involved through Piece 9 and the v6 milestone because their handled concerns missed repeatedly. Piece 9 still owes component admission, bounded Codex and Claude evidence, distinct product actions, and a new Business ruling. The unresolved structural tension is explicit: Piece 8 consumed the twentieth installed entry and its deterministic proof is growing costly. At Product's 2026-09-05 stop-rule measurement on `3a7aad9`, `git rev-list --count origin/main..HEAD` returned `102`, and `git diff --numstat origin/main...HEAD` summed to 8,421 added lines; field value now outranks further migration hardening.
+Business and Experience remain continuously involved through Piece 9 and the v6 milestone because their handled concerns missed repeatedly. Piece 9 still owes component admission, bounded Codex and Claude evidence, observable product action, and a new Business ruling. The first live contribution group produced three distinct actions in about 53 seconds but exceeded both token ceilings; its preserved record and active-role returns are in [work/separated-product-team.md](work/separated-product-team.md). The unresolved structural tension remains explicit: Piece 8 consumed the twentieth installed entry, and Piece 9 gets only one evidence-backed repair before field value outranks further harness work.
