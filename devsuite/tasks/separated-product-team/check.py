@@ -5,6 +5,9 @@ import tarfile
 from datetime import date, timedelta
 
 
+CHECKER_KERNEL = pathlib.Path(__file__).resolve().parents[3]
+CURRENT_VERSION = json.loads((CHECKER_KERNEL / "package.json").read_text())["version"]
+RECOVERABLE_FIELDLESS_VERSION = "6.0.0-rc.2"
 RC1_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise."
 REJECTED_RC2_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order."
 ASSESSMENT_HEADING = "## Speck Next upgrade assessment"
@@ -361,9 +364,245 @@ def run_assessment_controls():
     return good
 
 
+AUTHORIZATION_FIELDS = (
+    "model_turns", "contexts", "elapsed_seconds", "retries", "fallbacks",
+    "owner_interruptions", "pre_run_minutes", "pre_run_files",
+)
+PRODUCT_EVIDENCE_FIELDS = (
+    "real_result", "checks_passed", "synthesis_before_implementation",
+    "engineering_only_implementation", "active_returns_complete", "business_permits",
+)
+DISPOSITION_FIELDS = {
+    "reviewable", "cost_experiment", "cost_finding", "product_sufficient",
+    "further_model_work",
+}
+
+
+def disposition_truth(case):
+    errors = []
+    token_evidence = case.get("tokens", {})
+    estimate = token_evidence.get("estimate", {})
+    measured = token_evidence.get("measured", {})
+    if not measured or set(measured) != {"gross", "cached", "fresh"}:
+        errors.append("gross, cached, and fresh token measurements are all required")
+    elif (any(not isinstance(value, (int, float)) or value < 0 for value in measured.values()) or
+          measured["gross"] - measured["cached"] != measured["fresh"]):
+        errors.append("token measurements are invalid or do not reconcile")
+    if (not estimate or not set(estimate) <= {"gross", "cached", "fresh"} or
+            any(not isinstance(value, (int, float)) or value < 0 for value in estimate.values())):
+        errors.append("at least one non-negative token estimate is required")
+
+    cost_finding = bool(not errors and any(measured[key] > value for key, value in estimate.items()))
+    cost_experiment = "failed" if cost_finding else "passed"
+
+    authorization = case.get("authorization", {})
+    limits = authorization.get("limits", {})
+    used = authorization.get("used", {})
+    next_work = authorization.get("next", {})
+    if set(limits) != set(AUTHORIZATION_FIELDS) or set(used) != set(AUTHORIZATION_FIELDS):
+        errors.append("execution authorization must declare every prospectively knowable field")
+        authorization_open = False
+    elif any(not isinstance(value, (int, float)) or value < 0
+             for value in list(limits.values()) + list(used.values()) + list(next_work.values())):
+        errors.append("execution authorization values must be non-negative numbers")
+        authorization_open = False
+    elif not set(next_work) <= set(AUTHORIZATION_FIELDS):
+        errors.append("next model work contains an undeclared authorization field")
+        authorization_open = False
+    else:
+        authorization_open = all(
+            used[field] + next_work.get(field, 0) <= limits[field]
+            for field in AUTHORIZATION_FIELDS
+        )
+
+    product = case.get("product", {})
+    if not set(PRODUCT_EVIDENCE_FIELDS) <= set(product):
+        errors.append("the product evidence chain is incomplete")
+        reviewable = False
+    else:
+        reviewable = all(bool(product[field]) for field in PRODUCT_EVIDENCE_FIELDS)
+    product_sufficient = bool(
+        reviewable and product.get("contributor_excluded_fresh_use") and
+        product.get("independent_judgment")
+    )
+    product_reason = bool(
+        not product.get("real_result") or product.get("concrete_product_finding") or
+        product.get("new_product_claim")
+    )
+    further_model_work = bool(authorization_open and product_reason)
+    return {
+        "reviewable": reviewable,
+        "cost_experiment": cost_experiment,
+        "cost_finding": cost_finding,
+        "product_sufficient": product_sufficient,
+        "further_model_work": further_model_work,
+    }, errors
+
+
+def make_disposition_case(name, claims, *, token_estimate=None, token_measured=None,
+                          limits=None, used=None, next_work=None, product=None):
+    default_limits = {
+        "model_turns": 5, "contexts": 4, "elapsed_seconds": 900,
+        "retries": 0, "fallbacks": 0, "owner_interruptions": 0,
+        "pre_run_minutes": 30, "pre_run_files": 20,
+    }
+    default_used = {
+        "model_turns": 2, "contexts": 4, "elapsed_seconds": 300,
+        "retries": 0, "fallbacks": 0, "owner_interruptions": 0,
+        "pre_run_minutes": 20, "pre_run_files": 12,
+    }
+    default_product = {
+        "real_result": True,
+        "checks_passed": True,
+        "synthesis_before_implementation": True,
+        "engineering_only_implementation": True,
+        "active_returns_complete": True,
+        "business_permits": True,
+        "contributor_excluded_fresh_use": False,
+        "independent_judgment": False,
+        "concrete_product_finding": False,
+        "new_product_claim": False,
+    }
+    actual_limits = dict(default_limits)
+    actual_limits.update(limits or {})
+    actual_used = dict(default_used)
+    actual_used.update(used or {})
+    actual_product = dict(default_product)
+    actual_product.update(product or {})
+    return {
+        "name": name,
+        "tokens": {
+            "estimate": token_estimate or {"gross": 300, "cached": 100, "fresh": 200},
+            "measured": token_measured or {"gross": 250, "cached": 100, "fresh": 150},
+        },
+        "authorization": {
+            "limits": actual_limits,
+            "used": actual_used,
+            "next": next_work or {"model_turns": 1, "elapsed_seconds": 1},
+        },
+        "product": actual_product,
+        "claims": claims,
+    }
+
+
+def validate_disposition_case(case):
+    truth, errors = disposition_truth(case)
+    claims = case.get("claims", {})
+    if set(claims) != DISPOSITION_FIELDS:
+        errors.append("the record does not state product evidence, cost, and further-spend dispositions")
+    else:
+        for field, expected in truth.items():
+            if claims[field] != expected:
+                errors.append(f"{field} says {claims[field]!r}; evidence says {expected!r}")
+    return errors
+
+
+def run_result_disposition_controls():
+    v09 = make_disposition_case(
+        "exact v0.9 evidence stays reviewable / failed / closed",
+        {"reviewable": True, "cost_experiment": "failed", "cost_finding": True,
+         "product_sufficient": False, "further_model_work": False},
+        token_estimate={"fresh": 200000},
+        token_measured={"gross": 850035, "cached": 617600, "fresh": 232435},
+        limits={"model_turns": 9},
+        used={"model_turns": 9, "elapsed_seconds": 402.654, "retries": 1},
+    )
+    low_token = make_disposition_case(
+        "low-token incomplete product cannot enter review",
+        {"reviewable": False, "cost_experiment": "passed", "cost_finding": False,
+         "product_sufficient": False, "further_model_work": True},
+        product={"real_result": False, "checks_passed": False},
+    )
+    above_estimate = make_disposition_case(
+        "material result above estimate stays reviewable with a cost finding",
+        {"reviewable": True, "cost_experiment": "failed", "cost_finding": True,
+         "product_sufficient": False, "further_model_work": False},
+        token_measured={"gross": 350, "cached": 100, "fresh": 250},
+    )
+    judged = make_disposition_case(
+        "fresh use and independent judgment establish product sufficiency",
+        {"reviewable": True, "cost_experiment": "passed", "cost_finding": False,
+         "product_sufficient": True, "further_model_work": False},
+        product={"contributor_excluded_fresh_use": True, "independent_judgment": True},
+    )
+    product_finding = make_disposition_case(
+        "concrete fresh-review product finding can authorize another build",
+        {"reviewable": True, "cost_experiment": "passed", "cost_finding": False,
+         "product_sufficient": False, "further_model_work": True},
+        product={"concrete_product_finding": True},
+    )
+    new_claim = make_disposition_case(
+        "genuinely new product claim can authorize another build",
+        {"reviewable": True, "cost_experiment": "passed", "cost_finding": False,
+         "product_sufficient": False, "further_model_work": True},
+        product={"new_product_claim": True},
+    )
+
+    authorization_overflows = [
+        ("sixth model turn", {"model_turns": 5}),
+        ("extra context", {"contexts": 5}),
+        ("retry overflow", {"retries": 1}),
+        ("fallback overflow", {"fallbacks": 1}),
+        ("elapsed-time overflow", {"elapsed_seconds": 901}),
+        ("owner-interruption overflow", {"owner_interruptions": 1}),
+        ("pre-run-time overflow", {"pre_run_minutes": 31}),
+        ("pre-run-file overflow", {"pre_run_files": 21}),
+    ]
+    authorization_cases = [
+        make_disposition_case(
+            f"{label} closes further model work",
+            {"reviewable": True, "cost_experiment": "passed", "cost_finding": False,
+             "product_sufficient": False, "further_model_work": False},
+            used=changes,
+            product={"concrete_product_finding": True},
+        )
+        for label, changes in authorization_overflows
+    ]
+    clean = [v09, low_token, above_estimate, judged, product_finding, new_claim, *authorization_cases]
+
+    mutants = []
+    for label, source, field, value in [
+        ("v0.9 cost failure rescued", v09, "cost_experiment", "passed"),
+        ("v0.9 further spend reopened", v09, "further_model_work", True),
+        ("low-token incomplete work admitted", low_token, "reviewable", True),
+        ("cost green converted to product sufficiency", low_token, "product_sufficient", True),
+        ("above-estimate cost finding erased", above_estimate, "cost_finding", False),
+        ("existing result duplicated without product reason", above_estimate, "further_model_work", True),
+    ]:
+        mutant = copy.deepcopy(source)
+        mutant["name"] = label
+        mutant["claims"][field] = value
+        mutants.append(mutant)
+    for case in authorization_cases:
+        mutant = copy.deepcopy(case)
+        mutant["name"] = f"{case['name']} mutant reopens spend"
+        mutant["claims"]["further_model_work"] = True
+        mutants.append(mutant)
+
+    good = True
+    for case in clean:
+        errors = validate_disposition_case(case)
+        passed = not errors
+        print(f"  [{'ok' if passed else 'RED'}] disposition clean: {case['name']}")
+        if errors:
+            print("    " + "; ".join(errors))
+        good = good and passed
+    for case in mutants:
+        errors = validate_disposition_case(case)
+        passed = bool(errors)
+        print(f"  [{'ok' if passed else 'RED'}] disposition mutant rejected: {case['name']}" +
+              (f" ({errors[0]})" if errors else ""))
+        good = good and passed
+    print(f"  [measure] result-disposition subjects={len(clean) + len(mutants)} "
+          f"clean={len(clean)} mutants={len(mutants)}")
+    return good
+
+
 def static_contract_homes(kernel):
     required = {
         "AGENTS.md": ["Product and Engineering are always called", "named run and its return",
+                      "token estimate", "Exhausting any part forbids another",
+                      "Contributor-excluded fresh use", "duplicate product work",
                       "wrongly kept inactive", "concern was handled", "replacement carrier",
                       "Finish an upgrade", ASSESSMENT_RECORD, "complete — Shape reopened",
                       "complete — Map reopened", "from state.md", "upgradeAssessmentRecord",
@@ -378,14 +617,22 @@ def static_contract_homes(kernel):
                       "LF, CRLF, lone CR", "last line ending", "default-ignorable"],
         ".claude/skills/shape-product/SKILL.md": ["observable conditions", "evidence expires"],
         ".claude/skills/shape-product/references/questions.md": ["what observable condition calls the role"],
-        ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map"],
-        ".claude/skills/map-build/references/questions.md": ["Product and Engineering join every substantial piece"],
+        ".claude/skills/map-build/SKILL.md": ["first Map after Shape", "later re-map",
+                                                    "token estimate", "duplicate product work"],
+        ".claude/skills/map-build/references/questions.md": ["Product and Engineering join every substantial piece",
+                                                                 "token estimate", "authorization exhaustion"],
+        ".claude/skills/experience/SKILL.md": ["Gross, cached, fresh", "duplicate product work"],
         "templates/product.md": ["Call when:", "Evidence expires:"],
-        "templates/map.md": ["role calls:", "earliest informative runs:"],
+        "templates/map.md": ["role calls:", "earliest informative runs:", "model-work boundary:",
+                             "concrete fresh-review product finding"],
         "templates/piece.md": ["## Role call decisions", "## Informative role returns",
-                               "## False inactive repair", "## Handled-concern miss escalation"],
-        "templates/state.md": ["overdue informative returns", "false inactive call"],
+                               "## False inactive repair", "## Handled-concern miss escalation",
+                               "Token estimate:", "Execution authorization:", "Result disposition:"],
+        "templates/state.md": ["overdue informative returns", "false inactive call",
+                               "cost experiment passed or failed", "duplicate product build"],
         "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
+                        "gross, cached, and fresh tokens", "Exhausting any authorization forbids another",
+                        "contributor-excluded fresh use", "cannot trigger duplicate product work",
                         "writes the version marker last", "replacement carrier inherits",
                         ASSESSMENT_RECORD, "method-surface digests", "Every fixed marker carries",
                         "before changing any repository byte", "complete non-Git path kinds and bytes",
@@ -401,6 +648,8 @@ def static_contract_homes(kernel):
                         "Native Codex discovery", "installer-generated symbolic-link entry",
                         "duplicated skill body"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
+                      "Results and cost stay separate", "crossing the estimate stays visible",
+                      "genuinely new product claim permits another build",
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
                       "before any repository byte changes", "upgrade [dir] --open-assessment",
                       "comment-touched line stays inactive", "unclosed live comment refuses",
@@ -409,20 +658,22 @@ def static_contract_homes(kernel):
                       "one row per role", "completed Map or resume route",
                       "owner bytes are never generated or normalized",
                       "LF, CRLF, lone CR", "last existing line ending", "default-ignorable",
-                      "20 files / 81,622 bytes", "Codex discovery symlink",
-                      "47,892 bytes"],
-        "capabilities.md": ["Selective product team", "live-host affordability",
+                      "20 files / 85,623 bytes", "Codex discovery symlink",
+                      "47,374 bytes"],
+        "capabilities.md": ["Selective product team", "result-disposition subjects",
+                            "reviewable / failed / closed",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container",
                             "95 path-transaction subjects", "Codex discovery symlink",
-                            "20 file-system entries / 81,622 bytes", "47,892 / 50,000 bytes"],
+                            "20 file-system entries / 85,623 bytes", "47,374 / 50,000 bytes"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
         "templates/map.md": ["expected active roles:"],
         "templates/piece.md": ["## Pre-code product team"],
         "CONTRACT.md": ["four distinct pre-code carriers on substantial work",
-                        "On later re-maps and substantial pieces, Product and Engineering always contribute"],
+                        "On later re-maps and substantial pieces, Product and Engineering always contribute",
+                        "v0.9 cost exchange"],
     }
     good = True
     for relative, needles in required.items():
@@ -436,9 +687,11 @@ def static_contract_homes(kernel):
         print(f"  [{'ok' if absent else 'RED'}] obsolete universal rule absent: {relative}")
         good = good and absent
     version = json.loads((kernel / "package.json").read_text()).get("version")
-    version_ok = version == "6.0.0-rc.2"
-    print(f"  [{'ok' if version_ok else 'RED'}] package version is 6.0.0-rc.2")
-    return good and version_ok
+    version_ok = version == CURRENT_VERSION
+    legacy_ok = RECOVERABLE_FIELDLESS_VERSION == "6.0.0-rc.2"
+    print(f"  [{'ok' if version_ok else 'RED'}] current assertions derive package version {CURRENT_VERSION}")
+    print(f"  [{'ok' if legacy_ok else 'RED'}] recoverable fieldless legacy stays explicit rc.2")
+    return good and version_ok and legacy_ok
 
 
 def init_repo(path):
@@ -604,7 +857,7 @@ def marker_ok(root, source_checkout, surface_digest, assessment_record=None):
     actual = marker(root)
     expected = {
         "name": "speck-next",
-        "version": "6.0.0-rc.2",
+        "version": CURRENT_VERSION,
         "sourceCheckout": source_checkout,
         "methodSurfaceSha256": surface_digest,
         "upgradeAssessmentRecord": assessment_record,
@@ -618,7 +871,7 @@ def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surfa
     output = run.stdout + run.stderr
     next_lines = [line for line in run.stdout.splitlines() if line.startswith("Next:")]
     return (run.returncode == 0 and
-            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in output and
+            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance(CURRENT_VERSION, source_checkout, surface_digest)}" in output and
             "Product team migration:" in output and
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
@@ -974,7 +1227,7 @@ def run_path_transaction_controls(kernel):
             fresh_adapter.lstat().st_size == len(b"../../.claude/skills") and
             fresh_adapter.resolve() == (truthful_fresh / ".claude/skills").resolve() and
             fresh_adapter.resolve().is_relative_to(truthful_fresh.resolve()) and
-            len(actual_fresh_paths) == 20 and fresh_bytes == 81622,
+            len(actual_fresh_paths) == 20 and fresh_bytes == 85623,
         ))
 
         whole_alias = fresh_repo("whole-root-codex-alias")
@@ -1367,7 +1620,7 @@ def run_path_transaction_controls(kernel):
             snapshot_digest(grouped_outside) == grouped_before and
             not (grouped_claude / ".claude").is_symlink() and
             not (grouped_claude / ".claude/speck-next.json").is_symlink() and
-            marker(grouped_claude)["version"] == "6.0.0-rc.2",
+            marker(grouped_claude)["version"] == CURRENT_VERSION,
         ))
 
         non_dir_link = fresh_repo("linked-non-directory")
@@ -1498,7 +1751,7 @@ def run_path_transaction_controls(kernel):
                 not packed_source_adapter.exists() and not packed_source_adapter.is_symlink() and
                 packed_install.returncode == 0 and not packed_install.stderr and
                 packed_count == len(packed_actual_paths) == len(packed_paths) == 20 and
-                packed_paths == packed_actual_paths and packed_bytes == 81617 and
+                packed_paths == packed_actual_paths and packed_bytes == 85618 and
                 packed_adapter is not None and
                 packed_adapter.lstat().st_size == len(b"../../.claude/skills") and
                 packed_adapter.resolve() == (packed_product / ".claude/skills").resolve() and
@@ -1511,7 +1764,7 @@ def run_path_transaction_controls(kernel):
         except (FileNotFoundError, IndexError, KeyError, OSError, TypeError, ValueError, tarfile.TarError):
             packed_transport_ok = False
         results.append((
-            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 81,617-byte census",
+            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 85,618-byte census",
             packed_transport_ok,
         ))
 
@@ -2541,7 +2794,7 @@ exec "$REAL_GIT" "$@"
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and not git_attack_clean.stderr and
             upgrade_report_ok(
-                git_attack_retry, "6.0.0-rc.2", source_checkout,
+                git_attack_retry, CURRENT_VERSION, source_checkout,
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
                 prior_digest=surface_digest,
             ) and not git_attack_retry.stderr and
@@ -2696,7 +2949,7 @@ def run_migration_matrix(kernel):
 
         missing_field = object()
 
-        def refusal_repo(name, product, version="6.0.0-rc.2",
+        def refusal_repo(name, product, version=RECOVERABLE_FIELDLESS_VERSION,
                          assessment_field=missing_field, record_content=None, marker_extra=None):
             repo = fixed_current(name)
             prior = {
@@ -2729,7 +2982,7 @@ def run_migration_matrix(kernel):
         round_five_crlf_product = (round_five_crlf / "product.md").read_bytes()
         round_five_crlf_ok = (
             upgrade_report_ok(
-                round_five_crlf_run, "6.0.0-rc.2",
+                round_five_crlf_run, RECOVERABLE_FIELDLESS_VERSION,
                 "round-five-crlf-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2779,7 +3032,7 @@ def run_migration_matrix(kernel):
             expected = appended_product_bytes(original, ending)
             opened_ok = (
                 upgrade_report_ok(
-                    opened, "6.0.0-rc.2", f"{label}fixture", source_checkout,
+                    opened, RECOVERABLE_FIELDLESS_VERSION, f"{label}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -2817,7 +3070,7 @@ def run_migration_matrix(kernel):
         lone_cr_pending_bytes = (lone_cr_pending / "product.md").read_bytes()
         lone_cr_pending_ok = (
             upgrade_report_ok(
-                lone_cr_pending_run, "6.0.0-rc.2",
+                lone_cr_pending_run, RECOVERABLE_FIELDLESS_VERSION,
                 "lone-cr-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2884,7 +3137,7 @@ def run_migration_matrix(kernel):
             prior_checkout = marker_extra.get("sourceCheckout") if marker_extra else f"{name}fixture"
             prior_digest = marker_extra.get("methodSurfaceSha256") if marker_extra else None
             opened_ok = (
-                upgrade_report_ok(opened, "6.0.0-rc.2", prior_checkout, source_checkout,
+                upgrade_report_ok(opened, RECOVERABLE_FIELDLESS_VERSION, prior_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CHANGED, prior_digest) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
                 not has_resume_instruction(opened.stdout + opened.stderr) and
@@ -2904,7 +3157,7 @@ def run_migration_matrix(kernel):
             ordinary = run_cli(kernel, "upgrade", repo)
             retry_ok = (
                 second_flag_ok and "without --open-assessment" in second_flag.stderr and
-                upgrade_report_ok(ordinary, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(ordinary, CURRENT_VERSION, source_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                 (repo / "product.md").read_text() == expected_product(original)
             )
@@ -2920,7 +3173,7 @@ def run_migration_matrix(kernel):
             completed = run_cli(kernel, "upgrade", repo)
             expected_next = "Next: there are no upgrade changes to commit; resume Piece alpha from state.md."
             completed_ok = (
-                upgrade_report_ok(completed, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(completed, CURRENT_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(),
                                      "Resume Piece alpha from state.md.") and
@@ -2930,7 +3183,7 @@ def run_migration_matrix(kernel):
                             completed_ok))
             return repo
 
-        def flag_exclusion(name, product, version="6.0.0-rc.2",
+        def flag_exclusion(name, product, version=RECOVERABLE_FIELDLESS_VERSION,
                            assessment_field=missing_field, record_content=None):
             repo = refusal_repo(
                 "flag-exclusion-" + name,
@@ -2974,7 +3227,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", commented_generated, "--open-assessment")
         commented_generated_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "commented-generated-statusfixture",
+                opened, RECOVERABLE_FIELDLESS_VERSION, "commented-generated-statusfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3065,7 +3318,7 @@ def run_migration_matrix(kernel):
             current = run_cli(kernel, "upgrade", repo)
             return (
                 upgrade_report_ok(
-                    current, "6.0.0-rc.2", f"{name}fixture", source_checkout,
+                    current, RECOVERABLE_FIELDLESS_VERSION, f"{name}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 not has_resume_instruction(current.stdout + current.stderr) and
@@ -3163,7 +3416,7 @@ def run_migration_matrix(kernel):
         inline_literal_run = run_cli(kernel, "upgrade", inline_literal)
         inline_literal_ok = (
             upgrade_report_ok(
-                inline_literal_run, "6.0.0-rc.2", "inline-code-literalfixture",
+                inline_literal_run, RECOVERABLE_FIELDLESS_VERSION, "inline-code-literalfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             (inline_literal / "product.md").read_text() == inline_literal_original and
@@ -3242,7 +3495,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", hidden_generated, "--open-assessment")
         hidden_generated_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "inline-hidden-generatedfixture",
+                opened, RECOVERABLE_FIELDLESS_VERSION, "inline-hidden-generatedfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3396,7 +3649,7 @@ def run_migration_matrix(kernel):
         results.append((
             "a comment-touched line cannot span inline code over later clean evidence",
             upgrade_report_ok(
-                comment_then_unmatched_run, "6.0.0-rc.2",
+                comment_then_unmatched_run, RECOVERABLE_FIELDLESS_VERSION,
                 "comment-then-unmatched-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3421,7 +3674,7 @@ def run_migration_matrix(kernel):
         results.append((
             "same-line code after a comment still shields comment-looking bytes",
             upgrade_report_ok(
-                comment_then_balanced_run, "6.0.0-rc.2",
+                comment_then_balanced_run, RECOVERABLE_FIELDLESS_VERSION,
                 "comment-then-balanced-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3485,7 +3738,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", literal_recovery, "--open-assessment")
         literal_recovery_opened = (
             upgrade_report_ok(
-                opened, "6.0.0-rc.2", "inline-literal-recoveryfixture",
+                opened, RECOVERABLE_FIELDLESS_VERSION, "inline-literal-recoveryfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3523,7 +3776,7 @@ def run_migration_matrix(kernel):
         results.append((
             "balanced inline literal leaves the completed live-piece route current",
             upgrade_report_ok(
-                completed_inline_run, "6.0.0-rc.2",
+                completed_inline_run, RECOVERABLE_FIELDLESS_VERSION,
                 "completed-after-inlinefixture", source_checkout, surface_digest,
                 "Next: review the reported paths and complete diff, commit the upgrade, then resume Piece alpha from state.md.",
             ) and
@@ -3594,7 +3847,7 @@ def run_migration_matrix(kernel):
         optional_dir = refusal_repo("optional-directory", "# Optional-directory product\n")
         opened = run_cli_args(kernel, "upgrade", "--open-assessment", cwd=optional_dir)
         optional_dir_ok = (
-            upgrade_report_ok(opened, "6.0.0-rc.2", "optional-directoryfixture",
+            upgrade_report_ok(opened, RECOVERABLE_FIELDLESS_VERSION, "optional-directoryfixture",
                               source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
             marker_ok(optional_dir, source_checkout, surface_digest, ASSESSMENT_RECORD) and
             (optional_dir / "product.md").read_text() ==
@@ -3627,11 +3880,11 @@ def run_migration_matrix(kernel):
         init_repo(fresh)
         run = run_cli(kernel, "install", fresh)
         installed = [p for p in fresh.rglob("*") if p.is_file() and ".git" not in p.parts]
-        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == "6.0.0-rc.2" and
+        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == CURRENT_VERSION and
                     marker_ok(fresh, source_checkout, surface_digest) and
                     not (fresh / "product.md").exists() and
                     len(installed) <= 20 and sum(p.stat().st_size for p in installed) <= 100_000 and
-                    f"Installed Speck Next {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in run.stdout and
+                    f"Installed Speck Next {provenance(CURRENT_VERSION, source_checkout, surface_digest)}" in run.stdout and
                     "Installed paths:" in run.stdout and "Next:" in run.stdout)
         results.append(("fresh install reports its surface and leaves product.md missing", fresh_ok))
 
@@ -3754,7 +4007,7 @@ def run_migration_matrix(kernel):
             outside_marker.read_text() == marker_before and
             (marker_link / ".claude" / "speck-next.json").is_file() and
             not (marker_link / ".claude" / "speck-next.json").is_symlink() and
-            marker(marker_link)["version"] == "6.0.0-rc.2",
+            marker(marker_link)["version"] == CURRENT_VERSION,
         ))
 
         ignored_upgrade = base / "ignored-upgrade"
@@ -3882,7 +4135,7 @@ exec "$REAL_GIT" "$@"
                        (v5 / "product.md").read_text() == expected_product(v5_product) and
                        marker_ok(v5, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                        first_hash == second_hash and
-                       upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                       upgrade_report_ok(second, CURRENT_VERSION, source_checkout, source_checkout,
                                          surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                        "Working-tree changes across the complete installed surface plus product.md: none." in second.stdout and
                        "Complete installed-surface plus product.md diff: empty." in second.stdout)
@@ -3902,7 +4155,7 @@ exec "$REAL_GIT" "$@"
                                    surface_digest, NEXT_PENDING_CHANGED) and
                   (rc1 / "product.md").read_text() == expected_rc2 and RC1_STATUS not in expected_rc2 and
                   first_hash == second_hash and
-                  upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                  upgrade_report_ok(second, CURRENT_VERSION, source_checkout, source_checkout,
                                     surface_digest, NEXT_PENDING_CHANGED, surface_digest) and
                   marker_ok(rc1, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("exact generated rc.1 prose is replaced and retry is byte-stable", rc1_ok))
@@ -3942,11 +4195,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current)
         first_hash = surface_hash(current)
         second = run_cli(kernel, "upgrade", current)
-        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+        current_ok = (upgrade_report_ok(first, CURRENT_VERSION, source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       (current / "product.md").read_text() == current_product and
                       marker_ok(current, source_checkout, surface_digest) and
-                      upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+                      upgrade_report_ok(second, CURRENT_VERSION, source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       first_hash == surface_hash(current))
         results.append(("explicit-null current product resumes without an assessment", current_ok))
@@ -3955,11 +4208,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current_missing)
         second = run_cli(kernel, "upgrade", current_missing)
         current_missing_ok = (
-            upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
+            upgrade_report_ok(first, CURRENT_VERSION, source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
             marker_ok(current_missing, source_checkout, surface_digest) and
-            upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
+            upgrade_report_ok(second, CURRENT_VERSION, source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             not (current_missing / "product.md").exists())
         results.append(("explicit-null current repository with no product stays missing and routes to Shape",
@@ -4033,11 +4286,11 @@ exec "$REAL_GIT" "$@"
         rejected.mkdir()
         rejected_product = ("# Rejected rc.2 product\n\n> " + REJECTED_RC2_STATUS +
                             "\n\n## Product team\n\n" + REJECTED_RC2_STATUS + "\n")
-        seed_upgrade_repo(rejected, "6.0.0-rc.2", "rejectedfixture", rejected_product)
+        seed_upgrade_repo(rejected, RECOVERABLE_FIELDLESS_VERSION, "rejectedfixture", rejected_product)
         run = run_cli(kernel, "upgrade", rejected)
         repaired_text = (rejected / "product.md").read_text()
         rejected_ok = (
-            upgrade_report_ok(run, "6.0.0-rc.2", "rejectedfixture", source_checkout,
+            upgrade_report_ok(run, RECOVERABLE_FIELDLESS_VERSION, "rejectedfixture", source_checkout,
                               surface_digest, NEXT_PENDING_CHANGED) and
             repaired_text.count(ASSESSMENT_HEADING) == 1 and
             f"> {REJECTED_RC2_STATUS}" in repaired_text and
@@ -4050,7 +4303,7 @@ exec "$REAL_GIT" "$@"
         )
         run = run_cli(kernel, "upgrade", fieldless_canonical)
         fieldless_canonical_ok = (
-            upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-canonicalfixture",
+            upgrade_report_ok(run, RECOVERABLE_FIELDLESS_VERSION, "fieldless-canonicalfixture",
                               source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
             marker_ok(fieldless_canonical, source_checkout, surface_digest, ASSESSMENT_RECORD) and
             (fieldless_canonical / "product.md").read_text() == "# Current product\n\n" + ASSESSMENT_BLOCK)
@@ -4060,7 +4313,7 @@ exec "$REAL_GIT" "$@"
         fieldless_missing = refusal_repo("fieldless-missing-product", None)
         run = run_cli(kernel, "upgrade", fieldless_missing)
         fieldless_missing_ok = (
-            upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-missing-productfixture",
+            upgrade_report_ok(run, RECOVERABLE_FIELDLESS_VERSION, "fieldless-missing-productfixture",
                               source_checkout, surface_digest, NEXT_MISSING_CHANGED) and
             marker_ok(fieldless_missing, source_checkout, surface_digest) and
             not (fieldless_missing / "product.md").exists())
@@ -4069,34 +4322,34 @@ exec "$REAL_GIT" "$@"
 
         atomic_specs = [
             ("exact rejected-rc.2 deletion is ambiguous",
-             "# Rejected migration with its generated assessment deleted\n", "6.0.0-rc.2",
+             "# Rejected migration with its generated assessment deleted\n", RECOVERABLE_FIELDLESS_VERSION,
              missing_field),
             ("fieldless current product is ambiguous",
-             "# Fieldless current product\n", "6.0.0-rc.2", missing_field),
+             "# Fieldless current product\n", RECOVERABLE_FIELDLESS_VERSION, missing_field),
             ("unsupported assessment-record value",
-             "# Product\n\n" + ASSESSMENT_BLOCK, "6.0.0-rc.2", "work/other.md"),
+             "# Product\n\n" + ASSESSMENT_BLOCK, RECOVERABLE_FIELDLESS_VERSION, "work/other.md"),
             ("empty assessment-record value",
-             "# Product\n", "6.0.0-rc.2", ""),
+             "# Product\n", RECOVERABLE_FIELDLESS_VERSION, ""),
             ("canonical block missing its status field",
              f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_RECORD_LINE}\n",
-             "6.0.0-rc.2", ASSESSMENT_RECORD),
+             RECOVERABLE_FIELDLESS_VERSION, ASSESSMENT_RECORD),
             ("canonical block duplicates its status field",
              f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n",
-             "6.0.0-rc.2", ASSESSMENT_RECORD),
+             RECOVERABLE_FIELDLESS_VERSION, ASSESSMENT_RECORD),
             ("canonical block misses its record field",
              f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n",
-             "6.0.0-rc.2", ASSESSMENT_RECORD),
+             RECOVERABLE_FIELDLESS_VERSION, ASSESSMENT_RECORD),
             ("canonical block duplicates its record field",
              f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n{ASSESSMENT_RECORD_LINE}\n{ASSESSMENT_RECORD_LINE}\n",
-             "6.0.0-rc.2", ASSESSMENT_RECORD),
+             RECOVERABLE_FIELDLESS_VERSION, ASSESSMENT_RECORD),
             ("canonical block has the wrong record field",
              f"# Product\n\n{ASSESSMENT_HEADING}\n\n{ASSESSMENT_PENDING}\n**Record:** `work/wrong.md`\n",
-             "6.0.0-rc.2", ASSESSMENT_RECORD),
+             RECOVERABLE_FIELDLESS_VERSION, ASSESSMENT_RECORD),
             ("generated rc.1 fingerprint is duplicated",
              f"# Product\n\n{RC1_STATUS}\n{RC1_STATUS}\n", "6.0.0-rc.1", missing_field),
             ("generated rejected-rc.2 fingerprint is duplicated",
              f"# Product\n\n{REJECTED_RC2_STATUS}\n{REJECTED_RC2_STATUS}\n",
-             "6.0.0-rc.2", missing_field),
+             RECOVERABLE_FIELDLESS_VERSION, missing_field),
         ]
         for label, product_text, version, assessment_field in atomic_specs:
             repo = refusal_repo(
@@ -4136,7 +4389,7 @@ exec "$REAL_GIT" "$@"
             before = surface_hash(repo)
             run = run_cli(kernel, "upgrade", repo)
             route_ok = (
-                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(run, CURRENT_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(), route) and
@@ -4152,7 +4405,7 @@ exec "$REAL_GIT" "$@"
             before = repository_snapshot(repo)
             run = run_cli(kernel, "upgrade", repo)
             twin_ok = (
-                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
+                upgrade_report_ok(run, CURRENT_VERSION, source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 owner_prose in (repo / "product.md").read_text() and
                 before == repository_snapshot(repo)
@@ -4248,7 +4501,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "an incomplete Product team may proceed only through completed Shape reopened",
             upgrade_report_ok(
-                incomplete_shape_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                incomplete_shape_run, CURRENT_VERSION, source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; continue Shape from state.md.",
                 surface_digest,
@@ -4334,7 +4587,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "visible Product text containing U+200B stays accepted and byte-identical",
             upgrade_report_ok(
-                visible_run, "6.0.0-rc.2", source_checkout, source_checkout,
+                visible_run, CURRENT_VERSION, source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                 surface_digest,
@@ -4401,7 +4654,7 @@ exec "$REAL_GIT" "$@"
             results.append((
                 f"current Product-team rows after closed {container} remain usable",
                 upgrade_report_ok(
-                    run, "6.0.0-rc.2", source_checkout, source_checkout,
+                    run, CURRENT_VERSION, source_checkout, source_checkout,
                     surface_digest,
                     "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                     surface_digest,
@@ -4477,8 +4730,8 @@ exec "$REAL_GIT" "$@"
             digest_one == digest_two and
             marker_ok(install_one, checkout_one, digest_one) and
             marker_ok(install_two, checkout_two, digest_two) and
-            provenance("6.0.0-rc.2", checkout_one, digest_one) in first.stdout and
-            provenance("6.0.0-rc.2", checkout_two, digest_two) in second.stdout)
+            provenance(CURRENT_VERSION, checkout_one, digest_one) in first.stdout and
+            provenance(CURRENT_VERSION, checkout_two, digest_two) in second.stdout)
         results.append(("different source checkouts identify one identical installed method surface", provenance_ok))
 
     good = True
@@ -4497,9 +4750,10 @@ def piece8_controls(kernel_arg):
     homes_ok = static_contract_homes(kernel)
     roles_ok = run_role_controls()
     assessments_ok = run_assessment_controls()
+    dispositions_ok = run_result_disposition_controls()
     paths_ok = run_path_transaction_controls(kernel)
     migration_ok = run_migration_matrix(kernel)
-    passed = homes_ok and roles_ok and assessments_ok and paths_ok and migration_ok
+    passed = homes_ok and roles_ok and assessments_ok and dispositions_ok and paths_ok and migration_ok
     print(f"Piece 8 controls: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
@@ -4516,6 +4770,14 @@ if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-controls":
         sys.exit(2)
     sys.exit(piece8_controls(sys.argv[2]))
 
+
+if len(sys.argv) >= 2 and sys.argv[1] == "--result-disposition-controls":
+    if len(sys.argv) != 2:
+        print("usage: check.py --result-disposition-controls", file=sys.stderr)
+        sys.exit(2)
+    sys.exit(0 if run_result_disposition_controls() else 1)
+
+
 clone = sys.argv[1]
 pulse_dir = os.path.join(clone, "examples", "pulse")
 default_git = os.path.join(clone, ".devsuite-git" if os.path.isdir(os.path.join(clone, ".devsuite-git")) else ".git")
@@ -4523,7 +4785,7 @@ git_dir = os.environ.get("GIT_DIR", default_git)
 git_env = dict(os.environ, GIT_DIR=git_dir, GIT_WORK_TREE=os.path.abspath(clone))
 baseline_path = os.path.join(git_dir, "devsuite-baseline")
 baseline = open(baseline_path).read().strip()
-ok = True
+ok = run_result_disposition_controls()
 
 
 def note(label, good):
@@ -4583,6 +4845,15 @@ note("Product integrated the evidence into the right decision before implementat
      bool(synthesis and ("week" in synthesis or "seven-day" in synthesis) and "gap" in synthesis and
           "streak" in synthesis and ("no price" in synthesis or "without price" in synthesis or "no premium" in synthesis) and
           "business-evidence.md" in synthesis and "experience-evidence.md" in synthesis))
+authorization_text = record.lower()
+note("the piece declared the token estimate and prospectively enforceable model-work authorization",
+     "token estimate" in authorization_text and "250,000" in authorization_text and
+     bool(re.search(r"(?:four|4) host contexts", authorization_text)) and
+     "900" in authorization_text and
+     bool(re.search(r"(?:zero|0) retries", authorization_text)) and
+     bool(re.search(r"(?:zero|0) fallbacks", authorization_text)) and
+     bool(re.search(r"(?:zero|0) owner interruptions", authorization_text)) and
+     "300" in authorization_text and "30 files" in authorization_text)
 
 events_path = os.path.join(clone, ".driver.events.jsonl")
 events = []
@@ -4623,10 +4894,19 @@ note("Business host ruling permits the piece to progress",
 
 metrics_path = os.path.join(clone, ".driver.metrics.json")
 metrics = json.loads(open(metrics_path).read()) if os.path.isfile(metrics_path) else {}
-print(f"  [measure] elapsed={metrics.get('elapsed_seconds', 0)}s driver_tokens={host.get('tokens', 0)} limit=250000")
-note("owner-attention budget held before the hard stop",
-     0 < host.get("tokens", 0) <= 250000 and metrics.get("elapsed_seconds", 0) <= 900 and
-     metrics.get("tokens") == host.get("tokens"))
+token_estimate = metrics.get("token_estimate", 250000)
+token_usage = host.get("token_usage", {"gross": host.get("tokens", 0), "cached": 0,
+                                       "fresh": host.get("tokens", 0)})
+cost_finding = token_usage["gross"] > token_estimate
+print(f"  [measure] elapsed={metrics.get('elapsed_seconds', 0)}s "
+      f"gross={token_usage['gross']} cached={token_usage['cached']} fresh={token_usage['fresh']} "
+      f"estimate={token_estimate} cost_finding={'yes' if cost_finding else 'no'}")
+note("token use is measured against its estimate as cost evidence, not a product kill",
+     token_estimate > 0 and token_usage["gross"] > 0 and
+     token_usage["gross"] - token_usage["cached"] == token_usage["fresh"] and
+     metrics.get("token_usage") == token_usage)
+note("prospective elapsed-time authorization held",
+     0 < metrics.get("elapsed_seconds", 0) <= 900)
 
 # The work record must be committed before the first product-code commit.
 work_commits = git("rev-list", "--reverse", f"{baseline}..HEAD", "--", record_rel).splitlines() if record_rel else []

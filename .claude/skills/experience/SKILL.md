@@ -43,7 +43,7 @@ If either read is wrong, stop and report it. Three rounds of production runs wer
 
 Write the record as the run happens. Include exact commands, what appeared, what changed, and feelings reported in persona. Open every screenshot and give at least two observations that point to its pixels.
 
-Put the verdict last. Say, as this user, whether it works, whether you would keep it, and what breaks the deal. Every claim in the verdict must point to a moment in the same record. Mark anything you could not run as untested; never turn it into a pass or omit it.
+Put the verdict last. Say, as this user, whether it works, whether you would keep it, and what breaks the deal. Every claim in the verdict must point to a moment in the same record. Mark anything you could not run as untested; never turn it into a pass or omit it. Gross, cached, fresh, or total token counts cannot make an incomplete product reviewable or erase a result you experienced; report them separately as cost evidence when the brief supplies them.
 
 The judge will ask questions. Answer from new or recorded runs, never memory or politeness.
 
@@ -60,7 +60,7 @@ A substantial piece uses the people named in its proof plan, with at least the f
 
 One of these testers also receives only `product.md` and the piece’s rendered output, not the work file. The dispatching session must render headless output into something the owner could inspect. Five rounds once perfected a truthful machine that missed its jobs. The owner's one read of a rendered page caught what a dozen fresh contexts missed.
 
-For machinery such as checks, boards, or pipelines, one rostered tester attacks it by running it. The record quotes the commands and output. Without an executed attack, the record is a read, not an experience.
+For machinery such as checks, boards, or pipelines, one rostered tester attacks it by running it. The record quotes the commands and output. Without an executed attack, the record is a read, not an experience. Classify findings from a running result: a concrete product problem may call for another build; a method or cost finding routes to the kernel or a future run for subtraction and cannot trigger duplicate product work.
 
 Different users should sometimes disagree. Never soften one verdict toward another; the judge needs the difference intact.
 

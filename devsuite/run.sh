@@ -81,13 +81,13 @@ for task in "${TASKS[@]}"; do
 
 This governed fixture ends after working behavior and the active roles' first-run returns. Do not open Experience testing, judgment, or review. Use exactly one Business, one Experience, and one Engineering context; never retry, fall back, or create another context.
 
-This task's files and method are the complete context; do not load optional skills or investigate the harness. Batch work to protect the 250,000-token aggregate cap. You elect each context through synchronous file IPC. Write all three initial request JSON files before waiting for any response. Each is shaped {\"role\":\"Business\",\"stage\":\"contribution\",\"brief\":\"at least 80 characters naming direct product evidence and the bounded question\"} at \`.devsuite-role-ipc/requests/business-contribution.json\`, with equivalent Experience and Engineering files. Wait once for all three matching response files. The runner transports your exact briefs to fresh host contexts and returns each host-issued \`carrier\` and verbatim \`contribution\`; it chooses neither. Record the returned carriers and use the contributions. Do not invoke Codex or another agent from the shell.
+This task's files and method are the complete context; do not load optional skills or investigate the harness. Before model work, record its 250,000-token aggregate estimate and this hard authorization: four host contexts total (Product plus the same Business, Experience, and Engineering carriers), 900 elapsed seconds, zero retries, zero fallbacks, zero owner interruptions, and no more than 300 seconds or 30 files read before the first product run. Exhaustion forbids another model turn. Gross, cached, and fresh tokens are measured Business cost evidence; crossing the estimate is a cost finding, not a product verdict. You elect each context through synchronous file IPC. Write all three initial request JSON files before waiting for any response. Each is shaped {\"role\":\"Business\",\"stage\":\"contribution\",\"brief\":\"at least 80 characters naming direct product evidence and the bounded question\"} at \`.devsuite-role-ipc/requests/business-contribution.json\`, with equivalent Experience and Engineering files. Wait once for all three matching response files. The runner transports your exact briefs to fresh host contexts and returns each host-issued \`carrier\` and verbatim \`contribution\`; it chooses neither. Record the returned carriers and use the contributions. Do not invoke Codex or another agent from the shell.
 
 Commit the Product synthesis before code. Then request \`engineering-implement.json\` with role Engineering, stage implement, and the committed handoff in brief; the same Engineering carrier owns code. After its smallest mixed-gap CLI run, write all three return requests before one wait: \`business-return.json\`, \`experience-return.json\`, and \`engineering-return.json\`, each with stage return and the observed output in its brief. Record what changed or held, Business's binding ruling with evidence, and all contributor exclusions. Then stop immediately."
         else
           PROMPT="$PROMPT
 
-This governed fixture ends after working behavior and the active roles' first-run returns. Use exactly three native Agent contexts named pulse-business, pulse-experience, and pulse-engineering; never retry or duplicate one. Record each host-issued Agent result \`agentId\` as its carrier. Product commits synthesis before code, the same Engineering agent implements, and the same three agents return to the smallest mixed-gap CLI run. Record what changed or held, Business's binding ruling with evidence, and all exclusions, then stop. Do not open Experience testing, judgment, or review."
+This governed fixture ends after working behavior and the active roles' first-run returns. Before model work, record its 250,000-token aggregate estimate and this hard authorization: four host contexts total (Product plus the same Business, Experience, and Engineering carriers), 900 elapsed seconds, zero retries, zero fallbacks, zero owner interruptions, and no more than 300 seconds or 30 files read before the first product run. Exhaustion forbids another model turn. Gross, cached, and fresh tokens are measured Business cost evidence; crossing the estimate is a cost finding, not a product verdict. Use exactly three native Agent contexts named pulse-business, pulse-experience, and pulse-engineering; never retry or duplicate one. Record each host-issued Agent result \`agentId\` as its carrier. Product commits synthesis before code, the same Engineering agent implements, and the same three agents return to the smallest mixed-gap CLI run. Record what changed or held, Business's binding ruling with evidence, and all exclusions, then stop. Do not open Experience testing, judgment, or review."
         fi
       fi
     fi
@@ -118,20 +118,10 @@ This governed fixture ends after working behavior and the active roles' first-ru
     fi
     ACTIVE_DRIVER_PID="$DPID"
     SECONDS_WAITED=0
-    TOKEN_LIMIT=250000
-    BUDGET_STOP=0
+    TOKEN_ESTIMATE=250000
     while kill -0 "$DPID" 2>/dev/null; do
       sleep 5; SECONDS_WAITED=$((SECONDS_WAITED+5))
       if [ "$task" = "separated-product-team" ]; then
-        STATE_ARG="-"; [ -n "$BROKER_CONTROL" ] && STATE_ARG="$BROKER_CONTROL/state.json"
-        DRIVER_TOKENS="$(python3 "$T/host_proof.py" metrics "$DRIVER" "$CLONE" "$CLONE/.driver.events.jsonl" "$STATE_ARG" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tokens",0))' 2>/dev/null || echo 0)"
-        if [ "${DRIVER_TOKENS:-0}" -ge "$TOKEN_LIMIT" ]; then
-          echo "  [budget] $task reached ${DRIVER_TOKENS} aggregate host-reported tokens (limit: ${TOKEN_LIMIT}) — killed"
-          BUDGET_STOP=1; kill "$DPID" 2>/dev/null
-          [ -n "$BROKER_PID" ] && kill "$BROKER_PID" 2>/dev/null
-          sleep 2; kill -9 "$DPID" 2>/dev/null; [ -n "$BROKER_PID" ] && kill -9 "$BROKER_PID" 2>/dev/null
-          break
-        fi
         if [ "$DRIVER" = "codex" ] && [ -n "$BROKER_PID" ] && ! kill -0 "$BROKER_PID" 2>/dev/null; then
           echo "  [broker] separated role transport stopped before Product completed — killed"
           kill "$DPID" 2>/dev/null; break
@@ -151,8 +141,9 @@ This governed fixture ends after working behavior and the active roles' first-ru
     fi
     if [ "$task" = "separated-product-team" ]; then
       STATE_ARG="-"; [ -n "$BROKER_CONTROL" ] && STATE_ARG="$BROKER_CONTROL/state.json"
-      python3 "$T/host_proof.py" metrics "$DRIVER" "$CLONE" "$CLONE/.driver.events.jsonl" "$STATE_ARG" "$SECONDS_WAITED" "$TOKEN_LIMIT" > "$CLONE/.driver.metrics.json"
-      echo "  [measure] separated-product-team elapsed=${SECONDS_WAITED}s tokens=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("tokens",0))' "$CLONE/.driver.metrics.json") limit=${TOKEN_LIMIT}"
+      python3 "$T/host_proof.py" metrics "$DRIVER" "$CLONE" "$CLONE/.driver.events.jsonl" "$STATE_ARG" "$SECONDS_WAITED" "$TOKEN_ESTIMATE" > "$CLONE/.driver.metrics.json"
+      TOKEN_REPORT="$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); u=d.get("token_usage",{}); print(f"gross={u.get('"'"'gross'"'"',d.get('"'"'tokens'"'"',0))} cached={u.get('"'"'cached'"'"',0)} fresh={u.get('"'"'fresh'"'"',d.get('"'"'tokens'"'"',0))}")' "$CLONE/.driver.metrics.json")"
+      echo "  [measure] separated-product-team elapsed=${SECONDS_WAITED}s ${TOKEN_REPORT} gross-estimate=${TOKEN_ESTIMATE}"
     fi
   fi
   if [ -n "$BROKER_CONTROL" ]; then export SPECK_DEVSUITE_BROKER_STATE="$BROKER_CONTROL/state.json"; fi

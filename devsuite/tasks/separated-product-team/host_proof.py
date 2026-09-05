@@ -31,12 +31,22 @@ def root_identity(driver, events_path):
 
 
 def codex_usage(path):
-    total = 0
+    usage = {}
     for event in jsonl(path):
         payload = event.get("payload", {})
         if event.get("type") == "event_msg" and payload.get("type") == "token_count":
-            total = payload.get("info", {}).get("total_token_usage", {}).get("total_tokens", total)
-    return int(total or 0)
+            usage = payload.get("info", {}).get("total_token_usage", {}) or usage
+    gross = int(usage.get("total_tokens", 0) or 0)
+    if not gross:
+        gross = int(usage.get("input_tokens", 0) or 0) + int(usage.get("output_tokens", 0) or 0)
+    cached = int(usage.get("cached_input_tokens", 0) or 0)
+    return {"gross": gross, "cached": cached, "fresh": max(0, gross - cached)}
+
+
+def add_usage(result, usage):
+    result["tokens"] += usage["gross"]
+    for key in ("gross", "cached", "fresh"):
+        result["token_usage"][key] += usage[key]
 
 
 def codex_meta(path):
@@ -73,7 +83,9 @@ def codex_session_blobs(path):
 
 
 def broker_codex(clone, events_path, state_path, carriers):
-    result = {"root": False, "roles": {}, "tokens": 0, "root_id": None, "extra_contexts": 0}
+    result = {"root": False, "roles": {}, "tokens": 0,
+              "token_usage": {"gross": 0, "cached": 0, "fresh": 0},
+              "root_id": None, "extra_contexts": 0}
     root_id = root_identity("codex", events_path)
     result["root_id"] = root_id
     state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
@@ -91,14 +103,15 @@ def broker_codex(clone, events_path, state_path, carriers):
         _, root_direct, _ = codex_session_blobs(root_path)
     if not state:
         if root_path:
-            result["tokens"] += codex_usage(root_path)
+            add_usage(result, codex_usage(root_path))
         return result
     if pathlib.Path(state.get("root", "")).resolve() != pathlib.Path(clone).resolve():
         return result
     session_paths = list(sessions_root.rglob("*.jsonl")) if sessions_root and sessions_root.exists() else []
     root_paths = list(root_sessions.rglob("*.jsonl")) if root_sessions and root_sessions.exists() else []
     all_paths = list(dict.fromkeys(session_paths + root_paths))
-    result["tokens"] += sum(codex_usage(path) for path in all_paths)
+    for path in all_paths:
+        add_usage(result, codex_usage(path))
     expected_ids = {value for value in (root_id, *state.get("sessions", {}).values()) if value}
     actual_ids = {meta.get("id") for meta in map(codex_meta, all_paths) if meta.get("id")}
     result["extra_contexts"] = len(actual_ids - expected_ids)
@@ -184,8 +197,10 @@ def claude_usage(rows):
         message = row.get("message", {})
         if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
             messages[message["id"]] = message.get("usage", {})
-    return sum(int(usage.get(key, 0) or 0) for usage in messages.values()
-               for key in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
+    gross = sum(int(usage.get(key, 0) or 0) for usage in messages.values()
+                for key in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
+    cached = sum(int(usage.get("cache_read_input_tokens", 0) or 0) for usage in messages.values())
+    return {"gross": gross, "cached": cached, "fresh": max(0, gross - cached)}
 
 
 def canonical_claude_root(root_id, projects_root=None):
@@ -210,7 +225,9 @@ def claude_agent_records(rows):
 
 
 def native_claude(clone, events_path, carriers, projects_root=None):
-    result = {"root": False, "roles": {}, "tokens": 0, "root_id": root_identity("claude", events_path),
+    result = {"root": False, "roles": {}, "tokens": 0,
+              "token_usage": {"gross": 0, "cached": 0, "fresh": 0},
+              "root_id": root_identity("claude", events_path),
               "extra_contexts": 0}
     root_path = canonical_claude_root(result["root_id"], projects_root)
     if not root_path:
@@ -218,7 +235,7 @@ def native_claude(clone, events_path, carriers, projects_root=None):
     rows = jsonl(root_path)
     result["root"] = any(row.get("sessionId") == result["root_id"] and
                          pathlib.Path(row.get("cwd", "")).resolve() == pathlib.Path(clone).resolve() for row in rows)
-    result["tokens"] += claude_usage(rows)
+    add_usage(result, claude_usage(rows))
     launches, results = claude_agent_records(rows)
     trusted = pathlib.Path(projects_root or pathlib.Path.home() / ".claude" / "projects").resolve()
     child_records = {}
@@ -234,7 +251,7 @@ def native_claude(clone, events_path, carriers, projects_root=None):
             continue
         child_rows = jsonl(path)
         child_records[path] = child_rows
-        result["tokens"] += claude_usage(child_rows)
+        add_usage(result, claude_usage(child_rows))
         child_launches, child_results = claude_agent_records(child_rows)
         result["extra_contexts"] += len(child_launches)
         pending.extend(meta.get("outputFile") for meta in child_results.values() if meta.get("outputFile"))
@@ -300,7 +317,7 @@ def self_test(verbose=True):
         events = base / "events.jsonl"
         events.write_text(json.dumps({"session_id": root_id}) + "\n")
         root = projects / "encoded" / f"{root_id}.jsonl"; root.parent.mkdir()
-        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
+        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2, "cache_read_input_tokens": 5}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
                         json.dumps({"message": {"content": [{"tool_use_id": "t1"}]}, "toolUseResult": {"agentId": agent, "outputFile": str(projects / "child.jsonl")}}) + "\n")
         child = projects / "child.jsonl"
         child.write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md. First real run held. Business ruling: broken"}]}}) + "\n")
@@ -323,7 +340,11 @@ def self_test(verbose=True):
         codex_roles = base / "codex-roles" / "sessions"; codex_roles.mkdir(parents=True)
         codex_events = base / "codex-events.jsonl"
         codex_events.write_text(json.dumps({"type": "thread.started", "thread_id": root_id}) + "\n")
-        (codex_root / f"{root_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n")
+        (codex_root / f"{root_id}.jsonl").write_text(
+            json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n" +
+            json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {
+                "total_token_usage": {"total_tokens": 11, "cached_input_tokens": 7}}}}) + "\n"
+        )
         role_id = "role-business"
         (codex_roles / f"{role_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": role_id, "cwd": str(base)}}) + "\n")
         (codex_roles / "role-helper.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": "role-helper", "parent_thread_id": role_id, "cwd": str(base)}}) + "\n")
@@ -338,12 +359,14 @@ def self_test(verbose=True):
                       not_judged["roles"]["Business"].get("returned") and
                       not not_judged["roles"]["Business"].get("ruling_permits") and
                       nested.get("extra_contexts") == 1 and
-                      nested.get("tokens") == 12 and
+                      nested.get("tokens") == 17 and
+                      nested.get("token_usage") == {"gross": 17, "cached": 5, "fresh": 12} and
                       codex_nested.get("extra_contexts") == 1 and
+                      codex_nested.get("token_usage") == {"gross": 11, "cached": 7, "fresh": 4} and
                       not bad["roles"].get("Business", {}).get("host"))
     if verbose:
         print(f"host parser fixtures: {'PASS' if passed else 'FAIL'}; codex_extra={codex_nested.get('extra_contexts')} "
-              f"claude_extra={nested.get('extra_contexts')} descendant_tokens={nested.get('tokens')} "
+              f"claude_extra={nested.get('extra_contexts')} usage={nested.get('token_usage')} "
               f"business_returned={good['roles'].get('Business', {}).get('returned')} "
               f"business_permits={good['roles'].get('Business', {}).get('ruling_permits')} "
               f"not_judged_returned={not_judged['roles'].get('Business', {}).get('returned')} forged_host_rejected=True")
@@ -360,7 +383,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 6:
             value["elapsed_seconds"] = int(sys.argv[6])
         if len(sys.argv) > 7:
-            value["token_limit"] = int(sys.argv[7])
+            value["token_estimate"] = int(sys.argv[7])
         print(json.dumps(value, sort_keys=True))
     else:
         raise SystemExit("usage: host_proof.py --self-test | metrics DRIVER CLONE EVENTS [STATE]")

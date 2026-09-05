@@ -17,7 +17,7 @@ Before Product integrates the first Map after Shape, Product, Business, Experien
 
 2. **Let the owner choose the order.** Present real choices: visible surface first or machinery first, which moment appears first, and what unlocks the users or data later pieces need. Record options, costs, recommendation, and the owner’s exact answer. Put the reason for the chosen order in the map so future changes show what they disturb.
 
-3. **Write each piece’s proof plan before it goes live.** Name the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on.
+3. **Write each piece’s proof plan before it goes live.** Name any real result already in hand, the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on. Before model-bearing work, declare a token estimate split into gross, cached, and fresh tokens and hard authorization in model turns or contexts, elapsed time, retries and fallbacks, owner interruptions, and pre-first-run time and files. The token estimate is Business cost evidence; exhausting authorization forbids another model-bearing turn.
 
    Also record the role calls: Product and Engineering always; Business and Experience when their product-specific condition, missing or expired evidence, a material change, or uncertainty requires them. For every role expected to be active, name the earliest run that can actually test its conclusion. A role that declares a material consequence stays active.
 
@@ -38,7 +38,7 @@ Grep, count, and match the named sets. Report every population and result to the
 
 7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules — both with receipts committed before they ran. Finally, the owner ratifies the order — in their own words, or by a recorded selection of a drafted option.
 
-8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model.
+8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model. Once a real result exists, plan another build only for a concrete product finding from fresh review or a genuinely new product claim. Route method and cost findings to the kernel or a future run for subtraction; they stay visible but do not authorize duplicate product work.
 
 Derive the map’s accounting summary from its pieces; regenerate it instead of editing two copies. State the full population behind every count. Cite owner records by filename and date, never a bare round number.
 

@@ -6,9 +6,11 @@
 
 **Outcome:** [What works when this lands. Commit this before product code.]
 
-**Before first run:** [Hard limit on planning time, tokens, and files read.]
+**Token estimate:** [Estimated gross, cached, and fresh tokens; assumptions. This is Business cost evidence, not a product gate.]
 
-**Proof plan and review cost:** [Runs · the checks that must pass for Built · exact user types and number of fresh testers, at least two · judge, plus second judge when risky or at a milestone · what each rules on. A safety net counts only after it has failed on purpose.]
+**Execution authorization:** [Before any model-bearing work: maximum model turns or contexts · elapsed time · retries · fallbacks · owner interruptions · pre-first-run time · pre-first-run files. Exhaustion forbids another model-bearing turn.]
+
+**Proof plan and review cost:** [Existing real result, if any · runs · the checks that must pass for Built · exact user types and number of fresh testers, at least two · judge, plus second judge when risky or at a milestone · what each rules on. A safety net counts only after it has failed on purpose. Once a real result exists, name the concrete fresh-review product finding or genuinely new product claim that would authorize another build; method or cost findings cannot.]
 
 ## Role call decisions
 
@@ -50,6 +52,8 @@
 [If a called role said its concern was handled and a consequential miss later proves otherwise, record the role, prior conclusion, and direct miss evidence. Keep the role involved at the next comparable piece's key decisions and informative runs. A repeat keeps it involved through the milestone until measured evidence supports relaxing it. This does not replace the current-piece repair for false inactivity. Otherwise: not triggered, with evidence.]
 
 **Business ruling:** [Required for a business-changing piece and every milestone: `kept / broken / not judged` with evidence. The latter two block. Otherwise: not required, with reason.]
+
+**Result disposition:** [Record separately: product evidence may enter review / cannot enter review · cost experiment passed / failed / not run, with measured gross, cached, and fresh tokens against the estimate · further model work open / closed against the declared authorization and any concrete product finding or new claim. One disposition cannot rescue or erase another; historical failures stay failed.]
 
 **Review receipt** *(commit before any tester runs)*:
 

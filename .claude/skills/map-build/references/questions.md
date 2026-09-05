@@ -26,6 +26,6 @@ Ask one or two at a time. Give options, costs, and a recommendation. Keep the ow
 
 ## Decide what it runs on
 
-11. What do the pieces require: data shape, model access, latency, privacy, and cost ceiling? Requirements come before brands.
+11. What do the pieces require: data shape, model access, latency, privacy, a token estimate, and enforceable authorization in turns or contexts, time, retries/fallbacks, owner interruptions, and pre-first-run reading? Requirements come before brands; estimate crossings are cost findings, while authorization exhaustion stops more model work.
 12. What are the options and their real costs: monthly money, lock-in, operating burden, and reversal cost after a stated number of pieces? Include the boring option. The owner picks a care level. Over-engineering past it is the recorded “we went a bit overboard” failure, just as under-engineering is.
 13. What would reopen this decision? Put it in `decisions.md`.

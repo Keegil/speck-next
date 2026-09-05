@@ -3,9 +3,9 @@
 [A floor, not a form: keep these six questions and add what the owner needs.]
 
 ## What’s true now
-[Phase · live piece or round · claims with evidence. States: Shaped → Built → Judged → Live. For Judged, list works · delivers the promise · good to use · quality hangs together, each with evidence or “not judged yet.” Add Business's `kept / broken / not judged` ruling only for a business-changing piece or milestone. A failed check says “check failed.” Insufficient work returns without advancing.]
+[Phase · live piece or round · claims with evidence. States: Shaped → Built → Judged → Live. For Judged, list works · delivers the promise · good to use · quality hangs together, each with contributor-excluded fresh-use and independent-judgment evidence or “not judged yet.” Separately record whether product evidence may enter review, whether the cost experiment passed or failed with measured gross/cached/fresh tokens against its estimate, and whether further model work is open or closed against its authorization. No disposition rescues or erases another; historical failures stay failed. Add Business's `kept / broken / not judged` ruling only for a business-changing piece or milestone. A failed check says “check failed.” Insufficient work returns without advancing.]
 
-[Name unresolved role tensions, overdue informative returns, and evidence invalidated by a false inactive call when they affect the work. Say where the repair returned and which new Built line and receipt are required. Never list four role statuses as a dashboard.]
+[Name unresolved role tensions, overdue informative returns, and evidence invalidated by a false inactive call when they affect the work. Say where the repair returned and which new Built line and receipt are required. Once a real result exists, further model work stays closed unless fresh review finds a concrete product problem or a genuinely new product claim appears and authorization remains. Method and cost findings go to the kernel or a future run, not a duplicate product build. Never list four role statuses as a dashboard.]
 
 ## What’s wearing out
 [Every strain and its count. Twice means next piece or visible deferral.]
