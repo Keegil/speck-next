@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Transport Product-authored role requests to isolated Codex sessions."""
-import json, os, pathlib, shutil, signal, subprocess, sys, tempfile, time
+"""Fixed six-stage transport for the separated-product-team development fixture."""
+import base64, concurrent.futures, hashlib, json, os, pathlib, shutil, signal, subprocess, sys, tempfile, time
 
 ROLES = ("Business", "Experience", "Engineering")
 STAGES = {
@@ -12,6 +12,95 @@ current = None
 home = None
 root_home = None
 startup_ready = False
+PACKET_SCHEMA = "piece9-packet-v1"
+STAGE_ORDER = ("product_select", "contributions", "product_synthesis", "engineering",
+               "returns", "product_close")
+STAGE_LIMITS = {
+    "product_select": {"gross": 21000, "fresh": 12000, "wall": 45, "responses": 1},
+    "contributions": {"gross": 54000, "fresh": 32000, "wall": 90, "responses": 3},
+    "product_synthesis": {"gross": 26000, "fresh": 18000, "wall": 60, "responses": 1},
+    "engineering": {"gross": 70000, "fresh": 55000, "wall": 360, "responses": 3},
+    "returns": {"gross": 40000, "fresh": 24000, "wall": 90, "responses": 2},
+    "product_close": {"gross": 24000, "fresh": 19000, "wall": 60, "responses": 1},
+}
+PROBE_LIMITS = {
+    "business": {"gross": 38000, "fresh": 22000, "wall": 180, "responses": 2},
+    "contributions": STAGE_LIMITS["contributions"],
+    "product": {"gross": 47000, "fresh": 30000, "wall": 105, "responses": 2},
+    "engineering": {"gross": 88000, "fresh": 67000, "wall": 450, "responses": 4},
+}
+FULL_LIMITS = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 11}
+
+
+def canonical_json(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+
+
+def make_packet(root, stage, role, brief, paths, lineage=()):
+    root = pathlib.Path(root).resolve()
+    evidence = []
+    seen = set()
+    for name in paths:
+        relative = pathlib.PurePosixPath(str(name))
+        if relative.is_absolute() or ".." in relative.parts or str(relative) in seen:
+            raise ValueError(f"unsafe or duplicate evidence path: {name}")
+        seen.add(str(relative))
+        source = (root / pathlib.Path(*relative.parts)).resolve(strict=True)
+        try:
+            confined = os.path.commonpath((str(root), str(source))) == str(root)
+        except ValueError:
+            confined = False
+        if not confined or not source.is_file():
+            raise ValueError(f"evidence path escapes product root: {name}")
+        content = source.read_bytes()
+        evidence.append({
+            "path": str(relative), "bytes": len(content),
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "content_base64": base64.b64encode(content).decode("ascii"),
+        })
+    body = {
+        "schema": PACKET_SCHEMA, "stage": stage, "role": role, "brief": brief,
+        "lineage": list(lineage), "evidence": evidence,
+    }
+    return {"body": body, "sha256": hashlib.sha256(canonical_json(body)).hexdigest(),
+            **body}
+
+
+def verify_packet(packet):
+    try:
+        body = packet["body"]
+        if packet.get("sha256") != hashlib.sha256(canonical_json(body)).hexdigest():
+            return False
+        if any(packet.get(key) != value for key, value in body.items()):
+            return False
+        for item in body["evidence"]:
+            content = base64.b64decode(item["content_base64"], validate=True)
+            if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
+                return False
+        return body.get("schema") == PACKET_SCHEMA
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
+def source_manifest(root, paths):
+    packet = make_packet(root, "source-manifest", "runner", "immutable fixture sources", paths)
+    entries = [{key: item[key] for key in ("path", "bytes", "sha256")}
+               for item in packet["evidence"]]
+    return {"schema": PACKET_SCHEMA, "evidence": entries,
+            "sha256": hashlib.sha256(canonical_json(entries)).hexdigest()}
+
+
+def reservation_plan():
+    return {stage: {**limits, "status": "reserved"} for stage, limits in STAGE_LIMITS.items()}
+
+
+def can_start(plan, stage):
+    if stage not in STAGE_ORDER or set(plan) != set(STAGE_ORDER):
+        return False
+    index = STAGE_ORDER.index(stage)
+    if any(plan[name].get("status") != "complete" for name in STAGE_ORDER[:index]):
+        return False
+    return all(plan[name].get("status") == "reserved" for name in STAGE_ORDER[index:])
 
 
 def write_json(path, value):

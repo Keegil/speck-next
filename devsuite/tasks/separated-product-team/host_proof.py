@@ -6,6 +6,10 @@ ROLES = ("Business", "Experience", "Engineering")
 STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
           "Engineering": ("contribution", "implement", "return")}
 NEEDLES = {"Business": "business-evidence.md", "Experience": "experience-evidence.md", "Engineering": "pulse.py"}
+USAGE_FIELDS = ("gross", "cached", "fresh", "responses")
+PROBE_NAMES = ("contributions", "product", "business", "engineering")
+ADMISSION_FIELDS = ("driver", "model", "candidate", "runner_sha256", "packet_schema",
+                    "source_manifest_sha256")
 
 
 def jsonl(path):
@@ -20,6 +24,102 @@ def jsonl(path):
     return rows
 
 
+def empty_usage():
+    return {field: 0 for field in USAGE_FIELDS}
+
+
+def add_usage(*values):
+    total = empty_usage()
+    for value in values:
+        for field in USAGE_FIELDS:
+            total[field] += int(value.get(field, 0) or 0)
+    return total
+
+
+def usage_delta(after, before):
+    value = {field: int(after.get(field, 0) or 0) - int(before.get(field, 0) or 0)
+             for field in USAGE_FIELDS}
+    if any(amount < 0 for amount in value.values()):
+        raise ValueError("usage counters moved backwards")
+    return value
+
+
+def codex_usage_rows(rows):
+    """Return one Codex session's cumulative usage without double-counting reasoning."""
+    latest = {}
+    responses = 0
+    for event in rows:
+        payload = event.get("payload", {})
+        if event.get("type") == "event_msg" and payload.get("type") == "token_count":
+            candidate = payload.get("info", {}).get("total_token_usage", {})
+            if candidate:
+                latest = candidate
+        if ((event.get("type") == "event_msg" and payload.get("type") == "task_complete") or
+                event.get("type") == "turn.completed"):
+            responses += 1
+    input_tokens = int(latest.get("input_tokens", 0) or 0)
+    cached = int(latest.get("cached_input_tokens", 0) or 0)
+    output = int(latest.get("output_tokens", 0) or 0)
+    gross = int(latest.get("total_tokens", input_tokens + output) or 0)
+    return {"gross": gross, "cached": cached, "fresh": input_tokens - cached + output,
+            "responses": responses}
+
+
+def claude_usage_rows(rows):
+    """Return cumulative Claude usage; cache creation is fresh and cache reads are not."""
+    messages = {}
+    responses = 0
+    for row in rows:
+        message = row.get("message", {})
+        if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
+            messages[message["id"]] = message.get("usage", {})
+        if row.get("type") == "result" and row.get("subtype") not in ("error", "error_max_turns"):
+            responses += 1
+    gross = cached = fresh = 0
+    for usage in messages.values():
+        uncached = int(usage.get("input_tokens", 0) or 0)
+        created = int(usage.get("cache_creation_input_tokens", 0) or 0)
+        read = int(usage.get("cache_read_input_tokens", 0) or 0)
+        output = int(usage.get("output_tokens", 0) or 0)
+        gross += uncached + created + read + output
+        cached += read
+        fresh += uncached + created + output
+    return {"gross": gross, "cached": cached, "fresh": fresh, "responses": responses}
+
+
+def stage_verdict(usage, elapsed, limits, complete):
+    reasons = []
+    for field in ("gross", "fresh", "responses"):
+        if int(usage.get(field, 0) or 0) > int(limits[field]):
+            reasons.append(field)
+    if float(elapsed) > float(limits["wall"]):
+        reasons.append("wall")
+    status = "over" if reasons else ("passed" if complete else "incomplete")
+    return {"status": status, "reasons": reasons, "usage": dict(usage), "elapsed": elapsed,
+            "limits": dict(limits), "complete": bool(complete)}
+
+
+def intervals_overlap(intervals):
+    if not intervals or any(len(interval) != 2 or interval[1] < interval[0] for interval in intervals):
+        return False
+    return max(interval[0] for interval in intervals) < min(interval[1] for interval in intervals)
+
+
+def continuity_ok(expected, observed):
+    return bool(expected) and set(expected) == set(observed) and all(
+        expected[role] and expected[role] == observed[role] for role in expected)
+
+
+def admission_ok(receipt, expected):
+    if not all(receipt.get(field) == expected.get(field) and expected.get(field)
+               for field in ADMISSION_FIELDS):
+        return False
+    probes = receipt.get("probes", {})
+    return set(probes) == set(PROBE_NAMES) and all(
+        isinstance(probes[name], dict) and probes[name].get("status") == "passed"
+        for name in PROBE_NAMES)
+
+
 def root_identity(driver, events_path):
     for event in jsonl(events_path):
         if driver == "codex" and event.get("type") == "thread.started" and event.get("thread_id"):
@@ -31,12 +131,7 @@ def root_identity(driver, events_path):
 
 
 def codex_usage(path):
-    total = 0
-    for event in jsonl(path):
-        payload = event.get("payload", {})
-        if event.get("type") == "event_msg" and payload.get("type") == "token_count":
-            total = payload.get("info", {}).get("total_token_usage", {}).get("total_tokens", total)
-    return int(total or 0)
+    return codex_usage_rows(jsonl(path))["gross"]
 
 
 def codex_meta(path):
@@ -73,7 +168,8 @@ def codex_session_blobs(path):
 
 
 def broker_codex(clone, events_path, state_path, carriers):
-    result = {"root": False, "roles": {}, "tokens": 0, "root_id": None, "extra_contexts": 0}
+    result = {"root": False, "roles": {}, "tokens": 0, **empty_usage(),
+              "root_id": None, "extra_contexts": 0}
     root_id = root_identity("codex", events_path)
     result["root_id"] = root_id
     state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
@@ -91,14 +187,18 @@ def broker_codex(clone, events_path, state_path, carriers):
         _, root_direct, _ = codex_session_blobs(root_path)
     if not state:
         if root_path:
-            result["tokens"] += codex_usage(root_path)
+            usage = codex_usage_rows(jsonl(root_path))
+            result.update(usage)
+            result["tokens"] = usage["gross"]
         return result
     if pathlib.Path(state.get("root", "")).resolve() != pathlib.Path(clone).resolve():
         return result
     session_paths = list(sessions_root.rglob("*.jsonl")) if sessions_root and sessions_root.exists() else []
     root_paths = list(root_sessions.rglob("*.jsonl")) if root_sessions and root_sessions.exists() else []
     all_paths = list(dict.fromkeys(session_paths + root_paths))
-    result["tokens"] += sum(codex_usage(path) for path in all_paths)
+    usage = add_usage(*(codex_usage_rows(jsonl(path)) for path in all_paths))
+    result.update(usage)
+    result["tokens"] = usage["gross"]
     expected_ids = {value for value in (root_id, *state.get("sessions", {}).values()) if value}
     actual_ids = {meta.get("id") for meta in map(codex_meta, all_paths) if meta.get("id")}
     result["extra_contexts"] = len(actual_ids - expected_ids)
@@ -179,13 +279,7 @@ def nested_dicts(value):
 
 
 def claude_usage(rows):
-    messages = {}
-    for row in rows:
-        message = row.get("message", {})
-        if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
-            messages[message["id"]] = message.get("usage", {})
-    return sum(int(usage.get(key, 0) or 0) for usage in messages.values()
-               for key in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
+    return claude_usage_rows(rows)["gross"]
 
 
 def canonical_claude_root(root_id, projects_root=None):
@@ -210,15 +304,15 @@ def claude_agent_records(rows):
 
 
 def native_claude(clone, events_path, carriers, projects_root=None):
-    result = {"root": False, "roles": {}, "tokens": 0, "root_id": root_identity("claude", events_path),
-              "extra_contexts": 0}
+    result = {"root": False, "roles": {}, "tokens": 0, **empty_usage(),
+              "root_id": root_identity("claude", events_path), "extra_contexts": 0}
     root_path = canonical_claude_root(result["root_id"], projects_root)
     if not root_path:
         return result
     rows = jsonl(root_path)
     result["root"] = any(row.get("sessionId") == result["root_id"] and
                          pathlib.Path(row.get("cwd", "")).resolve() == pathlib.Path(clone).resolve() for row in rows)
-    result["tokens"] += claude_usage(rows)
+    usage_parts = [claude_usage_rows(rows)]
     launches, results = claude_agent_records(rows)
     trusted = pathlib.Path(projects_root or pathlib.Path.home() / ".claude" / "projects").resolve()
     child_records = {}
@@ -234,7 +328,7 @@ def native_claude(clone, events_path, carriers, projects_root=None):
             continue
         child_rows = jsonl(path)
         child_records[path] = child_rows
-        result["tokens"] += claude_usage(child_rows)
+        usage_parts.append(claude_usage_rows(child_rows))
         child_launches, child_results = claude_agent_records(child_rows)
         result["extra_contexts"] += len(child_launches)
         pending.extend(meta.get("outputFile") for meta in child_results.values() if meta.get("outputFile"))
@@ -284,6 +378,9 @@ def native_claude(clone, events_path, carriers, projects_root=None):
         if role in result["roles"] and count != 1:
             result["roles"][role]["host"] = False
     result["extra_contexts"] += max(0, len(launches) - 3)
+    usage = add_usage(*usage_parts)
+    result.update(usage)
+    result["tokens"] = usage["gross"]
     return result
 
 
