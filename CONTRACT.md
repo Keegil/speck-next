@@ -1,6 +1,6 @@
 # speck-next · Product contract
 
-The promises Speck Next makes, each with the check that can fail it. (v0.8 candidate — how this document has been attacked and revised lives in [docs/reviews/](docs/reviews/).)
+The promises Speck Next makes, each with the check that can fail it. (v6.0.0 — how this document has been attacked and revised lives in [docs/reviews/](docs/reviews/).)
 
 ## The job
 

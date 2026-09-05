@@ -658,14 +658,14 @@ def static_contract_homes(kernel):
                       "one row per role", "completed Map or resume route",
                       "owner bytes are never generated or normalized",
                       "LF, CRLF, lone CR", "last existing line ending", "default-ignorable",
-                      "20 files / 85,623 bytes", "Codex discovery symlink",
+                      "20 files / 85,618 bytes", "Codex discovery symlink",
                       "47,374 bytes"],
         "capabilities.md": ["Selective product team", "result-disposition subjects",
                             "reviewable / failed / closed",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container",
                             "95 path-transaction subjects", "Codex discovery symlink",
-                            "20 file-system entries / 85,623 bytes", "47,374 / 50,000 bytes"],
+                            "20 file-system entries / 85,618 bytes", "47,374 / 50,000 bytes"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -1227,7 +1227,7 @@ def run_path_transaction_controls(kernel):
             fresh_adapter.lstat().st_size == len(b"../../.claude/skills") and
             fresh_adapter.resolve() == (truthful_fresh / ".claude/skills").resolve() and
             fresh_adapter.resolve().is_relative_to(truthful_fresh.resolve()) and
-            len(actual_fresh_paths) == 20 and fresh_bytes == 85623,
+            len(actual_fresh_paths) == 20 and fresh_bytes == 85618,
         ))
 
         whole_alias = fresh_repo("whole-root-codex-alias")
@@ -1751,7 +1751,7 @@ def run_path_transaction_controls(kernel):
                 not packed_source_adapter.exists() and not packed_source_adapter.is_symlink() and
                 packed_install.returncode == 0 and not packed_install.stderr and
                 packed_count == len(packed_actual_paths) == len(packed_paths) == 20 and
-                packed_paths == packed_actual_paths and packed_bytes == 85618 and
+                packed_paths == packed_actual_paths and packed_bytes == 85613 and
                 packed_adapter is not None and
                 packed_adapter.lstat().st_size == len(b"../../.claude/skills") and
                 packed_adapter.resolve() == (packed_product / ".claude/skills").resolve() and
@@ -1764,7 +1764,7 @@ def run_path_transaction_controls(kernel):
         except (FileNotFoundError, IndexError, KeyError, OSError, TypeError, ValueError, tarfile.TarError):
             packed_transport_ok = False
         results.append((
-            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 85,618-byte census",
+            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 85,613-byte census",
             packed_transport_ok,
         ))
 
