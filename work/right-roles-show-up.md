@@ -1051,3 +1051,9 @@ The new attack made `product.md` a symbolic link to an external owner file in a 
 **Verdict: keep.** The worst-day moment was the ambiguous fieldless marker stopping rather than guessing, printing one executable recovery command, and preserving owner bytes while opening the assessment. No migration, host, or path-topology defect was observed. Piece 9 affordability was not tested.
 
 Both tester carriers and every host session above join the exclusion set for Piece 8 judgment and the v6 milestone review.
+
+### Judge challenges and tester answers
+
+The reserved judge challenged Tester 1's implicit-path claim before ruling. Tester 1 answered from retained evidence only: implicit session `01a0719c-cd74-73c3-9b34-99d0384065f9` proves that the startup catalog contained `shape-product` through the adapter, an unnamed prompt selected Shape, the response asked an outcome-first question, and no tool ran. It does **not** prove byte-exact implicit injection because no injected body was retained for that session. The 5,779-byte canonical-body equality belongs only to explicit session `01a0719c-8fe9-7cf0-a1d0-7768eaf25afc`. The judge must treat the implicit walk as behavioral selection evidence, not canonical-body identity evidence.
+
+The judge also challenged Tester 2's host calls. Tester 2 confirmed that its explicit Codex call retained only successful stdout, without a session identifier or complete host metadata; it supports the canonical opening behavior but not exact identity, exclusions, or byte equality. Its Claude call retained exit zero and successful shaping stdout, but no version, model, usage, or session identifier; it supports only a limited invocation observation, not exact identity, discovery count, canonical bytes, or affordability. Every stronger Tester 2 host claim is struck. The earlier exact Claude session and the judge's independent host runs remain available evidence.
