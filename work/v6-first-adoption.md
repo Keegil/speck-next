@@ -286,3 +286,278 @@ The filesystem-level discovery/coexistence attack passes from the same nested st
 **Keep:** Not this release artifact yet. I would keep the installation approach — it is fast, explicit, and tells me that shaping is next — but I would not keep v6.0.0 installed in a real repo until one compatible native Codex turn proves discovery and the npm tarball is narrowed to what adopters need.
 
 **Deal-breaker:** The product-owned deal-breaker is the dirty package: 79 internal work, review, dev-suite, or source-state entries ride in the adopter tarball. The failed Codex turn is also a practical adoption blocker on this exact host, although the evidence points to host CLI/model compatibility rather than Speck's installed bytes. A clean package and a successful fresh turn on the supported Codex version are the two conditions that would change my verdict.
+
+---
+
+# Repaired-candidate continuation — focused receipt `5c214fa`
+
+This continuation preserves the failed original run above. It is a new first-adopter walk under the focused receipt committed before dispatch at `5c214fa3dd4654fecea1bf944242710df2c544aa`.
+
+## Continuation receipt and boundary
+
+- Exact repaired product commit: `ca33c64f613ae0004c8dd1d9809dbf26ed9c172b` (`ca33c64`).
+- Built boundary: state-only commit `e3f5b559ff29fe12d54f7ed72951e9c626be5b7c` (`e3f5b55`). Its Built line names the original v6 method commits plus repair commit `ca33c64`, which changes exactly `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`; it records a 20-entry package and unchanged method digest `1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70`.
+- Receipt commit: `5c214fa3dd4654fecea1bf944242710df2c544aa` (`5c214fa`).
+- Persona and exclusions remain the original fresh first-time Codex adopter; I contributed to none of the product work or roles.
+- Continued: `2026-09-06T01:40:10+0200`.
+- Authorization: one new native Codex model invocation, at most 180 seconds, explicitly compatible CLI/model, no retry, fallback, second invocation, owner interruption, synthetic-product build, or other source edit.
+- Required experience instructions were reread in full (75 lines). I read the focused receipt delta, its quoted Built evidence, and the repair commit's package/runtime delta; no prior role conclusion is evidence for this run.
+
+## Preflight
+
+The current native executable reports:
+
+```text
+codex-cli 0.147.0
+```
+
+Its `exec` command exposes explicit `--model`, `--sandbox`, `--ephemeral`, `--json`, and `--output-last-message` controls. I will override the stale global Astra default with `--model gpt-5.6-sol`, keep the product read-only during the model run, and enforce a 180-second process alarm. This preflight started no model turn.
+
+## Continuation run record
+
+### Fresh repaired package and subject
+
+`mktemp -d /tmp/speck-v6-repair-adoption.XXXXXX` returned `/tmp/speck-v6-repair-adoption.dPrqX9`. An initial shell wrapper was rejected before process creation because I named its not-yet-created `pack-source` as the working directory; no command or product operation ran. I then ran the setup from the source repository:
+
+```text
+mkdir -p /tmp/speck-v6-repair-adoption.dPrqX9/pack-source /tmp/speck-v6-repair-adoption.dPrqX9/adopter/deep/inside
+git init -q /tmp/speck-v6-repair-adoption.dPrqX9/pack-source
+git init -q /tmp/speck-v6-repair-adoption.dPrqX9/adopter
+git archive ca33c64f613ae0004c8dd1d9809dbf26ed9c172b | tar -x -C /tmp/speck-v6-repair-adoption.dPrqX9/pack-source
+npm pack --json --pack-destination /tmp/speck-v6-repair-adoption.dPrqX9
+```
+
+Pack output:
+
+```text
+id: speck-next@6.0.0
+filename: speck-next-6.0.0.tgz
+size: 55687
+unpackedSize: 191381
+shasum: 52d2bb39ca043fd612da337909297b5d747e9335
+integrity: sha512-7iGCSvAyw+/1c4UMgkLlcafznGiMdrZzZRvornyXIPZB4FUy6sjJJ/HnMyz4y/LMZYJk0KFspkYlSNfkVk4u8w==
+local sha256: 16c9024e031727b38e890587de0397507107c018d09a3bc8e0de53b4923e255d
+entryCount: 20
+```
+
+The 20 JSON-listed entries were only `bin/speck-next.js`, `package.json`, `README.md`, `AGENTS.md`, `CLAUDE.md`, nine canonical skill/reference files under `.claude/skills`, and six files under `templates`. No `work`, `docs`, `devsuite`, examples, or source product/state/decision record appeared.
+
+Subject identity: `/tmp/speck-v6-repair-adoption.dPrqX9/adopter`, a new Git repository. I seeded the same harmless 201-byte `.agents/skills/owner-compass/SKILL.md`, sealed sha256 `de63fff4a491e06f0d1e35d60206be58fe9e8227d0c9df68cb058730315c4e5f`, and committed it as baseline `fc8e4d3684b5a4a0645d27c729dc21f12dbd622f`.
+
+Installation command:
+
+```text
+npm exec --yes --package=/tmp/speck-v6-repair-adoption.dPrqX9/speck-next-6.0.0.tgz -- speck-next install .
+```
+
+Meaningful output:
+
+```text
+Installed Speck Next 6.0.0 (source checkout not recorded; method surface sha256:1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70) into /private/tmp/speck-v6-repair-adoption.dPrqX9/adopter — 20 installed or carried-forward files on disk.
+Installed paths:
+.agents/skills/speck-next
+.claude/skills/craft/SKILL.md
+.claude/skills/experience/SKILL.md
+.claude/skills/experience/references/walk.md
+.claude/skills/experience/references/worst-day.md
+.claude/skills/judge/SKILL.md
+.claude/skills/map-build/SKILL.md
+.claude/skills/map-build/references/questions.md
+.claude/skills/shape-product/SKILL.md
+.claude/skills/shape-product/references/questions.md
+.claude/speck-next.json
+AGENTS.md
+CLAUDE.md
+map.md
+templates/decisions.md
+templates/map.md
+templates/piece.md
+templates/product.md
+templates/rounds.md
+templates/state.md
+Next: open an agent session there and say what you want to build — shaping starts in that conversation.
+```
+
+The repaired package is 596,538 bytes smaller compressed and 2,002,035 bytes smaller unpacked than my failed original candidate. The install still names exactly 20 on-disk entries and gives the same plain first step.
+
+I have not opened or hashed the installed `AGENTS.md`, marker, templates, or skill bodies. The next action is the single authorized native model invocation from `deep/inside`.
+
+### One native Codex invocation — successful
+
+Command, launched from `/tmp/speck-v6-repair-adoption.dPrqX9/adopter/deep/inside` with a 180-second process alarm:
+
+```text
+codex exec --model gpt-5.6-sol --ephemeral --sandbox read-only --json --output-last-message /tmp/speck-v6-repair-adoption.dPrqX9/codex-last.txt 'Which Speck Next workflows are available here, and what is the first honest next action for this repository as it stands? Also, if a pre-existing owner-compass skill is available, use it and report the compass. Do not change any files.'
+```
+
+- CLI: `codex-cli 0.147.0`.
+- Explicit model: `gpt-5.6-sol`; the stale global Astra default did not select the model.
+- Native session: `01a073f3-5fca-74c3-8d49-eedc1ed91c24`.
+- Exit: 0.
+- Elapsed: approximately 85.4 seconds from the CLI's first timestamp (`23:42:04.408860Z`) to shutdown (`23:43:29.816358Z`), inside the 180-second authorization.
+- Usage: 260,556 input tokens; 211,328 cached input tokens; 0 cache-write input tokens; 3,306 output tokens; 1,319 reasoning-output tokens.
+- Retry/fallback: none. The command was polled to completion as the same process and same turn; no second invocation or resumed turn occurred.
+
+Final output:
+
+```text
+Shape — no live piece exists yet.
+
+Available Speck Next workflows:
+
+- `shape-product` — define and ratify the product.
+- `map-build` — order the shaped product into buildable pieces.
+- `craft` — quality bar for user-visible work.
+- `experience` — fresh-user testing.
+- `judge` — independent challenge and ruling.
+
+The first honest next action is `shape-product`. `product.md` does not exist, while `map.md` explicitly says there is no map. The opening owner question should establish the outcome: “What does the user get from this product?”
+
+The installation is Speck Next 6.0.0, with no upgrade assessment pending. Its generated files are currently uncommitted. I changed nothing.
+
+Owner compass: `north-star intact`.
+```
+
+First-adopter observation: this is the answer I wanted on the first try. It names the whole five-workflow path, distinguishes the absent product from the merely present empty map, turns that evidence into one action, and opens with an outcome question I could answer without learning the method. It also proved that my existing skill remained usable beside Speck's adapter.
+
+The CLI's unrelated configured MCP endpoint returned HTTP 500 during startup and shutdown, and local read-only Git commands printed macOS cache warnings. Neither aborted the model run. The turn did roam into the adjacent disposable `pack-source` while locating files, but it corrected to the Git top level before deciding; the final answer cited only the adopter's installed state. Independent mutation verification follows.
+
+### Repaired-candidate verification
+
+**Package scope — works.** Commands:
+
+```text
+tar -tzf /tmp/speck-v6-repair-adoption.dPrqX9/speck-next-6.0.0.tgz | sort
+tar -tzf /tmp/speck-v6-repair-adoption.dPrqX9/speck-next-6.0.0.tgz | wc -l
+tar -tzf /tmp/speck-v6-repair-adoption.dPrqX9/speck-next-6.0.0.tgz | rg '^package/(work/|docs/|devsuite/|examples/|product\.md$|state\.md$|map\.md$|decisions\.md$|CONTRACT\.md$|capabilities\.md$)' | wc -l
+```
+
+Output was the exact 20-file allowlist named in the pack record above, then:
+
+```text
+20
+0
+```
+
+I also passed every tar entry through an explicit shell `case` allowlist of those 20 paths; it printed no `UNEXPECTED` entry. This directly closes my original 79-entry package finding.
+
+**Exact installed footprint — works.** Excluding `.git`, the intentionally pre-existing `owner-compass`, and the empty `deep` test directory, this command enumerated exactly the 20 installer-owned entries:
+
+```text
+find . -path ./.git -prune -o -path ./deep -prune -o -path ./.agents/skills/owner-compass -prune -o \( -type f -o -type l \) -print | sort
+```
+
+Output:
+
+```text
+./.agents/skills/speck-next
+./.claude/skills/craft/SKILL.md
+./.claude/skills/experience/SKILL.md
+./.claude/skills/experience/references/walk.md
+./.claude/skills/experience/references/worst-day.md
+./.claude/skills/judge/SKILL.md
+./.claude/skills/map-build/SKILL.md
+./.claude/skills/map-build/references/questions.md
+./.claude/skills/shape-product/SKILL.md
+./.claude/skills/shape-product/references/questions.md
+./.claude/speck-next.json
+./AGENTS.md
+./CLAUDE.md
+./map.md
+./templates/decisions.md
+./templates/map.md
+./templates/piece.md
+./templates/product.md
+./templates/rounds.md
+./templates/state.md
+```
+
+The independent count returned `20`, exactly matching the install report.
+
+**Version and method digest — work.** The installed marker reports version `6.0.0`, `sourceCheckout: null`, no upgrade assessment, and method digest `1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70`. I independently recomputed the aggregate after the Codex turn with the same path/NUL/bytes/NUL framing:
+
+```text
+node -e 'const fs=require("fs"),path=require("path"),crypto=require("crypto"); const root=process.cwd(), starts=["AGENTS.md","CLAUDE.md",path.join(".claude","skills"),"templates"], files=[]; function visit(rel){const abs=path.join(root,rel),st=fs.statSync(abs); if(st.isDirectory()) for(const n of fs.readdirSync(abs).sort()) visit(path.join(rel,n)); else files.push(rel)}; for(const s of starts) visit(s); files.sort(); const h=crypto.createHash("sha256"); for(const rel of files){h.update(rel.split(path.sep).join("/"));h.update("\0");h.update(fs.readFileSync(path.join(root,rel)));h.update("\0")} console.log(`files=${files.length}`);console.log(h.digest("hex"))'
+files=17
+1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70
+```
+
+**Five skills and relative adapter — work.** `find .claude/skills -name SKILL.md -type f` returned exactly `craft`, `experience`, `judge`, `map-build`, and `shape-product`. Each installed `SKILL.md` was byte-identical to the exact `ca33c64` pack source. The adapter remained:
+
+```text
+readlink .agents/skills/speck-next
+../../.claude/skills
+
+realpath .agents/skills/speck-next
+/private/tmp/speck-v6-repair-adoption.dPrqX9/adopter/.claude/skills
+```
+
+**Owner-skill preservation — works, including native use.** After the turn:
+
+```text
+shasum -a 256 .agents/skills/owner-compass/SKILL.md
+de63fff4a491e06f0d1e35d60206be58fe9e8227d0c9df68cb058730315c4e5f  .agents/skills/owner-compass/SKILL.md
+
+git diff --exit-code HEAD -- .agents/skills/owner-compass/SKILL.md
+(no output; exit 0)
+```
+
+The native answer `Owner compass: north-star intact` proves actual discovery and use, not only byte survival.
+
+**No product mutation — works.** After the model exited, `git status --short` showed exactly the six pre-existing installer additions and nothing else:
+
+```text
+?? .agents/skills/speck-next
+?? .claude/
+?? AGENTS.md
+?? CLAUDE.md
+?? map.md
+?? templates/
+```
+
+The aggregate method digest still matched the packed source, all five skill bodies byte-matched, the owner file matched its committed baseline, and the output file was outside the repository. The read-only model invocation changed no product file.
+
+**First step — works through the actual product surface.** Static evidence says no `product.md`, `map.md` says `No map yet`, and the method says missing ratified product means `shape-product`. Native Codex reached the same conclusion without a root-path hint, named all five workflows, and asked the outcome-level opening question. This closes the original untested first-start condition.
+
+### Free skeptical attack — package, nested discovery, and coexistence
+
+The package attack above tried both a denylist for the original freight and an exact 20-path allowlist; both passed. From `deep/inside`, I then ran:
+
+```text
+git rev-parse --show-toplevel
+find -L ../../.agents/skills -name SKILL.md -type f -print | sort
+find -L ../../.agents/skills -name SKILL.md -type f -exec shasum -a 256 {} \; | awk '{print $1}' | sort | uniq -d | wc -l
+```
+
+Meaningful output:
+
+```text
+/private/tmp/speck-v6-repair-adoption.dPrqX9/adopter
+../../.agents/skills/owner-compass/SKILL.md
+../../.agents/skills/speck-next/craft/SKILL.md
+../../.agents/skills/speck-next/experience/SKILL.md
+../../.agents/skills/speck-next/judge/SKILL.md
+../../.agents/skills/speck-next/map-build/SKILL.md
+../../.agents/skills/speck-next/shape-product/SKILL.md
+duplicate digest count: 0
+```
+
+Resolving every body found six paths inside the adopter and zero path escapes. The native turn independently found and used the owner skill, listed the five Speck workflows, and recovered the correct Git root after its initially broad search exposed the adjacent pack source. I found no remaining package, discovery, duplicate-body, containment, or coexistence failure.
+
+### Cleanup
+
+After capturing the checks, I moved both exact disposable roots — the repaired continuation and the retained original failed-run subject — to macOS Trash:
+
+```text
+trash /tmp/speck-v6-repair-adoption.dPrqX9 /tmp/speck-v6-first-adoption.y52xpK
+TRASHED /tmp/speck-v6-repair-adoption.dPrqX9
+TRASHED /tmp/speck-v6-first-adoption.y52xpK
+```
+
+## Repaired-candidate verdict — first-time adopter
+
+**Works:** Yes. The repaired tarball is exactly the 20 runtime files it claims, install is exactly 20 entries, v6.0.0 and its aggregate digest verify, all five workflows are discoverable from a nested directory, and my pre-existing owner skill survives byte-for-byte and actually runs. The one native `gpt-5.6-sol` turn chose the honest `shape-product` start and changed nothing.
+
+**Keep:** Yes. I would keep this installation. The first answer tells me what the system can do, why Shape is current, and the one owner question I can answer next. The 260,556-input-token / 85-second orientation is expensive for such a small question, and the native search briefly wandered outside the Git root, but neither changed or confused the result.
+
+**Deal-breaker:** None found in the repaired scope. The two original blockers are closed by observed behavior: the distribution no longer carries development freight, and an explicitly compatible native Codex/model pairing completes discovery on its first and only invocation. The unrelated failing MCP endpoint and high orientation cost remain host/cost evidence for the later judge, not failures of the repaired installed product.
