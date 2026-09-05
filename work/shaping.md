@@ -145,6 +145,10 @@ At `9471b28`, a contributor-excluded tester used both preserved products blind a
 
 The repaired candidate now receives a new fresh challenge under the committed joint receipt in `work/separated-product-team.md`. The exact result-first contract remains unratified until that test and a separate judgment stand and the owner sees its plain-language text.
 
+### Repaired Shape re-test — sufficient
+
+At `63421fa`, fresh tester `/root/result_shape_map_retester` found the narrowed promise sufficient. Bad or incomplete work still cannot pass; fresh use and independent judgment still establish greatness; every cost remains visible; exhausted prospective authorization stops more model work; active calls and returns stay unchanged; and Business still blocks. The three dispositions were understandable as ordinary facts, not owner vocabulary. A separate judge is receipted in the Piece 9 record; owner ratification remains after judgment.
+
 ### Redesigned Shape tester round 1 — sent back
 
 Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:

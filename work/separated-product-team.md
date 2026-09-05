@@ -423,3 +423,16 @@ This result clears the pre-code product gate. It does not rescue v0.9, authorize
 - Judge: a separate new carrier after a sufficient re-test.
 - Dispatch: only after the commit containing this receipt.
 - Verdict and judgment: pending.
+
+### Repaired Shape/Map re-test — sufficient
+
+At `63421fa`, fresh tester `/root/result_shape_map_retester` replayed the first review's complete failure population and cold-read the three dispositions. Shape was **SUFFICIENT**: incomplete work still cannot pass; fresh use and independent judgment still establish greatness; historical failures, cost visibility, spend authorization, role calls, active returns, and Business's block all remained intact. Map was **SUFFICIENT**: the blind comparison ran under the prior receipt before code, the original Business and Experience carriers returned, no duplicate Pulse build can run, and the full release roster plus Codex-first/Claude-supported proof stayed present. The tester correctly read the dispositions without private vocabulary: the product evidence may enter review; v0.9 permanently missed its cost claim; and no more Pulse model work may start. Its skeptical attack found no cheaper route with equivalent lived independence and no removed promise producer.
+
+### Repaired Shape/Map judge receipt — opened before dispatch
+
+- Candidate: the complete repaired record through the sufficient re-test above, at the commit containing this receipt.
+- Judge: `/root/result_shape_map_judge`, a fresh Codex collaboration context using its inherited current model; it contributed to none of the shaping, mapping, roles, product builds, tests, repairs, or prior judgments.
+- Challenge: attack the favorable test against the owner's result-first direction, ten-hour delay concern, eight contract promises, locked selective-role promise, blind product evidence, all historic cost failures, reviewer independence, no-more-Pulse-spend rule, and exact release roster. Determine whether the new cost distinction produces better product work on Odd rather than methodology for its own sake.
+- Required ruling: Shape sufficient or sent back; Map sufficient or sent back; exact blocker only. Owner ratification still follows a sufficient judgment and cannot be supplied by the judge.
+- Dispatch: only after the commit containing this receipt.
+- Judgment: pending.

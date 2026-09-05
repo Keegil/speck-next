@@ -472,3 +472,7 @@ The active-return promise remains exactly as ratified. Later post-Built testers 
 At `9471b28`, the receipted blind comparison ran before code. The governed product completed the historical-week job on three journal states while the strong control failed it; legacy behavior and data integrity held. Business and Experience returned through their original carriers. Business ruled the prospective route `kept`, Experience resolved its active concern, and both refused universal-causality or cheapest-method claims. No Pulse rebuild is authorized.
 
 The same new fresh carrier now replays the first Shape/Map tester's complete condition population under the committed joint receipt in `work/separated-product-team.md`. A separate judge follows only if the re-test is sufficient. Engineering still waits for both and the owner's later ratification.
+
+### Repaired Map re-test — sufficient
+
+At `63421fa`, fresh tester `/root/result_shape_map_retester` found the re-cut sufficient. It confirmed the blind comparison preceded code, the same Business and Experience carriers returned, another Pulse build is forbidden, historic failures stay failed, and the complete v6 roster plus Codex-first/Claude-supported proof remain. Its skeptical attack found no cheaper equally independent route and no removed producer. A separate judge is receipted in the Piece 9 record; Engineering still waits for judgment and owner ratification.
