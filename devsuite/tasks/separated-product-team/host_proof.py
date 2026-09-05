@@ -1,113 +1,11 @@
 #!/usr/bin/env python3
 """Verify role contexts from runner-owned or canonical host records."""
-import hashlib, json, math, os, pathlib, re, sys, tempfile
+import json, os, pathlib, re, sys, tempfile
 
 ROLES = ("Business", "Experience", "Engineering")
-PACKET_SCHEMA = "piece9-packet-v3"
 STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
           "Engineering": ("contribution", "implement", "return")}
 NEEDLES = {"Business": "business-evidence.md", "Experience": "experience-evidence.md", "Engineering": "pulse.py"}
-USAGE_FIELDS = ("gross", "cached", "fresh", "responses")
-PROBE_NAMES = ("contributions", "product", "business", "engineering")
-ADMISSION_FIELDS = ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
-                    "source_manifest_sha256")
-STAGE_ORDER = ("product_select", "contributions", "product_synthesis", "engineering",
-               "returns", "product_close")
-STAGE_LIMITS = {
-    "product_select": {"gross": 21000, "fresh": 12000, "wall": 45, "responses": 1},
-    "contributions": {"gross": 54000, "fresh": 32000, "wall": 90, "responses": 3},
-    "product_synthesis": {"gross": 26000, "fresh": 18000, "wall": 60, "responses": 1},
-    "engineering": {"gross": 70000, "fresh": 55000, "wall": 360, "responses": 3},
-    "returns": {"gross": 40000, "fresh": 24000, "wall": 90, "responses": 2},
-    "product_close": {"gross": 24000, "fresh": 19000, "wall": 60, "responses": 1},
-}
-PROBE_LIMITS = {
-    "business": {"gross": 38000, "fresh": 22000, "wall": 180, "responses": 2},
-    "contributions": STAGE_LIMITS["contributions"],
-    "product": {"gross": 47000, "fresh": 30000, "wall": 105, "responses": 2},
-    "engineering": {"gross": 88000, "fresh": 67000, "wall": 450, "responses": 4},
-}
-FULL_LIMITS = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 11}
-PROBE_STAGES = {
-    "contributions": ("business_contribution", "experience_contribution", "engineering_contribution"),
-    "product": ("product_select", "product_synthesis"),
-    "business": ("business_contribution", "business_return"),
-    "engineering": ("engineering_contribution", "engineering_implement",
-                    "engineering_run", "engineering_return"),
-}
-SOURCE_PATHS = {
-    "product": "examples/pulse/product.md",
-    "business": "examples/pulse/evidence/business-evidence.md",
-    "experience": "examples/pulse/evidence/experience-evidence.md",
-    "engineering": "examples/pulse/pulse.py",
-}
-ALL_SOURCE_PATHS = tuple(SOURCE_PATHS.values())
-PRODUCT_DECISION_EXCERPTS = (
-    ("product-see", SOURCE_PATHS["product"], 9, 9),
-    ("product-value", SOURCE_PATHS["product"], 12, 12),
-    ("product-boundary", SOURCE_PATHS["product"], 16, 16),
-    ("product-properties", SOURCE_PATHS["product"], 18, 18),
-    ("product-feel", SOURCE_PATHS["product"], 22, 22),
-)
-BUSINESS_EXCERPTS = (
-    ("product-value", SOURCE_PATHS["product"], 12, 12),
-    ("business-observation", SOURCE_PATHS["business"], 1, 3),
-)
-EXPERIENCE_EXCERPTS = (
-    ("product-see", SOURCE_PATHS["product"], 9, 9),
-    ("product-properties", SOURCE_PATHS["product"], 18, 18),
-    ("product-feel", SOURCE_PATHS["product"], 22, 22),
-    ("experience-observation", SOURCE_PATHS["experience"], 1, 3),
-)
-ENGINEERING_EXCERPTS = (
-    ("product-see", SOURCE_PATHS["product"], 9, 9),
-    ("engineering-view", SOURCE_PATHS["engineering"], 61, 72),
-    ("engineering-runtime", SOURCE_PATHS["engineering"], 1, 9),
-    ("engineering-load", SOURCE_PATHS["engineering"], 12, 29),
-    ("engineering-dispatch", SOURCE_PATHS["engineering"], 164, 191),
-)
-ALL_DECISION_EXCERPTS = PRODUCT_DECISION_EXCERPTS + (
-    ("business-observation", SOURCE_PATHS["business"], 1, 3),
-    ("experience-observation", SOURCE_PATHS["experience"], 1, 3),
-    ("engineering-view", SOURCE_PATHS["engineering"], 61, 72),
-    ("engineering-runtime", SOURCE_PATHS["engineering"], 1, 9),
-    ("engineering-load", SOURCE_PATHS["engineering"], 12, 29),
-    ("engineering-dispatch", SOURCE_PATHS["engineering"], 164, 191),
-)
-SOURCE_EXCERPT_ALLOWLIST = {
-    ("source-manifest", "runner"): ALL_DECISION_EXCERPTS,
-    ("product_select", "Product"): ALL_DECISION_EXCERPTS,
-    ("contribution", "Business"): BUSINESS_EXCERPTS,
-    ("contribution", "Experience"): EXPERIENCE_EXCERPTS,
-    ("contribution", "Engineering"): ENGINEERING_EXCERPTS,
-    ("product_synthesis", "Product"): ALL_DECISION_EXCERPTS,
-    ("implement", "Engineering"): ENGINEERING_EXCERPTS,
-    ("run", "Engineering"): ENGINEERING_EXCERPTS,
-    ("return", "Business"): BUSINESS_EXCERPTS,
-    ("return", "Experience"): EXPERIENCE_EXCERPTS,
-    ("return", "Engineering"): ENGINEERING_EXCERPTS,
-    ("product_close", "Product"): ALL_DECISION_EXCERPTS,
-}
-SOURCE_ALLOWLIST = {
-    key: tuple(dict.fromkeys(path for _, path, _, _ in excerpts))
-    for key, excerpts in SOURCE_EXCERPT_ALLOWLIST.items()
-}
-MANIFEST_EXCERPTS = tuple(dict.fromkeys(
-    excerpt for excerpts in SOURCE_EXCERPT_ALLOWLIST.values() for excerpt in excerpts
-))
-EXCERPT_MARKERS = {
-    "product-see": ("*see:*", "last two weeks", "gaps"),
-    "product-value": ("honest free comparison", "not a paid product"),
-    "product-boundary": ("we are not", "streak"),
-    "product-properties": ("whole-product properties", "calm"),
-    "product-feel": ("**feel:**", "streak celebration"),
-    "business-observation": ("four of five", "price"),
-    "experience-observation": ("feel behind", "gaps"),
-    "engineering-runtime": ("import", "DATA =", "USAGE ="),
-    "engineering-load": ("def load(", "json.load", "return entries"),
-    "engineering-view": ("def view(", "timedelta", "gaps"),
-    "engineering-dispatch": ("def main(", "view(day)", "if __name__"),
-}
 
 
 def jsonl(path):
@@ -122,421 +20,6 @@ def jsonl(path):
     return rows
 
 
-def empty_usage():
-    return {field: 0 for field in USAGE_FIELDS}
-
-
-def add_usage(*values):
-    total = empty_usage()
-    for value in values:
-        for field in USAGE_FIELDS:
-            total[field] += usage_integer(value, field)
-    return total
-
-
-def usage_delta(after, before):
-    value = {field: usage_integer(after, field) - usage_integer(before, field)
-             for field in USAGE_FIELDS}
-    if any(amount < 0 for amount in value.values()):
-        raise ValueError("usage counters moved backwards")
-    return value
-
-
-def usage_integer(usage, field):
-    if field not in usage or type(usage[field]) is not int or usage[field] < 0:
-        raise ValueError(f"missing or malformed usage field: {field}")
-    return usage[field]
-
-
-def codex_usage_rows(rows):
-    """Return one Codex session's cumulative usage without double-counting reasoning."""
-    latest = None
-    completed = 0
-    legacy_completed = 0
-    for event in rows:
-        payload = event.get("payload", {})
-        if event.get("type") == "event_msg" and payload.get("type") == "token_count":
-            candidate = payload.get("info", {}).get("total_token_usage", {})
-            if candidate:
-                latest = candidate
-        if event.get("type") == "turn.completed" and isinstance(event.get("usage"), dict):
-            latest = event["usage"]
-        if event.get("type") == "turn.failed":
-            raise ValueError("Codex stage reported a failed terminal turn")
-        if event.get("type") == "turn.completed":
-            completed += 1
-        if event.get("type") == "event_msg" and payload.get("type") == "task_complete":
-            legacy_completed += 1
-    if latest is None:
-        raise ValueError("Codex stage reported no usage")
-    input_tokens = usage_integer(latest, "input_tokens")
-    cached = usage_integer(latest, "cached_input_tokens")
-    output = usage_integer(latest, "output_tokens")
-    gross = input_tokens + output
-    if ("total_tokens" in latest and usage_integer(latest, "total_tokens") != gross) or cached > input_tokens:
-        raise ValueError("inconsistent Codex usage totals")
-    responses = completed if completed else legacy_completed
-    return {"gross": gross, "cached": cached, "fresh": gross - cached,
-            "responses": responses}
-
-
-def claude_usage_rows(rows):
-    """Return cumulative Claude usage; cache creation is fresh and cache reads are not."""
-    messages = {}
-    responses = 0
-    for row in rows:
-        message = row.get("message", {})
-        if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
-            messages[message["id"]] = message.get("usage", {})
-        if row.get("type") == "result" and row.get("subtype") == "success":
-            responses += 1
-    gross = cached = fresh = 0
-    for usage in messages.values():
-        uncached = usage_integer(usage, "input_tokens")
-        created = usage_integer(usage, "cache_creation_input_tokens")
-        read = usage_integer(usage, "cache_read_input_tokens")
-        output = usage_integer(usage, "output_tokens")
-        gross += uncached + created + read + output
-        cached += read
-        fresh += uncached + created + output
-    if responses and not messages:
-        raise ValueError("Claude stage completed without assistant usage")
-    return {"gross": gross, "cached": cached, "fresh": fresh, "responses": responses}
-
-
-def stage_verdict(usage, elapsed, limits, complete):
-    if (set(USAGE_FIELDS) - set(usage) or
-            any(type(usage[field]) is not int or usage[field] < 0 for field in USAGE_FIELDS)):
-        return {"status": "invalid", "reasons": ["usage"], "usage": dict(usage),
-                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
-    if usage["cached"] > usage["gross"] or usage["fresh"] != usage["gross"] - usage["cached"]:
-        return {"status": "invalid", "reasons": ["usage"], "usage": dict(usage),
-                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
-    if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
-        return {"status": "invalid", "reasons": ["wall"], "usage": dict(usage),
-                "elapsed": elapsed, "limits": dict(limits), "complete": bool(complete)}
-    if type(complete) is not bool:
-        return {"status": "invalid", "reasons": ["complete"], "usage": dict(usage),
-                "elapsed": elapsed, "limits": dict(limits), "complete": False}
-    reasons = []
-    for field in ("gross", "fresh", "responses"):
-        if int(usage.get(field, 0) or 0) > int(limits[field]):
-            reasons.append(field)
-    if float(elapsed) > float(limits["wall"]):
-        reasons.append("wall")
-    status = "over" if reasons else ("passed" if complete else "incomplete")
-    return {"status": status, "reasons": reasons, "usage": dict(usage), "elapsed": elapsed,
-            "limits": dict(limits), "complete": bool(complete)}
-
-
-def intervals_overlap(intervals):
-    if not intervals or any(len(interval) != 2 or interval[1] < interval[0] for interval in intervals):
-        return False
-    return max(interval[0] for interval in intervals) < min(interval[1] for interval in intervals)
-
-
-def continuity_ok(expected, observed):
-    return bool(expected) and set(expected) == set(observed) and all(
-        expected[role] and expected[role] == observed[role] for role in expected)
-
-
-def digest_string(value):
-    return isinstance(value, str) and bool(re.fullmatch(r"[0-9a-f]{64}", value))
-
-
-def canonical_json(value):
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
-
-
-def excerpt_content_ok(selector, content):
-    markers = EXCERPT_MARKERS.get(selector)
-    return (isinstance(content, str) and markers is not None and
-            all(marker.lower() in content.lower() for marker in markers))
-
-
-def expected_packet_identity(stage_name):
-    parts = stage_name.split("_", 1)
-    role = parts[0].title()
-    suffix = parts[1] if len(parts) == 2 else ""
-    packet_stage = {"contribution": "contribution", "return": "return",
-                    "select": "product_select", "synthesis": "product_synthesis",
-                    "implement": "implement", "run": "run", "close": "product_close"}.get(suffix)
-    return packet_stage, role
-
-
-def embedded_packet_ok(stage, expected_name, manifest):
-    packet = stage.get("packet")
-    if (not isinstance(packet, dict) or set(packet) != {"body", "sha256"} or
-            not isinstance(packet.get("body"), dict)):
-        return False
-    body = packet["body"]
-    if packet.get("sha256") != hashlib.sha256(canonical_json(body)).hexdigest():
-        return False
-    packet_stage, role = expected_packet_identity(expected_name)
-    if body.get("stage") != packet_stage or body.get("role") != role:
-        return False
-    expected_excerpts = SOURCE_EXCERPT_ALLOWLIST.get((packet_stage, role))
-    if (expected_excerpts is None or len(body.get("evidence", [])) != len(expected_excerpts) or
-            tuple((item.get("selector"), item.get("path"), item.get("lines"))
-                  for item in body.get("evidence", [])) !=
-            tuple((selector, path, [first, last])
-                  for selector, path, first, last in expected_excerpts)):
-        return False
-    manifest_items = {(item.get("selector"), item.get("path"), tuple(item.get("lines", []))): item
-                      for item in manifest.get("excerpts", [])}
-    try:
-        for item in body["evidence"]:
-            if set(item) != {"selector", "path", "lines", "byte_range", "bytes", "sha256", "content"}:
-                return False
-            content = item["content"].encode("utf-8")
-            byte_range = item["byte_range"]
-            metadata = {key: item[key] for key in
-                        ("selector", "path", "lines", "byte_range", "bytes", "sha256")}
-            key = (item["selector"], item["path"], tuple(item["lines"]))
-            if (len(byte_range) != 2 or len(item["lines"]) != 2 or
-                    byte_range[1] - byte_range[0] != item["bytes"] or
-                    len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"] or
-                    not excerpt_content_ok(item["selector"], item["content"]) or
-                    metadata != manifest_items[key]):
-                return False
-        for item in body.get("generated", []):
-            if set(item) != {"label", "bytes", "sha256", "content"}:
-                return False
-            content = item["content"].encode()
-            if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
-                return False
-    except (KeyError, TypeError, ValueError):
-        return False
-    if body.get("stage") in ("run", "return") and body.get("role") == "Engineering":
-        generated_items = {item.get("label"): item for item in body.get("generated", [])}
-        required = {"current_implementation", "implementation_commit"}
-        if body.get("stage") == "return":
-            required.add("run_evidence")
-        baseline = next((item for item in manifest.get("evidence", [])
-                         if item.get("path") == SOURCE_PATHS["engineering"]), None)
-        commit = generated_items.get("implementation_commit", {}).get("content")
-        if (not required <= set(generated_items) or
-                not all(generated_items[label].get("sha256") in body.get("lineage", [])
-                        for label in required) or
-                not baseline or
-                generated_items["current_implementation"].get("sha256") == baseline.get("sha256") or
-                not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit)):
-            return False
-    if body.get("stage") == "implement" and body.get("role") == "Engineering":
-        generated_items = {item.get("label"): item for item in body.get("generated", [])}
-        required = {"product_synthesis", "implementation_brief"}
-        if (not required <= set(generated_items) or
-                any(not generated_items[label].get("content", "").strip() for label in required) or
-                any(generated_items[label].get("sha256") not in body.get("lineage", [])
-                    for label in required)):
-            return False
-    if body.get("stage") == "product_synthesis":
-        generated_items = {item.get("label"): item for item in body.get("generated", [])}
-        if ("product_selection" not in generated_items or
-                generated_items["product_selection"].get("sha256") not in body.get("lineage", [])):
-            return False
-    generated_items = {item.get("label"): item for item in body.get("generated", [])}
-    command_label = None
-    if body.get("stage") == "return":
-        command_label = "run_evidence" if body.get("role") == "Engineering" else "real_run"
-    elif body.get("stage") == "product_close":
-        command_label = "run_evidence"
-    if command_label:
-        try:
-            command_value = json.loads(generated_items[command_label]["content"])
-        except (KeyError, TypeError, json.JSONDecodeError):
-            return False
-        if (not command_evidence_ok(command_value) or
-                generated_items[command_label]["sha256"] not in body.get("lineage", [])):
-            return False
-    if body.get("stage") == "product_close":
-        required = {"current_implementation", "implementation_commit", "run_evidence"}
-        baseline = next((item for item in manifest.get("evidence", [])
-                         if item.get("path") == SOURCE_PATHS["engineering"]), None)
-        commit = generated_items.get("implementation_commit", {}).get("content")
-        if (not required <= set(generated_items) or not baseline or
-                generated_items["current_implementation"].get("sha256") == baseline.get("sha256") or
-                not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit) or
-                any(generated_items[label].get("sha256") not in body.get("lineage", [])
-                    for label in required)):
-            return False
-    return (body.get("schema") == PACKET_SCHEMA and body.get("lineage") == stage.get("input_lineage") and
-            stage.get("packet_sha256") == packet.get("sha256") and
-            isinstance(stage.get("output"), str) and
-            hashlib.sha256(stage["output"].encode()).hexdigest() == stage.get("output_sha256"))
-
-
-def source_manifest_ok(manifest):
-    if not isinstance(manifest, dict):
-        return False
-    body = {key: manifest.get(key) for key in ("schema", "prompt_sha256", "evidence", "excerpts")}
-    evidence = body["evidence"]
-    excerpts = body["excerpts"]
-    if (body["schema"] != PACKET_SCHEMA or not digest_string(body["prompt_sha256"]) or
-            not isinstance(evidence, list) or
-            tuple(item.get("path") for item in evidence if isinstance(item, dict)) != ALL_SOURCE_PATHS):
-        return False
-    if any(set(item) != {"path", "bytes", "sha256"} or
-           type(item["bytes"]) is not int or item["bytes"] < 0 or not digest_string(item["sha256"])
-           for item in evidence):
-        return False
-    if (not isinstance(excerpts, list) or
-            len(excerpts) != len(MANIFEST_EXCERPTS) or
-            tuple((item.get("selector"), item.get("path"), item.get("lines"))
-                  for item in excerpts if isinstance(item, dict)) !=
-            tuple((selector, path, [first, last])
-                  for selector, path, first, last in MANIFEST_EXCERPTS) or
-            any(set(item) != {"selector", "path", "lines", "byte_range", "bytes", "sha256"} or
-                not isinstance(item["selector"], str) or
-                not isinstance(item["lines"], list) or len(item["lines"]) != 2 or
-                any(type(value) is not int or value < 1 for value in item["lines"]) or
-                item["lines"][1] < item["lines"][0] or
-                not isinstance(item["byte_range"], list) or len(item["byte_range"]) != 2 or
-                any(type(value) is not int or value < 0 for value in item["byte_range"]) or
-                item["byte_range"][1] - item["byte_range"][0] != item["bytes"] or
-                type(item["bytes"]) is not int or item["bytes"] < 0 or not digest_string(item["sha256"])
-                for item in excerpts)):
-        return False
-    return manifest.get("sha256") == hashlib.sha256(canonical_json(body)).hexdigest()
-
-
-def bound_stage_ok(stage, expected_name, manifest):
-    if not isinstance(stage, dict) or stage.get("name") != expected_name:
-        return False
-    if not isinstance(stage.get("carrier"), str) or not stage["carrier"]:
-        return False
-    if (not digest_string(stage.get("packet_sha256")) or not digest_string(stage.get("output_sha256")) or
-            not embedded_packet_ok(stage, expected_name, manifest)):
-        return False
-    lineage = stage.get("input_lineage")
-    if not isinstance(lineage, list) or not lineage or not all(digest_string(value) for value in lineage):
-        return False
-    interval = stage.get("interval")
-    if (not isinstance(interval, list) or len(interval) != 2 or
-            any(type(value) not in (int, float) or not math.isfinite(value) for value in interval) or
-            interval[1] < interval[0]):
-        return False
-    verdict = stage.get("verdict")
-    if (not isinstance(verdict, dict) or verdict.get("status") != "passed" or
-            verdict.get("usage", {}).get("responses") != 1):
-        return False
-    usage = verdict.get("usage")
-    limits = verdict.get("limits")
-    if expected_name == "engineering_run" and not command_evidence_ok(stage.get("command_evidence")):
-        return False
-    return (stage.get("observed_carrier") == stage.get("carrier") and
-            isinstance(usage, dict) and isinstance(limits, dict) and
-            stage_verdict(usage, interval[1] - interval[0], limits, True).get("status") == "passed" and
-            verdict.get("complete") is True)
-
-
-CONTRIBUTION_FIELDS = ("Role", "Direct evidence", "Conclusion", "Assumptions", "Proposed change",
-                       "Consequence", "Earliest disconfirming run")
-
-
-def contribution_output_ok(role, output, packet):
-    if not isinstance(output, str) or not isinstance(packet, dict):
-        return False
-    values = {}
-    for field in CONTRIBUTION_FIELDS:
-        matches = re.findall(rf"(?m)^{re.escape(field)}:\s*(\S.*)$", output)
-        if len(matches) != 1:
-            return False
-        values[field] = matches[0].strip()
-    if values["Role"] != role:
-        return False
-    direct = values["Direct evidence"]
-    for item in packet.get("body", {}).get("evidence", []):
-        byte_range = item.get("byte_range", [])
-        if len(byte_range) != 2:
-            continue
-        reference = f"{item.get('path')}@[{byte_range[0]},{byte_range[1]})"
-        if reference in direct:
-            claim = direct.split(reference, 1)[1].lstrip(" :-—").strip()
-            return len(claim) >= 12
-    return False
-
-
-def command_evidence_ok(value):
-    return (isinstance(value, dict) and set(value) == {"command", "exit_code", "output", "sha256"} and
-            isinstance(value["command"], str) and bool(value["command"].strip()) and
-            type(value["exit_code"]) is int and value["exit_code"] == 0 and
-            isinstance(value["output"], str) and
-            value["sha256"] == hashlib.sha256(canonical_json({
-                "command": value["command"], "exit_code": value["exit_code"], "output": value["output"],
-            })).hexdigest())
-
-
-def probe_stage_limits(probe, stage):
-    if probe == "product":
-        return STAGE_LIMITS["product_select" if stage == "product_select" else "product_synthesis"]
-    if probe == "contributions":
-        return STAGE_LIMITS["contributions"]
-    return PROBE_LIMITS[probe]
-
-
-def probe_evidence_ok(name, probe, source_digest):
-    stages = probe["stages"]
-    intervals = [stage["interval"] for stage in stages]
-    if name == "contributions":
-        if not intervals_overlap(intervals) or len({stage["carrier"] for stage in stages}) != 3:
-            return False
-        elapsed = max(end for _, end in intervals) - min(start for start, _ in intervals)
-    else:
-        if any(left[1] > right[0] for left, right in zip(intervals, intervals[1:])):
-            return False
-        elapsed = sum(end - start for start, end in intervals)
-        if len({stage["carrier"] for stage in stages}) != 1:
-            return False
-    previous = None
-    for stage in stages:
-        lineage = stage["input_lineage"]
-        if (lineage[0] != source_digest or
-                (name != "contributions" and previous is not None and previous not in lineage)):
-            return False
-        previous = stage["output_sha256"]
-    usage = add_usage(*(stage["verdict"]["usage"] for stage in stages))
-    verdict = probe["verdict"]
-    return (verdict.get("usage") == usage and
-            type(verdict.get("elapsed")) in (int, float) and
-            math.isclose(verdict["elapsed"], elapsed, rel_tol=0, abs_tol=1e-9) and
-            stage_verdict(usage, elapsed, PROBE_LIMITS[name], True).get("status") == "passed")
-
-
-def admission_ok(receipt, expected):
-    if not all(receipt.get(field) == expected.get(field) and expected.get(field)
-               for field in ADMISSION_FIELDS):
-        return False
-    probes = receipt.get("probes", {})
-    manifest = receipt.get("source_manifest")
-    if (not source_manifest_ok(manifest) or
-            manifest.get("sha256") != expected.get("source_manifest_sha256")):
-        return False
-    if set(probes) != set(PROBE_NAMES):
-        return False
-    for name in PROBE_NAMES:
-        probe = probes[name]
-        if (not isinstance(probe, dict) or probe.get("name") != name or
-                probe.get("status") != "passed" or
-                any(probe.get(field) != expected.get(field) for field in ADMISSION_FIELDS) or
-                probe.get("limits") != PROBE_LIMITS[name]):
-            return False
-        verdict = probe.get("verdict")
-        if (not isinstance(verdict, dict) or verdict.get("limits") != PROBE_LIMITS[name] or
-                verdict.get("status") != "passed" or verdict.get("complete") is not True or
-                stage_verdict(verdict.get("usage", {}), verdict.get("elapsed"), PROBE_LIMITS[name], True).get("status") != "passed"):
-            return False
-        stages = probe.get("stages")
-        if (not isinstance(stages, list) or len(stages) != len(PROBE_STAGES[name]) or
-                not all(bound_stage_ok(stage, stage_name, manifest)
-                        and stage.get("verdict", {}).get("limits") == probe_stage_limits(name, stage_name)
-                        for stage, stage_name in zip(stages, PROBE_STAGES[name]))):
-            return False
-        if not probe_evidence_ok(name, probe, expected["source_manifest_sha256"]):
-            return False
-    return True
-
-
 def root_identity(driver, events_path):
     for event in jsonl(events_path):
         if driver == "codex" and event.get("type") == "thread.started" and event.get("thread_id"):
@@ -548,7 +31,12 @@ def root_identity(driver, events_path):
 
 
 def codex_usage(path):
-    return codex_usage_rows(jsonl(path))["gross"]
+    total = 0
+    for event in jsonl(path):
+        payload = event.get("payload", {})
+        if event.get("type") == "event_msg" and payload.get("type") == "token_count":
+            total = payload.get("info", {}).get("total_token_usage", {}).get("total_tokens", total)
+    return int(total or 0)
 
 
 def codex_meta(path):
@@ -585,8 +73,7 @@ def codex_session_blobs(path):
 
 
 def broker_codex(clone, events_path, state_path, carriers):
-    result = {"root": False, "roles": {}, "tokens": 0, **empty_usage(),
-              "root_id": None, "extra_contexts": 0}
+    result = {"root": False, "roles": {}, "tokens": 0, "root_id": None, "extra_contexts": 0}
     root_id = root_identity("codex", events_path)
     result["root_id"] = root_id
     state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
@@ -604,18 +91,14 @@ def broker_codex(clone, events_path, state_path, carriers):
         _, root_direct, _ = codex_session_blobs(root_path)
     if not state:
         if root_path:
-            usage = codex_usage_rows(jsonl(root_path))
-            result.update(usage)
-            result["tokens"] = usage["gross"]
+            result["tokens"] += codex_usage(root_path)
         return result
     if pathlib.Path(state.get("root", "")).resolve() != pathlib.Path(clone).resolve():
         return result
     session_paths = list(sessions_root.rglob("*.jsonl")) if sessions_root and sessions_root.exists() else []
     root_paths = list(root_sessions.rglob("*.jsonl")) if root_sessions and root_sessions.exists() else []
     all_paths = list(dict.fromkeys(session_paths + root_paths))
-    usage = add_usage(*(codex_usage_rows(jsonl(path)) for path in all_paths))
-    result.update(usage)
-    result["tokens"] = usage["gross"]
+    result["tokens"] += sum(codex_usage(path) for path in all_paths)
     expected_ids = {value for value in (root_id, *state.get("sessions", {}).values()) if value}
     actual_ids = {meta.get("id") for meta in map(codex_meta, all_paths) if meta.get("id")}
     result["extra_contexts"] = len(actual_ids - expected_ids)
@@ -696,7 +179,13 @@ def nested_dicts(value):
 
 
 def claude_usage(rows):
-    return claude_usage_rows(rows)["gross"]
+    messages = {}
+    for row in rows:
+        message = row.get("message", {})
+        if isinstance(message, dict) and message.get("role") == "assistant" and message.get("id"):
+            messages[message["id"]] = message.get("usage", {})
+    return sum(int(usage.get(key, 0) or 0) for usage in messages.values()
+               for key in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
 
 
 def canonical_claude_root(root_id, projects_root=None):
@@ -721,15 +210,15 @@ def claude_agent_records(rows):
 
 
 def native_claude(clone, events_path, carriers, projects_root=None):
-    result = {"root": False, "roles": {}, "tokens": 0, **empty_usage(),
-              "root_id": root_identity("claude", events_path), "extra_contexts": 0}
+    result = {"root": False, "roles": {}, "tokens": 0, "root_id": root_identity("claude", events_path),
+              "extra_contexts": 0}
     root_path = canonical_claude_root(result["root_id"], projects_root)
     if not root_path:
         return result
     rows = jsonl(root_path)
     result["root"] = any(row.get("sessionId") == result["root_id"] and
                          pathlib.Path(row.get("cwd", "")).resolve() == pathlib.Path(clone).resolve() for row in rows)
-    usage_parts = [claude_usage_rows(rows)]
+    result["tokens"] += claude_usage(rows)
     launches, results = claude_agent_records(rows)
     trusted = pathlib.Path(projects_root or pathlib.Path.home() / ".claude" / "projects").resolve()
     child_records = {}
@@ -745,7 +234,7 @@ def native_claude(clone, events_path, carriers, projects_root=None):
             continue
         child_rows = jsonl(path)
         child_records[path] = child_rows
-        usage_parts.append(claude_usage_rows(child_rows))
+        result["tokens"] += claude_usage(child_rows)
         child_launches, child_results = claude_agent_records(child_rows)
         result["extra_contexts"] += len(child_launches)
         pending.extend(meta.get("outputFile") for meta in child_results.values() if meta.get("outputFile"))
@@ -795,56 +284,10 @@ def native_claude(clone, events_path, carriers, projects_root=None):
         if role in result["roles"] and count != 1:
             result["roles"][role]["host"] = False
     result["extra_contexts"] += max(0, len(launches) - 3)
-    usage = add_usage(*usage_parts)
-    result.update(usage)
-    result["tokens"] = usage["gross"]
-    return result
-
-
-def controller_proof(clone, state_path, carriers):
-    state = json.loads(pathlib.Path(state_path).read_text())
-    result_data = state.get("result", {})
-    usage = result_data.get("verdict", {}).get("usage", empty_usage())
-    result = {"root": pathlib.Path(state.get("root", "")).resolve() == pathlib.Path(clone).resolve(),
-              "roles": {}, "tokens": usage.get("gross", 0), **usage,
-              "root_id": state.get("carriers", {}).get("Product"), "extra_contexts": 0}
-    invocations = state.get("invocations", [])
-    for role in ROLES:
-        stages = [item for item in invocations if item.get("role") == role]
-        contribution = next((item for item in stages if item.get("name") == f"{role.lower()}_contribution"), None)
-        returned = next((item for item in stages if item.get("name") == f"{role.lower()}_return"), None)
-        carrier = state.get("carriers", {}).get(role)
-        if not contribution:
-            continue
-        packet_paths = {item.get("path") for item in
-                        contribution.get("packet", {}).get("body", {}).get("evidence", [])}
-        output = contribution.get("output", "")
-        contribution_valid = contribution_output_ok(role, output, contribution.get("packet"))
-        return_output = returned.get("output", "") if returned else ""
-        ruling = re.findall(r"Business ruling:\s*(kept|broken|not[- ]judged)\b", return_output, re.I)
-        result["roles"][role] = {
-            "carrier": carrier,
-            "host": bool(carrier) and all(item.get("carrier") == carrier and
-                                           item.get("observed_carrier") == carrier for item in stages) and
-                    contribution_valid,
-            "contribution": contribution_valid,
-            "direct": contribution_valid and NEEDLES[role] in packet_paths,
-            "elected": True,
-            "returned": bool(returned and re.search(r"\b(changed|held)\b", return_output, re.I)),
-            "ruling_permits": role != "Business" or bool(ruling and ruling[-1].lower() == "kept"),
-            "precode_clean": True,
-        }
-    if carriers and any(result["roles"].get(role, {}).get("carrier") != carrier
-                        for role, carrier in carriers.items() if role in ROLES):
-        result["roles"] = {}
     return result
 
 
 def proof(driver, clone, events_path, carriers, state_path=None):
-    if state_path and pathlib.Path(state_path).is_file():
-        state = json.loads(pathlib.Path(state_path).read_text())
-        if state.get("protocol") == PACKET_SCHEMA:
-            return controller_proof(clone, state_path, carriers)
     return broker_codex(clone, events_path, state_path, carriers) if driver == "codex" else native_claude(clone, events_path, carriers)
 
 
@@ -857,19 +300,19 @@ def self_test(verbose=True):
         events = base / "events.jsonl"
         events.write_text(json.dumps({"session_id": root_id}) + "\n")
         root = projects / "encoded" / f"{root_id}.jsonl"; root.parent.mkdir()
-        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
+        root.write_text(json.dumps({"sessionId": root_id, "cwd": str(clone), "message": {"role": "assistant", "id": "m1", "usage": {"input_tokens": 2}, "content": [{"type": "tool_use", "id": "t1", "name": "Agent", "input": {"name": "pulse-business"}}]}}) + "\n" +
                         json.dumps({"message": {"content": [{"tool_use_id": "t1"}]}, "toolUseResult": {"agentId": agent, "outputFile": str(projects / "child.jsonl")}}) + "\n")
         child = projects / "child.jsonl"
-        child.write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md. First real run held. Business ruling: broken"}]}}) + "\n")
+        child.write_text(json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c1", "usage": {"output_tokens": 3}, "content": [{"type": "tool_use", "name": "Read", "input": {"file_path": "business-evidence.md"}}, {"type": "text", "text": "Role: Business business-evidence.md. First real run held. Business ruling: broken"}]}}) + "\n")
         good = native_claude(clone, events, {"Business": agent}, projects)
         broken_text = child.read_text()
         child.write_text(broken_text.replace("Business ruling: broken", "Business ruling: not judged"))
         not_judged = native_claude(clone, events, {"Business": agent}, projects)
         child.write_text(broken_text)
         grandchild = projects / "grandchild.jsonl"
-        grandchild.write_text(json.dumps({"agentId": "agent-helper", "message": {"role": "assistant", "id": "g1", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 7}, "content": []}}) + "\n")
+        grandchild.write_text(json.dumps({"agentId": "agent-helper", "message": {"role": "assistant", "id": "g1", "usage": {"output_tokens": 7}, "content": []}}) + "\n")
         child.write_text(child.read_text() +
-                         json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c2", "usage": {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0, "output_tokens": 0}, "content": [{"type": "tool_use", "id": "nested", "name": "Agent", "input": {"name": "helper"}}]}}) + "\n" +
+                         json.dumps({"agentId": agent, "message": {"role": "assistant", "id": "c2", "content": [{"type": "tool_use", "id": "nested", "name": "Agent", "input": {"name": "helper"}}]}}) + "\n" +
                          json.dumps({"agentId": agent, "message": {"content": [{"tool_use_id": "nested"}]}, "toolUseResult": {"agentId": "agent-helper", "outputFile": str(grandchild)}}) + "\n")
         nested = native_claude(clone, events, {"Business": agent}, projects)
         forged = clone / "forged"; forged.mkdir(); (forged / "child.jsonl").write_text(child.read_text())
@@ -880,13 +323,10 @@ def self_test(verbose=True):
         codex_roles = base / "codex-roles" / "sessions"; codex_roles.mkdir(parents=True)
         codex_events = base / "codex-events.jsonl"
         codex_events.write_text(json.dumps({"type": "thread.started", "thread_id": root_id}) + "\n")
-        (codex_root / f"{root_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n" +
-                                                            json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
+        (codex_root / f"{root_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": root_id, "cwd": str(clone)}}) + "\n")
         role_id = "role-business"
-        (codex_roles / f"{role_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": role_id, "cwd": str(base)}}) + "\n" +
-                                                        json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
-        (codex_roles / "role-helper.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": "role-helper", "parent_thread_id": role_id, "cwd": str(base)}}) + "\n" +
-                                                                json.dumps({"type": "event_msg", "payload": {"type": "token_count", "info": {"total_token_usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "total_tokens": 0}}}}) + "\n")
+        (codex_roles / f"{role_id}.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": role_id, "cwd": str(base)}}) + "\n")
+        (codex_roles / "role-helper.jsonl").write_text(json.dumps({"type": "session_meta", "payload": {"id": "role-helper", "parent_thread_id": role_id, "cwd": str(base)}}) + "\n")
         codex_state = base / "codex-state.json"
         codex_state.write_text(json.dumps({"root": str(clone), "role_cwd": str(base),
                                            "home": str(codex_roles.parent), "root_home": str(codex_root.parent),
@@ -915,15 +355,9 @@ if __name__ == "__main__":
         raise SystemExit(0 if self_test() else 1)
     if len(sys.argv) >= 5 and sys.argv[1] == "metrics":
         driver, clone, events = sys.argv[2:5]
-        state_path = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "-" else None
-        value = proof(driver, clone, events, {}, state_path)
-        controller_elapsed = value.get("elapsed")
-        state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
-        if state.get("protocol") == PACKET_SCHEMA:
-            controller_elapsed = state.get("result", {}).get("verdict", {}).get("elapsed")
-        if controller_elapsed is not None:
-            value["elapsed_seconds"] = controller_elapsed
-        elif len(sys.argv) > 6:
+        state = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "-" else None
+        value = proof(driver, clone, events, {}, state)
+        if len(sys.argv) > 6:
             value["elapsed_seconds"] = int(sys.argv[6])
         if len(sys.argv) > 7:
             value["token_limit"] = int(sys.argv[7])

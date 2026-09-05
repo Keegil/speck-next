@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
-import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile, time
+import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
 import tarfile
 from datetime import date, timedelta
 
@@ -25,16 +25,6 @@ NEXT_CURRENT_CLEAN = "Next: there are no upgrade changes to commit; resume curre
 AMBIGUITY_RETRY = "Next: run the upgrade again with --open-assessment to conservatively open the one-time assessment. Product work will not resume until that assessment records its route."
 CONTRIBUTION_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "earliest_run"}
 ASSESSMENT_FIELDS = {"carrier", "evidence", "conclusion", "assumptions", "proposed_change", "active_decision"}
-
-
-def package_version(root):
-    value = json.loads((pathlib.Path(root) / "package.json").read_text()).get("version")
-    if not isinstance(value, str) or not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", value):
-        raise ValueError("package.json has no usable version")
-    return value
-
-
-TARGET_VERSION = package_version(pathlib.Path(__file__).resolve().parents[3])
 
 
 def role_facts(**changes):
@@ -446,8 +436,8 @@ def static_contract_homes(kernel):
         print(f"  [{'ok' if absent else 'RED'}] obsolete universal rule absent: {relative}")
         good = good and absent
     version = json.loads((kernel / "package.json").read_text()).get("version")
-    version_ok = version == TARGET_VERSION
-    print(f"  [{'ok' if version_ok else 'RED'}] package version is {TARGET_VERSION}")
+    version_ok = version == "6.0.0-rc.2"
+    print(f"  [{'ok' if version_ok else 'RED'}] package version is 6.0.0-rc.2")
     return good and version_ok
 
 
@@ -614,7 +604,7 @@ def marker_ok(root, source_checkout, surface_digest, assessment_record=None):
     actual = marker(root)
     expected = {
         "name": "speck-next",
-        "version": TARGET_VERSION,
+        "version": "6.0.0-rc.2",
         "sourceCheckout": source_checkout,
         "methodSurfaceSha256": surface_digest,
         "upgradeAssessmentRecord": assessment_record,
@@ -628,7 +618,7 @@ def upgrade_report_ok(run, prior_version, prior_checkout, source_checkout, surfa
     output = run.stdout + run.stderr
     next_lines = [line for line in run.stdout.splitlines() if line.startswith("Next:")]
     return (run.returncode == 0 and
-            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance(TARGET_VERSION, source_checkout, surface_digest)}" in output and
+            f"{provenance(prior_version, prior_checkout, prior_digest)} -> {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in output and
             "Product team migration:" in output and
             "Working-tree changes across the complete installed surface plus product.md:" in output and
             "Complete installed-surface plus product.md diff" in output and
@@ -1377,7 +1367,7 @@ def run_path_transaction_controls(kernel):
             snapshot_digest(grouped_outside) == grouped_before and
             not (grouped_claude / ".claude").is_symlink() and
             not (grouped_claude / ".claude/speck-next.json").is_symlink() and
-            marker(grouped_claude)["version"] == TARGET_VERSION,
+            marker(grouped_claude)["version"] == "6.0.0-rc.2",
         ))
 
         non_dir_link = fresh_repo("linked-non-directory")
@@ -2551,7 +2541,7 @@ exec "$REAL_GIT" "$@"
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and not git_attack_clean.stderr and
             upgrade_report_ok(
-                git_attack_retry, TARGET_VERSION, source_checkout,
+                git_attack_retry, "6.0.0-rc.2", source_checkout,
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
                 prior_digest=surface_digest,
             ) and not git_attack_retry.stderr and
@@ -2706,7 +2696,7 @@ def run_migration_matrix(kernel):
 
         missing_field = object()
 
-        def refusal_repo(name, product, version=TARGET_VERSION,
+        def refusal_repo(name, product, version="6.0.0-rc.2",
                          assessment_field=missing_field, record_content=None, marker_extra=None):
             repo = fixed_current(name)
             prior = {
@@ -2739,7 +2729,7 @@ def run_migration_matrix(kernel):
         round_five_crlf_product = (round_five_crlf / "product.md").read_bytes()
         round_five_crlf_ok = (
             upgrade_report_ok(
-                round_five_crlf_run, TARGET_VERSION,
+                round_five_crlf_run, "6.0.0-rc.2",
                 "round-five-crlf-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2789,7 +2779,7 @@ def run_migration_matrix(kernel):
             expected = appended_product_bytes(original, ending)
             opened_ok = (
                 upgrade_report_ok(
-                    opened, TARGET_VERSION, f"{label}fixture", source_checkout,
+                    opened, "6.0.0-rc.2", f"{label}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -2827,7 +2817,7 @@ def run_migration_matrix(kernel):
         lone_cr_pending_bytes = (lone_cr_pending / "product.md").read_bytes()
         lone_cr_pending_ok = (
             upgrade_report_ok(
-                lone_cr_pending_run, TARGET_VERSION,
+                lone_cr_pending_run, "6.0.0-rc.2",
                 "lone-cr-canonical-pendingfixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -2894,7 +2884,7 @@ def run_migration_matrix(kernel):
             prior_checkout = marker_extra.get("sourceCheckout") if marker_extra else f"{name}fixture"
             prior_digest = marker_extra.get("methodSurfaceSha256") if marker_extra else None
             opened_ok = (
-                upgrade_report_ok(opened, TARGET_VERSION, prior_checkout, source_checkout,
+                upgrade_report_ok(opened, "6.0.0-rc.2", prior_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CHANGED, prior_digest) and
                 "--open-assessment preserved every existing product byte" in opened.stdout and
                 not has_resume_instruction(opened.stdout + opened.stderr) and
@@ -2914,7 +2904,7 @@ def run_migration_matrix(kernel):
             ordinary = run_cli(kernel, "upgrade", repo)
             retry_ok = (
                 second_flag_ok and "without --open-assessment" in second_flag.stderr and
-                upgrade_report_ok(ordinary, TARGET_VERSION, source_checkout, source_checkout,
+                upgrade_report_ok(ordinary, "6.0.0-rc.2", source_checkout, source_checkout,
                                   surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                 (repo / "product.md").read_text() == expected_product(original)
             )
@@ -2930,7 +2920,7 @@ def run_migration_matrix(kernel):
             completed = run_cli(kernel, "upgrade", repo)
             expected_next = "Next: there are no upgrade changes to commit; resume Piece alpha from state.md."
             completed_ok = (
-                upgrade_report_ok(completed, TARGET_VERSION, source_checkout, source_checkout,
+                upgrade_report_ok(completed, "6.0.0-rc.2", source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(),
                                      "Resume Piece alpha from state.md.") and
@@ -2940,7 +2930,7 @@ def run_migration_matrix(kernel):
                             completed_ok))
             return repo
 
-        def flag_exclusion(name, product, version=TARGET_VERSION,
+        def flag_exclusion(name, product, version="6.0.0-rc.2",
                            assessment_field=missing_field, record_content=None):
             repo = refusal_repo(
                 "flag-exclusion-" + name,
@@ -2984,7 +2974,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", commented_generated, "--open-assessment")
         commented_generated_opened = (
             upgrade_report_ok(
-                opened, TARGET_VERSION, "commented-generated-statusfixture",
+                opened, "6.0.0-rc.2", "commented-generated-statusfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3075,7 +3065,7 @@ def run_migration_matrix(kernel):
             current = run_cli(kernel, "upgrade", repo)
             return (
                 upgrade_report_ok(
-                    current, TARGET_VERSION, f"{name}fixture", source_checkout,
+                    current, "6.0.0-rc.2", f"{name}fixture", source_checkout,
                     surface_digest, NEXT_PENDING_CHANGED,
                 ) and
                 not has_resume_instruction(current.stdout + current.stderr) and
@@ -3173,7 +3163,7 @@ def run_migration_matrix(kernel):
         inline_literal_run = run_cli(kernel, "upgrade", inline_literal)
         inline_literal_ok = (
             upgrade_report_ok(
-                inline_literal_run, TARGET_VERSION, "inline-code-literalfixture",
+                inline_literal_run, "6.0.0-rc.2", "inline-code-literalfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             (inline_literal / "product.md").read_text() == inline_literal_original and
@@ -3252,7 +3242,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", hidden_generated, "--open-assessment")
         hidden_generated_opened = (
             upgrade_report_ok(
-                opened, TARGET_VERSION, "inline-hidden-generatedfixture",
+                opened, "6.0.0-rc.2", "inline-hidden-generatedfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3406,7 +3396,7 @@ def run_migration_matrix(kernel):
         results.append((
             "a comment-touched line cannot span inline code over later clean evidence",
             upgrade_report_ok(
-                comment_then_unmatched_run, TARGET_VERSION,
+                comment_then_unmatched_run, "6.0.0-rc.2",
                 "comment-then-unmatched-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3431,7 +3421,7 @@ def run_migration_matrix(kernel):
         results.append((
             "same-line code after a comment still shields comment-looking bytes",
             upgrade_report_ok(
-                comment_then_balanced_run, TARGET_VERSION,
+                comment_then_balanced_run, "6.0.0-rc.2",
                 "comment-then-balanced-inlinefixture", source_checkout,
                 surface_digest, NEXT_PENDING_CHANGED,
             ) and
@@ -3495,7 +3485,7 @@ def run_migration_matrix(kernel):
         opened = run_cli(kernel, "upgrade", literal_recovery, "--open-assessment")
         literal_recovery_opened = (
             upgrade_report_ok(
-                opened, TARGET_VERSION, "inline-literal-recoveryfixture",
+                opened, "6.0.0-rc.2", "inline-literal-recoveryfixture",
                 source_checkout, surface_digest, NEXT_PENDING_CHANGED,
             ) and
             "--open-assessment preserved every existing product byte" in opened.stdout and
@@ -3533,7 +3523,7 @@ def run_migration_matrix(kernel):
         results.append((
             "balanced inline literal leaves the completed live-piece route current",
             upgrade_report_ok(
-                completed_inline_run, TARGET_VERSION,
+                completed_inline_run, "6.0.0-rc.2",
                 "completed-after-inlinefixture", source_checkout, surface_digest,
                 "Next: review the reported paths and complete diff, commit the upgrade, then resume Piece alpha from state.md.",
             ) and
@@ -3604,7 +3594,7 @@ def run_migration_matrix(kernel):
         optional_dir = refusal_repo("optional-directory", "# Optional-directory product\n")
         opened = run_cli_args(kernel, "upgrade", "--open-assessment", cwd=optional_dir)
         optional_dir_ok = (
-            upgrade_report_ok(opened, TARGET_VERSION, "optional-directoryfixture",
+            upgrade_report_ok(opened, "6.0.0-rc.2", "optional-directoryfixture",
                               source_checkout, surface_digest, NEXT_PENDING_CHANGED) and
             marker_ok(optional_dir, source_checkout, surface_digest, ASSESSMENT_RECORD) and
             (optional_dir / "product.md").read_text() ==
@@ -3637,11 +3627,11 @@ def run_migration_matrix(kernel):
         init_repo(fresh)
         run = run_cli(kernel, "install", fresh)
         installed = [p for p in fresh.rglob("*") if p.is_file() and ".git" not in p.parts]
-        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == TARGET_VERSION and
+        fresh_ok = (run.returncode == 0 and marker(fresh)["version"] == "6.0.0-rc.2" and
                     marker_ok(fresh, source_checkout, surface_digest) and
                     not (fresh / "product.md").exists() and
                     len(installed) <= 20 and sum(p.stat().st_size for p in installed) <= 100_000 and
-                    f"Installed Speck Next {provenance(TARGET_VERSION, source_checkout, surface_digest)}" in run.stdout and
+                    f"Installed Speck Next {provenance('6.0.0-rc.2', source_checkout, surface_digest)}" in run.stdout and
                     "Installed paths:" in run.stdout and "Next:" in run.stdout)
         results.append(("fresh install reports its surface and leaves product.md missing", fresh_ok))
 
@@ -3764,7 +3754,7 @@ def run_migration_matrix(kernel):
             outside_marker.read_text() == marker_before and
             (marker_link / ".claude" / "speck-next.json").is_file() and
             not (marker_link / ".claude" / "speck-next.json").is_symlink() and
-            marker(marker_link)["version"] == TARGET_VERSION,
+            marker(marker_link)["version"] == "6.0.0-rc.2",
         ))
 
         ignored_upgrade = base / "ignored-upgrade"
@@ -3892,7 +3882,7 @@ exec "$REAL_GIT" "$@"
                        (v5 / "product.md").read_text() == expected_product(v5_product) and
                        marker_ok(v5, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                        first_hash == second_hash and
-                       upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
+                       upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                                          surface_digest, NEXT_PENDING_CLEAN, surface_digest) and
                        "Working-tree changes across the complete installed surface plus product.md: none." in second.stdout and
                        "Complete installed-surface plus product.md diff: empty." in second.stdout)
@@ -3912,7 +3902,7 @@ exec "$REAL_GIT" "$@"
                                    surface_digest, NEXT_PENDING_CHANGED) and
                   (rc1 / "product.md").read_text() == expected_rc2 and RC1_STATUS not in expected_rc2 and
                   first_hash == second_hash and
-                  upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
+                  upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                                     surface_digest, NEXT_PENDING_CHANGED, surface_digest) and
                   marker_ok(rc1, source_checkout, surface_digest, ASSESSMENT_RECORD))
         results.append(("exact generated rc.1 prose is replaced and retry is byte-stable", rc1_ok))
@@ -3952,11 +3942,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current)
         first_hash = surface_hash(current)
         second = run_cli(kernel, "upgrade", current)
-        current_ok = (upgrade_report_ok(first, TARGET_VERSION, source_checkout, source_checkout,
+        current_ok = (upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       (current / "product.md").read_text() == current_product and
                       marker_ok(current, source_checkout, surface_digest) and
-                      upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
+                      upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                                         surface_digest, NEXT_CURRENT_CLEAN, surface_digest) and
                       first_hash == surface_hash(current))
         results.append(("explicit-null current product resumes without an assessment", current_ok))
@@ -3965,11 +3955,11 @@ exec "$REAL_GIT" "$@"
         first = run_cli(kernel, "upgrade", current_missing)
         second = run_cli(kernel, "upgrade", current_missing)
         current_missing_ok = (
-            upgrade_report_ok(first, TARGET_VERSION, source_checkout, source_checkout,
+            upgrade_report_ok(first, "6.0.0-rc.2", source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             "product.md is missing" in first.stdout and not (current_missing / "product.md").exists() and
             marker_ok(current_missing, source_checkout, surface_digest) and
-            upgrade_report_ok(second, TARGET_VERSION, source_checkout, source_checkout,
+            upgrade_report_ok(second, "6.0.0-rc.2", source_checkout, source_checkout,
                               surface_digest, NEXT_MISSING_CLEAN, surface_digest) and
             not (current_missing / "product.md").exists())
         results.append(("explicit-null current repository with no product stays missing and routes to Shape",
@@ -4056,7 +4046,7 @@ exec "$REAL_GIT" "$@"
         results.append(("rejected rc.2 generated status becomes explicit while its quote stays inert", rejected_ok))
 
         fieldless_canonical = refusal_repo(
-            "fieldless-canonical", "# Current product\n\n" + ASSESSMENT_BLOCK, "6.0.0-rc.2"
+            "fieldless-canonical", "# Current product\n\n" + ASSESSMENT_BLOCK
         )
         run = run_cli(kernel, "upgrade", fieldless_canonical)
         fieldless_canonical_ok = (
@@ -4067,7 +4057,7 @@ exec "$REAL_GIT" "$@"
         results.append(("fieldless current marker uses surviving canonical evidence",
                         fieldless_canonical_ok))
 
-        fieldless_missing = refusal_repo("fieldless-missing-product", None, "6.0.0-rc.2")
+        fieldless_missing = refusal_repo("fieldless-missing-product", None)
         run = run_cli(kernel, "upgrade", fieldless_missing)
         fieldless_missing_ok = (
             upgrade_report_ok(run, "6.0.0-rc.2", "fieldless-missing-productfixture",
@@ -4146,7 +4136,7 @@ exec "$REAL_GIT" "$@"
             before = surface_hash(repo)
             run = run_cli(kernel, "upgrade", repo)
             route_ok = (
-                upgrade_report_ok(run, TARGET_VERSION, source_checkout, source_checkout,
+                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 marker_ok(repo, source_checkout, surface_digest, ASSESSMENT_RECORD) and
                 assessment_record_ok((repo / ASSESSMENT_RECORD).read_text(), route) and
@@ -4162,7 +4152,7 @@ exec "$REAL_GIT" "$@"
             before = repository_snapshot(repo)
             run = run_cli(kernel, "upgrade", repo)
             twin_ok = (
-                upgrade_report_ok(run, TARGET_VERSION, source_checkout, source_checkout,
+                upgrade_report_ok(run, "6.0.0-rc.2", source_checkout, source_checkout,
                                   surface_digest, expected_next, surface_digest) and
                 owner_prose in (repo / "product.md").read_text() and
                 before == repository_snapshot(repo)
@@ -4258,7 +4248,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "an incomplete Product team may proceed only through completed Shape reopened",
             upgrade_report_ok(
-                incomplete_shape_run, TARGET_VERSION, source_checkout, source_checkout,
+                incomplete_shape_run, "6.0.0-rc.2", source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; continue Shape from state.md.",
                 surface_digest,
@@ -4344,7 +4334,7 @@ exec "$REAL_GIT" "$@"
         results.append((
             "visible Product text containing U+200B stays accepted and byte-identical",
             upgrade_report_ok(
-                visible_run, TARGET_VERSION, source_checkout, source_checkout,
+                visible_run, "6.0.0-rc.2", source_checkout, source_checkout,
                 surface_digest,
                 "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                 surface_digest,
@@ -4411,7 +4401,7 @@ exec "$REAL_GIT" "$@"
             results.append((
                 f"current Product-team rows after closed {container} remain usable",
                 upgrade_report_ok(
-                    run, TARGET_VERSION, source_checkout, source_checkout,
+                    run, "6.0.0-rc.2", source_checkout, source_checkout,
                     surface_digest,
                     "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
                     surface_digest,
@@ -4487,8 +4477,8 @@ exec "$REAL_GIT" "$@"
             digest_one == digest_two and
             marker_ok(install_one, checkout_one, digest_one) and
             marker_ok(install_two, checkout_two, digest_two) and
-            provenance(TARGET_VERSION, checkout_one, digest_one) in first.stdout and
-            provenance(TARGET_VERSION, checkout_two, digest_two) in second.stdout)
+            provenance("6.0.0-rc.2", checkout_one, digest_one) in first.stdout and
+            provenance("6.0.0-rc.2", checkout_two, digest_two) in second.stdout)
         results.append(("different source checkouts identify one identical installed method surface", provenance_ok))
 
     good = True
@@ -4498,719 +4488,6 @@ exec "$REAL_GIT" "$@"
     for detail in details:
         print(f"  [measure] {detail}")
     print(f"  [measure] migration subjects={len(results)}")
-    return good
-
-
-def run_piece9_transport_controls():
-    """Pure controls for the fixed Piece 9 transport; no host model is started."""
-    module_dir = pathlib.Path(__file__).resolve().parent
-    host_spec = importlib.util.spec_from_file_location("piece9_host_proof", module_dir / "host_proof.py")
-    host = importlib.util.module_from_spec(host_spec)
-    host_spec.loader.exec_module(host)
-    broker_spec = importlib.util.spec_from_file_location("piece9_role_broker", module_dir / "role-broker.py")
-    broker = importlib.util.module_from_spec(broker_spec)
-    broker_spec.loader.exec_module(broker)
-
-    subjects = []
-
-    def subject(label, predicate, kind):
-        try:
-            passed = bool(predicate())
-        except Exception:
-            passed = False
-        subjects.append((label, passed, kind))
-        print(f"  [{'ok' if passed else 'RED'}] {kind}: {label}")
-
-    def raises_value_error(function, *arguments):
-        try:
-            function(*arguments)
-        except ValueError:
-            return True
-        return False
-
-    def raises_runtime_error(function, *arguments):
-        try:
-            function(*arguments)
-        except RuntimeError:
-            return True
-        return False
-
-    with tempfile.TemporaryDirectory(prefix="speck-piece9-version-") as folder:
-        pathlib.Path(folder, "package.json").write_text('{"version":"6.0.0"}\n')
-        subject("destination version follows a simulated final package",
-                lambda: package_version(folder) == "6.0.0", "clean")
-
-    codex_rows = [{
-        "type": "event_msg",
-        "payload": {"type": "token_count", "info": {"total_token_usage": {
-            "input_tokens": 100, "cached_input_tokens": 60,
-            "output_tokens": 10, "reasoning_output_tokens": 4, "total_tokens": 110,
-        }}},
-    }, {"type": "event_msg", "payload": {"type": "task_complete", "last_agent_message": "{}"}}]
-    subject("Codex usage splits gross, cached, and fresh", lambda: host.codex_usage_rows(codex_rows) == {
-        "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
-    }, "clean")
-    codex_canonical = copy.deepcopy(codex_rows)
-    codex_canonical[0]["payload"]["info"]["total_token_usage"].pop("total_tokens")
-    subject("Codex canonical usage without a redundant total is accepted",
-            lambda: host.codex_usage_rows(codex_canonical) == {
-                "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
-            }, "clean")
-    codex_mutant = copy.deepcopy(codex_rows)
-    codex_mutant[0]["payload"]["info"]["total_token_usage"]["cached_input_tokens"] = 0
-    subject("Codex cached-input mutant changes fresh usage", lambda: host.codex_usage_rows(codex_mutant) != {
-        "gross": 110, "cached": 60, "fresh": 50, "responses": 1,
-    }, "mutant rejected")
-    codex_missing = copy.deepcopy(codex_rows)
-    codex_missing[0]["payload"]["info"]["total_token_usage"].pop("cached_input_tokens")
-    subject("Codex missing raw usage field fails closed",
-            lambda: raises_value_error(host.codex_usage_rows, codex_missing), "mutant rejected")
-    codex_inconsistent = copy.deepcopy(codex_rows)
-    codex_inconsistent[0]["payload"]["info"]["total_token_usage"]["total_tokens"] = 111
-    subject("Codex total unequal to input plus output fails closed",
-            lambda: raises_value_error(host.codex_usage_rows, codex_inconsistent), "mutant rejected")
-    for label, field, value in (
-            ("negative", "input_tokens", -1),
-            ("boolean", "output_tokens", False),
-            ("malformed", "total_tokens", "110")):
-        changed = copy.deepcopy(codex_rows)
-        changed[0]["payload"]["info"]["total_token_usage"][field] = value
-        subject(f"Codex {label} raw usage field fails closed",
-                lambda changed=changed: raises_value_error(host.codex_usage_rows, changed),
-                "mutant rejected")
-    codex_cached_over = copy.deepcopy(codex_rows)
-    codex_cached_over[0]["payload"]["info"]["total_token_usage"]["cached_input_tokens"] = 101
-    subject("Codex cached input above input fails closed",
-            lambda: raises_value_error(host.codex_usage_rows, codex_cached_over), "mutant rejected")
-
-    claude_rows = [{"message": {"role": "assistant", "id": "m1", "usage": {
-        "input_tokens": 20, "cache_creation_input_tokens": 5,
-        "cache_read_input_tokens": 70, "output_tokens": 5,
-    }}}, {"type": "result", "subtype": "success", "session_id": "claude-fixture", "result": "{}"}]
-    subject("Claude usage splits gross, cached, and fresh", lambda: host.claude_usage_rows(claude_rows) == {
-        "gross": 100, "cached": 70, "fresh": 30, "responses": 1,
-    }, "clean")
-    claude_mutant = copy.deepcopy(claude_rows)
-    claude_mutant[0]["message"]["usage"]["cache_read_input_tokens"] = 0
-    subject("Claude cache-read mutant changes fresh usage", lambda: host.claude_usage_rows(claude_mutant) != {
-        "gross": 100, "cached": 70, "fresh": 30, "responses": 1,
-    }, "mutant rejected")
-    claude_missing = copy.deepcopy(claude_rows)
-    claude_missing[0]["message"]["usage"].pop("cache_creation_input_tokens")
-    subject("Claude missing raw usage field fails closed",
-            lambda: raises_value_error(host.claude_usage_rows, claude_missing), "mutant rejected")
-    claude_negative = copy.deepcopy(claude_rows)
-    claude_negative[0]["message"]["usage"]["cache_read_input_tokens"] = -1
-    subject("Claude negative raw usage field fails closed",
-            lambda: raises_value_error(host.claude_usage_rows, claude_negative), "mutant rejected")
-    claude_boolean = copy.deepcopy(claude_rows)
-    claude_boolean[0]["message"]["usage"]["output_tokens"] = True
-    subject("Claude boolean raw usage field fails closed",
-            lambda: raises_value_error(host.claude_usage_rows, claude_boolean), "mutant rejected")
-    subject("Claude terminal result without assistant usage fails closed",
-            lambda: raises_value_error(host.claude_usage_rows, claude_rows[1:]), "mutant rejected")
-    claude_incomplete = claude_rows[:1]
-    subject("invocation without a terminal assistant result is incomplete",
-            lambda: host.claude_usage_rows(claude_incomplete)["responses"] == 0 and
-                    host.stage_verdict(host.claude_usage_rows(claude_incomplete), 1,
-                                       {"gross": 100, "fresh": 30, "wall": 2, "responses": 1},
-                                       complete=False)["status"] == "incomplete", "mutant rejected")
-
-    with tempfile.TemporaryDirectory(prefix="speck-piece9-packets-") as folder:
-        root = pathlib.Path(folder)
-        product_lines = [f"product line {number}\n" for number in range(1, 29)]
-        product_lines[8] = "- *see:* Show me my last two weeks, gaps and all.\n"
-        product_lines[11] = "**The honest free comparison:** this is not a paid product and supports no price claim.\n"
-        product_lines[15] = "**We are not:** a tracker with goals and streak shame.\n"
-        product_lines[17] = "**Whole-product properties:** honest gaps and calm.\n"
-        product_lines[21] = "**Feel:** calm and pressure free; no streak celebration.\n"
-        engineering_lines = [f"engineering line {number}\n" for number in range(1, 192)]
-        engineering_lines[0:9] = [
-            "#!/usr/bin/env python3\n", "\"\"\"fixture\"\"\"\n", "import json, os, sys\n", "\n",
-            "\n", "DATA = 'fixture'\n", "BLOCKS = {}\n", "USAGE = 'usage'\n", "BAD = 'bad'\n",
-        ]
-        engineering_lines[11:29] = (["def load():\n", "    entries = json.load(open(DATA))\n"] +
-                                    ["    pass\n"] * 15 + ["    return entries\n"])
-        engineering_lines[60:72] = (["def view(today):\n", "    days = [today - timedelta(days=0)]\n"] +
-                                    ["    pass\n"] * 9 + ["    print('gaps')\n"])
-        engineering_lines[163:191] = (["def main(argv):\n", "    pass\n"] + ["    pass\n"] * 13 +
-                                      ["    view(day)\n"] + ["    pass\n"] * 10 +
-                                      ["if __name__ == '__main__':\n", "    main(sys.argv)\n"])
-        source_texts = {
-            "product": "".join(product_lines),
-            "business": "# evidence\n\nFour of five reopened it; the sample supports no price claim.\n",
-            "experience": "# interviews\n\nPeople said show the week without making me feel behind; keep gaps.\n",
-            "engineering": "".join(engineering_lines),
-        }
-        for key, relative in broker.SOURCE_PATHS.items():
-            write_file(root, relative, source_texts[key])
-        packet = None
-        try:
-            packet = broker.make_packet(root, "contribution", "Business", "bounded brief",
-                                        broker.SOURCE_ALLOWLIST[("contribution", "Business")])
-        except Exception:
-            pass
-        subject("path-confined packet verifies its exact bytes and SHA-256",
-                lambda: packet is not None and broker.verify_packet(packet), "clean")
-        subject("packet carries one canonical body without flattened evidence duplicates",
-                lambda: packet is not None and set(packet) == {"body", "sha256"} and
-                        packet["body"]["evidence"] and
-                        all(set(item) == {"selector", "path", "lines", "byte_range", "bytes", "sha256", "content"}
-                            for item in packet["body"]["evidence"]), "clean")
-        duplicated_packet = copy.deepcopy(packet) if packet is not None else None
-        if duplicated_packet:
-            duplicated_packet["evidence"] = duplicated_packet["body"]["evidence"]
-        subject("one duplicated top-level evidence field is rejected",
-                lambda: duplicated_packet is not None and not broker.verify_packet(duplicated_packet),
-                "mutant rejected")
-        excerpt_mutant = copy.deepcopy(packet) if packet is not None else None
-        if excerpt_mutant and "content" in excerpt_mutant["body"]["evidence"][0]:
-            excerpt_mutant["body"]["evidence"][0]["content"] += "x"
-            excerpt_mutant["sha256"] = hashlib.sha256(
-                broker.canonical_json(excerpt_mutant["body"])).hexdigest()
-        else:
-            excerpt_mutant = None
-        subject("one-byte excerpt mutation is rejected",
-                lambda: excerpt_mutant is not None and not broker.verify_packet(excerpt_mutant),
-                "mutant rejected")
-        range_mutant = copy.deepcopy(packet) if packet is not None else None
-        if range_mutant and "byte_range" in range_mutant["body"]["evidence"][0]:
-            range_mutant["body"]["evidence"][0]["byte_range"][1] += 1
-            range_mutant["sha256"] = hashlib.sha256(
-                broker.canonical_json(range_mutant["body"])).hexdigest()
-        subject("one-field excerpt range forgery is rejected",
-                lambda: range_mutant is not None and not broker.verify_packet(range_mutant),
-                "mutant rejected")
-        changed_packet = copy.deepcopy(packet) if packet is not None else None
-        if changed_packet:
-            changed_packet["body"]["evidence"][0]["content"] += "A"
-        subject("one-byte packet mutation is rejected",
-                lambda: changed_packet is not None and not broker.verify_packet(changed_packet), "mutant rejected")
-        write_file(root, "check.py", "solution history\n")
-        subject("an in-root checker is rejected by the stage source allowlist",
-                lambda: raises_value_error(broker.make_packet, root, "contribution", "Business",
-                                           "bounded brief", ("examples/pulse/product.md", "check.py")),
-                "mutant rejected")
-        prompt_digest = "c" * 64
-        manifest = broker.source_manifest(root, prompt_digest)
-        source_digest = manifest["sha256"]
-        product_packet = broker.make_packet(
-            root, "product_select", "Product", "select evidence",
-            broker.SOURCE_ALLOWLIST[("product_select", "Product")], lineage=(source_digest,))
-        substituted = copy.deepcopy(packet)
-        substituted["body"]["evidence"][0] = copy.deepcopy(product_packet["body"]["evidence"][0])
-        substituted["sha256"] = hashlib.sha256(broker.canonical_json(substituted["body"])).hexdigest()
-        substituted_output = "output"
-        substituted_stage = {
-            "packet": substituted, "packet_sha256": substituted["sha256"],
-            "input_lineage": substituted["body"]["lineage"], "output": substituted_output,
-            "output_sha256": hashlib.sha256(substituted_output.encode()).hexdigest(),
-        }
-        subject("a self-consistent cross-role excerpt substitution is rejected",
-                lambda: not broker.verify_packet(substituted) and
-                        not host.embedded_packet_ok(substituted_stage, "business_contribution", manifest),
-                "mutant rejected")
-
-        direct_item = next(item for item in packet["body"]["evidence"]
-                           if item["selector"] == "business-observation")
-        direct_ref = f"{direct_item['path']}@[{direct_item['byte_range'][0]},{direct_item['byte_range'][1]})"
-        contribution_text = (f"Role: Business\nDirect evidence: {direct_ref} — four of five people reopened the recap.\n"
-                             "Conclusion: build one bounded experiment.\nAssumptions: the sample is directional.\n"
-                             "Proposed change: test the requested view.\nConsequence: unsupported price stays out.\n"
-                             "Earliest disconfirming run: the first direct CLI run.")
-        subject("a contribution carries every required field and a source-bound excerpt claim",
-                lambda: host.contribution_output_ok("Business", contribution_text, packet), "clean")
-        missing_conclusion = contribution_text.replace("Conclusion: build one bounded experiment.\n", "")
-        subject("a contribution missing one required field is rejected",
-                lambda: not host.contribution_output_ok("Business", missing_conclusion, packet),
-                "mutant rejected")
-        forged_ref = contribution_text.replace(direct_ref, direct_ref[:-2] + "1)")
-        subject("a contribution with a forged excerpt range is rejected",
-                lambda: not host.contribution_output_ok("Business", forged_ref, packet),
-                "mutant rejected")
-
-        synthesis_bytes = "Product chose the additive implementation."
-        brief_bytes = "Preserve the existing default view while implementing Product's selected command."
-        implement_packet = broker.make_packet(
-            root, "implement", "Engineering", "implement Product's committed decision",
-            broker.SOURCE_ALLOWLIST[("implement", "Engineering")],
-            lineage=(source_digest, hashlib.sha256(synthesis_bytes.encode()).hexdigest(),
-                     hashlib.sha256(brief_bytes.encode()).hexdigest()),
-            generated=(("product_synthesis", synthesis_bytes), ("implementation_brief", brief_bytes)))
-        implement_output = "Role: Engineering"
-        implement_stage = {
-            "packet": implement_packet, "packet_sha256": implement_packet["sha256"],
-            "input_lineage": implement_packet["body"]["lineage"], "output": implement_output,
-            "output_sha256": hashlib.sha256(implement_output.encode()).hexdigest(),
-        }
-        subject("Engineering implement receives Product's exact synthesis and implementation brief bytes",
-                lambda: host.embedded_packet_ok(implement_stage, "engineering_implement", manifest), "clean")
-        missing_handoff = copy.deepcopy(implement_packet)
-        missing_handoff["body"]["generated"] = [item for item in missing_handoff["body"]["generated"]
-                                                  if item["label"] != "implementation_brief"]
-        missing_handoff["sha256"] = hashlib.sha256(broker.canonical_json(missing_handoff["body"])).hexdigest()
-        subject("removing Product's implementation brief bytes invalidates Engineering admission",
-                lambda: not host.embedded_packet_ok({**implement_stage, "packet": missing_handoff,
-                                                     "packet_sha256": missing_handoff["sha256"]},
-                                                    "engineering_implement", manifest),
-                "mutant rejected")
-        neutral_instructions = broker.packet_prompt("implement", "Engineering", implement_packet).split(
-            "\n\nVerified packet:", 1)[0]
-        probe_briefs = broker.contribution_probe_briefs()
-        subject("controller instructions and contribution probe briefs leave the Product solution open",
-                lambda: not any(hint in neutral_instructions.lower() for hint in broker.SOLUTION_HINTS) and
-                        not any(hint in brief.lower() for brief in probe_briefs.values()
-                                for hint in broker.SOLUTION_HINTS), "clean")
-        hinted_briefs = dict(probe_briefs, Engineering=probe_briefs["Engineering"] + " Preserve honest gaps.")
-        subject("one solution hint in a contribution brief is detected",
-                lambda: any(hint in brief.lower() for brief in hinted_briefs.values()
-                            for hint in broker.SOLUTION_HINTS), "mutant rejected")
-
-        receipt_packets = {}
-        receipt_outputs = {}
-        command_value = {"command": "python3 pulse.py week", "exit_code": 0, "output": "seven days"}
-        command_value["sha256"] = hashlib.sha256(broker.canonical_json(command_value)).hexdigest()
-        command_json = broker.canonical_json(command_value).decode()
-        for probe_name, stage_names in host.PROBE_STAGES.items():
-            previous = None
-            for stage_name in stage_names:
-                packet_stage, packet_role = host.expected_packet_identity(stage_name)
-                lineage = [source_digest]
-                generated = []
-                if previous is not None and probe_name != "contributions":
-                    lineage.append(previous)
-                if stage_name == "product_synthesis":
-                    product_selection = receipt_outputs[("product", "product_select")]
-                    generated.append(("product_selection", product_selection))
-                    lineage.append(hashlib.sha256(product_selection.encode()).hexdigest())
-                if probe_name == "engineering" and stage_name == "engineering_implement":
-                    product_synthesis = "Product synthesis bytes"
-                    implementation_brief = "Product implementation brief bytes"
-                    generated += [("product_synthesis", product_synthesis),
-                                  ("implementation_brief", implementation_brief)]
-                    lineage += [hashlib.sha256(product_synthesis.encode()).hexdigest(),
-                                hashlib.sha256(implementation_brief.encode()).hexdigest()]
-                if probe_name == "engineering" and stage_name in ("engineering_run", "engineering_return"):
-                    current = "changed implementation\n"
-                    commit = "d" * 40
-                    generated += [("current_implementation", current),
-                                  ("implementation_commit", commit)]
-                    lineage += [hashlib.sha256(current.encode()).hexdigest(),
-                                hashlib.sha256(commit.encode()).hexdigest()]
-                    if stage_name == "engineering_return":
-                        generated.append(("run_evidence", command_json))
-                        lineage.append(hashlib.sha256(command_json.encode()).hexdigest())
-                if stage_name == "business_return":
-                    generated.append(("real_run", command_json))
-                    lineage.append(hashlib.sha256(command_json.encode()).hexdigest())
-                receipt_packet = broker.make_packet(
-                    root, packet_stage, packet_role, "bounded probe stage",
-                    broker.SOURCE_ALLOWLIST[(packet_stage, packet_role)], lineage=lineage,
-                    generated=generated)
-                output = f"output:{probe_name}:{stage_name}"
-                previous = hashlib.sha256(output.encode()).hexdigest()
-                receipt_packets[(probe_name, stage_name)] = receipt_packet
-                receipt_outputs[(probe_name, stage_name)] = output
-        changed_implementation = "changed implementation\n"
-        implementation_commit = "d" * 40
-        changed_digest = hashlib.sha256(changed_implementation.encode()).hexdigest()
-        commit_digest = hashlib.sha256(implementation_commit.encode()).hexdigest()
-        later_packet = broker.make_packet(
-            root, "run", "Engineering", "run changed implementation",
-            broker.SOURCE_ALLOWLIST[("run", "Engineering")],
-            lineage=(source_digest, changed_digest, commit_digest),
-            generated=(("current_implementation", changed_implementation),
-                       ("implementation_commit", implementation_commit)))
-        later_output = "run output"
-        later_stage = {
-            "packet": later_packet, "packet_sha256": later_packet["sha256"],
-            "input_lineage": later_packet["body"]["lineage"], "output": later_output,
-            "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
-        }
-        subject("post-implementation packet binds changed live bytes while baseline evidence stays immutable",
-                lambda: broker.verify_packet(later_packet) and
-                        host.embedded_packet_ok(later_stage, "engineering_run", manifest) and
-                        later_packet["body"]["generated"][0]["content"] == changed_implementation and
-                        later_packet["body"]["generated"][0]["sha256"] == changed_digest and
-                        next(item for item in later_packet["body"]["evidence"]
-                             if item["path"] == broker.SOURCE_PATHS["engineering"])["content"].startswith("def view(today):"),
-                "clean")
-        unchanged_current = copy.deepcopy(later_packet)
-        unchanged_item = unchanged_current["body"]["generated"][0]
-        unchanged_item["content"] = source_texts["engineering"]
-        unchanged_item["bytes"] = len(unchanged_item["content"].encode())
-        unchanged_item["sha256"] = hashlib.sha256(unchanged_item["content"].encode()).hexdigest()
-        unchanged_current["body"]["lineage"][1] = unchanged_item["sha256"]
-        unchanged_current["sha256"] = hashlib.sha256(broker.canonical_json(unchanged_current["body"])).hexdigest()
-        subject("Engineering run packet cannot relabel immutable baseline bytes as current implementation",
-                lambda: not host.embedded_packet_ok({
-                    "packet": unchanged_current, "packet_sha256": unchanged_current["sha256"],
-                    "input_lineage": unchanged_current["body"]["lineage"], "output": later_output,
-                    "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
-                }, "engineering_run", manifest), "mutant rejected")
-        missing_current = copy.deepcopy(later_packet)
-        missing_current["body"]["generated"] = [item for item in missing_current["body"]["generated"]
-                                                if item["label"] != "current_implementation"]
-        missing_current["sha256"] = hashlib.sha256(broker.canonical_json(missing_current["body"])).hexdigest()
-        subject("Engineering run packet without current implementation bytes is rejected",
-                lambda: not host.embedded_packet_ok({
-                    "packet": missing_current, "packet_sha256": missing_current["sha256"],
-                    "input_lineage": missing_current["body"]["lineage"], "output": "run output",
-                    "output_sha256": hashlib.sha256(b"run output").hexdigest(),
-                }, "engineering_run", manifest), "mutant rejected")
-
-    terminal_rows = [
-        {"type": "thread.started", "thread_id": "terminal-carrier"},
-        {"type": "item.completed", "item": {"type": "agent_message", "text": "terminal answer"}},
-        {"type": "turn.completed", "usage": {
-            "input_tokens": 10, "cached_input_tokens": 4, "output_tokens": 2,
-        }},
-    ]
-    absent_output = pathlib.Path(tempfile.gettempdir()) / "piece9-deliberately-absent-output.md"
-    if absent_output.exists():
-        absent_output.unlink()
-    subject("Codex terminal event is authoritative when the convenience output file is absent",
-            lambda: broker.invocation_output("codex", terminal_rows, absent_output) == "terminal answer" and
-                    broker.invocation_complete(host.codex_usage_rows(terminal_rows), "terminal answer", -15, True),
-            "clean")
-    dual_terminal = terminal_rows + [{"type": "event_msg", "payload": {
-        "type": "task_complete", "last_agent_message": "terminal answer"}}]
-    subject("Codex canonical and legacy markers for one turn count as one response",
-            lambda: host.codex_usage_rows(dual_terminal)["responses"] == 1 and
-                    broker.invocation_output("codex", dual_terminal, absent_output) == "terminal answer", "clean")
-    failed_terminal = terminal_rows + [{"type": "turn.failed", "error": {"message": "failed"}}]
-    subject("a failed terminal event cannot inherit an earlier completed result",
-            lambda: raises_value_error(host.codex_usage_rows, failed_terminal) and
-                    not broker.invocation_output("codex", failed_terminal, absent_output), "mutant rejected")
-    command_rows = terminal_rows[:-1] + [{"type": "item.completed", "item": {
-        "type": "command_execution", "command": "python3 pulse.py week",
-        "aggregated_output": "seven days", "exit_code": 0, "status": "completed"}}, terminal_rows[-1]]
-    subject("Codex command events bind the real command exit and output",
-            lambda: host.command_evidence_ok(broker.command_evidence("codex", command_rows)), "clean")
-    claude_command_rows = [{"message": {"content": [
-        {"type": "tool_use", "name": "Bash", "id": "run-1", "input": {"command": "python3 pulse.py week"}}]}},
-        {"message": {"content": [{"type": "tool_result", "tool_use_id": "run-1",
-                                     "content": "seven days", "is_error": False}]}}]
-    subject("Claude tool-result events bind the real command exit and output",
-            lambda: host.command_evidence_ok(broker.command_evidence("claude", claude_command_rows)), "clean")
-    subject("Engineering narration without a command event is not run evidence",
-            lambda: broker.command_evidence("codex", terminal_rows) is None, "mutant rejected")
-    with tempfile.TemporaryDirectory(prefix="speck-piece9-file-only-") as folder:
-        file_only = pathlib.Path(folder) / "last-message.md"
-        file_only.write_text("file without terminal event")
-        subject("a convenience output file without a terminal event stays incomplete",
-                lambda: not broker.invocation_complete(
-                    {"gross": 12, "cached": 4, "fresh": 8, "responses": 0},
-                    broker.invocation_output("codex", [], file_only), 0, False),
-                "mutant rejected")
-
-    group_response_limits = {"gross": 54, "fresh": 32, "wall": 90, "responses": 3}
-    subject("one invocation keeps response one while its concurrent group keeps response three",
-            lambda: broker.invocation_limits(group_response_limits)["responses"] == 1 and
-                    group_response_limits["responses"] == 3, "clean")
-    two_response_usage = {"gross": 20, "cached": 8, "fresh": 12, "responses": 2}
-    subject("two responses fail an individual invocation inside a three-response group",
-            lambda: host.stage_verdict(two_response_usage, 1,
-                                       broker.invocation_limits(group_response_limits), True)["status"] == "over",
-            "mutant rejected")
-    subject("a group stop does not relabel an already terminal invocation incomplete",
-            lambda: broker.invocation_complete(
-                {"gross": 12, "cached": 4, "fresh": 8, "responses": 1},
-                "terminal answer", -15, True), "clean")
-    subject("a stopped sibling without a terminal response remains incomplete",
-            lambda: not broker.invocation_complete(
-                {"gross": 10, "cached": 4, "fresh": 6, "responses": 0},
-                "", -15, True), "mutant rejected")
-
-    completion = {}
-    try:
-        broker.observe_completion(completion, "codex", terminal_rows, absent_output, 3.0, 1003.0)
-        broker.observe_completion(completion, "codex", terminal_rows, absent_output, 9.0, 1009.0)
-    except Exception:
-        completion = {}
-    subject("the first observed terminal time is retained as the invocation completion",
-            lambda: completion.get("completed") == 3.0 and completion.get("completed_at") == 1003.0,
-            "clean")
-    no_terminal_completion = {}
-    try:
-        broker.observe_completion(no_terminal_completion, "codex", terminal_rows[:-1],
-                                  absent_output, 3.0, 1003.0)
-    except Exception:
-        pass
-    subject("an assistant message without its terminal turn does not acquire a completion time",
-            lambda: "completed" not in no_terminal_completion, "mutant rejected")
-
-    class StoppableProcess:
-        def __init__(self):
-            self.returncode = None
-
-        def poll(self):
-            return self.returncode
-
-        def terminate(self):
-            self.returncode = -15
-
-        def wait(self, timeout=None):
-            return self.returncode
-
-        def kill(self):
-            self.returncode = -9
-
-    with tempfile.TemporaryDirectory(prefix="speck-piece9-partial-group-") as folder:
-        group_dir = pathlib.Path(folder)
-        complete_events = group_dir / "business.jsonl"
-        incomplete_events = group_dir / "experience.jsonl"
-        complete_events.write_text("\n".join(json.dumps(row) for row in terminal_rows) + "\n")
-        incomplete_events.write_text(json.dumps({"type": "thread.started", "thread_id": "experience"}) + "\n")
-        group_state = {"driver": "codex", "carriers": {"Business": "terminal-carrier", "Experience": "experience"},
-                       "carrier_usage": {}, "invocations": [], "control": str(group_dir)}
-        started = time.monotonic() - 0.01
-        items = []
-        for role, name, event_path in (("Business", "business_contribution", complete_events),
-                                       ("Experience", "experience_contribution", incomplete_events)):
-            items.append({"role": role, "receipt_name": name, "process": StoppableProcess(),
-                          "events": event_path, "output_path": group_dir / f"{role}.md",
-                          "event_handle": open(os.devnull, "w"), "error_handle": open(os.devnull, "w"),
-                          "started": started, "started_at": time.time() - 0.01,
-                          "limits": {"gross": 100, "fresh": 100, "wall": 10, "responses": 1},
-                          "packet": {"sha256": "a" * 64, "body": {"lineage": ["b" * 64]}}})
-        group_failed = raises_runtime_error(
-            broker.finish_group, group_state, items,
-            {"gross": 100, "fresh": 100, "wall": 10, "responses": 0}, False)
-        by_role = {item["role"]: item for item in group_state["invocations"]}
-        subject("group stop preserves a completed sibling and leaves the unfinished sibling incomplete",
-                lambda: group_failed and by_role["Business"]["verdict"]["status"] == "passed" and
-                        by_role["Experience"]["verdict"]["status"] == "incomplete", "clean")
-        subject("receipts retain each invocation's process and terminal completion times",
-                lambda: all("process_ended_at" in item for item in by_role.values()) and
-                        by_role["Business"].get("terminal_completed_at") is not None and
-                        by_role["Experience"].get("terminal_completed_at") is None, "clean")
-
-    with tempfile.TemporaryDirectory(prefix="speck-piece9-home-control-") as folder:
-        home_control = pathlib.Path(folder)
-        auth = home_control / "auth.json"
-        auth.write_text("{}\n")
-        home_state = {"protocol": broker.PACKET_SCHEMA, "driver": "codex", "driver_homes": {},
-                      "control": str(home_control), "auth_removed": False}
-        homes = []
-        try:
-            business_home = broker.ensure_carrier_home(home_state, "Business", auth)
-            homes.append(business_home)
-            same_business_home = broker.ensure_carrier_home(home_state, "Business", auth)
-            engineering_home = broker.ensure_carrier_home(home_state, "Engineering", auth)
-            homes.append(engineering_home)
-            isolated = (business_home == same_business_home and business_home != engineering_home and
-                        (business_home / "auth.json").is_file() and
-                        (engineering_home / "auth.json").is_file())
-        except Exception:
-            isolated = False
-        subject("each Codex carrier has one isolated home that survives its resumes",
-                lambda: isolated, "clean")
-        cleaned = False
-        if homes:
-            try:
-                external = subprocess.run(
-                    [sys.executable, str(module_dir / "role-broker.py"), "cleanup", str(home_control / "state.json")],
-                    capture_output=True, text=True)
-                cleaned_state = json.loads((home_control / "state.json").read_text())
-                cleaned = (external.returncode == 0 and not any(path.exists() for path in homes) and
-                           not cleaned_state["driver_homes"] and cleaned_state["auth_removed"] is True)
-            except Exception:
-                pass
-        subject("external cleanup removes all persisted carrier homes after controller loss",
-                lambda: cleaned, "clean")
-        unsafe_state = {"driver": "codex", "driver_homes": {"Business": str(home_control)},
-                        "control": str(home_control), "auth_removed": False}
-        subject("cleanup rejects a carrier home outside its exact temporary prefix",
-                lambda: raises_runtime_error(broker.cleanup_controller, unsafe_state),
-                "mutant rejected")
-
-    subject("three contribution intervals have one common overlap",
-            lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
-    subject("serial contribution intervals are rejected",
-            lambda: not host.intervals_overlap([(0.0, 1.0), (1.0, 2.0), (2.0, 3.0)]), "mutant rejected")
-
-    expected_carriers = {"Product": "p", "Business": "b", "Experience": "x", "Engineering": "e"}
-    subject("Product and role carriers remain continuous across their stages",
-            lambda: host.continuity_ok(expected_carriers, dict(expected_carriers)), "clean")
-    product_swap = dict(expected_carriers, Product="p2")
-    subject("Product carrier swap is rejected",
-            lambda: not host.continuity_ok(expected_carriers, product_swap), "mutant rejected")
-    role_swap = dict(expected_carriers, Engineering="e2")
-    subject("role carrier swap is rejected",
-            lambda: not host.continuity_ok(expected_carriers, role_swap), "mutant rejected")
-
-    plan = None
-    try:
-        plan = broker.reservation_plan()
-    except Exception:
-        pass
-    subject("all downstream component allowances are reserved before selection",
-            lambda: plan is not None and broker.can_start(plan, "product_select"), "clean")
-    missing_reservation = copy.deepcopy(plan) if plan is not None else None
-    if missing_reservation:
-        missing_reservation["product_close"]["status"] = "missing"
-    subject("a missing downstream reservation blocks an earlier stage",
-            lambda: missing_reservation is not None and not broker.can_start(missing_reservation, "product_select"),
-            "mutant rejected")
-    subject("a nonzero invocation without a group termination cannot pass",
-            lambda: not broker.invocation_complete(
-                {"gross": 12, "cached": 4, "fresh": 8, "responses": 1},
-                "terminal answer", 1, False), "mutant rejected")
-    inflated_reservation = copy.deepcopy(plan) if plan is not None else None
-    if inflated_reservation:
-        inflated_reservation["engineering"]["gross"] += 1
-    subject("an inflated downstream ceiling blocks an earlier stage",
-            lambda: inflated_reservation is not None and not broker.can_start(inflated_reservation, "product_select"),
-            "mutant rejected")
-
-    exact_usage = {"gross": 100, "cached": 40, "fresh": 60, "responses": 1}
-    limits = {"gross": 100, "fresh": 60, "wall": 10, "responses": 1}
-    subject("a completed response exactly at every ceiling passes",
-            lambda: host.stage_verdict(exact_usage, 10, limits, complete=True)["status"] == "passed", "clean")
-    one_over = dict(exact_usage, gross=101, fresh=61)
-    subject("one token over a ceiling fails",
-            lambda: host.stage_verdict(one_over, 10, limits, complete=True)["status"] == "over", "mutant rejected")
-    subject("an incomplete response at the ceiling stops incomplete",
-            lambda: host.stage_verdict(exact_usage, 10, limits, complete=False)["status"] == "incomplete",
-            "mutant rejected")
-    subject("a non-finite wall time fails closed",
-            lambda: host.stage_verdict(exact_usage, float("nan"), limits, complete=True)["status"] == "invalid",
-            "mutant rejected")
-    subject("a resumed counter regression fails closed",
-            lambda: raises_value_error(host.usage_delta,
-                                       {"gross": 99, "cached": 40, "fresh": 59, "responses": 1},
-                                       exact_usage), "mutant rejected")
-    double_response = dict(exact_usage, responses=2)
-    subject("two terminal response markers fail a one-response stage",
-            lambda: host.stage_verdict(double_response, 10, limits, complete=True)["status"] == "over",
-            "mutant rejected")
-    inconsistent_split = dict(exact_usage, cached=99)
-    subject("an internally inconsistent gross-cached-fresh split fails closed",
-            lambda: host.stage_verdict(inconsistent_split, 10, limits, complete=True)["status"] == "invalid",
-            "mutant rejected")
-    subject("a non-boolean completion marker fails closed",
-            lambda: host.stage_verdict(exact_usage, 10, limits, complete=1)["status"] == "invalid",
-            "mutant rejected")
-    malformed_aggregate = dict(exact_usage, responses=True)
-    subject("aggregate usage never coerces boolean counters",
-            lambda: raises_value_error(host.add_usage, malformed_aggregate), "mutant rejected")
-
-    probe_names = ("contributions", "product", "business", "engineering")
-    expected_admission = {
-        "driver": "codex", "host": "fixture-host", "model": "fixture-model", "candidate": "candidate-a",
-        "runner_sha256": "runner-a", "packet_schema": broker.PACKET_SCHEMA,
-        "source_manifest_sha256": "source-a",
-    }
-    digest = "a" * 64
-    expected_admission["source_manifest_sha256"] = source_digest
-    def receipt_stage(probe, name, index):
-        limits = host.probe_stage_limits(probe, name)
-        usage = {"gross": 10, "cached": 4, "fresh": 6, "responses": 1}
-        if probe == "contributions":
-            interval = [index * 0.1, 1.0 + index * 0.1]
-            lineage = [source_digest]
-        else:
-            interval = [index * 2.0, index * 2.0 + 1.0]
-            lineage = [source_digest] + ([digest] if index else [])
-        embedded = receipt_packets[(probe, name)]
-        output = receipt_outputs[(probe, name)]
-        carrier = name if probe == "contributions" else probe
-        value = {"name": name, "carrier": carrier, "observed_carrier": carrier,
-                "packet_sha256": embedded["sha256"], "packet": embedded,
-                "input_lineage": embedded["body"]["lineage"], "output": output,
-                "output_sha256": hashlib.sha256(output.encode()).hexdigest(), "interval": interval,
-                "verdict": host.stage_verdict(usage, 1.0, limits, True)}
-        if name == "engineering_run":
-            command = {"command": "python3 pulse.py week", "exit_code": 0, "output": "seven days"}
-            command["sha256"] = hashlib.sha256(broker.canonical_json(command)).hexdigest()
-            value["command_evidence"] = command
-        return value
-    probes = {}
-    for name in probe_names:
-        usage = {"gross": 10 * len(host.PROBE_STAGES[name]), "cached": 4 * len(host.PROBE_STAGES[name]),
-                 "fresh": 6 * len(host.PROBE_STAGES[name]), "responses": len(host.PROBE_STAGES[name])}
-        stages = [receipt_stage(name, stage, index)
-                  for index, stage in enumerate(host.PROBE_STAGES[name])]
-        elapsed = ((max(stage["interval"][1] for stage in stages) -
-                    min(stage["interval"][0] for stage in stages)) if name == "contributions"
-                   else sum(stage["interval"][1] - stage["interval"][0] for stage in stages))
-        probes[name] = {**expected_admission, "name": name, "status": "passed",
-                        "limits": host.PROBE_LIMITS[name],
-                        "verdict": host.stage_verdict(usage, elapsed, host.PROBE_LIMITS[name], True),
-                        "stages": stages}
-    receipt = dict(expected_admission, source_manifest=manifest, probes=probes)
-    subject("four matching probe receipts admit the frozen candidate",
-            lambda: host.admission_ok(receipt, expected_admission), "clean")
-    for field in ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
-                  "source_manifest_sha256"):
-        changed = copy.deepcopy(receipt)
-        changed[field] += "-changed"
-        subject(f"{field} receipt mismatch blocks admission",
-                lambda changed=changed: not host.admission_ok(changed, expected_admission), "mutant rejected")
-    missing_probe = copy.deepcopy(receipt)
-    missing_probe["probes"].pop("engineering")
-    subject("a missing isolated probe blocks full-run admission",
-            lambda: not host.admission_ok(missing_probe, expected_admission), "mutant rejected")
-    forged_inner = copy.deepcopy(receipt)
-    forged_inner["probes"]["business"]["candidate"] = "wrong"
-    subject("a probe's inner candidate mismatch blocks admission",
-            lambda: not host.admission_ok(forged_inner, expected_admission), "mutant rejected")
-    missing_lineage = copy.deepcopy(receipt)
-    missing_lineage["probes"]["engineering"]["stages"][0]["input_lineage"] = []
-    subject("a probe stage without packet lineage blocks admission",
-            lambda: not host.admission_ok(missing_lineage, expected_admission), "mutant rejected")
-    inflated_probe_limit = copy.deepcopy(receipt)
-    inflated_probe_limit["probes"]["product"]["limits"]["gross"] += 1
-    subject("an inflated probe ceiling blocks admission",
-            lambda: not host.admission_ok(inflated_probe_limit, expected_admission), "mutant rejected")
-    empty_probe_usage = copy.deepcopy(receipt)
-    empty_probe_usage["probes"]["business"]["verdict"]["usage"] = {}
-    subject("a passed probe without usage blocks admission",
-            lambda: not host.admission_ok(empty_probe_usage, expected_admission), "mutant rejected")
-    hidden_stage_spend = copy.deepcopy(receipt)
-    hidden_stage_spend["probes"]["engineering"]["stages"][0]["verdict"]["usage"] = {
-        "gross": 50000, "cached": 20000, "fresh": 30000, "responses": 1,
-    }
-    subject("probe totals cannot hide spend recorded by a stage",
-            lambda: not host.admission_ok(hidden_stage_spend, expected_admission), "mutant rejected")
-    broken_continuity = copy.deepcopy(receipt)
-    broken_continuity["probes"]["business"]["stages"][1]["carrier"] = "replacement"
-    subject("probe carrier replacement blocks admission",
-            lambda: not host.admission_ok(broken_continuity, expected_admission), "mutant rejected")
-    serial_probe = copy.deepcopy(receipt)
-    serial_probe["probes"]["contributions"]["stages"][1]["interval"] = [2.0, 3.0]
-    subject("serial contribution probe blocks admission",
-            lambda: not host.admission_ok(serial_probe, expected_admission), "mutant rejected")
-    unchained_probe = copy.deepcopy(receipt)
-    unchained_probe["probes"]["product"]["stages"][1]["input_lineage"] = [source_digest]
-    subject("a resumed probe stage must inherit the prior output digest",
-            lambda: not host.admission_ok(unchained_probe, expected_admission), "mutant rejected")
-    absent_response = copy.deepcopy(receipt)
-    absent_response["probes"]["business"]["stages"][0]["verdict"]["usage"]["responses"] = 0
-    subject("a stage without exactly one terminal result blocks admission",
-            lambda: not host.admission_ok(absent_response, expected_admission), "mutant rejected")
-    forged_packet = copy.deepcopy(receipt)
-    forged_packet["probes"]["product"]["stages"][0]["packet"]["body"]["brief"] += " changed"
-    subject("a receipt whose embedded packet bytes do not match its digest blocks admission",
-            lambda: not host.admission_ok(forged_packet, expected_admission), "mutant rejected")
-    forged_manifest = copy.deepcopy(receipt)
-    forged_manifest["source_manifest"]["evidence"][0]["bytes"] += 1
-    subject("a mutated manifest body cannot retain its claimed digest",
-            lambda: not host.admission_ok(forged_manifest, expected_admission), "mutant rejected")
-
-    historic = {"gross": 266484, "cached": 210432, "fresh": 56052, "responses": 2}
-    full_limits = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 99}
-    subject("historic 266,484-gross incomplete run stays failed on gross",
-            lambda: host.stage_verdict(historic, 110, full_limits, complete=False)["status"] == "over",
-            "standing red")
-
-    good = all(passed for _, passed, _ in subjects)
-    counts = {kind: sum(1 for _, _, actual in subjects if actual == kind)
-              for kind in ("clean", "mutant rejected", "standing red")}
-    print(f"  [measure] piece9-control subjects={len(subjects)} clean={counts['clean']} "
-          f"mutants={counts['mutant rejected']} standing={counts['standing red']}")
-    print(f"Piece 9 transport controls: {'PASS' if good else 'FAIL'}")
     return good
 
 
@@ -5232,9 +4509,6 @@ if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-path-controls":
         print("usage: check.py --piece-8-path-controls KERNEL", file=sys.stderr)
         sys.exit(2)
     sys.exit(0 if run_path_transaction_controls(pathlib.Path(sys.argv[2]).resolve()) else 1)
-
-if len(sys.argv) == 2 and sys.argv[1] == "--piece-9-controls":
-    sys.exit(0 if run_piece9_transport_controls() else 1)
 
 if len(sys.argv) >= 2 and sys.argv[1] == "--piece-8-controls":
     if len(sys.argv) != 3:
@@ -5371,10 +4645,6 @@ output = run.stdout + run.stderr
 forbidden = ("streak", "great job", "premium", "unlock", "$2", "!")
 note("KEY: pulse week is a real seven-day view", run.returncode == 0 and "7" in output and "14" not in output and "usage:" not in output.lower())
 note("KEY: the integrated behavior refuses pressure and an unearned price", not any(x in output.lower() for x in forbidden))
-default_run = subprocess.run(["python3", "pulse.py"], cwd=pulse_dir, env=env, capture_output=True, text=True)
-default_output = default_run.stdout + default_run.stderr
-note("KEY: the additive weekly command preserves the ordinary fourteen-day view",
-     default_run.returncode == 0 and "of 14 days logged" in default_output.lower())
 
 returns_heading = "## Informative role returns" if "## Informative role returns" in record else "## First real run returns"
 returns = record.split(returns_heading, 1)[1].split("**Business ruling:**", 1)[0] if returns_heading in record else ""
