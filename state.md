@@ -2,15 +2,15 @@
 
 ## What's true now
 
-Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team earns its place,” is **Built** and live. Blind use chose the governed synthetic product before unblinding: its fixed-date week worked while the strong control failed the same core command, and legacy behavior held. The owner locked the result-first promise: a running result goes to independent review, and only a concrete product finding or new product claim can authorize another build. Engineering implemented that rule and returned on the exact checker evidence. The product evidence is reviewable, v0.9 remains failed, and further work on that synthetic product is closed. The package is v6.0.0; the last published tag remains v5.4.1 until the combined release hearing passes.
+Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team earns its place,” is **Built** again after its first combined review sent the exact candidate back for two release defects. Blind use still keeps the governed synthetic result and closes further work on that product. The repaired package now carries only runtime material, and a completed migration now refuses malformed, duplicate-role, same-carrier, or route-mismatched assessment evidence before any write or resume instruction. The package is v6.0.0; the last published tag remains v5.4.1 until focused re-review passes.
 
-> **Built — Piece 9 “The team earns its place,” exact v6.0.0 candidate:** product commits `32b1ba2`, `3a39e3e`, and `c2912e7` cover exactly `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `package.json`, `.claude/skills/experience/SKILL.md`, `.claude/skills/map-build/SKILL.md`, `.claude/skills/map-build/references/questions.md`, `templates/map.md`, `templates/piece.md`, `templates/state.md`, `devsuite/run.sh`, `devsuite/tasks/separated-product-team/check.py`, and `devsuite/tasks/separated-product-team/host_proof.py`. The committed candidate passed 26 routing, eight assessment, 28 result-disposition, 95 path-transaction, and 230 migration/refusal subjects; all five planted development controls stayed red; the host parser, syntax, version, package, footprint, and positive-control-backed public-detail checks passed. Fresh install is 20 entries / 85,618 bytes; packed install 20 / 85,613; always-read 47,374 / 50,000; five skills. No product implementation commit follows `c2912e7`; `28a8ca3` changes only the Engineering return record.
+> **Built — Piece 9 “The team earns its place,” repaired v6.0.0 candidate:** the original product commits `32b1ba2`, `3a39e3e`, and `c2912e7` remain the method candidate; repair commit `ca33c64` changes exactly `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. The committed tree passed 26 routing, eight assessment, 28 result-disposition, 95 path-transaction, and 335 migration/refusal subjects; all five planted development controls stayed red; host parser, syntax, version, package, footprint, diff, and positive-control-backed public-detail checks passed. The release package is 20 entries / 191,381 unpacked bytes; fresh install is 20 entries / 85,618; packed install 20 / 85,613; method digest is `1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70`; always-read is 48,369 / 50,000; five skills. No product implementation commit follows `ca33c64`; `b8ce6e8` changes only the Engineering return record.
 
-- **Works:** Piece 9 not judged yet; its deterministic checks pass.
-- **Delivers the promise:** Piece 9 not judged yet; the result-first dispositions and no-duplicate-build mutants pass.
-- **Good to use:** Piece 9 not judged yet; contributor-excluded release use is next.
-- **Quality hangs together:** Piece 9 not judged yet; two independent release judges remain.
-- **Business:** `kept` for Piece 8 adoption and migration, the governed synthetic product change, and the prospective result-first direction; `broken` for Piece 9's retired controller, failed gross-limit attempt, and v0.9 cost experiment. The rebuilt Piece 9 and milestone remain `not judged` pending fresh release evidence.
+- **Works:** the first release candidate was judged broken; the repaired candidate's deterministic checks pass and focused re-review is pending.
+- **Delivers the promise:** the first release candidate was judged broken on fabricated migration evidence; the repaired admission population passes and judgment is pending.
+- **Good to use:** the first release candidate was judged broken on package freight and false resume assurance; focused adoption and migration use is next.
+- **Quality hangs together:** the first release candidate was judged broken; both independent judges must continue on the repaired Built line.
+- **Business:** Piece 9 is `kept`; the milestone remains `broken` until the repaired package, migration, and compatible Codex start return.
 - **Structure:** straining — the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -21,7 +21,7 @@ Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged 
 
 ## What's blocked
 
-The milestone and release are blocked only on the combined fresh release review, Business's binding ruling, and two independent judgments. The old 250,000-gross attempt and v0.9 remain failed; neither cost claim can be rescued.
+The milestone and release are blocked only on focused repair review: a compatible native Codex start, the repaired package and worst-day continuations, active Business and Experience returns, and both continuing judgments. The old 250,000-gross attempt and v0.9 remain failed; neither cost claim can be rescued.
 
 ## What needs the owner
 
@@ -29,7 +29,7 @@ Nothing before the final milestone grade. The owner ratified the full v6 promise
 
 ## What happens next
 
-Open one combined Piece 9 and milestone receipt on this Built line. Four fresh people cover first-time Codex adoption, real Codex product-building, Claude as the second host, and worst-day mid-product migration without rebuilding the preserved synthetic product. Two independent judges challenge the same records. If they and Business keep the candidate, publish this exact v6.0.0 tree and upgrade the waiting private product without changing its live-work truth.
+Open the focused repair receipt on this Built line. Continue only first-time Codex adoption and worst-day migration against the repaired tree; preserve the product-builder and Claude records because their method digest and product logic did not change. Return Business and Experience, then continue both independent judgments. If they keep the repaired candidate, publish this exact v6.0.0 tree and upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 
