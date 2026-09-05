@@ -476,3 +476,7 @@ The same new fresh carrier now replays the first Shape/Map tester's complete con
 ### Repaired Map re-test — sufficient
 
 At `63421fa`, fresh tester `/root/result_shape_map_retester` found the re-cut sufficient. It confirmed the blind comparison preceded code, the same Business and Experience carriers returned, another Pulse build is forbidden, historic failures stay failed, and the complete v6 roster plus Codex-first/Claude-supported proof remain. Its skeptical attack found no cheaper equally independent route and no removed producer. A separate judge is receipted in the Piece 9 record; Engineering still waits for judgment and owner ratification.
+
+### Repaired Map judgment — sufficient
+
+At `be9cc92`, independent judge `/root/result_shape_map_judge` ruled Map sufficient. Product evidence precedes code; no Pulse rebuild is allowed; the release still requires fresh Codex adoption, real Codex product-building, Claude second-host use, the worst-day migration/context case, two judges, Business, owner grade, budgets, and the final leak scan. The judge found no equally independent cheaper route and required no rerun. Engineering waits only for owner ratification of the exact prospective promise.

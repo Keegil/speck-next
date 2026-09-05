@@ -149,6 +149,10 @@ The repaired candidate now receives a new fresh challenge under the committed jo
 
 At `63421fa`, fresh tester `/root/result_shape_map_retester` found the narrowed promise sufficient. Bad or incomplete work still cannot pass; fresh use and independent judgment still establish greatness; every cost remains visible; exhausted prospective authorization stops more model work; active calls and returns stay unchanged; and Business still blocks. The three dispositions were understandable as ordinary facts, not owner vocabulary. A separate judge is receipted in the Piece 9 record; owner ratification remains after judgment.
 
+### Repaired Shape judgment — sufficient
+
+At `be9cc92`, independent judge `/root/result_shape_map_judge` ruled Shape sufficient. The material product difference stands only for the tested fixture; the candidate does not claim universal necessity, cheapest causality, or field value. Fresh review still establishes greatness, Business remains binding, active returns remain locked, authorization stops further work, and every old cost failure stays failed. No rerun is required. The exact prospective promise now waits only for the owner's plain-language ratification.
+
 ### Redesigned Shape tester round 1 — sent back
 
 Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:

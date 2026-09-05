@@ -436,3 +436,9 @@ At `63421fa`, fresh tester `/root/result_shape_map_retester` replayed the first 
 - Required ruling: Shape sufficient or sent back; Map sufficient or sent back; exact blocker only. Owner ratification still follows a sufficient judgment and cannot be supplied by the judge.
 - Dispatch: only after the commit containing this receipt.
 - Judgment: pending.
+
+### Repaired Shape/Map judgment — sufficient
+
+At `be9cc92`, independent judge `/root/result_shape_map_judge` verified both receipts and challenged the favorable records before reading role returns. **Shape: SUFFICIENT. Map: SUFFICIENT.** The blind product difference survived narrowly: the governed build completed the historical-week job across mixed, complete, and empty journals while the control failed it; legacy output and journal bytes held. This supports material difference on the tested fixture, never universal necessity, cheapest causality, or field value.
+
+The judge found the prospective promise intact: contributor-excluded use and independent judgment establish greatness; Business remains binding; selective calls and every active role's return remain locked; authorization exhaustion stops more model work; all historical failures stay failed; and further Pulse spend stays closed. The route puts product evidence before code, forbids a rebuild, and preserves fresh Codex adoption, real Codex product-building, Claude second-host use, worst-day migration/context failure, two independent judges, Business, owner grade, budgets, and the final leak scan. No tester rerun is required. Future Odd value remains deliberately unproved until the mapped second-subject run and post-release upgrade. The exact prospective promise is ready for owner ratification; Engineering remains blocked until then.

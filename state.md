@@ -2,7 +2,7 @@
 
 ## What's true now
 
-Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map reopened around Piece 9, now “The team earns its place.” The first fresh challenge sent the re-cut back; Product restored the locked active-return promise and moved product use before code. Blind use then chose the governed build: its fixed-date week worked while the strong control failed the same core command, and legacy behavior held. Business returned `kept`; Experience resolved its concern while narrowing the causal claim. A new fresh re-test found the repaired Shape and Map sufficient with every cost failure, role gate, release obligation, and closed-spend boundary intact. The product is reviewable, v0.9 remains failed, and further Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
+Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map reopened around Piece 9, now “The team earns its place.” The first fresh challenge sent the re-cut back; Product restored the locked active-return promise and moved product use before code. Blind use then chose the governed build: its fixed-date week worked while the strong control failed the same core command, and legacy behavior held. Business returned `kept`; Experience resolved its concern while narrowing the causal claim. A new fresh re-test and separate judge found the repaired Shape and Map sufficient with every cost failure, role gate, release obligation, and closed-spend boundary intact. The product is reviewable, v0.9 remains failed, and further Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
 
 - **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
@@ -19,7 +19,7 @@ Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. T
 
 ## What's blocked
 
-The milestone and release are blocked on one separate Shape/Map judgment and owner ratification, then Piece 9's kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
+The milestone and release are blocked only on owner ratification of the judged Shape/Map, then Piece 9's kernel implementation and release review. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
 
 ## What needs the owner
 
@@ -27,7 +27,7 @@ Nothing before the final milestone grade and plain-language v6 ratification. The
 
 ## What happens next
 
-Dispatch the committed separate judge. If it keeps the exact prospective promise, record the owner's result-first ratification and have Engineering change every live rule home. No more governed Pulse build runs. After release, upgrade the waiting private product without changing its live-work truth.
+Show the judged prospective promise to the owner in plain language. On ratification, have Engineering change every live rule home. No more governed Pulse build runs. After release, upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 
