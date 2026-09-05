@@ -396,3 +396,11 @@ Product accepts both findings. The owner-approved active-return rule stays uncha
 - Run owner: `/root` prepares the neutral subjects, then keeps its hands off while the tester runs.
 - Empty record: a later session must re-dispatch under its own named line rather than infer a result.
 - Record and verdict: pending.
+
+### Pre-code blind product result — materially better
+
+Fresh tester `/root/result_blind_tester` ran the two history-free products at receipt commit `ee9f5b2` without provenance or role conclusions and locked **A** before unblinding. Against the identical mixed journal, A's fixed-date week command exited zero and showed all seven exact dates, three values, and four neutral `ikke logget` gaps. B exited one with an irrelevant energy-value logging error. The same difference held for a complete week and an empty journal. Both products preserved the existing fourteen-day output byte for byte, and neither mutated any journal fixture.
+
+After the verdict, Product revealed A as governed commit `f439c81` and B as ungoverned commit `014deef`; their SHA-256 hashes matched the preserved source bytes. The tester found the improvement material rather than cosmetic because the core historical-week scenario moved from failure to a complete auditable view without regression. It left one honest limit: the run proves the resulting product difference, not that the separated method was necessary or cheapest. A's Norwegian week view also remains linguistically inconsistent with its English help, default, and empty output, but this did not break the tested job. Full commands, output, integrity hashes, lived observations, verdict, and unblinding are in [the tester record](separated-product-team-precode-tester.md).
+
+This result clears the pre-code product gate. It does not rescue v0.9, authorize another Pulse build, replace the required Business and Experience returns, complete the repaired Shape/Map review, or authorize Engineering code.
