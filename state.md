@@ -29,7 +29,7 @@ Choose whether to keep the 250,000-gross ceiling or approve contract v0.9: the f
 
 If the cost rule changes, resume the four preserved contexts, synthesize before code, build and run, return the roles, and judge against the baseline. Otherwise reopen Shape around affordability. After release, upgrade the waiting private product without changing its live-work truth.
 
-“Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). Also queued: the v11 converter · CI limit enforcement · promise conservation.
+“Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 
 ## Evidence
 
