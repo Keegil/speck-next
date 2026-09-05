@@ -226,6 +226,21 @@ def embedded_packet_ok(stage, expected_name, manifest):
                 return False
     except (KeyError, TypeError, ValueError):
         return False
+    if body.get("stage") in ("run", "return") and body.get("role") == "Engineering":
+        generated_items = {item.get("label"): item for item in body.get("generated", [])}
+        required = {"current_implementation", "implementation_commit"}
+        if body.get("stage") == "return":
+            required.add("run_evidence")
+        baseline = next((item for item in manifest.get("evidence", [])
+                         if item.get("path") == "examples/pulse/pulse.py"), None)
+        commit = generated_items.get("implementation_commit", {}).get("content")
+        if (not required <= set(generated_items) or
+                not all(generated_items[label].get("sha256") in body.get("lineage", [])
+                        for label in required) or
+                not baseline or
+                generated_items["current_implementation"].get("sha256") == baseline.get("sha256") or
+                not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit)):
+            return False
     return (body.get("schema") == "piece9-packet-v1" and body.get("lineage") == stage.get("input_lineage") and
             stage.get("packet_sha256") == packet.get("sha256") and
             isinstance(stage.get("output"), str) and

@@ -801,9 +801,34 @@ def engineering_sequence(state, contribution, synthesis, limits):
         ("engineering_return", "return", "Return to the observed run as Engineering.", "read-only"),
     )
     for receipt_name, stage, brief, sandbox in prompts:
-        lineage = (state["source_manifest"]["sha256"], contribution["output_sha256"], previous)
+        lineage = [state["source_manifest"]["sha256"], contribution["output_sha256"], previous]
+        generated = [("prior_stage", previous)]
+        if stage in ("run", "return"):
+            implementation = (pathlib.Path(state["root"]) / SOURCE_PATHS["engineering"]).read_text()
+            implementation_commit = git_output(state["root"], "rev-parse", "HEAD")
+            if git_output(state["root"], "status", "--porcelain", "--", SOURCE_PATHS["engineering"]):
+                raise RuntimeError("Engineering implementation bytes are not committed")
+            if stage == "run":
+                synthesis_commit = state.get("synthesis_commit")
+                if (not synthesis_commit or implementation_commit == synthesis_commit or
+                        SOURCE_PATHS["engineering"] not in git_output(
+                            state["root"], "diff", "--name-only", synthesis_commit,
+                            implementation_commit, "--", SOURCE_PATHS["engineering"]).splitlines()):
+                    raise RuntimeError("Engineering run has no committed implementation change")
+                state["implementation_commit"] = implementation_commit
+                state["implementation_sha256"] = sha256_text(implementation)
+            elif (implementation_commit != state.get("implementation_commit") or
+                  sha256_text(implementation) != state.get("implementation_sha256")):
+                raise RuntimeError("Engineering implementation changed after its run packet")
+            generated += [("current_implementation", implementation),
+                          ("implementation_commit", implementation_commit)]
+            lineage += [sha256_text(implementation), sha256_text(implementation_commit)]
+        if stage == "return":
+            run_evidence = receipts[-1]["output"]
+            generated.append(("run_evidence", run_evidence))
+            lineage.append(sha256_text(run_evidence))
         spec = stage_spec(state, receipt_name, stage, "Engineering", brief, lineage,
-                          generated=(("prior_stage", previous),), sandbox=sandbox)
+                          generated=generated, sandbox=sandbox)
         current_receipts, _ = run_group(state, [spec], limits)
         receipts.extend(current_receipts)
         previous = current_receipts[0]["output_sha256"]
@@ -920,6 +945,7 @@ def run_probe(state, name, request_text, admission_root):
         record.write_text("# Weekly view\n\n**Product synthesis:** " + synthesis_output + "\n")
         git_output(state["root"], "add", "examples/pulse/work/weekly-view.md")
         git_output(state["root"], "commit", "-m", "Record Engineering probe handoff")
+        state["synthesis_commit"] = git_output(state["root"], "rev-parse", "HEAD")
         remaining, _ = engineering_sequence(state, contribution[0], synthesis, PROBE_LIMITS[name])
         receipts = contribution + remaining
     else:

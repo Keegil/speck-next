@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
-import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
+import base64, copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
 import tarfile
 from datetime import date, timedelta
 
@@ -4641,22 +4641,78 @@ def run_piece9_transport_controls():
             for stage_name in stage_names:
                 packet_stage, packet_role = host.expected_packet_identity(stage_name)
                 lineage = [source_digest]
+                generated = []
                 if previous is not None and probe_name != "contributions":
                     lineage.append(previous)
+                if probe_name == "engineering" and stage_name in ("engineering_run", "engineering_return"):
+                    current = "changed implementation\n"
+                    commit = "d" * 40
+                    generated += [("current_implementation", current),
+                                  ("implementation_commit", commit)]
+                    lineage += [hashlib.sha256(current.encode()).hexdigest(),
+                                hashlib.sha256(commit.encode()).hexdigest()]
+                    if stage_name == "engineering_return":
+                        run_evidence = receipt_outputs[("engineering", "engineering_run")]
+                        generated.append(("run_evidence", run_evidence))
+                        lineage.append(hashlib.sha256(run_evidence.encode()).hexdigest())
                 receipt_packet = broker.make_packet(
                     root, packet_stage, packet_role, "bounded probe stage",
-                    broker.SOURCE_ALLOWLIST[(packet_stage, packet_role)], lineage=lineage)
+                    broker.SOURCE_ALLOWLIST[(packet_stage, packet_role)], lineage=lineage,
+                    generated=generated)
                 output = f"output:{probe_name}:{stage_name}"
                 previous = hashlib.sha256(output.encode()).hexdigest()
                 receipt_packets[(probe_name, stage_name)] = receipt_packet
                 receipt_outputs[(probe_name, stage_name)] = output
-        live_root = root / "live-product"
-        write_file(live_root, broker.SOURCE_PATHS["engineering"], "changed implementation\n")
+        changed_implementation = "changed implementation\n"
+        implementation_commit = "d" * 40
+        changed_digest = hashlib.sha256(changed_implementation.encode()).hexdigest()
+        commit_digest = hashlib.sha256(implementation_commit.encode()).hexdigest()
         later_packet = broker.make_packet(
             root, "run", "Engineering", "run changed implementation",
-            broker.SOURCE_ALLOWLIST[("run", "Engineering")], lineage=(source_digest,))
-        subject("post-implementation packets remain bound to the immutable source snapshot",
-                lambda: broker.verify_packet(later_packet), "clean")
+            broker.SOURCE_ALLOWLIST[("run", "Engineering")],
+            lineage=(source_digest, changed_digest, commit_digest),
+            generated=(("current_implementation", changed_implementation),
+                       ("implementation_commit", implementation_commit)))
+        later_output = "run output"
+        later_stage = {
+            "packet": later_packet, "packet_sha256": later_packet["sha256"],
+            "input_lineage": later_packet["lineage"], "output": later_output,
+            "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
+        }
+        subject("post-implementation packet binds changed live bytes while baseline evidence stays immutable",
+                lambda: broker.verify_packet(later_packet) and
+                        host.embedded_packet_ok(later_stage, "engineering_run", manifest) and
+                        later_packet["generated"][0]["content"] == changed_implementation and
+                        later_packet["generated"][0]["sha256"] == changed_digest and
+                        base64.b64decode(next(item for item in later_packet["evidence"]
+                                              if item["path"] == broker.SOURCE_PATHS["engineering"])["content_base64"]).decode() == "engineering\n",
+                "clean")
+        unchanged_current = copy.deepcopy(later_packet)
+        unchanged_item = unchanged_current["body"]["generated"][0]
+        unchanged_item["content"] = "engineering\n"
+        unchanged_item["bytes"] = len(unchanged_item["content"].encode())
+        unchanged_item["sha256"] = hashlib.sha256(unchanged_item["content"].encode()).hexdigest()
+        unchanged_current["body"]["lineage"][1] = unchanged_item["sha256"]
+        unchanged_current["generated"] = unchanged_current["body"]["generated"]
+        unchanged_current["lineage"] = unchanged_current["body"]["lineage"]
+        unchanged_current["sha256"] = hashlib.sha256(broker.canonical_json(unchanged_current["body"])).hexdigest()
+        subject("Engineering run packet cannot relabel immutable baseline bytes as current implementation",
+                lambda: not host.embedded_packet_ok({
+                    "packet": unchanged_current, "packet_sha256": unchanged_current["sha256"],
+                    "input_lineage": unchanged_current["lineage"], "output": later_output,
+                    "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
+                }, "engineering_run", manifest), "mutant rejected")
+        missing_current = copy.deepcopy(later_packet)
+        missing_current["body"]["generated"] = [item for item in missing_current["body"]["generated"]
+                                                if item["label"] != "current_implementation"]
+        missing_current["generated"] = missing_current["body"]["generated"]
+        missing_current["sha256"] = hashlib.sha256(broker.canonical_json(missing_current["body"])).hexdigest()
+        subject("Engineering run packet without current implementation bytes is rejected",
+                lambda: not host.embedded_packet_ok({
+                    "packet": missing_current, "packet_sha256": missing_current["sha256"],
+                    "input_lineage": missing_current["lineage"], "output": "run output",
+                    "output_sha256": hashlib.sha256(b"run output").hexdigest(),
+                }, "engineering_run", manifest), "mutant rejected")
 
     subject("three contribution intervals have one common overlap",
             lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
