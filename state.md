@@ -29,7 +29,7 @@ Nothing. Standing, non-blocking: the v5-era fixture milestone's felt grade ([wor
 
 ## What happens next
 
-Set up Piece 9 with distinct Business, Experience, and Engineering carriers, then Product commits one bounded synthesis before Engineering changes the runner. Keep every no-model control red; admit the four component probes before the Codex-first and Claude-parity product runs. After v6 is released, run that released upgrader on Odd, preserve its live Piece 3 truth, verify the installed surface and next action, and commit the migration there.
+Set up Piece 9 with distinct Business, Experience, and Engineering carriers, then Product commits one bounded synthesis before Engineering changes the runner. Keep every no-model control red; admit the four component probes before the Codex-first and Claude-parity product runs. After v6 is released, run that released upgrader on the waiting private product repository, preserve its live-work truth, verify the installed surface and next action, and commit the migration there.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves here with the next density work · the four rules stacked without a heading stay filed with that work · the self-measurement strain moves to the computed-check piece.
 
