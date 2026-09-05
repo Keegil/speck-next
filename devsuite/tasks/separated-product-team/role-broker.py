@@ -418,6 +418,7 @@ def packet_prompt(stage, role, packet):
             "`# Weekly view`, include `## Active pre-code contributions`, a Markdown table with one row each "
             "for Product, Business, Experience, and Engineering whose columns are Carrier, direct evidence, "
             "conclusion, assumptions, proposed change, and active decision, and one `**Product synthesis:**` line. "
+            "Copy every host-issued carrier exactly from carrier_manifest. "
             "The decision must build a seven-day view with gaps, without streaks, praise, pressure, or price."
         ),
         "implement": (
@@ -438,7 +439,8 @@ def packet_prompt(stage, role, packet):
         "product_close": (
             "Continue as Product and close the product record from the actual implementation and returns. "
             "Return JSON only with key append_markdown. It must begin `## Informative role returns`, record all "
-            "three role returns, include the exact Business ruling, contributor exclusions, and one integrated "
+            "three role returns, restate the exact verdict as `**Business ruling:** kept — reason` (or broken/not "
+            "judged as returned), include contributor exclusions, and one integrated "
             "owner-facing recommendation. Do not claim review, judgment, Built, or release."
         ),
     }[stage]
@@ -775,8 +777,12 @@ def product_select(state, request_text, limits):
 
 
 def product_synthesis(state, selection, contributions, limits, probe=False):
+    carrier_manifest = dict(state["carriers"])
+    carrier_manifest.update({receipt["role"]: receipt["carrier"] for receipt in contributions
+                             if receipt.get("role") and receipt.get("carrier")})
     generated = (("selection", selection["selection"]),) + tuple(
-        (receipt["name"], receipt["output"]) for receipt in contributions)
+        (receipt["name"], receipt["output"]) for receipt in contributions) + (
+            ("carrier_manifest", json.dumps(carrier_manifest, sort_keys=True)),)
     lineage = (state["source_manifest"]["sha256"], selection["receipt"]["output_sha256"],
                *(receipt["output_sha256"] for receipt in contributions))
     spec = stage_spec(state, "product_synthesis", "product_synthesis", "Product",
@@ -889,7 +895,7 @@ def run_probe(state, name, request_text, admission_root):
                       "Proposed change: one seven-day view.\nConsequence: the product remains calm.\n"
                       "Earliest disconfirming run: mixed-gap pulse week.")
             synthetic.append({"name": f"{role.lower()}_contribution", "role": role, "output": output,
-                              "output_sha256": sha256_text(output)})
+                              "output_sha256": sha256_text(output), "carrier": f"fixture-{role.lower()}"})
         synthesized, _ = product_synthesis(state, selection, synthetic,
                                             STAGE_LIMITS["product_synthesis"], probe=True)
         receipts = selected + synthesized
