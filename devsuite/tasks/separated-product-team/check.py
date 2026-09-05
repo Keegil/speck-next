@@ -4596,10 +4596,12 @@ def run_piece9_transport_controls():
 
     with tempfile.TemporaryDirectory(prefix="speck-piece9-packets-") as folder:
         root = pathlib.Path(folder)
-        write_file(root, "evidence/one.txt", "one\n")
+        for key, relative in broker.SOURCE_PATHS.items():
+            write_file(root, relative, f"{key}\n")
         packet = None
         try:
-            packet = broker.make_packet(root, "contributions", "Business", "bounded brief", ["evidence/one.txt"])
+            packet = broker.make_packet(root, "contribution", "Business", "bounded brief",
+                                        broker.SOURCE_ALLOWLIST[("contribution", "Business")])
         except Exception:
             pass
         subject("path-confined packet verifies its exact bytes and SHA-256",
@@ -4609,6 +4611,11 @@ def run_piece9_transport_controls():
             changed_packet["evidence"][0]["content_base64"] += "A"
         subject("one-byte packet mutation is rejected",
                 lambda: changed_packet is not None and not broker.verify_packet(changed_packet), "mutant rejected")
+        write_file(root, "check.py", "solution history\n")
+        subject("an in-root checker is rejected by the stage source allowlist",
+                lambda: raises_value_error(broker.make_packet, root, "contribution", "Business",
+                                           "bounded brief", ("examples/pulse/product.md", "check.py")),
+                "mutant rejected")
 
     subject("three contribution intervals have one common overlap",
             lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
@@ -4683,7 +4690,22 @@ def run_piece9_transport_controls():
         "runner_sha256": "runner-a", "packet_schema": "piece9-packet-v1",
         "source_manifest_sha256": "source-a",
     }
-    receipt = dict(expected_admission, probes={name: {"status": "passed"} for name in probe_names})
+    digest = "a" * 64
+    def receipt_stage(probe, name):
+        limits = host.probe_stage_limits(probe, name)
+        usage = {"gross": 10, "cached": 4, "fresh": 6, "responses": 1}
+        return {"name": name, "packet_sha256": digest, "input_lineage": [digest],
+                "output_sha256": digest, "interval": [0.0, 1.0],
+                "verdict": host.stage_verdict(usage, 1.0, limits, True)}
+    probes = {}
+    for name in probe_names:
+        usage = {"gross": 10 * len(host.PROBE_STAGES[name]), "cached": 4 * len(host.PROBE_STAGES[name]),
+                 "fresh": 6 * len(host.PROBE_STAGES[name]), "responses": len(host.PROBE_STAGES[name])}
+        probes[name] = {**expected_admission, "name": name, "status": "passed",
+                        "limits": host.PROBE_LIMITS[name],
+                        "verdict": host.stage_verdict(usage, 2.0, host.PROBE_LIMITS[name], True),
+                        "stages": [receipt_stage(name, stage) for stage in host.PROBE_STAGES[name]]}
+    receipt = dict(expected_admission, probes=probes)
     subject("four matching probe receipts admit the frozen candidate",
             lambda: host.admission_ok(receipt, expected_admission), "clean")
     for field in ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
@@ -4696,6 +4718,22 @@ def run_piece9_transport_controls():
     missing_probe["probes"].pop("engineering")
     subject("a missing isolated probe blocks full-run admission",
             lambda: not host.admission_ok(missing_probe, expected_admission), "mutant rejected")
+    forged_inner = copy.deepcopy(receipt)
+    forged_inner["probes"]["business"]["candidate"] = "wrong"
+    subject("a probe's inner candidate mismatch blocks admission",
+            lambda: not host.admission_ok(forged_inner, expected_admission), "mutant rejected")
+    missing_lineage = copy.deepcopy(receipt)
+    missing_lineage["probes"]["engineering"]["stages"][0]["input_lineage"] = []
+    subject("a probe stage without packet lineage blocks admission",
+            lambda: not host.admission_ok(missing_lineage, expected_admission), "mutant rejected")
+    inflated_probe_limit = copy.deepcopy(receipt)
+    inflated_probe_limit["probes"]["product"]["limits"]["gross"] += 1
+    subject("an inflated probe ceiling blocks admission",
+            lambda: not host.admission_ok(inflated_probe_limit, expected_admission), "mutant rejected")
+    empty_probe_usage = copy.deepcopy(receipt)
+    empty_probe_usage["probes"]["business"]["verdict"]["usage"] = {}
+    subject("a passed probe without usage blocks admission",
+            lambda: not host.admission_ok(empty_probe_usage, expected_admission), "mutant rejected")
 
     historic = {"gross": 266484, "cached": 210432, "fresh": 56052, "responses": 2}
     full_limits = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 99}

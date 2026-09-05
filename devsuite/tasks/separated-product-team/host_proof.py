@@ -10,6 +10,30 @@ USAGE_FIELDS = ("gross", "cached", "fresh", "responses")
 PROBE_NAMES = ("contributions", "product", "business", "engineering")
 ADMISSION_FIELDS = ("driver", "host", "model", "candidate", "runner_sha256", "packet_schema",
                     "source_manifest_sha256")
+STAGE_ORDER = ("product_select", "contributions", "product_synthesis", "engineering",
+               "returns", "product_close")
+STAGE_LIMITS = {
+    "product_select": {"gross": 21000, "fresh": 12000, "wall": 45, "responses": 1},
+    "contributions": {"gross": 54000, "fresh": 32000, "wall": 90, "responses": 3},
+    "product_synthesis": {"gross": 26000, "fresh": 18000, "wall": 60, "responses": 1},
+    "engineering": {"gross": 70000, "fresh": 55000, "wall": 360, "responses": 3},
+    "returns": {"gross": 40000, "fresh": 24000, "wall": 90, "responses": 2},
+    "product_close": {"gross": 24000, "fresh": 19000, "wall": 60, "responses": 1},
+}
+PROBE_LIMITS = {
+    "business": {"gross": 38000, "fresh": 22000, "wall": 180, "responses": 2},
+    "contributions": STAGE_LIMITS["contributions"],
+    "product": {"gross": 47000, "fresh": 30000, "wall": 105, "responses": 2},
+    "engineering": {"gross": 88000, "fresh": 67000, "wall": 450, "responses": 4},
+}
+FULL_LIMITS = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 11}
+PROBE_STAGES = {
+    "contributions": ("business_contribution", "experience_contribution", "engineering_contribution"),
+    "product": ("product_select", "product_synthesis"),
+    "business": ("business_contribution", "business_return"),
+    "engineering": ("engineering_contribution", "engineering_implement",
+                    "engineering_run", "engineering_return"),
+}
 
 
 def jsonl(path):
@@ -137,14 +161,67 @@ def continuity_ok(expected, observed):
         expected[role] and expected[role] == observed[role] for role in expected)
 
 
+def digest_string(value):
+    return isinstance(value, str) and bool(re.fullmatch(r"[0-9a-f]{64}", value))
+
+
+def bound_stage_ok(stage, expected_name):
+    if not isinstance(stage, dict) or stage.get("name") != expected_name:
+        return False
+    if not digest_string(stage.get("packet_sha256")) or not digest_string(stage.get("output_sha256")):
+        return False
+    lineage = stage.get("input_lineage")
+    if not isinstance(lineage, list) or not lineage or not all(digest_string(value) for value in lineage):
+        return False
+    interval = stage.get("interval")
+    if (not isinstance(interval, list) or len(interval) != 2 or
+            any(type(value) not in (int, float) or not math.isfinite(value) for value in interval) or
+            interval[1] < interval[0]):
+        return False
+    verdict = stage.get("verdict")
+    if not isinstance(verdict, dict) or verdict.get("status") != "passed":
+        return False
+    usage = verdict.get("usage")
+    limits = verdict.get("limits")
+    return (isinstance(usage, dict) and isinstance(limits, dict) and
+            stage_verdict(usage, interval[1] - interval[0], limits, True).get("status") == "passed" and
+            verdict.get("complete") is True)
+
+
+def probe_stage_limits(probe, stage):
+    if probe == "product":
+        return STAGE_LIMITS["product_select" if stage == "product_select" else "product_synthesis"]
+    if probe == "contributions":
+        return STAGE_LIMITS["contributions"]
+    return PROBE_LIMITS[probe]
+
+
 def admission_ok(receipt, expected):
     if not all(receipt.get(field) == expected.get(field) and expected.get(field)
                for field in ADMISSION_FIELDS):
         return False
     probes = receipt.get("probes", {})
-    return set(probes) == set(PROBE_NAMES) and all(
-        isinstance(probes[name], dict) and probes[name].get("status") == "passed"
-        for name in PROBE_NAMES)
+    if set(probes) != set(PROBE_NAMES):
+        return False
+    for name in PROBE_NAMES:
+        probe = probes[name]
+        if (not isinstance(probe, dict) or probe.get("name") != name or
+                probe.get("status") != "passed" or
+                any(probe.get(field) != expected.get(field) for field in ADMISSION_FIELDS) or
+                probe.get("limits") != PROBE_LIMITS[name]):
+            return False
+        verdict = probe.get("verdict")
+        if (not isinstance(verdict, dict) or verdict.get("limits") != PROBE_LIMITS[name] or
+                verdict.get("status") != "passed" or verdict.get("complete") is not True or
+                stage_verdict(verdict.get("usage", {}), verdict.get("elapsed"), PROBE_LIMITS[name], True).get("status") != "passed"):
+            return False
+        stages = probe.get("stages")
+        if (not isinstance(stages, list) or len(stages) != len(PROBE_STAGES[name]) or
+                not all(bound_stage_ok(stage, stage_name)
+                        and stage.get("verdict", {}).get("limits") == probe_stage_limits(name, stage_name)
+                        for stage, stage_name in zip(stages, PROBE_STAGES[name]))):
+            return False
+    return True
 
 
 def root_identity(driver, events_path):

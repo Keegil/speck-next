@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fixed six-stage transport for the separated-product-team development fixture."""
 import base64, concurrent.futures, hashlib, json, os, pathlib, shutil, signal, subprocess, sys, tempfile, time
+import host_proof
 
 ROLES = ("Business", "Experience", "Engineering")
 STAGES = {
@@ -13,31 +14,45 @@ home = None
 root_home = None
 startup_ready = False
 PACKET_SCHEMA = "piece9-packet-v1"
-STAGE_ORDER = ("product_select", "contributions", "product_synthesis", "engineering",
-               "returns", "product_close")
-STAGE_LIMITS = {
-    "product_select": {"gross": 21000, "fresh": 12000, "wall": 45, "responses": 1},
-    "contributions": {"gross": 54000, "fresh": 32000, "wall": 90, "responses": 3},
-    "product_synthesis": {"gross": 26000, "fresh": 18000, "wall": 60, "responses": 1},
-    "engineering": {"gross": 70000, "fresh": 55000, "wall": 360, "responses": 3},
-    "returns": {"gross": 40000, "fresh": 24000, "wall": 90, "responses": 2},
-    "product_close": {"gross": 24000, "fresh": 19000, "wall": 60, "responses": 1},
+STAGE_ORDER = host_proof.STAGE_ORDER
+STAGE_LIMITS = host_proof.STAGE_LIMITS
+PROBE_LIMITS = host_proof.PROBE_LIMITS
+FULL_LIMITS = host_proof.FULL_LIMITS
+SOURCE_PATHS = {
+    "product": "examples/pulse/product.md",
+    "business": "examples/pulse/evidence/business-evidence.md",
+    "experience": "examples/pulse/evidence/experience-evidence.md",
+    "engineering": "examples/pulse/pulse.py",
 }
-PROBE_LIMITS = {
-    "business": {"gross": 38000, "fresh": 22000, "wall": 180, "responses": 2},
-    "contributions": STAGE_LIMITS["contributions"],
-    "product": {"gross": 47000, "fresh": 30000, "wall": 105, "responses": 2},
-    "engineering": {"gross": 88000, "fresh": 67000, "wall": 450, "responses": 4},
+ALL_SOURCE_PATHS = tuple(SOURCE_PATHS.values())
+SOURCE_ALLOWLIST = {
+    ("source-manifest", "runner"): ALL_SOURCE_PATHS,
+    ("product_select", "Product"): ALL_SOURCE_PATHS,
+    ("contribution", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
+    ("contribution", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
+    ("contribution", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("product_synthesis", "Product"): ALL_SOURCE_PATHS,
+    ("implement", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("run", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("return", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
+    ("return", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
+    ("return", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
+    ("product_close", "Product"): ALL_SOURCE_PATHS,
 }
-FULL_LIMITS = {"gross": 250000, "fresh": 200000, "wall": 900, "responses": 11}
 
 
 def canonical_json(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
 
 
-def make_packet(root, stage, role, brief, paths, lineage=()):
+def make_packet(root, stage, role, brief, paths, lineage=(), generated=()):
     root = pathlib.Path(root).resolve()
+    expected_paths = SOURCE_ALLOWLIST.get((stage, role))
+    if expected_paths is None or tuple(paths) != tuple(expected_paths):
+        raise ValueError(f"source paths are not the fixed allowlist for {role} {stage}")
+    if not all(isinstance(value, str) and len(value) == 64 and
+               all(character in "0123456789abcdef" for character in value) for value in lineage):
+        raise ValueError("packet lineage contains a malformed digest")
     evidence = []
     seen = set()
     for name in paths:
@@ -58,9 +73,17 @@ def make_packet(root, stage, role, brief, paths, lineage=()):
             "sha256": hashlib.sha256(content).hexdigest(),
             "content_base64": base64.b64encode(content).decode("ascii"),
         })
+    generated_items = []
+    for label, content in generated:
+        if not isinstance(label, str) or not label or not isinstance(content, str):
+            raise ValueError("malformed generated packet input")
+        content_bytes = content.encode()
+        generated_items.append({"label": label, "bytes": len(content_bytes),
+                                "sha256": hashlib.sha256(content_bytes).hexdigest(),
+                                "content": content})
     body = {
         "schema": PACKET_SCHEMA, "stage": stage, "role": role, "brief": brief,
-        "lineage": list(lineage), "evidence": evidence,
+        "lineage": list(lineage), "evidence": evidence, "generated": generated_items,
     }
     return {"body": body, "sha256": hashlib.sha256(canonical_json(body)).hexdigest(),
             **body}
@@ -77,17 +100,27 @@ def verify_packet(packet):
             content = base64.b64decode(item["content_base64"], validate=True)
             if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
                 return False
-        return body.get("schema") == PACKET_SCHEMA
+        for item in body["generated"]:
+            content = item["content"].encode()
+            if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
+                return False
+        expected = SOURCE_ALLOWLIST.get((body.get("stage"), body.get("role")))
+        return (body.get("schema") == PACKET_SCHEMA and expected is not None and
+                tuple(item.get("path") for item in body["evidence"]) == tuple(expected) and
+                all(isinstance(value, str) and len(value) == 64 and
+                    all(character in "0123456789abcdef" for character in value)
+                    for value in body.get("lineage", [])))
     except (KeyError, TypeError, ValueError):
         return False
 
 
-def source_manifest(root, paths):
-    packet = make_packet(root, "source-manifest", "runner", "immutable fixture sources", paths)
+def source_manifest(root, prompt_sha256):
+    packet = make_packet(root, "source-manifest", "runner", "immutable fixture sources",
+                         ALL_SOURCE_PATHS, lineage=(prompt_sha256,))
     entries = [{key: item[key] for key in ("path", "bytes", "sha256")}
                for item in packet["evidence"]]
-    return {"schema": PACKET_SCHEMA, "evidence": entries,
-            "sha256": hashlib.sha256(canonical_json(entries)).hexdigest()}
+    body = {"schema": PACKET_SCHEMA, "prompt_sha256": prompt_sha256, "evidence": entries}
+    return {**body, "sha256": hashlib.sha256(canonical_json(body)).hexdigest()}
 
 
 def reservation_plan():
