@@ -11,6 +11,9 @@ const { spawnSync } = require("child_process");
 const SRC = path.join(__dirname, "..");
 const VERSION = require(path.join(SRC, "package.json")).version;
 const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills"), "templates"];
+const CODEX_SKILLS_DIR = path.join(".agents", "skills");
+const CODEX_ADAPTER_NAME = "speck-next";
+const CODEX_ADAPTER_TARGET = "../../.claude/skills";
 const MARKER = path.join(".claude", "speck-next.json");
 const BASE_REPORTED_PATHS = [...SURFACE, MARKER, "map.md", "product.md"];
 const STALE_SKILL = path.join(".claude", "skills", "independent-review");
@@ -136,6 +139,99 @@ function ensureTargetRelative(relative) {
   if (!pathInside(root, absolute))
     transactionError(`refusing: internal write target escaped the selected product (${normalizedRelative(relative)}). Nothing was touched.`);
   return absolute;
+}
+
+function realpathOptional(absolute) {
+  try { return fs.realpathSync.native(absolute); }
+  catch (error) {
+    if (error.code === "ENOENT" || error.code === "ENOTDIR" || error.code === "ELOOP") return null;
+    throw error;
+  }
+}
+
+function codexAdapterPlan() {
+  const skillsRoot = ensureTargetRelative(CODEX_SKILLS_DIR);
+  const selectionBefore = snapshotPathState(CODEX_SKILLS_DIR);
+  const agentsEntry = lstatOptional(ensureTargetRelative(".agents"));
+  const rootEntry = lstatOptional(skillsRoot);
+  const canonical = ensureTargetRelative(path.join(".claude", "skills"));
+  const resolvedCanonical = realpathOptional(canonical);
+  if (rootEntry && rootEntry.isSymbolicLink()) {
+    const targetText = fs.readlinkSync(skillsRoot);
+    const resolvedRoot = realpathOptional(skillsRoot);
+    const linkedAncestor = Boolean(agentsEntry && agentsEntry.isSymbolicLink());
+    const resolvedAfterAncestorLocalization = realpathOptional(
+      path.resolve(path.dirname(skillsRoot), targetText)
+    );
+    const keepsCanonicalTarget = !linkedAncestor ||
+      (resolvedAfterAncestorLocalization && resolvedAfterAncestorLocalization === resolvedCanonical);
+    if (resolvedRoot && resolvedCanonical && resolvedRoot === resolvedCanonical &&
+        pathInside(resolvedTarget(), resolvedRoot) && keepsCanonicalTarget) {
+      return {
+        relative: CODEX_SKILLS_DIR,
+        target: targetText,
+        wholeRoot: true,
+        localizeAncestor: linkedAncestor,
+        selectionBefore,
+        selectedBefore: selectionBefore,
+      };
+    }
+  }
+
+  let names = new Set();
+  const logicalRoot = statOptional(skillsRoot);
+  if (logicalRoot && logicalRoot.isDirectory()) {
+    try { names = new Set(fs.readdirSync(skillsRoot)); }
+    catch {
+      transactionError("refusing: Speck Next could not inspect .agents/skills before choosing its Codex discovery adapter. Nothing was touched.");
+    }
+    const adapters = [...names]
+      .map(name => {
+        const normalized = name.toLowerCase();
+        if (normalized === CODEX_ADAPTER_NAME) return { name, order: 1 };
+        const match = normalized.match(/^speck-next-((?:[2-9]|[1-9][0-9]+))$/);
+        return match ? { name, order: Number(match[1]) } : null;
+      })
+      .filter(Boolean)
+      .sort((left, right) => left.order - right.order ||
+        (left.name < right.name ? -1 : left.name > right.name ? 1 : 0));
+    for (const adapter of adapters) {
+      const absolute = path.join(skillsRoot, adapter.name);
+      const entry = lstatOptional(absolute);
+      const targetText = entry && entry.isSymbolicLink() ? fs.readlinkSync(absolute) : null;
+      const resolved = targetText === null ? null : realpathOptional(absolute);
+      const exactTarget = targetText === CODEX_ADAPTER_TARGET;
+      const containedCanonical = Boolean(resolved && resolvedCanonical &&
+        resolved === resolvedCanonical && pathInside(resolvedTarget(), resolved));
+      if (targetText !== null && (exactTarget || containedCanonical)) {
+        const relative = path.join(CODEX_SKILLS_DIR, adapter.name);
+        return {
+          relative,
+          target: targetText,
+          wholeRoot: false,
+          localizeAncestor: false,
+          selectionBefore,
+          selectedBefore: snapshotPathState(relative),
+        };
+      }
+    }
+  }
+
+  let order = 1;
+  let name = CODEX_ADAPTER_NAME;
+  while (lstatOptional(path.join(skillsRoot, name))) {
+    order += 1;
+    name = `${CODEX_ADAPTER_NAME}-${order}`;
+  }
+  const relative = path.join(CODEX_SKILLS_DIR, name);
+  return {
+    relative,
+    target: CODEX_ADAPTER_TARGET,
+    wholeRoot: false,
+    localizeAncestor: false,
+    selectionBefore,
+    selectedBefore: snapshotPathState(relative),
+  };
 }
 
 function snapshotPathState(relative) {
@@ -372,7 +468,7 @@ function ensureStageDirectory(transaction, root, stagePath, relative) {
   }
 }
 
-function overlayFile(transaction, root, relative, entry) {
+function overlayEntry(transaction, root, relative, entry) {
   const stagePath = path.join(root.stage, relative);
   const parent = path.dirname(relative);
   if (parent !== ".") {
@@ -388,7 +484,8 @@ function overlayFile(transaction, root, relative, entry) {
   const existing = lstatOptional(stagePath);
   if (existing) {
     if (existing.isSymbolicLink()) {
-      transaction.noteLocalization(path.join(root.relative, relative), fs.readlinkSync(stagePath));
+      if (entry.kind !== "link")
+        transaction.noteLocalization(path.join(root.relative, relative), fs.readlinkSync(stagePath));
       removeExisting(stagePath);
     } else if (existing.isDirectory()) {
       transaction.planPreservation(path.join(root.relative, relative), stagePath);
@@ -398,6 +495,13 @@ function overlayFile(transaction, root, relative, entry) {
     }
   }
   ensureParent(stagePath);
+  if (entry.kind === "link") {
+    try { fs.symlinkSync(entry.target, stagePath, "dir"); }
+    catch {
+      transactionError(`refusing: Speck Next could not create its Codex discovery adapter ${normalizedRelative(path.join(root.relative, relative))}. Nothing was touched.`);
+    }
+    return;
+  }
   fs.writeFileSync(stagePath, entry.bytes);
   applyMode(stagePath, entry.mode);
 }
@@ -446,6 +550,25 @@ function surfaceDigest(root, manifest) {
   return digest.digest("hex");
 }
 
+function verifyCodexAdapterLink(root, adapter, phase) {
+  const absolute = path.join(root, adapter.relative);
+  const entry = lstatOptional(absolute);
+  const targetText = entry && entry.isSymbolicLink() ? fs.readlinkSync(absolute) : null;
+  if (!entry || !entry.isSymbolicLink() || targetText !== adapter.target)
+    transactionError(`refusing: the ${phase} Codex discovery adapter ${normalizedRelative(adapter.relative)} did not keep its selected symbolic-link target. Nothing was touched.`);
+  return absolute;
+}
+
+function verifyCodexAdapter(root, adapter, phase) {
+  const absolute = verifyCodexAdapterLink(root, adapter, phase);
+  const targetText = fs.readlinkSync(absolute);
+  const resolved = targetText === adapter.target ? realpathOptional(absolute) : null;
+  const canonical = realpathOptional(path.join(root, ".claude", "skills"));
+  if (!resolved || !canonical || resolved !== canonical || !pathInside(root, resolved)) {
+    transactionError(`refusing: the ${phase} Codex discovery adapter ${normalizedRelative(adapter.relative)} did not resolve to the selected product's canonical .claude/skills directory. Nothing was touched.`);
+  }
+}
+
 function desiredWrites(migration, markerBytes) {
   const sourceCheckout = sourceCommit();
   const manifest = surfaceManifest(SRC);
@@ -457,6 +580,13 @@ function desiredWrites(migration, markerBytes) {
       bytes: fs.readFileSync(path.join(SRC, relative)),
       mode: fs.statSync(path.join(SRC, relative)).mode,
       source: "method",
+    });
+  const codexAdapter = codexAdapterPlan();
+  if (!codexAdapter.wholeRoot)
+    writes.set(codexAdapter.relative, {
+      kind: "link",
+      target: codexAdapter.target,
+      source: "codex-adapter",
     });
   const targetMap = path.join(target, "map.md");
   const mapEntry = lstatOptional(targetMap);
@@ -471,7 +601,7 @@ function desiredWrites(migration, markerBytes) {
       source: "product",
     });
   writes.set(MARKER, { kind: "file", bytes: markerBytes, mode: GENERATED_FILE_MODE, source: "marker" });
-  return { sourceCheckout, manifest, methodSurfaceSha256, writes };
+  return { sourceCheckout, manifest, methodSurfaceSha256, writes, codexAdapter };
 }
 
 function candidateRoots(plan) {
@@ -481,6 +611,10 @@ function candidateRoots(plan) {
     { relative: ".claude", kind: "dir" },
     { relative: "templates", kind: "dir" },
   ];
+  if (plan.codexAdapter.wholeRoot && plan.codexAdapter.localizeAncestor)
+    roots.push({ relative: ".agents", kind: "dir" });
+  else if (!plan.codexAdapter.wholeRoot)
+    roots.push({ relative: CODEX_SKILLS_DIR, kind: "dir" });
   if (plan.writes.has("map.md")) roots.push({ relative: "map.md", kind: "file" });
   if (plan.writes.has("product.md")) roots.push({ relative: "product.md", kind: "file" });
   return roots;
@@ -741,6 +875,71 @@ function reportStatusEntries(paths, reportIndex) {
   return raw.split("\0").filter(Boolean);
 }
 
+function physicalReportLeaves(relative) {
+  const leaves = [];
+  function visit(current) {
+    const absolute = ensureTargetRelative(current);
+    const stat = lstatOptional(absolute);
+    if (!stat) return;
+    if (stat.isDirectory() && !stat.isSymbolicLink()) {
+      for (const name of fs.readdirSync(absolute).sort()) visit(path.join(current, name));
+      return;
+    }
+    leaves.push(normalizedRelative(current));
+  }
+  visit(relative);
+  return leaves;
+}
+
+function clampedReportStatusEntries(paths, reportIndex) {
+  const requested = [...new Set(paths.map(pathname => normalizedRelative(pathname).replace(/\/$/, "")))];
+  const canonical = realpathOptional(ensureTargetRelative(path.join(".claude", "skills")));
+  const adapterRoot = normalizedRelative(CODEX_SKILLS_DIR);
+  const codexAdapters = requested.filter(item => {
+    const childName = item.startsWith(adapterRoot + "/") ? item.slice(adapterRoot.length + 1) : null;
+    if (item !== adapterRoot &&
+        !(childName && /^speck-next(?:-(?:[2-9]|[1-9][0-9]+))?$/i.test(childName))) return false;
+    const absolute = ensureTargetRelative(item);
+    const entry = lstatOptional(absolute);
+    const resolved = entry && entry.isSymbolicLink() ? realpathOptional(absolute) : null;
+    return Boolean(entry && entry.isSymbolicLink() && resolved && canonical &&
+      resolved === canonical && pathInside(resolvedTarget(), resolved));
+  });
+  const output = [];
+  const seen = new Set();
+  function add(entry) {
+    if (!seen.has(entry)) output.push(entry);
+    seen.add(entry);
+  }
+  for (const entry of reportStatusEntries(paths, reportIndex)) {
+    if (!/^(?:\?\?|!!) /.test(entry)) {
+      add(entry);
+      continue;
+    }
+    const code = entry.slice(0, 2);
+    const relative = normalizedRelative(entry.slice(3).replace(/\/$/, ""));
+    const stat = lstatOptional(ensureTargetRelative(relative));
+    const codexAncestor = relative === ".agents" || relative.startsWith(".agents/");
+    if (codexAncestor) {
+      const selected = codexAdapters.filter(item =>
+        item === relative || item.startsWith(relative + "/") || relative.startsWith(item + "/")
+      );
+      for (const adapter of selected)
+        for (const leaf of physicalReportLeaves(adapter)) add(`${code} ${leaf}`);
+      continue;
+    }
+    const descendants = requested.filter(item => item === relative || item.startsWith(relative + "/"));
+    if (stat && stat.isDirectory() && !stat.isSymbolicLink() && descendants.length &&
+        !requested.includes(relative)) {
+      for (const descendant of descendants)
+        for (const leaf of physicalReportLeaves(descendant)) add(`${code} ${leaf}`);
+      continue;
+    }
+    add(entry.replace(/\/$/, ""));
+  }
+  return output;
+}
+
 function untrackedPaths(paths, reportIndex) {
   const seen = new Set();
   const files = [];
@@ -758,7 +957,7 @@ function untrackedPaths(paths, reportIndex) {
     seen.add(normalized);
     files.push(normalized);
   }
-  for (const entry of reportStatusEntries(paths, reportIndex)) {
+  for (const entry of clampedReportStatusEntries(paths, reportIndex)) {
     if (!/^(?:\?\?|!!) /.test(entry)) continue;
     const file = entry.slice(3);
     addPhysicalLeaves(file);
@@ -786,10 +985,7 @@ function untrackedDiff(paths, reportIndex) {
 }
 
 function gitChanges(paths, reportIndex) {
-  return porcelainZ(
-    ["status", "--porcelain=v1", "--ignored=matching", "--untracked-files=all", "--", ...paths],
-    "status", reportIndex
-  ).trimEnd();
+  return clampedReportStatusEntries(paths, reportIndex).join("\n");
 }
 
 function gitDiff(paths, reportIndex) {
@@ -867,7 +1063,7 @@ function buildStageRoot(transaction, root) {
     if (relative === MARKER) continue;
     if (!relative.startsWith(root.relative + path.sep) && relative !== root.relative) continue;
     const child = relative === root.relative ? "" : path.relative(root.relative, relative);
-    overlayFile(transaction, root, child, entry);
+    overlayEntry(transaction, root, child, entry);
   }
   const retired = [STALE_SKILL].filter(relative =>
     relative.startsWith(root.relative + path.sep) || relative === root.relative
@@ -887,6 +1083,7 @@ function Transaction(plan) {
   this.methodSurfaceSha256 = plan.methodSurfaceSha256;
   this.sourceCheckout = plan.sourceCheckout;
   this.markerBytes = plan.markerBytes;
+  this.codexAdapter = { ...plan.codexAdapter };
   const root = resolvedTarget();
   const parent = path.dirname(root);
   const rootDev = fs.statSync(root).dev;
@@ -1018,6 +1215,10 @@ Transaction.prototype.choosePreserveRoot = function choosePreserveRoot() {
 };
 
 Transaction.prototype.prepare = function prepare() {
+  if (!sameSnapshot(snapshotPathState(CODEX_SKILLS_DIR), this.codexAdapter.selectionBefore) ||
+      !sameSnapshot(snapshotPathState(this.codexAdapter.relative), this.codexAdapter.selectedBefore)) {
+    transactionError("refusing: .agents/skills changed while Speck Next was choosing its Codex discovery adapter. Nothing was touched.");
+  }
   for (const root of this.primaryRoots) buildStageRoot(this, root);
   if (!this.markerCovered) {
     this.markerBefore = snapshotRoot(MARKER, "file");
@@ -1031,6 +1232,10 @@ Transaction.prototype.prepare = function prepare() {
   const stagedDigest = surfaceDigest(this.stageRoot, this.manifest);
   if (stagedDigest !== this.methodSurfaceSha256)
     transactionError("refusing: the staged method bytes do not match the source method surface. Nothing was touched.");
+  if (!this.codexAdapter.wholeRoot)
+    verifyCodexAdapter(this.stageRoot, this.codexAdapter, "staged");
+  else if (this.codexAdapter.localizeAncestor)
+    verifyCodexAdapterLink(this.stageRoot, this.codexAdapter, "staged");
   if (this.writes.has("product.md")) {
     const stagedProduct = fs.readFileSync(path.join(this.stageRoot, "product.md"));
     if (!stagedProduct.equals(this.writes.get("product.md").bytes))
@@ -1073,6 +1278,11 @@ Transaction.prototype.revalidate = function revalidate() {
     if (!sameSnapshot(currentPreserveRoot, this.preserveRoot.beforePath))
       transactionError(`refusing: ${normalizedRelative(this.preserveRoot.relative)} changed while Speck Next was staging the upgrade, so it stopped before replacing anything. Nothing was touched.`);
   }
+  if (this.codexAdapter.wholeRoot) {
+    const currentAdapter = snapshotPathState(this.codexAdapter.relative);
+    if (!sameSnapshot(currentAdapter, this.codexAdapter.selectedBefore))
+      transactionError(`refusing: ${normalizedRelative(this.codexAdapter.relative)} changed while Speck Next was staging the upgrade, so it stopped before replacing anything. Nothing was touched.`);
+  }
 };
 
 Transaction.prototype.swapRoot = function swapRoot(relative) {
@@ -1110,6 +1320,7 @@ Transaction.prototype.apply = function apply() {
       this.appliedPreservations.push({ source: entry.preserveSource, destination });
     }
   }
+  verifyCodexAdapter(resolvedTarget(), this.codexAdapter, "installed");
   ensureParent(ensureTargetRelative(MARKER));
   writeMarkerLast(this.markerBytes);
   this.appliedMarkerOnly = !this.markerCovered;
@@ -1161,10 +1372,14 @@ function applyInstalledSurface(existingMarker, migration) {
     transaction.prepareReportIndex();
     transaction.prepare();
     transaction.apply();
+    const adapterPath = normalizedRelative(transaction.codexAdapter.relative);
+    const localizedPaths = transaction.replacedLinks.map(link => link.relative);
+    const installableLocalized = localizedPaths
+      .filter(relative => !(adapterPath.startsWith(normalizedRelative(relative) + "/")));
     const installedEntries = installEntries(
-      resolvedTarget(), transaction.replacedLinks.map(link => link.relative)
+      resolvedTarget(), [adapterPath, ...installableLocalized]
     );
-    const extraReportPaths = transaction.replacedLinks.map(link => link.relative);
+    const extraReportPaths = [adapterPath, ...localizedPaths];
     if (transaction.preserveRoot) extraReportPaths.push(transaction.preserveRoot.relative);
     const reportPaths = reportedPaths(extraReportPaths);
     const changes = gitChanges(reportPaths, transaction.reportIndex);
@@ -1178,6 +1393,7 @@ function applyInstalledSurface(existingMarker, migration) {
       localizedLinks: transaction.replacedLinks,
       retiredLinks: transaction.retiredLinks,
       preserved: transaction.preserved,
+      codexAdapter: transaction.codexAdapter,
       installedEntries,
       productExists,
     };

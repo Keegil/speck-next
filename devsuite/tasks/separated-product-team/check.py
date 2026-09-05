@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
 import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
+import tarfile
 from datetime import date, timedelta
 
 
@@ -396,7 +397,9 @@ def static_contract_homes(kernel):
                         "only a plain current line can start a multiline span",
                         "Product-team required-value and duplicate tables",
                         "completed Map and resume routes", "values as opaque",
-                        "LF, CRLF, lone CR", "last existing line ending", "default-ignorable"],
+                        "LF, CRLF, lone CR", "last existing line ending", "default-ignorable",
+                        "Native Codex discovery", "installer-generated symbolic-link entry",
+                        "duplicated skill body"],
         "README.md": ["right product-building views", ASSESSMENT_RECORD,
                       "source checkout separately", "fieldless current rc.2 marker is unknown",
                       "before any repository byte changes", "upgrade [dir] --open-assessment",
@@ -405,10 +408,14 @@ def static_contract_homes(kernel):
                       "only a plain current line can start a multiline span",
                       "one row per role", "completed Map or resume route",
                       "owner bytes are never generated or normalized",
-                      "LF, CRLF, lone CR", "last existing line ending", "default-ignorable"],
+                      "LF, CRLF, lone CR", "last existing line ending", "default-ignorable",
+                      "20 files / 81,622 bytes", "Codex discovery symlink",
+                      "47,892 bytes"],
         "capabilities.md": ["Selective product team", "live-host affordability",
                             "assessment-control subjects", "complete-target snapshot",
-                            "ambiguity-recovery", "inactive-container"],
+                            "ambiguity-recovery", "inactive-container",
+                            "95 path-transaction subjects", "Codex discovery symlink",
+                            "20 file-system entries / 81,622 bytes", "47,892 / 50,000 bytes"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],
@@ -654,9 +661,9 @@ def run_path_transaction_controls(kernel):
                 "Error:" not in output and " at " not in run.stderr
             )
 
-        def stable_retry(repo, first):
+        def stable_retry(repo, first, retry_kernel=kernel):
             before = repo_baseline(repo)
-            retry = run_cli(kernel, "upgrade", repo)
+            retry = run_cli(retry_kernel, "upgrade", repo)
             return (
                 first.returncode == 0 and retry.returncode == 0 and
                 repo_unchanged(repo, before) and not transaction_dirt(repo)
@@ -671,6 +678,32 @@ def run_path_transaction_controls(kernel):
                 int(summary.group(1)) if summary else None,
                 listing.group(1).splitlines() if listing else [],
             )
+
+        def codex_adapter(root):
+            parent = root / ".agents/skills"
+            if not parent.is_dir():
+                return None
+            candidates = sorted(
+                (item for item in parent.iterdir()
+                 if re.fullmatch(r"speck-next(?:-(?:[2-9]|[1-9][0-9]+))?", item.name, re.I)),
+                key=lambda item: (
+                    1 if item.name.lower() == "speck-next" else
+                        int(item.name.lower().removeprefix("speck-next-")),
+                    item.name.casefold(), item.name,
+                ),
+            )
+            return next(
+                (item for item in candidates
+                 if item.is_symlink() and
+                    (os.readlink(item) == "../../.claude/skills" or
+                     (item.resolve() == (root / ".claude/skills").resolve() and
+                      item.resolve().is_relative_to(root.resolve())))),
+                None,
+            )
+
+        def codex_adapter_name(root):
+            adapter = codex_adapter(root)
+            return adapter.name if adapter is not None else None
 
         def exact_path_snapshot(path):
             try:
@@ -904,6 +937,16 @@ def run_path_transaction_controls(kernel):
             exercised_forms == set(link_forms),
         ))
 
+        source_adapter = kernel / ".agents/skills/speck-next"
+        results.append((
+            "the direct checkout exposes the five canonical skills through one namespaced Codex adapter",
+            source_adapter.is_symlink() and
+            os.readlink(source_adapter) == "../../.claude/skills" and
+            source_adapter.lstat().st_size == len(b"../../.claude/skills") and
+            source_adapter.resolve() == (kernel / ".claude/skills").resolve() and
+            len(list((kernel / ".claude/skills").glob("*/SKILL.md"))) == 5,
+        ))
+
         truthful_fresh = fresh_repo("truthful-fresh-list")
         truthful_run = run_cli(kernel, "install", truthful_fresh)
         actual_fresh_paths = sorted(
@@ -913,12 +956,287 @@ def run_path_transaction_controls(kernel):
             (item.is_file() or item.is_symlink())
         )
         reported_fresh_count, reported_fresh_paths = install_report(truthful_run)
+        fresh_adapter = codex_adapter(truthful_fresh)
+        fresh_bytes = sum(
+            item.lstat().st_size for item in truthful_fresh.rglob("*")
+            if ".git" not in item.relative_to(truthful_fresh).parts and
+            (item.is_file() or item.is_symlink())
+        )
         results.append((
-            "fresh install count and Installed paths exactly match the physical product files",
+            "fresh install generates one Codex adapter and its exact count, paths, and bytes match the physical product files",
             truthful_run.returncode == 0 and not truthful_run.stderr and
             reported_fresh_count == len(actual_fresh_paths) and
             reported_fresh_paths == actual_fresh_paths and
-            ".claude/speck-next.json" in reported_fresh_paths,
+            ".claude/speck-next.json" in reported_fresh_paths and
+            fresh_adapter is not None and fresh_adapter.relative_to(truthful_fresh).as_posix() in reported_fresh_paths and
+            reported_fresh_paths.count(fresh_adapter.relative_to(truthful_fresh).as_posix()) == 1 and
+            not any(path.startswith(".agents/skills/speck-next/") for path in reported_fresh_paths) and
+            fresh_adapter.lstat().st_size == len(b"../../.claude/skills") and
+            fresh_adapter.resolve() == (truthful_fresh / ".claude/skills").resolve() and
+            fresh_adapter.resolve().is_relative_to(truthful_fresh.resolve()) and
+            len(actual_fresh_paths) == 20 and fresh_bytes == 81622,
+        ))
+
+        whole_alias = fresh_repo("whole-root-codex-alias")
+        write_file(whole_alias, ".claude/skills/owner-skill/SKILL.md",
+                   "---\nname: owner-skill\ndescription: owner\n---\n")
+        (whole_alias / ".agents").mkdir()
+        os.symlink("../.claude/skills", whole_alias / ".agents/skills")
+        whole_alias_before = exact_path_snapshot(whole_alias / ".agents/skills")
+        whole_alias_run = run_cli(kernel, "install", whole_alias)
+        whole_count, whole_paths = install_report(whole_alias_run)
+        whole_retry_before = repo_baseline(whole_alias)
+        whole_retry = run_cli(kernel, "upgrade", whole_alias)
+        results.append((
+            "an exact whole-root canonical Codex alias is preserved byte-for-byte and counted once without a recursive child",
+            whole_alias_run.returncode == 0 and not whole_alias_run.stderr and
+            exact_path_snapshot(whole_alias / ".agents/skills") == whole_alias_before and
+            (whole_alias / ".agents/skills").resolve() == (whole_alias / ".claude/skills").resolve() and
+            whole_paths.count(".agents/skills") == 1 and
+            not any(path.startswith(".agents/skills/") for path in whole_paths) and
+            whole_count == len(whole_paths) and
+            whole_retry.returncode == 0 and not whole_retry.stderr and
+            repo_unchanged(whole_alias, whole_retry_before),
+        ))
+
+        occupied_adapter = fresh_repo("occupied-codex-adapter")
+        write_file(occupied_adapter, ".agents/skills/owner-skill/SKILL.md",
+                   "---\nname: owner-skill\ndescription: owner\n---\n")
+        write_file(occupied_adapter, ".agents/skills/speck-next/owner.bin", "owner adapter name\n")
+        occupied_before = exact_path_snapshot(occupied_adapter / ".agents/skills/speck-next")
+        owner_skill_before = exact_path_snapshot(occupied_adapter / ".agents/skills/owner-skill")
+        occupied_run = run_cli(kernel, "install", occupied_adapter)
+        occupied_retry_before = repo_baseline(occupied_adapter)
+        occupied_retry = run_cli(kernel, "upgrade", occupied_adapter)
+        results.append((
+            "an occupied adapter name stays owner-exact while one suffixed adapter installs and retries byte-stably",
+            occupied_run.returncode == 0 and not occupied_run.stderr and
+            exact_path_snapshot(occupied_adapter / ".agents/skills/speck-next") == occupied_before and
+            exact_path_snapshot(occupied_adapter / ".agents/skills/owner-skill") == owner_skill_before and
+            (occupied_adapter / ".agents/skills/speck-next-2").is_symlink() and
+            os.readlink(occupied_adapter / ".agents/skills/speck-next-2") == "../../.claude/skills" and
+            occupied_retry.returncode == 0 and not occupied_retry.stderr and
+            repo_unchanged(occupied_adapter, occupied_retry_before),
+        ))
+
+        collision_file = fresh_repo("occupied-codex-adapter-file")
+        (collision_file / ".agents/skills").mkdir(parents=True)
+        (collision_file / ".agents/skills/speck-next").write_bytes(b"owner file\x00\xff")
+        collision_file_before = exact_path_snapshot(collision_file / ".agents/skills/speck-next")
+        collision_file_run = run_cli(kernel, "install", collision_file)
+        results.append((
+            "a wrong-kind file at the preferred adapter name stays exact while speck-next-2 becomes the adapter",
+            collision_file_run.returncode == 0 and not collision_file_run.stderr and
+            exact_path_snapshot(collision_file / ".agents/skills/speck-next") == collision_file_before and
+            codex_adapter_name(collision_file) == "speck-next-2" and
+            stable_retry(collision_file, collision_file_run),
+        ))
+
+        collision_case = fresh_repo("occupied-codex-adapter-case-alias")
+        write_file(collision_case, ".agents/skills/Speck-Next/OWNER.bin", "owner case alias\n")
+        case_alias_before = exact_path_snapshot(collision_case / ".agents/skills/Speck-Next")
+        case_aliases_preferred = (collision_case / ".agents/skills/speck-next").exists()
+        collision_case_run = run_cli(kernel, "install", collision_case)
+        expected_case_name = "speck-next-2" if case_aliases_preferred else "speck-next"
+        results.append((
+            "a filesystem case-alias of the preferred name stays owner-exact and forces the first logically absent adapter name",
+            collision_case_run.returncode == 0 and not collision_case_run.stderr and
+            exact_path_snapshot(collision_case / ".agents/skills/Speck-Next") == case_alias_before and
+            codex_adapter_name(collision_case) == expected_case_name and
+            "Preserved incompatible path .agents/skills/speck-next" not in collision_case_run.stdout and
+            stable_retry(collision_case, collision_case_run),
+        ))
+
+        reusable_case_link = fresh_repo("reusable-case-variant-codex-adapter")
+        write_file(reusable_case_link, ".claude/skills/owner-skill/SKILL.md",
+                   "---\nname: owner-skill\ndescription: owner\n---\n")
+        (reusable_case_link / ".agents/skills").mkdir(parents=True)
+        reusable_case_target = "../../.claude/skills/."
+        reusable_case_path = reusable_case_link / ".agents/skills/Speck-Next"
+        os.symlink(reusable_case_target, reusable_case_path)
+        reusable_case_before = exact_path_snapshot(reusable_case_path)
+        reusable_owner_before = exact_path_snapshot(reusable_case_link / ".claude/skills/owner-skill")
+        reusable_case_run = run_cli(kernel, "install", reusable_case_link)
+        reusable_case_count, reusable_case_paths = install_report(reusable_case_run)
+        reusable_case_names = sorted(
+            item.name for item in (reusable_case_link / ".agents/skills").iterdir()
+            if re.fullmatch(r"speck-next(?:-(?:[2-9]|[1-9][0-9]+))?", item.name, re.I)
+        )
+        reusable_case_retry_before = repo_baseline(reusable_case_link)
+        reusable_case_retry = run_cli(kernel, "upgrade", reusable_case_link)
+        results.append((
+            "a case-variant child link already resolving to canonical skills is reused byte-for-byte without duplicate discovery",
+            reusable_case_run.returncode == 0 and not reusable_case_run.stderr and
+            exact_path_snapshot(reusable_case_path) == reusable_case_before and
+            os.readlink(reusable_case_path) == reusable_case_target and
+            reusable_case_path.resolve() == (reusable_case_link / ".claude/skills").resolve() and
+            exact_path_snapshot(reusable_case_link / ".claude/skills/owner-skill") == reusable_owner_before and
+            reusable_case_names == ["Speck-Next"] and
+            reusable_case_paths.count(".agents/skills/Speck-Next") == 1 and
+            reusable_case_count == len(reusable_case_paths) and
+            reusable_case_retry.returncode == 0 and not reusable_case_retry.stderr and
+            repo_unchanged(reusable_case_link, reusable_case_retry_before),
+        ))
+
+        collision_link = fresh_repo("occupied-codex-adapter-link")
+        collision_link_outside = base / "occupied-codex-adapter-link-target"
+        collision_link_outside.mkdir()
+        write_file(collision_link_outside, "owner.bin", "owner linked adapter\n")
+        (collision_link / ".agents/skills").mkdir(parents=True)
+        os.symlink(collision_link_outside, collision_link / ".agents/skills/speck-next")
+        collision_link_before = exact_path_snapshot(collision_link / ".agents/skills/speck-next")
+        collision_link_outside_before = exact_path_snapshot(collision_link_outside)
+        collision_link_run = run_cli(kernel, "install", collision_link)
+        results.append((
+            "a noncanonical linked skill at the preferred adapter name and its referent stay exact while speck-next-2 installs",
+            collision_link_run.returncode == 0 and not collision_link_run.stderr and
+            exact_path_snapshot(collision_link / ".agents/skills/speck-next") == collision_link_before and
+            exact_path_snapshot(collision_link_outside) == collision_link_outside_before and
+            codex_adapter_name(collision_link) == "speck-next-2" and
+            stable_retry(collision_link, collision_link_run),
+        ))
+
+        collision_dangling = fresh_repo("occupied-codex-adapter-dangling")
+        (collision_dangling / ".agents/skills").mkdir(parents=True)
+        os.symlink("../../../missing-owner-skill", collision_dangling / ".agents/skills/speck-next")
+        collision_dangling_before = exact_path_snapshot(collision_dangling / ".agents/skills/speck-next")
+        collision_dangling_run = run_cli(kernel, "install", collision_dangling)
+        results.append((
+            "a dangling owner link at the preferred adapter name stays exact while speck-next-2 installs",
+            collision_dangling_run.returncode == 0 and not collision_dangling_run.stderr and
+            exact_path_snapshot(collision_dangling / ".agents/skills/speck-next") == collision_dangling_before and
+            codex_adapter_name(collision_dangling) == "speck-next-2" and
+            stable_retry(collision_dangling, collision_dangling_run),
+        ))
+
+        collision_sequence = fresh_repo("occupied-codex-adapter-sequence")
+        write_file(collision_sequence, ".agents/skills/speck-next/owner.txt", "owner one\n")
+        write_file(collision_sequence, ".agents/skills/speck-next-2/owner.txt", "owner two\n")
+        collision_one_before = exact_path_snapshot(collision_sequence / ".agents/skills/speck-next")
+        collision_two_before = exact_path_snapshot(collision_sequence / ".agents/skills/speck-next-2")
+        collision_sequence_run = run_cli(kernel, "install", collision_sequence)
+        results.append((
+            "the first absent deterministic suffix is selected without changing earlier occupied names",
+            collision_sequence_run.returncode == 0 and not collision_sequence_run.stderr and
+            codex_adapter_name(collision_sequence) == "speck-next-3" and
+            exact_path_snapshot(collision_sequence / ".agents/skills/speck-next") == collision_one_before and
+            exact_path_snapshot(collision_sequence / ".agents/skills/speck-next-2") == collision_two_before and
+            stable_retry(collision_sequence, collision_sequence_run),
+        ))
+
+        collision_ten = fresh_repo("existing-codex-adapter-ten")
+        (collision_ten / ".agents/skills").mkdir(parents=True)
+        os.symlink("../../.claude/skills", collision_ten / ".agents/skills/speck-next-10")
+        collision_ten_before = exact_path_snapshot(collision_ten / ".agents/skills/speck-next-10")
+        collision_ten_run = run_cli(kernel, "install", collision_ten)
+        results.append((
+            "an existing exact multi-digit suffixed adapter is reused before an absent preferred name",
+            collision_ten_run.returncode == 0 and not collision_ten_run.stderr and
+            exact_path_snapshot(collision_ten / ".agents/skills/speck-next-10") == collision_ten_before and
+            not (collision_ten / ".agents/skills/speck-next").exists() and
+            codex_adapter_name(collision_ten) == "speck-next-10" and
+            stable_retry(collision_ten, collision_ten_run),
+        ))
+
+        linked_agents = fresh_repo("linked-agents-ancestor")
+        write_file(linked_agents, ".claude/speck-next.json",
+                   v5_marker_bytes("linked-agents-fixture").decode())
+        write_file(linked_agents, "product.md", "# Linked agents product\n")
+        linked_agents_outside = base / "linked-agents-ancestor-target"
+        linked_agents_private = "PRIVATE-LINKED-AGENTS-OWNER-3be4263f"
+        write_file(linked_agents_outside, "skills/owner-skill/SKILL.md",
+                   f"---\nname: owner-skill\ndescription: {linked_agents_private}\n---\n")
+        (linked_agents_outside / "private.bin").write_bytes(b"\x00\xfflinked agents\r\n")
+        os.symlink(linked_agents_outside, linked_agents / ".agents")
+        commit_fixture(linked_agents, "tracked linked .agents fixture")
+        linked_agents_outside_before = exact_path_snapshot(linked_agents_outside)
+        linked_agents_run = run_cli(kernel, "upgrade", linked_agents)
+        linked_agents_output = linked_agents_run.stdout + linked_agents_run.stderr
+        results.append((
+            "a tracked linked .agents ancestor becomes local transactionally with complete topology reporting and no owner-skill disclosure",
+            linked_agents_run.returncode == 0 and not linked_agents_run.stderr and
+            "Localized linked path .agents" in linked_agents_run.stdout and
+            re.search(r"^[ MADRCU?!]{2} \.agents$", linked_agents_run.stdout, re.MULTILINE) is not None and
+            "diff --git a/.agents b/.agents" in linked_agents_run.stdout and
+            (linked_agents / ".agents").is_dir() and not (linked_agents / ".agents").is_symlink() and
+            linked_agents_private in (linked_agents / ".agents/skills/owner-skill/SKILL.md").read_text() and
+            codex_adapter_name(linked_agents) == "speck-next" and
+            exact_path_snapshot(linked_agents_outside) == linked_agents_outside_before and
+            ".agents/skills/speck-next" in linked_agents_run.stdout and
+            linked_agents_private not in linked_agents_output and
+            "owner-skill" not in linked_agents_output and "private.bin" not in linked_agents_output and
+            stable_retry(linked_agents, linked_agents_run) and
+            exact_path_snapshot(linked_agents_outside) == linked_agents_outside_before,
+        ))
+
+        linked_skills = fresh_repo("linked-agents-skills-ancestor")
+        write_file(linked_skills, ".claude/speck-next.json",
+                   v5_marker_bytes("linked-agents-skills-fixture").decode())
+        write_file(linked_skills, "product.md", "# Linked agents skills product\n")
+        linked_skills_outside = base / "linked-agents-skills-ancestor-target"
+        linked_skills_private = "PRIVATE-LINKED-SKILLS-OWNER-d7523d2c"
+        write_file(linked_skills_outside, "owner-skill/SKILL.md",
+                   f"---\nname: owner-skill\ndescription: {linked_skills_private}\n---\n")
+        (linked_skills_outside / "private.bin").write_bytes(b"\xfe\x00linked skills\r\n")
+        (linked_skills / ".agents").mkdir()
+        os.symlink(linked_skills_outside, linked_skills / ".agents/skills")
+        commit_fixture(linked_skills, "tracked linked .agents skills fixture")
+        linked_skills_outside_before = exact_path_snapshot(linked_skills_outside)
+        linked_skills_run = run_cli(kernel, "upgrade", linked_skills)
+        linked_skills_output = linked_skills_run.stdout + linked_skills_run.stderr
+        results.append((
+            "a tracked linked .agents/skills ancestor becomes local transactionally with complete topology reporting and no owner-skill disclosure",
+            linked_skills_run.returncode == 0 and not linked_skills_run.stderr and
+            "Localized linked path .agents/skills" in linked_skills_run.stdout and
+            re.search(r"^[ MADRCU?!]{2} \.agents/skills$", linked_skills_run.stdout, re.MULTILINE) is not None and
+            "diff --git a/.agents/skills b/.agents/skills" in linked_skills_run.stdout and
+            (linked_skills / ".agents/skills").is_dir() and not (linked_skills / ".agents/skills").is_symlink() and
+            linked_skills_private in (linked_skills / ".agents/skills/owner-skill/SKILL.md").read_text() and
+            codex_adapter_name(linked_skills) == "speck-next" and
+            exact_path_snapshot(linked_skills_outside) == linked_skills_outside_before and
+            ".agents/skills/speck-next" in linked_skills_run.stdout and
+            linked_skills_private not in linked_skills_output and
+            "owner-skill" not in linked_skills_output and "private.bin" not in linked_skills_output and
+            stable_retry(linked_skills, linked_skills_run) and
+            exact_path_snapshot(linked_skills_outside) == linked_skills_outside_before,
+        ))
+
+        linked_agents_alias = fresh_repo("linked-agents-with-whole-root-alias")
+        write_file(linked_agents_alias, ".claude/speck-next.json",
+                   v5_marker_bytes("linked-agents-alias-fixture").decode())
+        write_file(linked_agents_alias, ".claude/skills/legacy/SKILL.md",
+                   "---\nname: legacy\ndescription: legacy\n---\n")
+        write_file(linked_agents_alias, "product.md", "# Linked agents alias product\n")
+        linked_agents_alias_outside = base / "linked-agents-with-whole-root-alias-target"
+        linked_agents_alias_outside.mkdir()
+        linked_agents_alias_private = "PRIVATE-LINKED-AGENTS-ALIAS-228d71f0"
+        write_file(linked_agents_alias_outside, "owner-skill/SKILL.md",
+                   f"---\nname: outside-owner\ndescription: {linked_agents_alias_private}\n---\n")
+        os.symlink(str((linked_agents_alias / ".claude/skills").resolve()),
+                   linked_agents_alias_outside / "skills")
+        os.symlink(linked_agents_alias_outside, linked_agents_alias / ".agents")
+        commit_fixture(linked_agents_alias, "tracked linked .agents with canonical child alias")
+        linked_agents_alias_outside_before = exact_path_snapshot(linked_agents_alias_outside)
+        linked_agents_alias_child_before = exact_path_snapshot(linked_agents_alias / ".agents/skills")
+        linked_agents_alias_run = run_cli(kernel, "upgrade", linked_agents_alias)
+        linked_agents_alias_output = linked_agents_alias_run.stdout + linked_agents_alias_run.stderr
+        results.append((
+            "a linked .agents parent localizes while its exact whole-root canonical child alias stays byte-identical and singular",
+            linked_agents_alias_run.returncode == 0 and not linked_agents_alias_run.stderr and
+            "Localized linked path .agents" in linked_agents_alias_run.stdout and
+            re.search(r"^[ MADRCU?!]{2} \.agents$", linked_agents_alias_run.stdout, re.MULTILINE) is not None and
+            "diff --git a/.agents b/.agents" in linked_agents_alias_run.stdout and
+            (linked_agents_alias / ".agents").is_dir() and not (linked_agents_alias / ".agents").is_symlink() and
+            exact_path_snapshot(linked_agents_alias / ".agents/skills") == linked_agents_alias_child_before and
+            (linked_agents_alias / ".agents/skills").resolve() ==
+                (linked_agents_alias / ".claude/skills").resolve() and
+            not (linked_agents_alias / ".agents/skills/speck-next").exists() and
+            exact_path_snapshot(linked_agents_alias_outside) == linked_agents_alias_outside_before and
+            linked_agents_alias_private not in linked_agents_alias_output and
+            "owner-skill" not in linked_agents_alias_output and
+            stable_retry(linked_agents_alias, linked_agents_alias_run) and
+            exact_path_snapshot(linked_agents_alias_outside) == linked_agents_alias_outside_before and
+            not transaction_dirt(linked_agents_alias),
         ))
 
         carried_map = fresh_repo("carried-owner-map")
@@ -1142,6 +1460,61 @@ def run_path_transaction_controls(kernel):
             not transaction_dirt(disposable_kernel),
         ))
 
+        pack_destination = base / "packed-kernel"
+        pack_destination.mkdir()
+        pack_run = subprocess.run(
+            ["npm", "pack", "--json", "--pack-destination", str(pack_destination)],
+            cwd=kernel, capture_output=True, text=True,
+        )
+        packed_transport_ok = False
+        try:
+            pack_description = json.loads(pack_run.stdout)
+            pack_archive = pack_destination / pack_description[0]["filename"]
+            with tarfile.open(pack_archive, "r:gz") as archive:
+                packed_names = set(archive.getnames())
+                unpacked = base / "unpacked-kernel"
+                archive.extractall(unpacked, filter="data")
+            packed_kernel = unpacked / "package"
+            packed_source_adapter = packed_kernel / ".agents/skills/speck-next"
+            packed_product = fresh_repo("packed-product")
+            packed_install = run_cli(packed_kernel, "install", packed_product)
+            packed_count, packed_paths = install_report(packed_install)
+            packed_actual_paths = sorted(
+                item.relative_to(packed_product).as_posix()
+                for item in packed_product.rglob("*")
+                if ".git" not in item.relative_to(packed_product).parts and
+                (item.is_file() or item.is_symlink())
+            )
+            packed_bytes = sum(
+                item.lstat().st_size for item in packed_product.rglob("*")
+                if ".git" not in item.relative_to(packed_product).parts and
+                (item.is_file() or item.is_symlink())
+            )
+            packed_adapter = codex_adapter(packed_product)
+            packed_marker = json.loads((packed_product / ".claude/speck-next.json").read_text())
+            packed_transport_ok = (
+                pack_run.returncode == 0 and pack_archive.is_file() and
+                "package/.agents/skills/speck-next" not in packed_names and
+                not packed_source_adapter.exists() and not packed_source_adapter.is_symlink() and
+                packed_install.returncode == 0 and not packed_install.stderr and
+                packed_count == len(packed_actual_paths) == len(packed_paths) == 20 and
+                packed_paths == packed_actual_paths and packed_bytes == 81617 and
+                packed_adapter is not None and
+                packed_adapter.lstat().st_size == len(b"../../.claude/skills") and
+                packed_adapter.resolve() == (packed_product / ".claude/skills").resolve() and
+                len(list((packed_product / ".claude/skills").glob("*/SKILL.md"))) == 5 and
+                exact_path_snapshot(packed_product / ".claude/skills") ==
+                    exact_path_snapshot(packed_kernel / ".claude/skills") and
+                packed_marker.get("sourceCheckout") is None and
+                stable_retry(packed_product, packed_install, packed_kernel)
+            )
+        except (FileNotFoundError, IndexError, KeyError, OSError, TypeError, ValueError, tarfile.TarError):
+            packed_transport_ok = False
+        results.append((
+            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 81,617-byte census",
+            packed_transport_ok,
+        ))
+
         wrong_claude = fresh_repo("wrong-claude-root")
         (wrong_claude / ".claude").write_bytes(b"owner claude root\x00")
         wrong_claude_run = run_cli(kernel, "install", wrong_claude)
@@ -1231,6 +1604,7 @@ const originals = {
   lstatSync: fs.lstatSync.bind(fs), mkdirSync: fs.mkdirSync.bind(fs),
   mkdtempSync: fs.mkdtempSync.bind(fs), readFileSync: fs.readFileSync.bind(fs),
   renameSync: fs.renameSync.bind(fs), rmSync: fs.rmSync.bind(fs), statSync: fs.statSync.bind(fs),
+  symlinkSync: fs.symlinkSync.bind(fs), unlinkSync: fs.unlinkSync.bind(fs),
   writeFileSync: fs.writeFileSync.bind(fs),
 };
 let fired = false;
@@ -1254,7 +1628,23 @@ fs.readFileSync = function(file, ...rest) {
 fs.renameSync = function(source, destination, ...rest) {
   if (op === "record" && staged(source) && log) originals.appendFileSync(log, text(destination) + "\n");
   if (op === "apply" && staged(source) && fire("apply")) throw new Error("forced staged apply failure");
-  return originals.renameSync(source, destination, ...rest);
+  const result = originals.renameSync(source, destination, ...rest);
+  if (op === "adapter-installed-verify" && target &&
+      path.resolve(text(destination)) === path.join(target, ".agents") && fire("adapter-installed-verify")) {
+    const adapter = path.join(target, ".agents", "skills", "speck-next");
+    originals.unlinkSync(adapter);
+    originals.symlinkSync("../../../outside-codex-skills", adapter, "dir");
+  }
+  return result;
+};
+fs.symlinkSync = function(linkTarget, destination, ...rest) {
+  if (staged(destination) && text(destination).endsWith(path.sep + ".agents" + path.sep + "skills" + path.sep + "speck-next")) {
+    if (op === "adapter-create" && fire("adapter-create"))
+      throw new Error("forced Codex adapter creation failure");
+    if (op === "adapter-stage-verify" && fire("adapter-stage-verify"))
+      return originals.symlinkSync("../../../outside-codex-skills", destination, ...rest);
+  }
+  return originals.symlinkSync(linkTarget, destination, ...rest);
 };
 fs.rmSync = function(file, ...rest) {
   if (op === "cleanup" && text(file).includes(".speck-next-transaction-") &&
@@ -1378,12 +1768,37 @@ fs.mkdtempSync = function(prefix, ...rest) {
             env=preload_env(first_missing, "marker", first_missing_log),
         )
         results.append((
-            "a marker failure after applying a previously missing .claude root restores its exact absence",
+            "a marker failure restores both previously missing .claude and transaction-owned .agents parents to exact absence",
             first_missing_log.exists() and first_missing_log.read_text().splitlines() == ["marker"] and
             calm_failure(first_missing_run) and repo_unchanged(first_missing, first_missing_before) and
             exact_path_snapshot(first_missing_outside) == first_missing_source_before and
-            not (first_missing / ".claude").exists() and not transaction_dirt(first_missing),
+            exact_path_snapshot(first_missing / ".claude") == ("missing",) and
+            exact_path_snapshot(first_missing / ".agents") == ("missing",) and
+            not transaction_dirt(first_missing),
         ))
+
+        for operation in ("adapter-create", "adapter-stage-verify", "adapter-installed-verify"):
+            adapter_failure = fresh_repo(operation)
+            adapter_failure_before = repo_baseline(adapter_failure)
+            adapter_failure_log = base / f"{operation}.log"
+            adapter_failed = run_cli_args(
+                kernel, "install", adapter_failure,
+                env=preload_env(adapter_failure, operation, adapter_failure_log),
+            )
+            adapter_failure_ok = (
+                adapter_failure_log.exists() and
+                adapter_failure_log.read_text().splitlines() == [operation] and
+                calm_failure(adapter_failed) and
+                repo_unchanged(adapter_failure, adapter_failure_before) and
+                exact_path_snapshot(adapter_failure / ".agents") == ("missing",) and
+                not transaction_dirt(adapter_failure)
+            )
+            adapter_clean = run_cli(kernel, "install", adapter_failure)
+            adapter_retry_ok = not adapter_clean.stderr and stable_retry(adapter_failure, adapter_clean)
+            results.append((
+                f"injected {operation} failure is atomic with no parent residue before a clean and stable adapter retry",
+                adapter_failure_ok and adapter_retry_ok,
+            ))
 
         for operation in ("copy", "digest", "apply", "marker"):
             repo, outside, prior_label = full_fault_fixture(f"fault-{operation}")
@@ -2003,6 +2418,35 @@ exec "$REAL_GIT" "$@"
             ".claude/skills/custom-link" in ignored_link_run.stdout and
             snapshot_digest(ignored_link_outside) == ignored_link_before and
             (ignored_link_repo / ".claude/skills/custom-link").is_symlink(),
+        ))
+
+        ignored_agents = fresh_repo("ignored-agents-clamp")
+        seed_upgrade_repo(
+            ignored_agents, "5.4.1", "ignored-agents-fixture", "# Ignored agents product\n"
+        )
+        write_file(ignored_agents, ".git/info/exclude", ".agents/\n")
+        private_sentinel = "PRIVATE-OWNER-SKILL-SENTINEL-7d305f9a"
+        write_file(
+            ignored_agents, ".agents/skills/owner-skill/SKILL.md",
+            f"---\nname: owner-skill\ndescription: {private_sentinel}\n---\n",
+        )
+        write_file(ignored_agents, ".agents/skills/speck-next/owner.txt", "owner collision\n")
+        ignored_owner_before = exact_path_snapshot(ignored_agents / ".agents/skills/owner-skill")
+        ignored_collision_before = exact_path_snapshot(ignored_agents / ".agents/skills/speck-next")
+        ignored_agents_run = run_cli(kernel, "upgrade", ignored_agents)
+        ignored_agents_output = ignored_agents_run.stdout + ignored_agents_run.stderr
+        results.append((
+            "an ignored .agents ancestor reports only the selected adapter without reading owner-skill bytes into output or diff",
+            ignored_agents_run.returncode == 0 and not ignored_agents_run.stderr and
+            codex_adapter_name(ignored_agents) == "speck-next-2" and
+            "!! .agents/skills/speck-next-2" in ignored_agents_run.stdout and
+            "diff --git a/.agents/skills/speck-next-2 b/.agents/skills/speck-next-2" in ignored_agents_run.stdout and
+            "../../.claude/skills" in ignored_agents_run.stdout and
+            private_sentinel not in ignored_agents_output and
+            "owner-skill" not in ignored_agents_output and
+            exact_path_snapshot(ignored_agents / ".agents/skills/owner-skill") == ignored_owner_before and
+            exact_path_snapshot(ignored_agents / ".agents/skills/speck-next") == ignored_collision_before and
+            stable_retry(ignored_agents, ignored_agents_run),
         ))
 
         git_attack = fresh_repo("local-git-attack")
