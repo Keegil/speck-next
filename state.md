@@ -23,7 +23,7 @@ The milestone and release are blocked. The baseline already made the central pro
 
 ## What needs the owner
 
-Choose whether to keep the 250,000-gross ceiling or replace only it with one attempt, at most 200,000 fresh tokens, at most 900 seconds, and zero owner interruption, with gross use still measured and judged. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
+Choose whether to keep the 250,000-gross ceiling or replace only it with at most 200,000 fresh tokens, 900 active seconds, and no further owner interruption, with gross use still measured and judged. The same attempt already used 56,228 fresh tokens and 112.284 active seconds, leaving 143,772 and 787.716; the calendar pause for this choice does not count. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
