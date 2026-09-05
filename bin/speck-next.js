@@ -518,11 +518,11 @@ function plannedRoot(candidate) {
   return { relative: candidate.relative, kind: candidate.kind };
 }
 
-function refuseCarriedMapAlias(plan, roots) {
-  if (plan.writes.has("map.md")) return;
+function localizeCarriedMapAlias(plan, roots) {
+  if (plan.writes.has("map.md")) return false;
   const mapAbsolute = ensureTargetRelative("map.md");
   const mapEntry = lstatOptional(mapAbsolute);
-  if (!mapEntry || !mapEntry.isSymbolicLink()) return;
+  if (!mapEntry || !mapEntry.isSymbolicLink()) return false;
   const linkTarget = fs.readlinkSync(mapAbsolute);
   const linkedPath = path.resolve(path.dirname(mapAbsolute), linkTarget);
   const resolvedReferent = fs.realpathSync.native(mapAbsolute);
@@ -531,9 +531,19 @@ function refuseCarriedMapAlias(plan, roots) {
     const overlaps = [linkedPath, resolvedReferent].some(candidate =>
       pathInside(planned, candidate) || pathInside(candidate, planned)
     );
-    if (overlaps)
-      transactionError(`refusing: carried map.md overlaps planned method root ${normalizedRelative(root.relative)}, so replacing that root could change the owner's map through its link. Nothing was touched.`);
+    if (!overlaps) continue;
+    const logical = fs.statSync(mapAbsolute);
+    plan.writes.set("map.md", {
+      kind: "file",
+      bytes: fs.readFileSync(mapAbsolute),
+      mode: logical.mode,
+      source: "carried-map",
+      linkTarget,
+      overlappingRoot: normalizedRelative(root.relative),
+    });
+    return true;
   }
+  return false;
 }
 
 function markerSourceCheckout(marker) {
@@ -567,7 +577,12 @@ function transactionPlan(existingMarker, migration) {
     if (!primaryRoots.has(key)) primaryRoots.set(key, { relative: root.relative, kind: root.kind, members: [] });
     primaryRoots.get(key).members.push(candidate.relative);
   }
-  refuseCarriedMapAlias(plan, [...primaryRoots.values()]);
+  if (localizeCarriedMapAlias(plan, [...primaryRoots.values()])) {
+    const mapRoot = plannedRoot({ relative: "map.md", kind: "file" });
+    const key = normalizedRelative(mapRoot.relative);
+    if (!primaryRoots.has(key)) primaryRoots.set(key, { ...mapRoot, members: [] });
+    primaryRoots.get(key).members.push("map.md");
+  }
   const markerRoot = plannedRoot({ relative: MARKER, kind: "file" });
   return {
     ...plan,
@@ -781,7 +796,11 @@ function buildStageRoot(transaction, root) {
     const entry = transaction.writes.get(root.relative);
     if (!entry) transactionError(`refusing: internal file plan missing ${normalizedRelative(root.relative)}. Nothing was touched.`);
     if (existing.state.startsWith("linked-") || existing.state === "dangling-link")
-      transaction.noteLocalization(root.relative, existing.target || readlinkOptional(ensureTargetRelative(root.relative)));
+      transaction.noteLocalization(
+        root.relative,
+        entry.linkTarget || existing.target || readlinkOptional(ensureTargetRelative(root.relative)),
+        entry.source === "carried-map" ? { kind: "carried-map", overlappingRoot: entry.overlappingRoot } : {}
+      );
     else if (existing.state === "dir" || existing.state === "non-file-path")
       transaction.planPreservation(root.relative, ensureTargetRelative(root.relative));
     ensureParent(stagePath);
@@ -885,11 +904,11 @@ Transaction.prototype.applyStageModes = function applyStageModes(root) {
   }
 };
 
-Transaction.prototype.noteLocalization = function noteLocalization(relative, linkTarget) {
+Transaction.prototype.noteLocalization = function noteLocalization(relative, linkTarget, details = {}) {
   const key = normalizedRelative(relative);
   if (this.replacedLinkSet.has(key)) return;
   this.replacedLinkSet.add(key);
-  this.replacedLinks.push({ relative: key, target: linkTarget || "(dangling link)" });
+  this.replacedLinks.push({ relative: key, target: linkTarget || "(dangling link)", ...details });
 };
 
 Transaction.prototype.noteRetiredLink = function noteRetiredLink(relative, linkTarget) {
@@ -966,7 +985,7 @@ Transaction.prototype.prepare = function prepare() {
   if (this.writes.has("map.md")) {
     const stagedMap = fs.readFileSync(path.join(this.stageRoot, "map.md"));
     if (!stagedMap.equals(this.writes.get("map.md").bytes))
-      transactionError("refusing: the staged starter map bytes do not match the planned migration. Nothing was touched.");
+      transactionError("refusing: the staged map bytes do not match the planned migration. Nothing was touched.");
   }
 };
 
@@ -1563,9 +1582,11 @@ function versionWithProvenance(version, sourceCheckout, methodSurfaceSha256) {
 }
 
 function localizationLines(localizedLinks) {
-  return localizedLinks.map(link =>
-    `Localized linked path ${link.relative} into this repository; it previously pointed to ${JSON.stringify(link.target)} and that linked destination was left unchanged.`
-  );
+  return localizedLinks.map(link => {
+    if (link.kind === "carried-map")
+      return `Localized carried map.md into a local regular file; it previously pointed to ${JSON.stringify(link.target)}, and its logical contents and mode were made local before the overlapping method path ${link.overlappingRoot} changed.`;
+    return `Localized linked path ${link.relative} into this repository; it previously pointed to ${JSON.stringify(link.target)} and that linked destination was left unchanged.`;
+  });
 }
 
 function retiredLinkLines(retiredLinks) {

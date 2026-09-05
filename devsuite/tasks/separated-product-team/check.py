@@ -898,24 +898,35 @@ def run_path_transaction_controls(kernel):
             "map.md" in carried_paths,
         ))
 
-        aliased_map = fresh_repo("carried-map-aliases-method")
-        seed_upgrade_repo(
-            aliased_map, "5.4.1", "carried-map-alias-fixture", "# Alias product\n",
-            {"AGENTS.md": "# Owner method bytes\n"},
-        )
-        os.symlink("AGENTS.md", aliased_map / "map.md")
-        commit_fixture(aliased_map, "link carried map to planned method file")
-        aliased_map_before = repo_baseline(aliased_map)
-        aliased_map_bytes = (aliased_map / "map.md").read_bytes()
-        aliased_map_run = run_cli(kernel, "upgrade", aliased_map)
-        results.append((
-            "a carried map linked to a planned method root refuses before that root can change its logical bytes",
-            calm_failure(aliased_map_run) and
-            "carried map.md overlaps planned method root AGENTS.md" in aliased_map_run.stderr and
-            repo_unchanged(aliased_map, aliased_map_before) and
-            (aliased_map / "map.md").read_bytes() == aliased_map_bytes and
-            not transaction_dirt(aliased_map),
-        ))
+        for method_file in ("AGENTS.md", "CLAUDE.md"):
+            slug = method_file.lower().replace(".", "-")
+            aliased_map = fresh_repo(f"carried-map-aliases-{slug}")
+            owner_map_bytes = f"# Owner map formerly at {method_file}\n".encode()
+            seed_upgrade_repo(
+                aliased_map, "5.4.1", f"carried-map-{slug}-fixture",
+                f"# {method_file} alias product\n",
+                {method_file: owner_map_bytes.decode()},
+            )
+            os.chmod(aliased_map / method_file, 0o600)
+            os.symlink(method_file, aliased_map / "map.md")
+            commit_fixture(aliased_map, f"link carried map to {method_file}")
+            aliased_map_run = run_cli(kernel, "upgrade", aliased_map)
+            expected_disclosure = (
+                "Localized carried map.md into a local regular file; it previously pointed to "
+                f'"{method_file}", and its logical contents and mode were made local before the '
+                f"overlapping method path {method_file} changed."
+            )
+            results.append((
+                f"the carried map alias control localizes map.md -> {method_file} before the method root changes and retries byte-stably",
+                aliased_map_run.returncode == 0 and not aliased_map_run.stderr and
+                expected_disclosure in aliased_map_run.stdout and
+                (aliased_map / "map.md").is_file() and
+                not (aliased_map / "map.md").is_symlink() and
+                (aliased_map / "map.md").read_bytes() == owner_map_bytes and
+                (aliased_map / "map.md").stat().st_mode & 0o777 == 0o600 and
+                (aliased_map / method_file).read_bytes() == (kernel / method_file).read_bytes() and
+                stable_retry(aliased_map, aliased_map_run),
+            ))
 
         outside_map = base / "carried-map-outside.md"
         outside_map.write_bytes(b"# Outside owner map\n\x00\xff")
@@ -1416,6 +1427,72 @@ exec "$REAL_GIT" "$@"
                 f"full-state checked Git {operation} failure rolls back and then retries cleanly twice",
                 negative_ok and retry_ok,
             ))
+
+        map_report_fault = fresh_repo("carried-map-late-report-failure")
+        map_report_label = "carried-map-report-fixture"
+        map_report_bytes = b"# Owner map behind AGENTS\n"
+        write_file(
+            map_report_fault, ".claude/speck-next.json",
+            v5_marker_bytes(map_report_label).decode(),
+        )
+        write_file(map_report_fault, "product.md", "# Report-failure product\n")
+        (map_report_fault / "AGENTS.md").write_bytes(map_report_bytes)
+        os.chmod(map_report_fault / "AGENTS.md", 0o600)
+        os.symlink("AGENTS.md", map_report_fault / "map.md")
+        write_file(map_report_fault, "owner/tracked.txt", "tracked report dirt\n")
+        (map_report_fault / "owner/tracked.bin").write_bytes(b"\x00\xfftracked-report\r\n")
+        commit_fixture(map_report_fault, "carried map report-failure baseline")
+        write_file(map_report_fault, "owner/untracked.txt", "untracked report dirt\n")
+        (map_report_fault / "owner/untracked.bin").write_bytes(b"\xfe\x00untracked-report\r\n")
+        map_report_before = repo_baseline(map_report_fault)
+        map_report_marker_before = (map_report_fault / ".claude/speck-next.json").read_bytes()
+        map_report_product_before = (map_report_fault / "product.md").read_bytes()
+        map_report_referent_before = exact_path_snapshot(map_report_fault / "AGENTS.md")
+        map_report_link_before = exact_path_snapshot(map_report_fault / "map.md")
+        map_report_logical_mode = (map_report_fault / "map.md").stat().st_mode & 0o777
+        map_report_index_before = (map_report_fault / ".git/index").read_bytes()
+        map_report_failed = run_cli_args(
+            kernel, "upgrade", map_report_fault,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_FAILURE": "status"},
+        )
+        map_report_rollback_ok = (
+            calm_failure(map_report_failed) and "git status failed" in map_report_failed.stderr and
+            repo_unchanged(map_report_fault, map_report_before) and
+            (map_report_fault / ".claude/speck-next.json").read_bytes() == map_report_marker_before and
+            (map_report_fault / "product.md").read_bytes() == map_report_product_before and
+            exact_path_snapshot(map_report_fault / "AGENTS.md") == map_report_referent_before and
+            exact_path_snapshot(map_report_fault / "map.md") == map_report_link_before and
+            (map_report_fault / "map.md").read_bytes() == map_report_bytes and
+            (map_report_fault / "map.md").stat().st_mode & 0o777 == map_report_logical_mode and
+            (map_report_fault / "owner/tracked.bin").read_bytes() == b"\x00\xfftracked-report\r\n" and
+            (map_report_fault / "owner/untracked.bin").read_bytes() == b"\xfe\x00untracked-report\r\n" and
+            (map_report_fault / ".git/index").read_bytes() == map_report_index_before and
+            not transaction_dirt(map_report_fault)
+        )
+        map_report_clean = run_cli(kernel, "upgrade", map_report_fault)
+        map_report_clean_ok = (
+            upgrade_report_ok(
+                map_report_clean, "5.4.1", map_report_label,
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and not map_report_clean.stderr and
+            "Localized carried map.md into a local regular file" in map_report_clean.stdout and
+            (map_report_fault / "map.md").is_file() and
+            not (map_report_fault / "map.md").is_symlink() and
+            (map_report_fault / "map.md").read_bytes() == map_report_bytes and
+            (map_report_fault / "map.md").stat().st_mode & 0o777 == map_report_logical_mode and
+            (map_report_fault / "AGENTS.md").read_bytes() == (kernel / "AGENTS.md").read_bytes() and
+            (map_report_fault / "owner/tracked.bin").read_bytes() == b"\x00\xfftracked-report\r\n" and
+            (map_report_fault / "owner/untracked.bin").read_bytes() == b"\xfe\x00untracked-report\r\n" and
+            (map_report_fault / ".git/index").read_bytes() == map_report_index_before and
+            not transaction_dirt(map_report_fault)
+        )
+        results.append((
+            "a late checked-report failure restores a carried map alias and all owner state before clean and stable retries",
+            map_report_rollback_ok and map_report_clean_ok and
+            stable_retry(map_report_fault, map_report_clean) and
+            (map_report_fault / ".git/index").read_bytes() == map_report_index_before,
+        ))
 
         ignored_repo = fresh_repo("ignored-directory")
         seed_upgrade_repo(ignored_repo, "5.4.1", "ignored-directory-fixture", "# Ignored product\n")
