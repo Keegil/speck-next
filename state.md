@@ -21,7 +21,7 @@ Retired by the rewrite piece, bar met and measured: **the kernel only grows** �
 
 ## What's blocked
 
-The milestone, merge, tag, and publish remain blocked. Candidate `fc8c1a1` passed its own 92-subject population, but an independent replay could remove required predecessor evidence, bind an unrelated successful command as the product run, and rescue ambiguous canonical Codex output from a convenience file. The controller cannot support another model run or a release claim. Product selected a native Codex build as the replacement proof.
+The milestone, merge, tag, and publish remain blocked. Candidate `fc8c1a1` passed its own 92-subject population, but an independent replay could remove required predecessor evidence, bind an unrelated successful command as the product run, and rescue ambiguous canonical Codex output from a convenience file. Product selected a native Codex build as the replacement proof; `c057f64` removed the rejected controller and restored the four task files to their pre-controller boundary without breaking Piece 8.
 
 ## What needs the owner
 
@@ -29,7 +29,7 @@ Nothing until the v6 milestone's felt grade. Standing, non-blocking: the v5-era 
 
 ## What happens next
 
-Engineering removes the rejected controller rather than repairing it. Then an ungoverned Codex baseline and one native governed Codex build test whether the separated roles changed the product inside the whole-run limit. Claude independently discovers and tests the same installed method and product; a fresh Codex tester and independent judge close the piece. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
+Run the ungoverned Codex baseline, then one native governed Codex build to test whether the separated roles changed the product inside the whole-run limit. Claude independently discovers and tests the same installed method and product; a fresh Codex tester and independent judge close the piece. After release, the released upgrader still goes to the waiting private product repository without changing its live-work truth.
 
 “Three producers” remains landed; both judgment lines closed sufficient ([work/three-producers.md](work/three-producers.md)). Its open items keep their destinations: the bite tally baked into the experience page moves here with the next density work · the four rules stacked without a heading stay filed with that work · the self-measurement strain moves to the computed-check piece.
 
