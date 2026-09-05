@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Verify role contexts from runner-owned or canonical host records."""
-import json, math, os, pathlib, re, sys, tempfile
-import base64, hashlib
+import hashlib, json, math, os, pathlib, re, sys, tempfile
 
 ROLES = ("Business", "Experience", "Engineering")
+PACKET_SCHEMA = "piece9-packet-v3"
 STAGES = {"Business": ("contribution", "return"), "Experience": ("contribution", "return"),
           "Engineering": ("contribution", "implement", "return")}
 NEEDLES = {"Business": "business-evidence.md", "Experience": "experience-evidence.md", "Engineering": "pulse.py"}
@@ -42,19 +42,71 @@ SOURCE_PATHS = {
     "engineering": "examples/pulse/pulse.py",
 }
 ALL_SOURCE_PATHS = tuple(SOURCE_PATHS.values())
+PRODUCT_DECISION_EXCERPTS = (
+    ("product-see", SOURCE_PATHS["product"], 9, 9),
+    ("product-value", SOURCE_PATHS["product"], 12, 12),
+    ("product-boundary", SOURCE_PATHS["product"], 16, 16),
+    ("product-properties", SOURCE_PATHS["product"], 18, 18),
+    ("product-feel", SOURCE_PATHS["product"], 22, 22),
+)
+BUSINESS_EXCERPTS = (
+    ("product-value", SOURCE_PATHS["product"], 12, 12),
+    ("business-observation", SOURCE_PATHS["business"], 1, 3),
+)
+EXPERIENCE_EXCERPTS = (
+    ("product-see", SOURCE_PATHS["product"], 9, 9),
+    ("product-properties", SOURCE_PATHS["product"], 18, 18),
+    ("product-feel", SOURCE_PATHS["product"], 22, 22),
+    ("experience-observation", SOURCE_PATHS["experience"], 1, 3),
+)
+ENGINEERING_EXCERPTS = (
+    ("product-see", SOURCE_PATHS["product"], 9, 9),
+    ("engineering-view", SOURCE_PATHS["engineering"], 61, 72),
+    ("engineering-runtime", SOURCE_PATHS["engineering"], 1, 9),
+    ("engineering-load", SOURCE_PATHS["engineering"], 12, 29),
+    ("engineering-dispatch", SOURCE_PATHS["engineering"], 164, 191),
+)
+ALL_DECISION_EXCERPTS = PRODUCT_DECISION_EXCERPTS + (
+    ("business-observation", SOURCE_PATHS["business"], 1, 3),
+    ("experience-observation", SOURCE_PATHS["experience"], 1, 3),
+    ("engineering-view", SOURCE_PATHS["engineering"], 61, 72),
+    ("engineering-runtime", SOURCE_PATHS["engineering"], 1, 9),
+    ("engineering-load", SOURCE_PATHS["engineering"], 12, 29),
+    ("engineering-dispatch", SOURCE_PATHS["engineering"], 164, 191),
+)
+SOURCE_EXCERPT_ALLOWLIST = {
+    ("source-manifest", "runner"): ALL_DECISION_EXCERPTS,
+    ("product_select", "Product"): ALL_DECISION_EXCERPTS,
+    ("contribution", "Business"): BUSINESS_EXCERPTS,
+    ("contribution", "Experience"): EXPERIENCE_EXCERPTS,
+    ("contribution", "Engineering"): ENGINEERING_EXCERPTS,
+    ("product_synthesis", "Product"): ALL_DECISION_EXCERPTS,
+    ("implement", "Engineering"): ENGINEERING_EXCERPTS,
+    ("run", "Engineering"): ENGINEERING_EXCERPTS,
+    ("return", "Business"): BUSINESS_EXCERPTS,
+    ("return", "Experience"): EXPERIENCE_EXCERPTS,
+    ("return", "Engineering"): ENGINEERING_EXCERPTS,
+    ("product_close", "Product"): ALL_DECISION_EXCERPTS,
+}
 SOURCE_ALLOWLIST = {
-    ("source-manifest", "runner"): ALL_SOURCE_PATHS,
-    ("product_select", "Product"): ALL_SOURCE_PATHS,
-    ("contribution", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
-    ("contribution", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
-    ("contribution", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("product_synthesis", "Product"): ALL_SOURCE_PATHS,
-    ("implement", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("run", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("return", "Business"): (SOURCE_PATHS["product"], SOURCE_PATHS["business"]),
-    ("return", "Experience"): (SOURCE_PATHS["product"], SOURCE_PATHS["experience"]),
-    ("return", "Engineering"): (SOURCE_PATHS["product"], SOURCE_PATHS["engineering"]),
-    ("product_close", "Product"): ALL_SOURCE_PATHS,
+    key: tuple(dict.fromkeys(path for _, path, _, _ in excerpts))
+    for key, excerpts in SOURCE_EXCERPT_ALLOWLIST.items()
+}
+MANIFEST_EXCERPTS = tuple(dict.fromkeys(
+    excerpt for excerpts in SOURCE_EXCERPT_ALLOWLIST.values() for excerpt in excerpts
+))
+EXCERPT_MARKERS = {
+    "product-see": ("*see:*", "last two weeks", "gaps"),
+    "product-value": ("honest free comparison", "not a paid product"),
+    "product-boundary": ("we are not", "streak"),
+    "product-properties": ("whole-product properties", "calm"),
+    "product-feel": ("**feel:**", "streak celebration"),
+    "business-observation": ("four of five", "price"),
+    "experience-observation": ("feel behind", "gaps"),
+    "engineering-runtime": ("import", "DATA =", "USAGE ="),
+    "engineering-load": ("def load(", "json.load", "return entries"),
+    "engineering-view": ("def view(", "timedelta", "gaps"),
+    "engineering-dispatch": ("def main(", "view(day)", "if __name__"),
 }
 
 
@@ -99,7 +151,8 @@ def usage_integer(usage, field):
 def codex_usage_rows(rows):
     """Return one Codex session's cumulative usage without double-counting reasoning."""
     latest = None
-    responses = 0
+    completed = 0
+    legacy_completed = 0
     for event in rows:
         payload = event.get("payload", {})
         if event.get("type") == "event_msg" and payload.get("type") == "token_count":
@@ -108,9 +161,12 @@ def codex_usage_rows(rows):
                 latest = candidate
         if event.get("type") == "turn.completed" and isinstance(event.get("usage"), dict):
             latest = event["usage"]
-        if ((event.get("type") == "event_msg" and payload.get("type") == "task_complete") or
-                event.get("type") == "turn.completed"):
-            responses += 1
+        if event.get("type") == "turn.failed":
+            raise ValueError("Codex stage reported a failed terminal turn")
+        if event.get("type") == "turn.completed":
+            completed += 1
+        if event.get("type") == "event_msg" and payload.get("type") == "task_complete":
+            legacy_completed += 1
     if latest is None:
         raise ValueError("Codex stage reported no usage")
     input_tokens = usage_integer(latest, "input_tokens")
@@ -119,6 +175,7 @@ def codex_usage_rows(rows):
     gross = input_tokens + output
     if ("total_tokens" in latest and usage_integer(latest, "total_tokens") != gross) or cached > input_tokens:
         raise ValueError("inconsistent Codex usage totals")
+    responses = completed if completed else legacy_completed
     return {"gross": gross, "cached": cached, "fresh": gross - cached,
             "responses": responses}
 
@@ -191,6 +248,12 @@ def canonical_json(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
 
 
+def excerpt_content_ok(selector, content):
+    markers = EXCERPT_MARKERS.get(selector)
+    return (isinstance(content, str) and markers is not None and
+            all(marker.lower() in content.lower() for marker in markers))
+
+
 def expected_packet_identity(stage_name):
     parts = stage_name.split("_", 1)
     role = parts[0].title()
@@ -203,7 +266,8 @@ def expected_packet_identity(stage_name):
 
 def embedded_packet_ok(stage, expected_name, manifest):
     packet = stage.get("packet")
-    if not isinstance(packet, dict) or not isinstance(packet.get("body"), dict):
+    if (not isinstance(packet, dict) or set(packet) != {"body", "sha256"} or
+            not isinstance(packet.get("body"), dict)):
         return False
     body = packet["body"]
     if packet.get("sha256") != hashlib.sha256(canonical_json(body)).hexdigest():
@@ -211,16 +275,33 @@ def embedded_packet_ok(stage, expected_name, manifest):
     packet_stage, role = expected_packet_identity(expected_name)
     if body.get("stage") != packet_stage or body.get("role") != role:
         return False
-    if tuple(item.get("path") for item in body.get("evidence", [])) != SOURCE_ALLOWLIST.get((packet_stage, role)):
+    expected_excerpts = SOURCE_EXCERPT_ALLOWLIST.get((packet_stage, role))
+    if (expected_excerpts is None or len(body.get("evidence", [])) != len(expected_excerpts) or
+            tuple((item.get("selector"), item.get("path"), item.get("lines"))
+                  for item in body.get("evidence", [])) !=
+            tuple((selector, path, [first, last])
+                  for selector, path, first, last in expected_excerpts)):
         return False
-    manifest_items = {item.get("path"): item for item in manifest.get("evidence", [])}
+    manifest_items = {(item.get("selector"), item.get("path"), tuple(item.get("lines", []))): item
+                      for item in manifest.get("excerpts", [])}
     try:
         for item in body["evidence"]:
-            content = base64.b64decode(item["content_base64"], validate=True)
-            if (len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"] or
-                    {key: item[key] for key in ("path", "bytes", "sha256")} != manifest_items[item["path"]]):
+            if set(item) != {"selector", "path", "lines", "byte_range", "bytes", "sha256", "content"}:
+                return False
+            content = item["content"].encode("utf-8")
+            byte_range = item["byte_range"]
+            metadata = {key: item[key] for key in
+                        ("selector", "path", "lines", "byte_range", "bytes", "sha256")}
+            key = (item["selector"], item["path"], tuple(item["lines"]))
+            if (len(byte_range) != 2 or len(item["lines"]) != 2 or
+                    byte_range[1] - byte_range[0] != item["bytes"] or
+                    len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"] or
+                    not excerpt_content_ok(item["selector"], item["content"]) or
+                    metadata != manifest_items[key]):
                 return False
         for item in body.get("generated", []):
+            if set(item) != {"label", "bytes", "sha256", "content"}:
+                return False
             content = item["content"].encode()
             if len(content) != item["bytes"] or hashlib.sha256(content).hexdigest() != item["sha256"]:
                 return False
@@ -232,7 +313,7 @@ def embedded_packet_ok(stage, expected_name, manifest):
         if body.get("stage") == "return":
             required.add("run_evidence")
         baseline = next((item for item in manifest.get("evidence", [])
-                         if item.get("path") == "examples/pulse/pulse.py"), None)
+                         if item.get("path") == SOURCE_PATHS["engineering"]), None)
         commit = generated_items.get("implementation_commit", {}).get("content")
         if (not required <= set(generated_items) or
                 not all(generated_items[label].get("sha256") in body.get("lineage", [])
@@ -241,7 +322,45 @@ def embedded_packet_ok(stage, expected_name, manifest):
                 generated_items["current_implementation"].get("sha256") == baseline.get("sha256") or
                 not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit)):
             return False
-    return (body.get("schema") == "piece9-packet-v1" and body.get("lineage") == stage.get("input_lineage") and
+    if body.get("stage") == "implement" and body.get("role") == "Engineering":
+        generated_items = {item.get("label"): item for item in body.get("generated", [])}
+        required = {"product_synthesis", "implementation_brief"}
+        if (not required <= set(generated_items) or
+                any(not generated_items[label].get("content", "").strip() for label in required) or
+                any(generated_items[label].get("sha256") not in body.get("lineage", [])
+                    for label in required)):
+            return False
+    if body.get("stage") == "product_synthesis":
+        generated_items = {item.get("label"): item for item in body.get("generated", [])}
+        if ("product_selection" not in generated_items or
+                generated_items["product_selection"].get("sha256") not in body.get("lineage", [])):
+            return False
+    generated_items = {item.get("label"): item for item in body.get("generated", [])}
+    command_label = None
+    if body.get("stage") == "return":
+        command_label = "run_evidence" if body.get("role") == "Engineering" else "real_run"
+    elif body.get("stage") == "product_close":
+        command_label = "run_evidence"
+    if command_label:
+        try:
+            command_value = json.loads(generated_items[command_label]["content"])
+        except (KeyError, TypeError, json.JSONDecodeError):
+            return False
+        if (not command_evidence_ok(command_value) or
+                generated_items[command_label]["sha256"] not in body.get("lineage", [])):
+            return False
+    if body.get("stage") == "product_close":
+        required = {"current_implementation", "implementation_commit", "run_evidence"}
+        baseline = next((item for item in manifest.get("evidence", [])
+                         if item.get("path") == SOURCE_PATHS["engineering"]), None)
+        commit = generated_items.get("implementation_commit", {}).get("content")
+        if (not required <= set(generated_items) or not baseline or
+                generated_items["current_implementation"].get("sha256") == baseline.get("sha256") or
+                not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit) or
+                any(generated_items[label].get("sha256") not in body.get("lineage", [])
+                    for label in required)):
+            return False
+    return (body.get("schema") == PACKET_SCHEMA and body.get("lineage") == stage.get("input_lineage") and
             stage.get("packet_sha256") == packet.get("sha256") and
             isinstance(stage.get("output"), str) and
             hashlib.sha256(stage["output"].encode()).hexdigest() == stage.get("output_sha256"))
@@ -250,15 +369,33 @@ def embedded_packet_ok(stage, expected_name, manifest):
 def source_manifest_ok(manifest):
     if not isinstance(manifest, dict):
         return False
-    body = {key: manifest.get(key) for key in ("schema", "prompt_sha256", "evidence")}
+    body = {key: manifest.get(key) for key in ("schema", "prompt_sha256", "evidence", "excerpts")}
     evidence = body["evidence"]
-    if (body["schema"] != "piece9-packet-v1" or not digest_string(body["prompt_sha256"]) or
+    excerpts = body["excerpts"]
+    if (body["schema"] != PACKET_SCHEMA or not digest_string(body["prompt_sha256"]) or
             not isinstance(evidence, list) or
             tuple(item.get("path") for item in evidence if isinstance(item, dict)) != ALL_SOURCE_PATHS):
         return False
     if any(set(item) != {"path", "bytes", "sha256"} or
            type(item["bytes"]) is not int or item["bytes"] < 0 or not digest_string(item["sha256"])
            for item in evidence):
+        return False
+    if (not isinstance(excerpts, list) or
+            len(excerpts) != len(MANIFEST_EXCERPTS) or
+            tuple((item.get("selector"), item.get("path"), item.get("lines"))
+                  for item in excerpts if isinstance(item, dict)) !=
+            tuple((selector, path, [first, last])
+                  for selector, path, first, last in MANIFEST_EXCERPTS) or
+            any(set(item) != {"selector", "path", "lines", "byte_range", "bytes", "sha256"} or
+                not isinstance(item["selector"], str) or
+                not isinstance(item["lines"], list) or len(item["lines"]) != 2 or
+                any(type(value) is not int or value < 1 for value in item["lines"]) or
+                item["lines"][1] < item["lines"][0] or
+                not isinstance(item["byte_range"], list) or len(item["byte_range"]) != 2 or
+                any(type(value) is not int or value < 0 for value in item["byte_range"]) or
+                item["byte_range"][1] - item["byte_range"][0] != item["bytes"] or
+                type(item["bytes"]) is not int or item["bytes"] < 0 or not digest_string(item["sha256"])
+                for item in excerpts)):
         return False
     return manifest.get("sha256") == hashlib.sha256(canonical_json(body)).hexdigest()
 
@@ -285,9 +422,49 @@ def bound_stage_ok(stage, expected_name, manifest):
         return False
     usage = verdict.get("usage")
     limits = verdict.get("limits")
-    return (isinstance(usage, dict) and isinstance(limits, dict) and
+    if expected_name == "engineering_run" and not command_evidence_ok(stage.get("command_evidence")):
+        return False
+    return (stage.get("observed_carrier") == stage.get("carrier") and
+            isinstance(usage, dict) and isinstance(limits, dict) and
             stage_verdict(usage, interval[1] - interval[0], limits, True).get("status") == "passed" and
             verdict.get("complete") is True)
+
+
+CONTRIBUTION_FIELDS = ("Role", "Direct evidence", "Conclusion", "Assumptions", "Proposed change",
+                       "Consequence", "Earliest disconfirming run")
+
+
+def contribution_output_ok(role, output, packet):
+    if not isinstance(output, str) or not isinstance(packet, dict):
+        return False
+    values = {}
+    for field in CONTRIBUTION_FIELDS:
+        matches = re.findall(rf"(?m)^{re.escape(field)}:\s*(\S.*)$", output)
+        if len(matches) != 1:
+            return False
+        values[field] = matches[0].strip()
+    if values["Role"] != role:
+        return False
+    direct = values["Direct evidence"]
+    for item in packet.get("body", {}).get("evidence", []):
+        byte_range = item.get("byte_range", [])
+        if len(byte_range) != 2:
+            continue
+        reference = f"{item.get('path')}@[{byte_range[0]},{byte_range[1]})"
+        if reference in direct:
+            claim = direct.split(reference, 1)[1].lstrip(" :-—").strip()
+            return len(claim) >= 12
+    return False
+
+
+def command_evidence_ok(value):
+    return (isinstance(value, dict) and set(value) == {"command", "exit_code", "output", "sha256"} and
+            isinstance(value["command"], str) and bool(value["command"].strip()) and
+            type(value["exit_code"]) is int and value["exit_code"] == 0 and
+            isinstance(value["output"], str) and
+            value["sha256"] == hashlib.sha256(canonical_json({
+                "command": value["command"], "exit_code": value["exit_code"], "output": value["output"],
+            })).hexdigest())
 
 
 def probe_stage_limits(probe, stage):
@@ -639,16 +816,19 @@ def controller_proof(clone, state_path, carriers):
         carrier = state.get("carriers", {}).get(role)
         if not contribution:
             continue
-        packet_paths = {item.get("path") for item in contribution.get("packet", {}).get("evidence", [])}
+        packet_paths = {item.get("path") for item in
+                        contribution.get("packet", {}).get("body", {}).get("evidence", [])}
         output = contribution.get("output", "")
+        contribution_valid = contribution_output_ok(role, output, contribution.get("packet"))
         return_output = returned.get("output", "") if returned else ""
         ruling = re.findall(r"Business ruling:\s*(kept|broken|not[- ]judged)\b", return_output, re.I)
         result["roles"][role] = {
             "carrier": carrier,
             "host": bool(carrier) and all(item.get("carrier") == carrier and
-                                           item.get("observed_carrier") in (None, carrier) for item in stages),
-            "contribution": bool(re.search(rf"(?m)^Role:\s*{role}\s*$", output)),
-            "direct": NEEDLES[role] in packet_paths,
+                                           item.get("observed_carrier") == carrier for item in stages) and
+                    contribution_valid,
+            "contribution": contribution_valid,
+            "direct": contribution_valid and NEEDLES[role] in packet_paths,
             "elected": True,
             "returned": bool(returned and re.search(r"\b(changed|held)\b", return_output, re.I)),
             "ruling_permits": role != "Business" or bool(ruling and ruling[-1].lower() == "kept"),
@@ -663,7 +843,7 @@ def controller_proof(clone, state_path, carriers):
 def proof(driver, clone, events_path, carriers, state_path=None):
     if state_path and pathlib.Path(state_path).is_file():
         state = json.loads(pathlib.Path(state_path).read_text())
-        if state.get("protocol") == "piece9-packet-v1":
+        if state.get("protocol") == PACKET_SCHEMA:
             return controller_proof(clone, state_path, carriers)
     return broker_codex(clone, events_path, state_path, carriers) if driver == "codex" else native_claude(clone, events_path, carriers)
 
@@ -739,7 +919,7 @@ if __name__ == "__main__":
         value = proof(driver, clone, events, {}, state_path)
         controller_elapsed = value.get("elapsed")
         state = json.loads(pathlib.Path(state_path).read_text()) if state_path and pathlib.Path(state_path).is_file() else {}
-        if state.get("protocol") == "piece9-packet-v1":
+        if state.get("protocol") == PACKET_SCHEMA:
             controller_elapsed = state.get("result", {}).get("verdict", {}).get("elapsed")
         if controller_elapsed is not None:
             value["elapsed_seconds"] = controller_elapsed

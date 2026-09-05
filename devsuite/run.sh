@@ -22,17 +22,16 @@ CONTROL=0
 UNGOVERNED=0
 PROBE=""
 TASKS=()
-ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
+ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
 cleanup_role_home() {
   if [ -n "$ACTIVE_DRIVER_PID" ]; then kill "$ACTIVE_DRIVER_PID" 2>/dev/null || true; wait "$ACTIVE_DRIVER_PID" 2>/dev/null || true; fi
-  if [ -n "$ACTIVE_BROKER_PID" ]; then kill "$ACTIVE_BROKER_PID" 2>/dev/null || true; wait "$ACTIVE_BROKER_PID" 2>/dev/null || true; fi
   if [ -n "$ACTIVE_BROKER_STATE" ] && [ -f "$ACTIVE_BROKER_STATE" ] && [ -n "$ACTIVE_BROKER_TOOL" ]; then
     python3 "$ACTIVE_BROKER_TOOL" cleanup "$ACTIVE_BROKER_STATE" >/dev/null 2>&1 || true
   fi
   if [ -n "$ACTIVE_TEMP_HOME" ] && [ -d "$ACTIVE_TEMP_HOME" ]; then
     case "$ACTIVE_TEMP_HOME" in /tmp/speck-piece9-baseline-home.*|/private/tmp/speck-piece9-baseline-home.*) trash "$ACTIVE_TEMP_HOME" >/dev/null 2>&1 || true ;; esac
   fi
-  ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
+  ACTIVE_DRIVER_PID=""; ACTIVE_BROKER_STATE=""; ACTIVE_BROKER_TOOL=""; ACTIVE_TEMP_HOME=""
 }
 trap cleanup_role_home EXIT
 trap 'cleanup_role_home; exit 130' INT TERM
@@ -57,7 +56,7 @@ mkdir -p "$RUNS"
 pass=0; fail=0
 for task in "${TASKS[@]}"; do
   unset GIT_DIR GIT_WORK_TREE SPECK_DEVSUITE_ROLE_DRIVER SPECK_DEVSUITE_BROKER_STATE
-  BROKER_PID=""; BROKER_CONTROL=""
+  BROKER_CONTROL=""
   T="$SUITE/tasks/$task"
   CLONE="$RUNS/$task"
   git clone -q "$REPO" "$CLONE"
@@ -93,6 +92,8 @@ for task in "${TASKS[@]}"; do
       if [ "$UNGOVERNED" = 0 ]; then
         MODE="full"; [ -n "$PROBE" ] && MODE="probe:$PROBE"
         ADMISSION_ROOT="${DEVSUITE_ADMISSION_DIR:-${DEVSUITE_RUNS:-/tmp/claude-501/devsuite-runs}/piece9-admission}"
+        ACTIVE_BROKER_STATE="$BROKER_CONTROL/state.json"
+        ACTIVE_BROKER_TOOL="$T/role-broker.py"
         python3 "$T/role-broker.py" controller "$CLONE" "$BROKER_CONTROL" "$MODE" "$DRIVER" "$MODEL" "$EFFORT" "$ADMISSION_ROOT" "$T/prompt.txt" "$REPO" > "$CLONE/.driver.log" 2> "$CLONE/.driver.stderr.log" & DPID=$!
       else
         case "$DRIVER" in
@@ -123,18 +124,12 @@ for task in "${TASKS[@]}"; do
         if [ "${DRIVER_TOKENS:-0}" -ge "$TOKEN_LIMIT" ]; then
           echo "  [budget] $task reached ${DRIVER_TOKENS} aggregate host-reported tokens (limit: ${TOKEN_LIMIT}) — killed"
           BUDGET_STOP=1; kill "$DPID" 2>/dev/null
-          [ -n "$BROKER_PID" ] && kill "$BROKER_PID" 2>/dev/null
-          sleep 2; kill -9 "$DPID" 2>/dev/null; [ -n "$BROKER_PID" ] && kill -9 "$BROKER_PID" 2>/dev/null
+          sleep 2; kill -9 "$DPID" 2>/dev/null
           break
-        fi
-        if [ "$DRIVER" = "codex" ] && [ -n "$BROKER_PID" ] && ! kill -0 "$BROKER_PID" 2>/dev/null; then
-          echo "  [broker] separated role transport stopped before Product completed — killed"
-          kill "$DPID" 2>/dev/null; break
         fi
       fi
       if [ "$SECONDS_WAITED" -ge "$DEADLINE" ]; then
         echo "  [timeout] $task driver exceeded ${DEADLINE}s — killed" ; kill "$DPID" 2>/dev/null; sleep 2; kill -9 "$DPID" 2>/dev/null
-        [ -n "$BROKER_PID" ] && kill "$BROKER_PID" 2>/dev/null
         break
       fi
     done

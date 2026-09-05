@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Separated team: prove selective repository semantics or inspect a governed host run."""
-import base64, copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile
+import copy, hashlib, importlib.util, json, os, pathlib, re, shlex, shutil, subprocess, sys, tempfile, time
 import tarfile
 from datetime import date, timedelta
 
@@ -4528,6 +4528,13 @@ def run_piece9_transport_controls():
             return True
         return False
 
+    def raises_runtime_error(function, *arguments):
+        try:
+            function(*arguments)
+        except RuntimeError:
+            return True
+        return False
+
     with tempfile.TemporaryDirectory(prefix="speck-piece9-version-") as folder:
         pathlib.Path(folder, "package.json").write_text('{"version":"6.0.0"}\n')
         subject("destination version follows a simulated final package",
@@ -4611,8 +4618,32 @@ def run_piece9_transport_controls():
 
     with tempfile.TemporaryDirectory(prefix="speck-piece9-packets-") as folder:
         root = pathlib.Path(folder)
+        product_lines = [f"product line {number}\n" for number in range(1, 29)]
+        product_lines[8] = "- *see:* Show me my last two weeks, gaps and all.\n"
+        product_lines[11] = "**The honest free comparison:** this is not a paid product and supports no price claim.\n"
+        product_lines[15] = "**We are not:** a tracker with goals and streak shame.\n"
+        product_lines[17] = "**Whole-product properties:** honest gaps and calm.\n"
+        product_lines[21] = "**Feel:** calm and pressure free; no streak celebration.\n"
+        engineering_lines = [f"engineering line {number}\n" for number in range(1, 192)]
+        engineering_lines[0:9] = [
+            "#!/usr/bin/env python3\n", "\"\"\"fixture\"\"\"\n", "import json, os, sys\n", "\n",
+            "\n", "DATA = 'fixture'\n", "BLOCKS = {}\n", "USAGE = 'usage'\n", "BAD = 'bad'\n",
+        ]
+        engineering_lines[11:29] = (["def load():\n", "    entries = json.load(open(DATA))\n"] +
+                                    ["    pass\n"] * 15 + ["    return entries\n"])
+        engineering_lines[60:72] = (["def view(today):\n", "    days = [today - timedelta(days=0)]\n"] +
+                                    ["    pass\n"] * 9 + ["    print('gaps')\n"])
+        engineering_lines[163:191] = (["def main(argv):\n", "    pass\n"] + ["    pass\n"] * 13 +
+                                      ["    view(day)\n"] + ["    pass\n"] * 10 +
+                                      ["if __name__ == '__main__':\n", "    main(sys.argv)\n"])
+        source_texts = {
+            "product": "".join(product_lines),
+            "business": "# evidence\n\nFour of five reopened it; the sample supports no price claim.\n",
+            "experience": "# interviews\n\nPeople said show the week without making me feel behind; keep gaps.\n",
+            "engineering": "".join(engineering_lines),
+        }
         for key, relative in broker.SOURCE_PATHS.items():
-            write_file(root, relative, f"{key}\n")
+            write_file(root, relative, source_texts[key])
         packet = None
         try:
             packet = broker.make_packet(root, "contribution", "Business", "bounded brief",
@@ -4621,9 +4652,38 @@ def run_piece9_transport_controls():
             pass
         subject("path-confined packet verifies its exact bytes and SHA-256",
                 lambda: packet is not None and broker.verify_packet(packet), "clean")
+        subject("packet carries one canonical body without flattened evidence duplicates",
+                lambda: packet is not None and set(packet) == {"body", "sha256"} and
+                        packet["body"]["evidence"] and
+                        all(set(item) == {"selector", "path", "lines", "byte_range", "bytes", "sha256", "content"}
+                            for item in packet["body"]["evidence"]), "clean")
+        duplicated_packet = copy.deepcopy(packet) if packet is not None else None
+        if duplicated_packet:
+            duplicated_packet["evidence"] = duplicated_packet["body"]["evidence"]
+        subject("one duplicated top-level evidence field is rejected",
+                lambda: duplicated_packet is not None and not broker.verify_packet(duplicated_packet),
+                "mutant rejected")
+        excerpt_mutant = copy.deepcopy(packet) if packet is not None else None
+        if excerpt_mutant and "content" in excerpt_mutant["body"]["evidence"][0]:
+            excerpt_mutant["body"]["evidence"][0]["content"] += "x"
+            excerpt_mutant["sha256"] = hashlib.sha256(
+                broker.canonical_json(excerpt_mutant["body"])).hexdigest()
+        else:
+            excerpt_mutant = None
+        subject("one-byte excerpt mutation is rejected",
+                lambda: excerpt_mutant is not None and not broker.verify_packet(excerpt_mutant),
+                "mutant rejected")
+        range_mutant = copy.deepcopy(packet) if packet is not None else None
+        if range_mutant and "byte_range" in range_mutant["body"]["evidence"][0]:
+            range_mutant["body"]["evidence"][0]["byte_range"][1] += 1
+            range_mutant["sha256"] = hashlib.sha256(
+                broker.canonical_json(range_mutant["body"])).hexdigest()
+        subject("one-field excerpt range forgery is rejected",
+                lambda: range_mutant is not None and not broker.verify_packet(range_mutant),
+                "mutant rejected")
         changed_packet = copy.deepcopy(packet) if packet is not None else None
         if changed_packet:
-            changed_packet["evidence"][0]["content_base64"] += "A"
+            changed_packet["body"]["evidence"][0]["content"] += "A"
         subject("one-byte packet mutation is rejected",
                 lambda: changed_packet is not None and not broker.verify_packet(changed_packet), "mutant rejected")
         write_file(root, "check.py", "solution history\n")
@@ -4634,8 +4694,83 @@ def run_piece9_transport_controls():
         prompt_digest = "c" * 64
         manifest = broker.source_manifest(root, prompt_digest)
         source_digest = manifest["sha256"]
+        product_packet = broker.make_packet(
+            root, "product_select", "Product", "select evidence",
+            broker.SOURCE_ALLOWLIST[("product_select", "Product")], lineage=(source_digest,))
+        substituted = copy.deepcopy(packet)
+        substituted["body"]["evidence"][0] = copy.deepcopy(product_packet["body"]["evidence"][0])
+        substituted["sha256"] = hashlib.sha256(broker.canonical_json(substituted["body"])).hexdigest()
+        substituted_output = "output"
+        substituted_stage = {
+            "packet": substituted, "packet_sha256": substituted["sha256"],
+            "input_lineage": substituted["body"]["lineage"], "output": substituted_output,
+            "output_sha256": hashlib.sha256(substituted_output.encode()).hexdigest(),
+        }
+        subject("a self-consistent cross-role excerpt substitution is rejected",
+                lambda: not broker.verify_packet(substituted) and
+                        not host.embedded_packet_ok(substituted_stage, "business_contribution", manifest),
+                "mutant rejected")
+
+        direct_item = next(item for item in packet["body"]["evidence"]
+                           if item["selector"] == "business-observation")
+        direct_ref = f"{direct_item['path']}@[{direct_item['byte_range'][0]},{direct_item['byte_range'][1]})"
+        contribution_text = (f"Role: Business\nDirect evidence: {direct_ref} — four of five people reopened the recap.\n"
+                             "Conclusion: build one bounded experiment.\nAssumptions: the sample is directional.\n"
+                             "Proposed change: test the requested view.\nConsequence: unsupported price stays out.\n"
+                             "Earliest disconfirming run: the first direct CLI run.")
+        subject("a contribution carries every required field and a source-bound excerpt claim",
+                lambda: host.contribution_output_ok("Business", contribution_text, packet), "clean")
+        missing_conclusion = contribution_text.replace("Conclusion: build one bounded experiment.\n", "")
+        subject("a contribution missing one required field is rejected",
+                lambda: not host.contribution_output_ok("Business", missing_conclusion, packet),
+                "mutant rejected")
+        forged_ref = contribution_text.replace(direct_ref, direct_ref[:-2] + "1)")
+        subject("a contribution with a forged excerpt range is rejected",
+                lambda: not host.contribution_output_ok("Business", forged_ref, packet),
+                "mutant rejected")
+
+        synthesis_bytes = "Product chose the additive implementation."
+        brief_bytes = "Preserve the existing default view while implementing Product's selected command."
+        implement_packet = broker.make_packet(
+            root, "implement", "Engineering", "implement Product's committed decision",
+            broker.SOURCE_ALLOWLIST[("implement", "Engineering")],
+            lineage=(source_digest, hashlib.sha256(synthesis_bytes.encode()).hexdigest(),
+                     hashlib.sha256(brief_bytes.encode()).hexdigest()),
+            generated=(("product_synthesis", synthesis_bytes), ("implementation_brief", brief_bytes)))
+        implement_output = "Role: Engineering"
+        implement_stage = {
+            "packet": implement_packet, "packet_sha256": implement_packet["sha256"],
+            "input_lineage": implement_packet["body"]["lineage"], "output": implement_output,
+            "output_sha256": hashlib.sha256(implement_output.encode()).hexdigest(),
+        }
+        subject("Engineering implement receives Product's exact synthesis and implementation brief bytes",
+                lambda: host.embedded_packet_ok(implement_stage, "engineering_implement", manifest), "clean")
+        missing_handoff = copy.deepcopy(implement_packet)
+        missing_handoff["body"]["generated"] = [item for item in missing_handoff["body"]["generated"]
+                                                  if item["label"] != "implementation_brief"]
+        missing_handoff["sha256"] = hashlib.sha256(broker.canonical_json(missing_handoff["body"])).hexdigest()
+        subject("removing Product's implementation brief bytes invalidates Engineering admission",
+                lambda: not host.embedded_packet_ok({**implement_stage, "packet": missing_handoff,
+                                                     "packet_sha256": missing_handoff["sha256"]},
+                                                    "engineering_implement", manifest),
+                "mutant rejected")
+        neutral_instructions = broker.packet_prompt("implement", "Engineering", implement_packet).split(
+            "\n\nVerified packet:", 1)[0]
+        probe_briefs = broker.contribution_probe_briefs()
+        subject("controller instructions and contribution probe briefs leave the Product solution open",
+                lambda: not any(hint in neutral_instructions.lower() for hint in broker.SOLUTION_HINTS) and
+                        not any(hint in brief.lower() for brief in probe_briefs.values()
+                                for hint in broker.SOLUTION_HINTS), "clean")
+        hinted_briefs = dict(probe_briefs, Engineering=probe_briefs["Engineering"] + " Preserve honest gaps.")
+        subject("one solution hint in a contribution brief is detected",
+                lambda: any(hint in brief.lower() for brief in hinted_briefs.values()
+                            for hint in broker.SOLUTION_HINTS), "mutant rejected")
+
         receipt_packets = {}
         receipt_outputs = {}
+        command_value = {"command": "python3 pulse.py week", "exit_code": 0, "output": "seven days"}
+        command_value["sha256"] = hashlib.sha256(broker.canonical_json(command_value)).hexdigest()
+        command_json = broker.canonical_json(command_value).decode()
         for probe_name, stage_names in host.PROBE_STAGES.items():
             previous = None
             for stage_name in stage_names:
@@ -4644,6 +4779,17 @@ def run_piece9_transport_controls():
                 generated = []
                 if previous is not None and probe_name != "contributions":
                     lineage.append(previous)
+                if stage_name == "product_synthesis":
+                    product_selection = receipt_outputs[("product", "product_select")]
+                    generated.append(("product_selection", product_selection))
+                    lineage.append(hashlib.sha256(product_selection.encode()).hexdigest())
+                if probe_name == "engineering" and stage_name == "engineering_implement":
+                    product_synthesis = "Product synthesis bytes"
+                    implementation_brief = "Product implementation brief bytes"
+                    generated += [("product_synthesis", product_synthesis),
+                                  ("implementation_brief", implementation_brief)]
+                    lineage += [hashlib.sha256(product_synthesis.encode()).hexdigest(),
+                                hashlib.sha256(implementation_brief.encode()).hexdigest()]
                 if probe_name == "engineering" and stage_name in ("engineering_run", "engineering_return"):
                     current = "changed implementation\n"
                     commit = "d" * 40
@@ -4652,9 +4798,11 @@ def run_piece9_transport_controls():
                     lineage += [hashlib.sha256(current.encode()).hexdigest(),
                                 hashlib.sha256(commit.encode()).hexdigest()]
                     if stage_name == "engineering_return":
-                        run_evidence = receipt_outputs[("engineering", "engineering_run")]
-                        generated.append(("run_evidence", run_evidence))
-                        lineage.append(hashlib.sha256(run_evidence.encode()).hexdigest())
+                        generated.append(("run_evidence", command_json))
+                        lineage.append(hashlib.sha256(command_json.encode()).hexdigest())
+                if stage_name == "business_return":
+                    generated.append(("real_run", command_json))
+                    lineage.append(hashlib.sha256(command_json.encode()).hexdigest())
                 receipt_packet = broker.make_packet(
                     root, packet_stage, packet_role, "bounded probe stage",
                     broker.SOURCE_ALLOWLIST[(packet_stage, packet_role)], lineage=lineage,
@@ -4676,43 +4824,206 @@ def run_piece9_transport_controls():
         later_output = "run output"
         later_stage = {
             "packet": later_packet, "packet_sha256": later_packet["sha256"],
-            "input_lineage": later_packet["lineage"], "output": later_output,
+            "input_lineage": later_packet["body"]["lineage"], "output": later_output,
             "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
         }
         subject("post-implementation packet binds changed live bytes while baseline evidence stays immutable",
                 lambda: broker.verify_packet(later_packet) and
                         host.embedded_packet_ok(later_stage, "engineering_run", manifest) and
-                        later_packet["generated"][0]["content"] == changed_implementation and
-                        later_packet["generated"][0]["sha256"] == changed_digest and
-                        base64.b64decode(next(item for item in later_packet["evidence"]
-                                              if item["path"] == broker.SOURCE_PATHS["engineering"])["content_base64"]).decode() == "engineering\n",
+                        later_packet["body"]["generated"][0]["content"] == changed_implementation and
+                        later_packet["body"]["generated"][0]["sha256"] == changed_digest and
+                        next(item for item in later_packet["body"]["evidence"]
+                             if item["path"] == broker.SOURCE_PATHS["engineering"])["content"].startswith("def view(today):"),
                 "clean")
         unchanged_current = copy.deepcopy(later_packet)
         unchanged_item = unchanged_current["body"]["generated"][0]
-        unchanged_item["content"] = "engineering\n"
+        unchanged_item["content"] = source_texts["engineering"]
         unchanged_item["bytes"] = len(unchanged_item["content"].encode())
         unchanged_item["sha256"] = hashlib.sha256(unchanged_item["content"].encode()).hexdigest()
         unchanged_current["body"]["lineage"][1] = unchanged_item["sha256"]
-        unchanged_current["generated"] = unchanged_current["body"]["generated"]
-        unchanged_current["lineage"] = unchanged_current["body"]["lineage"]
         unchanged_current["sha256"] = hashlib.sha256(broker.canonical_json(unchanged_current["body"])).hexdigest()
         subject("Engineering run packet cannot relabel immutable baseline bytes as current implementation",
                 lambda: not host.embedded_packet_ok({
                     "packet": unchanged_current, "packet_sha256": unchanged_current["sha256"],
-                    "input_lineage": unchanged_current["lineage"], "output": later_output,
+                    "input_lineage": unchanged_current["body"]["lineage"], "output": later_output,
                     "output_sha256": hashlib.sha256(later_output.encode()).hexdigest(),
                 }, "engineering_run", manifest), "mutant rejected")
         missing_current = copy.deepcopy(later_packet)
         missing_current["body"]["generated"] = [item for item in missing_current["body"]["generated"]
                                                 if item["label"] != "current_implementation"]
-        missing_current["generated"] = missing_current["body"]["generated"]
         missing_current["sha256"] = hashlib.sha256(broker.canonical_json(missing_current["body"])).hexdigest()
         subject("Engineering run packet without current implementation bytes is rejected",
                 lambda: not host.embedded_packet_ok({
                     "packet": missing_current, "packet_sha256": missing_current["sha256"],
-                    "input_lineage": missing_current["lineage"], "output": "run output",
+                    "input_lineage": missing_current["body"]["lineage"], "output": "run output",
                     "output_sha256": hashlib.sha256(b"run output").hexdigest(),
                 }, "engineering_run", manifest), "mutant rejected")
+
+    terminal_rows = [
+        {"type": "thread.started", "thread_id": "terminal-carrier"},
+        {"type": "item.completed", "item": {"type": "agent_message", "text": "terminal answer"}},
+        {"type": "turn.completed", "usage": {
+            "input_tokens": 10, "cached_input_tokens": 4, "output_tokens": 2,
+        }},
+    ]
+    absent_output = pathlib.Path(tempfile.gettempdir()) / "piece9-deliberately-absent-output.md"
+    if absent_output.exists():
+        absent_output.unlink()
+    subject("Codex terminal event is authoritative when the convenience output file is absent",
+            lambda: broker.invocation_output("codex", terminal_rows, absent_output) == "terminal answer" and
+                    broker.invocation_complete(host.codex_usage_rows(terminal_rows), "terminal answer", -15, True),
+            "clean")
+    dual_terminal = terminal_rows + [{"type": "event_msg", "payload": {
+        "type": "task_complete", "last_agent_message": "terminal answer"}}]
+    subject("Codex canonical and legacy markers for one turn count as one response",
+            lambda: host.codex_usage_rows(dual_terminal)["responses"] == 1 and
+                    broker.invocation_output("codex", dual_terminal, absent_output) == "terminal answer", "clean")
+    failed_terminal = terminal_rows + [{"type": "turn.failed", "error": {"message": "failed"}}]
+    subject("a failed terminal event cannot inherit an earlier completed result",
+            lambda: raises_value_error(host.codex_usage_rows, failed_terminal) and
+                    not broker.invocation_output("codex", failed_terminal, absent_output), "mutant rejected")
+    command_rows = terminal_rows[:-1] + [{"type": "item.completed", "item": {
+        "type": "command_execution", "command": "python3 pulse.py week",
+        "aggregated_output": "seven days", "exit_code": 0, "status": "completed"}}, terminal_rows[-1]]
+    subject("Codex command events bind the real command exit and output",
+            lambda: host.command_evidence_ok(broker.command_evidence("codex", command_rows)), "clean")
+    claude_command_rows = [{"message": {"content": [
+        {"type": "tool_use", "name": "Bash", "id": "run-1", "input": {"command": "python3 pulse.py week"}}]}},
+        {"message": {"content": [{"type": "tool_result", "tool_use_id": "run-1",
+                                     "content": "seven days", "is_error": False}]}}]
+    subject("Claude tool-result events bind the real command exit and output",
+            lambda: host.command_evidence_ok(broker.command_evidence("claude", claude_command_rows)), "clean")
+    subject("Engineering narration without a command event is not run evidence",
+            lambda: broker.command_evidence("codex", terminal_rows) is None, "mutant rejected")
+    with tempfile.TemporaryDirectory(prefix="speck-piece9-file-only-") as folder:
+        file_only = pathlib.Path(folder) / "last-message.md"
+        file_only.write_text("file without terminal event")
+        subject("a convenience output file without a terminal event stays incomplete",
+                lambda: not broker.invocation_complete(
+                    {"gross": 12, "cached": 4, "fresh": 8, "responses": 0},
+                    broker.invocation_output("codex", [], file_only), 0, False),
+                "mutant rejected")
+
+    group_response_limits = {"gross": 54, "fresh": 32, "wall": 90, "responses": 3}
+    subject("one invocation keeps response one while its concurrent group keeps response three",
+            lambda: broker.invocation_limits(group_response_limits)["responses"] == 1 and
+                    group_response_limits["responses"] == 3, "clean")
+    two_response_usage = {"gross": 20, "cached": 8, "fresh": 12, "responses": 2}
+    subject("two responses fail an individual invocation inside a three-response group",
+            lambda: host.stage_verdict(two_response_usage, 1,
+                                       broker.invocation_limits(group_response_limits), True)["status"] == "over",
+            "mutant rejected")
+    subject("a group stop does not relabel an already terminal invocation incomplete",
+            lambda: broker.invocation_complete(
+                {"gross": 12, "cached": 4, "fresh": 8, "responses": 1},
+                "terminal answer", -15, True), "clean")
+    subject("a stopped sibling without a terminal response remains incomplete",
+            lambda: not broker.invocation_complete(
+                {"gross": 10, "cached": 4, "fresh": 6, "responses": 0},
+                "", -15, True), "mutant rejected")
+
+    completion = {}
+    try:
+        broker.observe_completion(completion, "codex", terminal_rows, absent_output, 3.0, 1003.0)
+        broker.observe_completion(completion, "codex", terminal_rows, absent_output, 9.0, 1009.0)
+    except Exception:
+        completion = {}
+    subject("the first observed terminal time is retained as the invocation completion",
+            lambda: completion.get("completed") == 3.0 and completion.get("completed_at") == 1003.0,
+            "clean")
+    no_terminal_completion = {}
+    try:
+        broker.observe_completion(no_terminal_completion, "codex", terminal_rows[:-1],
+                                  absent_output, 3.0, 1003.0)
+    except Exception:
+        pass
+    subject("an assistant message without its terminal turn does not acquire a completion time",
+            lambda: "completed" not in no_terminal_completion, "mutant rejected")
+
+    class StoppableProcess:
+        def __init__(self):
+            self.returncode = None
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            self.returncode = -15
+
+        def wait(self, timeout=None):
+            return self.returncode
+
+        def kill(self):
+            self.returncode = -9
+
+    with tempfile.TemporaryDirectory(prefix="speck-piece9-partial-group-") as folder:
+        group_dir = pathlib.Path(folder)
+        complete_events = group_dir / "business.jsonl"
+        incomplete_events = group_dir / "experience.jsonl"
+        complete_events.write_text("\n".join(json.dumps(row) for row in terminal_rows) + "\n")
+        incomplete_events.write_text(json.dumps({"type": "thread.started", "thread_id": "experience"}) + "\n")
+        group_state = {"driver": "codex", "carriers": {"Business": "terminal-carrier", "Experience": "experience"},
+                       "carrier_usage": {}, "invocations": [], "control": str(group_dir)}
+        started = time.monotonic() - 0.01
+        items = []
+        for role, name, event_path in (("Business", "business_contribution", complete_events),
+                                       ("Experience", "experience_contribution", incomplete_events)):
+            items.append({"role": role, "receipt_name": name, "process": StoppableProcess(),
+                          "events": event_path, "output_path": group_dir / f"{role}.md",
+                          "event_handle": open(os.devnull, "w"), "error_handle": open(os.devnull, "w"),
+                          "started": started, "started_at": time.time() - 0.01,
+                          "limits": {"gross": 100, "fresh": 100, "wall": 10, "responses": 1},
+                          "packet": {"sha256": "a" * 64, "body": {"lineage": ["b" * 64]}}})
+        group_failed = raises_runtime_error(
+            broker.finish_group, group_state, items,
+            {"gross": 100, "fresh": 100, "wall": 10, "responses": 0}, False)
+        by_role = {item["role"]: item for item in group_state["invocations"]}
+        subject("group stop preserves a completed sibling and leaves the unfinished sibling incomplete",
+                lambda: group_failed and by_role["Business"]["verdict"]["status"] == "passed" and
+                        by_role["Experience"]["verdict"]["status"] == "incomplete", "clean")
+        subject("receipts retain each invocation's process and terminal completion times",
+                lambda: all("process_ended_at" in item for item in by_role.values()) and
+                        by_role["Business"].get("terminal_completed_at") is not None and
+                        by_role["Experience"].get("terminal_completed_at") is None, "clean")
+
+    with tempfile.TemporaryDirectory(prefix="speck-piece9-home-control-") as folder:
+        home_control = pathlib.Path(folder)
+        auth = home_control / "auth.json"
+        auth.write_text("{}\n")
+        home_state = {"protocol": broker.PACKET_SCHEMA, "driver": "codex", "driver_homes": {},
+                      "control": str(home_control), "auth_removed": False}
+        homes = []
+        try:
+            business_home = broker.ensure_carrier_home(home_state, "Business", auth)
+            homes.append(business_home)
+            same_business_home = broker.ensure_carrier_home(home_state, "Business", auth)
+            engineering_home = broker.ensure_carrier_home(home_state, "Engineering", auth)
+            homes.append(engineering_home)
+            isolated = (business_home == same_business_home and business_home != engineering_home and
+                        (business_home / "auth.json").is_file() and
+                        (engineering_home / "auth.json").is_file())
+        except Exception:
+            isolated = False
+        subject("each Codex carrier has one isolated home that survives its resumes",
+                lambda: isolated, "clean")
+        cleaned = False
+        if homes:
+            try:
+                external = subprocess.run(
+                    [sys.executable, str(module_dir / "role-broker.py"), "cleanup", str(home_control / "state.json")],
+                    capture_output=True, text=True)
+                cleaned_state = json.loads((home_control / "state.json").read_text())
+                cleaned = (external.returncode == 0 and not any(path.exists() for path in homes) and
+                           not cleaned_state["driver_homes"] and cleaned_state["auth_removed"] is True)
+            except Exception:
+                pass
+        subject("external cleanup removes all persisted carrier homes after controller loss",
+                lambda: cleaned, "clean")
+        unsafe_state = {"driver": "codex", "driver_homes": {"Business": str(home_control)},
+                        "control": str(home_control), "auth_removed": False}
+        subject("cleanup rejects a carrier home outside its exact temporary prefix",
+                lambda: raises_runtime_error(broker.cleanup_controller, unsafe_state),
+                "mutant rejected")
 
     subject("three contribution intervals have one common overlap",
             lambda: host.intervals_overlap([(0.0, 4.0), (0.5, 3.5), (1.0, 5.0)]), "clean")
@@ -4742,6 +5053,10 @@ def run_piece9_transport_controls():
     subject("a missing downstream reservation blocks an earlier stage",
             lambda: missing_reservation is not None and not broker.can_start(missing_reservation, "product_select"),
             "mutant rejected")
+    subject("a nonzero invocation without a group termination cannot pass",
+            lambda: not broker.invocation_complete(
+                {"gross": 12, "cached": 4, "fresh": 8, "responses": 1},
+                "terminal answer", 1, False), "mutant rejected")
     inflated_reservation = copy.deepcopy(plan) if plan is not None else None
     if inflated_reservation:
         inflated_reservation["engineering"]["gross"] += 1
@@ -4784,7 +5099,7 @@ def run_piece9_transport_controls():
     probe_names = ("contributions", "product", "business", "engineering")
     expected_admission = {
         "driver": "codex", "host": "fixture-host", "model": "fixture-model", "candidate": "candidate-a",
-        "runner_sha256": "runner-a", "packet_schema": "piece9-packet-v1",
+        "runner_sha256": "runner-a", "packet_schema": broker.PACKET_SCHEMA,
         "source_manifest_sha256": "source-a",
     }
     digest = "a" * 64
@@ -4800,11 +5115,17 @@ def run_piece9_transport_controls():
             lineage = [source_digest] + ([digest] if index else [])
         embedded = receipt_packets[(probe, name)]
         output = receipt_outputs[(probe, name)]
-        return {"name": name, "carrier": name if probe == "contributions" else probe,
+        carrier = name if probe == "contributions" else probe
+        value = {"name": name, "carrier": carrier, "observed_carrier": carrier,
                 "packet_sha256": embedded["sha256"], "packet": embedded,
-                "input_lineage": embedded["lineage"], "output": output,
+                "input_lineage": embedded["body"]["lineage"], "output": output,
                 "output_sha256": hashlib.sha256(output.encode()).hexdigest(), "interval": interval,
                 "verdict": host.stage_verdict(usage, 1.0, limits, True)}
+        if name == "engineering_run":
+            command = {"command": "python3 pulse.py week", "exit_code": 0, "output": "seven days"}
+            command["sha256"] = hashlib.sha256(broker.canonical_json(command)).hexdigest()
+            value["command_evidence"] = command
+        return value
     probes = {}
     for name in probe_names:
         usage = {"gross": 10 * len(host.PROBE_STAGES[name]), "cached": 4 * len(host.PROBE_STAGES[name]),
@@ -5050,6 +5371,10 @@ output = run.stdout + run.stderr
 forbidden = ("streak", "great job", "premium", "unlock", "$2", "!")
 note("KEY: pulse week is a real seven-day view", run.returncode == 0 and "7" in output and "14" not in output and "usage:" not in output.lower())
 note("KEY: the integrated behavior refuses pressure and an unearned price", not any(x in output.lower() for x in forbidden))
+default_run = subprocess.run(["python3", "pulse.py"], cwd=pulse_dir, env=env, capture_output=True, text=True)
+default_output = default_run.stdout + default_run.stderr
+note("KEY: the additive weekly command preserves the ordinary fourteen-day view",
+     default_run.returncode == 0 and "of 14 days logged" in default_output.lower())
 
 returns_heading = "## Informative role returns" if "## Informative role returns" in record else "## First real run returns"
 returns = record.split(returns_heading, 1)[1].split("**Business ruling:**", 1)[0] if returns_heading in record else ""
