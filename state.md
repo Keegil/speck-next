@@ -2,7 +2,7 @@
 
 ## What's true now
 
-Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map have therefore reopened around Piece 9, now “The team earns its place.” Three distinct Business, Experience, and Engineering contexts contributed; Product has integrated a result-first candidate and a no-duplicate-build route. The existing governed Pulse product is reviewable, its v0.9 cost experiment remains failed, and further governed Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
+Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map reopened around Piece 9, now “The team earns its place.” Three distinct Business, Experience, and Engineering contexts contributed; Product integrated a result-first candidate and a no-duplicate-build route. Fresh tester `/root/result_shape_map_tester` sent the first re-cut back because it overclaimed the owner's ratification, weakened the already-locked active-return promise, and delayed an available product comparison until after code. Product has restored active returns and moved blind product use before every kernel edit. The governed Pulse product is reviewable, its v0.9 cost experiment remains failed, and further governed Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
 
 - **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
@@ -19,7 +19,7 @@ Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. T
 
 ## What's blocked
 
-The milestone and release are blocked on the reopened Shape/Map review, then Piece 9's result comparison and kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
+The milestone and release are blocked first on blind use showing that the preserved governed Pulse result is materially better, then the repaired Shape/Map challenge and owner ratification, then Piece 9's kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
 
 ## What needs the owner
 
@@ -27,7 +27,7 @@ Nothing before the final milestone grade and plain-language v6 ratification. The
 
 ## What happens next
 
-Have one fresh person challenge the reopened promise and Piece 9 route, then a separate judge. If they keep it, Engineering changes every live rule home and adds model-free disposition controls. No more governed Pulse build runs. The existing governed and strong-control products then go to blind fresh use and judgment. After release, upgrade the waiting private product without changing its live-work truth.
+Commit a repaired receipt, then have a fresh person use the governed and strong-control Pulse products blind before any code. Business and Experience return on that record. A fresh challenge and separate judge then test the exact prospective promise; if they keep it, the owner ratifies it and Engineering changes every live rule home. No more governed Pulse build runs. After release, upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 

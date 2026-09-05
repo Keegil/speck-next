@@ -456,3 +456,13 @@ The owner's result-first words ratify this re-cut without changing the already-s
 - Judge: a separate new carrier after a sufficient test.
 - Dispatch: only after this receipt is committed.
 - Verdict and judgment: pending.
+
+### Result-first Map test round 1 — sent back
+
+At `ae8eeb6`, fresh tester `/root/result_shape_map_tester` found that the re-cut placed Engineering's kernel implementation and Built state before the exact blind Pulse comparison that Business and Experience had named as their earliest informative run. Because both products already exist, this spent code before the evidence that could make the code unnecessary. The tester's 29-condition conservation search found no other dropped v6 obligation.
+
+### Product repair — run the product question first
+
+Piece 9 stays one piece and retains the owner's two-piece order, but its internal order changes. A committed receipt now sends the preserved products to blind, contributor-excluded use first. If the governed result is not materially better, Piece 9 stops before kernel code. If it is, the same Business and Experience carriers return on that evidence; then a new fresh tester and separate judge challenge the repaired Shape/Map, and the owner sees the exact result-first promise for ratification. Engineering begins only after those gates.
+
+The active-return promise remains exactly as ratified. Later post-Built testers remain separate and exercise the installed method itself; the pre-code comparison cannot count twice.

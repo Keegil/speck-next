@@ -377,3 +377,22 @@ Product searched case-insensitively from broad cost language to the exact return
 ### Result-first Engineering handoff
 
 Engineering owns the installed method and executable checks. It may not change either Pulse implementation or run another governed Pulse model turn. Its build must implement the prospective rule in every current home, remove the one-off v0.9 paragraph from the live contract while preserving this history, add the clean-and-mutant disposition population in the existing checker, and rerun the complete Piece 8 population plus all existing development-suite tasks. Product will read that evidence and decide whether any role observation fired before Built.
+
+### First result-first review — sent back before code
+
+Fresh Shape/Map tester `/root/result_shape_map_tester` challenged `ae8eeb6` and sent it back. Its 29-condition conservation search found the historical failures, cost visibility, closed spend, no-duplicate-build rule, Business block, material-improvement gate, release roster, and Codex/Claude promises intact. It found two defects: the owner had not ratified the later-derived callback change after seeing it, and the route delayed the already-available blind comparison until after Engineering code. Its additional attack showed that Engineering's handoff cannot replace Experience's own direct evidence at the cheap correction point.
+
+Product accepts both findings. The owner-approved active-return rule stays unchanged in v6. The only prospective contract change is the result-first distinction among product evidence, cost-experiment status, and further-spend authorization. The blind product comparison moves before code; a non-material result stops the change. The result-first Engineering handoff above is suspended until the comparison, the required Business and Experience returns, repaired Shape/Map review, and owner ratification all pass.
+
+### Pre-code blind product receipt — opened before dispatch
+
+- Review class: shaping and mapping evidence; there is no new Built line because no kernel product code may change before this run.
+- Persona: a first-time Pulse user checking a mixed week to understand what happened without being pressured by missing days.
+- Tool and model: Codex collaboration context, inherited current model, session `/root/result_blind_tester`.
+- Subjects: two neutral, history-free copies of the preserved `014deef` and `f439c81` `pulse.py` files, assigned A/B only after this receipt is committed. The tester receives neither provenance nor role conclusions.
+- Excluded contributors: Product `/root`; Business `/root/v1_business`; Experience `/root/v1_experience`; Engineering `/root/v1_engineering`; original governed Product `01a0727c-5ad1-7192-8743-2896be95b27a`; Business `01a0727d-9958-74d3-a782-f9d0a8b18bdb`; Experience `01a0727d-9877-7081-a011-42455d352d57`; Engineering `01a0727d-9857-7eb0-a68b-b600a3ee1d62`; ungoverned builder `01a07274-0397-75a0-8d4c-962aa83c745a`; Shape/Map tester `/root/result_shape_map_tester`; and every earlier v6 role contributor, builder, tester, and judge recorded in this file. None may run or judge this comparison.
+- Dispatch: after the commit containing this receipt, against exact history-free bytes from the two preserved product commits.
+- Planned walks: run A and B against identical mixed-gap, fully logged, and empty journals at the same fixed date; run their existing fourteen-day default and help; observe comprehension, scan speed, missing-day meaning, pressure, and command integrity; choose a preferred result before provenance is revealed; state whether the difference is material enough to justify the separated team's measured cost.
+- Run owner: `/root` prepares the neutral subjects, then keeps its hands off while the tester runs.
+- Empty record: a later session must re-dispatch under its own named line rather than infer a result.
+- Record and verdict: pending.

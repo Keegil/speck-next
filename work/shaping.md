@@ -125,6 +125,20 @@ This replaces the universal “all four at every piece and all active roles at t
 - Dispatch: only after this receipt is committed.
 - Verdict and judgment: pending.
 
+### Result-first Shape test round 1 — sent back
+
+At `ae8eeb6`, fresh tester `/root/result_shape_map_tester` challenged all nine required failure paths and ran a 29-condition conservation search. Cost stayed visible, closed spend stayed closed, every historical failure remained failed, another Pulse build was forbidden, Business stayed binding, material improvement remained required, and the release roster plus Codex-first/Claude-supported proof remained present.
+
+The tester nevertheless sent Shape back for two exact defects. The owner's result-first sentence preceded the new role contributions and could not ratify a later-derived callback design. More importantly, letting Product skip an active Experience return based on Engineering's handoff could lose direct experience evidence at the cheap correction point; in the preserved Pulse run Experience, not Engineering, established that explicit gaps were easier and less emotionally costly.
+
+### Product repair — preserve the locked team
+
+Product narrows the change to what the owner actually directed. v6 keeps the selective-separation promise already ratified in Round 4, including every active role's required return at its named earliest informative run. Engineering carries its own run evidence but cannot close another role's conclusion. Evidence-triggered callbacks remain a future hypothesis to test in real product use, not a v6 rule.
+
+The prospective change now concerns only cost and acceptance: fresh use and independent judgment establish whether a running result is great; token estimates remain visible Business evidence but cannot erase valid product evidence; prospectively knowable execution authorization stops further model work. The old experiments remain failed. This exact promise remains unratified until the owner sees it after the repaired test and judgment.
+
+The tester's second defect changes the evidence order. Both Pulse products already run, and Business and Experience named their blind comparison as the earliest informative evidence. That comparison now happens before any installed-method code. If it does not find a material improvement, Product stops the kernel change. The committed receipt lives in the Piece 9 work record below; Business and Experience return on that direct record before a repaired Shape/Map challenge.
+
 ### Redesigned Shape tester round 1 — sent back
 
 Fresh tester `/root/redesign_shape_tester` read candidate `4422d6c` and executed every named counterexample. The selective activation held for business-changing work, user-facing work, a genuinely internal piece, changed or ambiguous scope, false smoke-run evidence, Product implementation, invented inactive-role prose, milestones, and pre-v6 adoption. Two attacks broke it:
