@@ -324,3 +324,33 @@ This is a proof-accounting change, not a new piece or product promise. It compen
 ### Frozen preflight while the owner choice is open
 
 An immutable detached clone pinned to `87c246680fe5971db658b1c2f7b34457179a68fb` reran the complete Piece 8 checker against itself. It returned `PASS`: 26 routing subjects (13 clean / 13 mutants), eight assessment subjects (three clean / five mutants), 95 path-transaction subjects, and 230 migration/refusal subjects. The clone began and ended clean, created no cache path, and was moved to Trash. The exact always-read sum was 43,687 bytes: `AGENTS.md` 25,048 + `product.md` 3,457 + `map.md` 10,557 + `state.md` 4,625. This is deterministic preflight evidence only; it does not satisfy Piece 9's governed product run, review, milestone, or final-version checks.
+
+### Native event 3 — v0.9 finished the product and failed the cost proof
+
+The owner-approved continuation used the same four preserved session identities and no child context. Product synthesized their already-recorded evidence and committed the exact handoff before code at disposable product commit `6a1d4ae431336865ad26bc8390b827283800a1b8`. It resolved the one user-facing disagreement toward explicit dated gaps with neutral language and rejected Engineering's compact completion summary. Engineering alone changed the implementation, in one file at `f439c819bec7d9ffd7273f443c30b7df4a504da3`, then ran mixed-gap, fully logged, empty, historical year-boundary, no-mutation, help, invalid-input, and existing-command checks. Root independently repeated the user-visible runs and diff checks.
+
+Engineering returned through its original carrier and changed its presentation conclusion while preserving its additive, read-only seam. Business returned through its original carrier, found the implemented product change materially more useful than the strong ungoverned comparison without adding a service or owner-attention burden, and ruled the product change `kept`; it left durable return behavior and willingness to pay unclaimed. Experience ran both products through its original carrier and found the explicit result materially easier to understand and modestly less emotionally costly; it made no further change and did not pose as a fresh user. Product closed through its original carrier, preserved Engineering's compact-display benefit as dissent, and integrated the actual product difference rather than four reports. Those results prove distinct action and product value, but not Piece 9's cost promise.
+
+The continuation used exactly its five planned terminal model turns. The first timing wrapper before Product synthesis used zsh's reserved `time` form incorrectly and exited 127 before `codex` started, producing no thread event, token use, or product change; the corrected invocation then ran. This was not a model turn, but it was an orchestration retry, so the no-retry tightening is not claimed as held.
+
+The nine `turn.completed` events—the four original contributions and five continuation turns—returned:
+
+| Stage | Gross | Cached | Fresh | Active seconds |
+|---|---:|---:|---:|---:|
+| Original four contributions | 200,484 | 144,256 | 56,228 | 112.284 |
+| Product synthesis | 98,662 | 76,672 | 21,990 | 35.45 |
+| Engineering implementation, run, return | 187,816 | 134,656 | 53,160 | 136.80 |
+| Business return | 129,700 | 96,384 | 33,316 | 53.90 |
+| Experience return | 102,845 | 77,696 | 25,149 | 50.83 |
+| Product close | 130,528 | 87,936 | 42,592 | 13.39 |
+| **Total** | **850,035** | **617,600** | **232,435** | **402.654** |
+
+The usage command, run from `/tmp/speck-v6-native.PYVE5a`, was:
+
+```sh
+jq -s 'map(select(.type=="turn.completed") | .usage) as $u | {turns: ($u|length), input: ($u|map(.input_tokens)|add), cached: ($u|map(.cached_input_tokens)|add), output: ($u|map(.output_tokens)|add), gross: (($u|map(.input_tokens)|add)+($u|map(.output_tokens)|add)), fresh: (($u|map(.input_tokens)|add)-($u|map(.cached_input_tokens)|add)+($u|map(.output_tokens)|add))}' product-select.events.jsonl business-contribution.events.jsonl experience-contribution.events.jsonl engineering-contribution.events.jsonl product-synthesis.events.jsonl engineering-implementation.events.jsonl business-return.events.jsonl experience-return.events.jsonl product-close.events.jsonl
+```
+
+It returned `turns=9 input=823741 cached=617600 output=26294 gross=850035 fresh=232435`. The active-time command was `python3 -c 'base=112.284; continuation=[35.45,136.80,53.90,50.83,13.39]; print(f"{base+sum(continuation):.3f}")'`; it returned `402.654`. The owner-wait interval is excluded; nothing else is.
+
+The active-time and exact-model-turn ceilings passed. The fresh-token ceiling failed by **32,435**, and the shell retry means the compensating no-retry condition also did not hold literally. The final Product turn caused the crossing: before it, fresh use was 189,843; its 126,720 input, 87,936 cached input, and 3,808 output added 42,592 fresh. No Built line, review receipt, tester, judgment, milestone, merge, tag, publish, or private-product upgrade follows from this run. The successful product evidence stays valid as product evidence; it cannot rescue the failed affordability experiment or inherit Business's earlier product-surface ruling as a Piece 9 method-cost ruling.
