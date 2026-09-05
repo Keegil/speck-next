@@ -2,13 +2,13 @@
 
 ## What's true now
 
-Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team finishes inside its limit,” is live. Its controller is gone; the standalone Codex baseline worked; and the owner-approved v0.9 continuation completed the real product with the same four carriers but failed its fresh-token limit. The released version remains v5.4.1.
+Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. The owner changed the live product priority in his own words: results may spend tokens when they are genuinely great. Shape and Map have therefore reopened around Piece 9, now “The team earns its place.” Three distinct Business, Experience, and Engineering contexts contributed; Product has integrated a result-first candidate and a no-duplicate-build route. The existing governed Pulse product is reviewable, its v0.9 cost experiment remains failed, and further governed Pulse spend is closed. No installed-method code has changed yet. The released version remains v5.4.1.
 
 - **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
 - **Good to use:** sufficient — first-use and worst-day testers kept the path.
 - **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration and for the governed product change itself; `broken` for Piece 9's closed controller, failed gross-limit attempt, and now the complete v0.9 method-cost result. Milestone value remains `not judged`.
+- **Business:** `kept` for Piece 8 adoption and migration, the governed Pulse product change, and the prospective result-first direction; `broken` for Piece 9's closed controller, failed gross-limit attempt, and complete v0.9 cost result. The re-cut Piece 9 and milestone value remain `not judged`.
 - **Structure:** straining — the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -19,15 +19,15 @@ Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged 
 
 ## What's blocked
 
-The milestone and release are blocked on Piece 9's affordability claim. The old 250,000-gross attempt remains failed. Its one permitted v0.9 continuation used exactly the same four carriers and five model turns, completed the product and every return in 402.654 active seconds, but used 232,435 fresh tokens against the 200,000 cap. A failed local timing wrapper was also corrected before any model started, so the no-retry tightening is not claimed. The run cannot retry or be rescued by moving either line.
+The milestone and release are blocked on the reopened Shape/Map review, then Piece 9's result comparison and kernel implementation. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the prospective result-first contract, but neither cost claim can be rescued.
 
 ## What needs the owner
 
-Choose the next affordability design after Product presents the smallest honest options. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing before the final milestone grade and plain-language v6 ratification. The owner's result-first direction settled this reopening; the v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-Preserve the successful product evidence and failed cost result, finish the executable v0.9 red control, and decide whether to remove mechanical return work or fund a genuinely new run under a prospective limit. No more governed Pulse turn runs. After release, upgrade the waiting private product without changing its live-work truth.
+Have one fresh person challenge the reopened promise and Piece 9 route, then a separate judge. If they keep it, Engineering changes every live rule home and adds model-free disposition controls. No more governed Pulse build runs. The existing governed and strong-control products then go to blind fresh use and judgment. After release, upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 

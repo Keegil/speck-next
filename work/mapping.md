@@ -425,3 +425,34 @@ The first native Piece 9 attempt produced four valid, distinct role contribution
 > Approve v0.9
 
 The selection changes Piece 9's cost proof, not the set or order of pieces. Product and Engineering remain distinct; all four roles remain active for the same reasons; the old attempt remains failed; the release roster and rulings are unchanged. The current evidence routes directly back to Piece 9 setup and the five-turn continuation. No new owner beat is added before the final milestone grade and ratification.
+
+## Round 6 — the team earns its place
+
+The owner's result-first direction reopens Map only far enough to change Piece 9's claim and proof. The two-piece order remains the owner's ratified order: Piece 8 already installed and proved selective routing; Piece 9 still proves that the separated team earns a release. No new piece, platform, care level, owner beat, or milestone is added.
+
+### Four distinct Map contributions
+
+| Role and carrier | Direct ordering evidence | Conclusion, assumption, and proposed change | Active decision and informative run |
+|---|---|---|---|
+| Product — `/root` | Owner direction; Piece 8 judgment; both Pulse builds; every failed cost control; release roster | The shortest path to the product question is to review the completed comparison, not build it again. Assumes preserved commits remain runnable. Rename Piece 9 “The team earns its place,” implement the prospective kernel rule, then compare the existing products. | Active. The model-free disposition table must preserve `reviewable / failed / closed`; Product reads every run and integrates one recommendation. |
+| Business — `/root/v1_business` | Measured gross, cached, fresh, active-time, owner-interruption, and product-difference evidence | More methodology before review is the current value loss. Assumes fresh blind use can establish whether the improvement is material. Block another governed Pulse build; bind the piece only after comparison and cost evidence. | Active. Earliest evidence is blind product use; ruling due before landing. |
+| Experience — `/root/v1_experience` | Baseline and governed output; callback sequence; owner's waiting and comprehension concerns | Automatic callbacks added ceremony after the pre-code lenses had already changed the product. Assumes Engineering can carry its run evidence. Make non-binding returns evidence-triggered and send both products straight to fresh use. | Active. The comparison must show materially clearer use or overturn the conclusion; recall only if that observation fires or remains unresolved. |
+| Engineering — `/root/v1_engineering` | Contract and method homes; host event timing; checker; preserved commits | The current evidence can enter review without another product build. Assumes no later product change invalidated it. Implement three independent dispositions and prospective execution authorization in existing files, then rerun every Piece 8 population. | Active. The checker and 26 / 8 / 95 / 230 regression are the earliest run; Engineering includes the result in its handoff. |
+
+### Product re-cut
+
+Piece 9 now consumes the strong ungoverned and governed Pulse builds as immutable subjects. Engineering changes only the kernel: result-first acceptance, separately measured cost, closed-spend authorization, and evidence-triggered callbacks. The existing separated-team checker gains a no-model clean-and-mutant population; no new verifier file or product build is allowed. The fake same-context arm remains red and the complete Piece 8 regression remains green.
+
+After Built and a committed receipt, a fresh Codex tester and a fresh Claude tester execute both Pulse variants without provenance or role conclusions. A separate judge challenges whether the governed result is materially better and whether the callback change preserves each concern. Business then binds the product improvement against all observed cost and owner attention. The exact four-person milestone roster, two judges, release-specific rulings, owner felt grade and plain-language ratification, footprint measurements, version census, and combined leak scan remain unchanged. The real-product milestone tester must exercise selective calls and evidence-triggered recalls, so the changed method runs on a second subject before release.
+
+The owner's result-first words ratify this re-cut without changing the already-selected order. Map is ready for its required fresh challenge.
+
+### Result-first Map review receipt — opened before dispatch
+
+- Candidate: the owner-ratified re-cut, all four Map contributions, exact Piece 9 proof, and conserved release roster in the commit containing this receipt.
+- Fresh tester: the same fresh carrier may probe Shape and Map together because neither review uses the product as a tester and both changed in one owner direction.
+- Required probe: prove no original v6 obligation fell between the renamed piece and preserved milestone; try to make a piece green through token spend alone, through a rescued historical failure, without a materially better product, or after unauthorized further model work.
+- Free skeptical attack: find a cheaper evidence route that answers the same product question without weakening reviewer independence or Codex-first compatibility.
+- Judge: a separate new carrier after a sufficient test.
+- Dispatch: only after this receipt is committed.
+- Verdict and judgment: pending.

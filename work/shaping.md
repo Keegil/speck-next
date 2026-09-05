@@ -212,3 +212,43 @@ The owner saw the complete amended promise and the product consequences in the c
 > Lock selective separation!
 
 This ratifies the amended promise exactly as reviewed. Shape closes. Map reopens because role activation, proof order, and the live piece's setup must change before implementation.
+
+## Round 5 — results outrank token thrift
+
+The selective team produced a real result before the v0.9 cost experiment failed: the governed Pulse build replaced an unsupported energy-range summary with seven explicit dated rows and neutral `ikke logget` gaps, passed every product check, and was judged by the contributing Business and Experience carriers as materially better than the strong ungoverned build. The full path then crossed its fresh-token cap by 32,435 on Product's closing turn. Product kept the product evidence and the failed cost evidence separate and stopped every further governed Pulse turn.
+
+The owner then set the product priority in his own words:
+
+> Bro, I'm mostly preoccupied with the results. It's okay to consume tokens as long as the results are great!
+
+This is a Shape change because the live contract made an exact token ceiling part of whether a substantial product result counted. Product reopened the promise around that direction and dispatched three distinct contexts before integrating it.
+
+### Four distinct contributions
+
+**Product — carrier `/root` — active.** Product read the owner's exact direction, the eight promises, the ratified selective design, both preserved Pulse implementations, all failed cost controls, and the three distinct contributions below. The product already optimizes great shipped product per minute of owner attention; rejecting a materially better running result solely because a post-response token total crossed its estimate inverted that objective. Product assumes independent use can compare the preserved builds without another implementation. Proposed change: let fresh experience and judgment decide whether the result is great; keep token use as visible Business evidence; enforce prospectively knowable execution authorization; and keep Product as the owner's only interface. The observation that would change this conclusion is fresh use finding no material product difference, or a rule implementation that permits new model work after authorization closes. Product stays active through synthesis and reads every informative run.
+
+**Business — carrier `/root/v1_business` — active.** Business read the contract objective, exact v0.9 totals, owner-interruption and active-time evidence, the governed and ungoverned product differences, and the accumulated release delay. It concluded that the larger business loss is repeating methodology work after a useful result exists. Assumption: durable field return and willingness to pay remain unproven, so “great” must be established by fresh use and judgment. Proposed change: a result-bearing run inside its owner-interruption, active-time, and carrier/turn authorization goes directly to fresh review; token use remains measured and enters Business's binding value ruling, but token use alone cannot require another build. A new governed build requires a fresh-review finding or a new product claim. Business rules the prospective direction `kept`, v0.9 `broken`, and the re-cut piece `not judged`. The earliest informative run is a provenance-blind comparison of both Pulse products followed by independent judgment; Business's binding return is due before landing.
+
+**Experience — carrier `/root/v1_experience` — active.** Experience read the declared owner and builder experience, the strong baseline, the governed product, the exact callback costs, and the owner's repeated concern about release delay. It concluded that the separated pre-code lenses earned their place, while universal mechanical callbacks became ceremony: Engineering can carry run evidence in its handoff, and Product can read the run before deciding whether another role must return. Assumptions: the preserved builds remain runnable, no protected-code risk needs a duplicate build, and operating capacity is not itself failing. Proposed change: every called role names the exact observation that would change its conclusion; Product reads the first real run and recalls only a role whose observation occurred, conclusion remains unresolved, or binding ruling is due. Tokens and contexts remain visible but do not null an otherwise sufficient result. The earliest informative run is blind fresh use of both preserved products; Experience returns only if that evidence overturns or leaves its conclusion unresolved.
+
+**Engineering — carrier `/root/v1_engineering` — active.** Engineering read the repository, current contract and method homes, exact host events, preserved commits, failed wrapper, and executable checker. It concluded that product evidence, cost-experiment status, and further-spend authorization are independent states; the current run is `reviewable / failed / closed`. Exact token totals arrive after a response, so they are telemetry and Business input rather than a reliable mid-turn stop. Assumptions: the preserved artifacts are immutable and no later product change invalidated them. Proposed change: declare token estimates separately from enforceable authorization for contexts or model turns, elapsed time, retries, owner interruptions, and pre-first-run reading; add a no-model disposition population in the existing checker; preserve every historical failure; and run the full Piece 8 regression. The earliest informative run is that new disposition population plus the unchanged 26 / 8 / 95 / 230 regression; Engineering carries its evidence in the build handoff.
+
+### Product synthesis and ratified promise
+
+The roles agree on the product decision. Great means a running product that contributor-excluded fresh people use and independent judges find sufficient; Product, role authors, and token totals cannot declare it. Product evidence, a cost experiment, and permission to spend again are recorded separately. A token estimate can produce a Business finding and influence which sufficient path wins, but it cannot erase valid product evidence. Hard execution authorization is stated in things the builder can actually obey before another model turn starts: contexts or model turns, elapsed time, retries or fallbacks, owner interruptions, and files or time spent before the first run. Once exhausted, no further model-bearing work starts.
+
+Selective separation remains. Product and Engineering are distinct for every substantial piece; Business and Experience still join before affected decisions when their conditions fire. Each called role names the observable run evidence that would change its conclusion. Product reads the first real run. Engineering includes its run evidence in the build handoff; another role returns only when its observation occurred, its conclusion remains unresolved, or its binding ruling is due. Business's ruling remains binding on business-changing pieces and milestones. Contributors remain excluded from fresh review. Product gives the owner one recommendation.
+
+The preserved v0.9 product goes directly to fresh comparison; no duplicate governed Pulse build is authorized. Every old cost failure stays failed. Tokens, contexts, elapsed time, retries, and owner interruptions remain measured, the 20% monthly subtraction alarm remains, and Business can still rule a marginal improvement `broken`. The change adds no installed file, skill, state, dashboard, or owner beat.
+
+The owner's quoted direction ratifies this result-first promise in his own words. It does not pre-judge whether the existing result is great; fresh review must establish that. Shape is ready for its required fresh challenge.
+
+### Result-first Shape review receipt — opened before dispatch
+
+- Candidate: the owner-ratified promise, four contributions, Product synthesis, product definition, decision, and re-cut map in the commit containing this receipt.
+- Fresh tester: a carrier that contributed to none of v6's Shape, Map, product build, or prior reviews.
+- Required probe: try to make the new rule excuse bad or incomplete work, hide cost, continue spend after authorization closes, skip a materially affected role, omit a due Business ruling, relabel v0.9, or commission another governed Pulse build. Confirm that only fresh use and judgment can establish “great.”
+- Free skeptical attack: find a user or builder consequence lost when automatic role returns become evidence-triggered.
+- Judge: a separate new carrier, dispatched only after a sufficient test.
+- Dispatch: only after this receipt is committed.
+- Verdict and judgment: pending.
