@@ -23,7 +23,7 @@ The milestone and release are blocked. The baseline already made the central pro
 
 ## What needs the owner
 
-Choose whether to keep the 250,000-gross ceiling or replace only it with at most 200,000 fresh tokens, 900 active seconds, and no further owner interruption, with gross use still measured and judged. The same attempt already used 56,228 fresh tokens and 112.284 active seconds, leaving 143,772 and 787.716; the calendar pause for this choice does not count. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
+Choose whether to keep the 250,000-gross ceiling or approve contract v0.9: the failed gross run stays failed; its valid four-carrier evidence starts one continuation with at most 200,000 cumulative fresh tokens, 900 cumulative active seconds, exactly five remaining host turns, the same carriers, and no replacement, retry, fallback, helper, or further owner interruption. Gross use stays measured and judged. The continuation has 143,772 fresh tokens and 787.716 active seconds left; the calendar pause for this choice does not count. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
