@@ -311,6 +311,16 @@ The four completed turns used 195,538 input tokens, including 144,256 cached, pl
 
 The cost challenge ruled the manual orchestration `broken`. Native Codex subagents are supported and would remove manual shell choreography, but they cannot erase the repeated context floor or justify another speculative attempt under the same cap. The gross ceiling was part of the owner-ratified selective redesign, so Product does not change it silently. The failed gross run remains failed under either choice. The proposed v0.9 exchange reuses only its valid four-carrier evidence in one separately labeled continuation: at most 200,000 cumulative fresh tokens and 900 cumulative active seconds, exactly five remaining host turns, the same carriers, and no replacement, retry, fallback, helper, or further owner interruption. It retains the 56,228 fresh tokens and 112.284 active seconds already spent, leaving 143,772 and 787.716; only the calendar pause for the owner's choice is excluded. Gross, cached, and fresh totals remain visible and Business judges the cumulative cost. Otherwise the evidence reopens Shape around affordability.
 
+### Contract v0.9 — owner-approved continuation
+
+Product showed the complete exchange in plain language. The owner selected it verbatim:
+
+> Approve v0.9
+
+That selection keeps the failed 250,000-gross run failed and authorizes one separately labeled continuation of its valid evidence. The same four carriers have at most 200,000 cumulative fresh tokens and 900 cumulative active seconds across both parts. The first part spent 56,228 fresh tokens and 112.284 active seconds, so 143,772 and 787.716 remain. Exactly five host turns remain: Product synthesis; Engineering implementation, actual run, and return; Business return; Experience return; Product close. No carrier may be replaced, and there is no retry, fallback, helper, sixth turn, or further owner interruption. The calendar pause awaiting this selection is the only excluded time. Gross, cached, and fresh totals stay visible; Business judges whether the total cost earned the product difference. Product and Engineering remain separate, and Engineering alone edits Pulse.
+
+This is a proof-accounting change, not a new piece or product promise. It compensates for replacing the gross ceiling with the stricter turn-and-continuity boundary required by `CONTRACT.md`: four already-issued carriers, five terminal turns, no replacement or rescue path. The live product question remains whether separated Business and Experience evidence produces a material improvement over the strong ungoverned result.
+
 ### Frozen preflight while the owner choice is open
 
 An immutable detached clone pinned to `87c246680fe5971db658b1c2f7b34457179a68fb` reran the complete Piece 8 checker against itself. It returned `PASS`: 26 routing subjects (13 clean / 13 mutants), eight assessment subjects (three clean / five mutants), 95 path-transaction subjects, and 230 migration/refusal subjects. The clone began and ended clean, created no cache path, and was moved to Trash. The exact always-read sum was 43,687 bytes: `AGENTS.md` 25,048 + `product.md` 3,457 + `map.md` 10,557 + `state.md` 4,625. This is deterministic preflight evidence only; it does not satisfy Piece 9's governed product run, review, milestone, or final-version checks.

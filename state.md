@@ -2,13 +2,13 @@
 
 ## What's true now
 
-Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team finishes inside its limit,” is live. Its controller is gone; the standalone Codex baseline worked, while the native governed attempt stopped before code after four distinct contexts used 200,484 gross / 56,228 fresh tokens. The released version remains v5.4.1.
+Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team finishes inside its limit,” is live. Its controller is gone; the standalone Codex baseline worked; and the owner approved contract v0.9 so the four preserved governed contexts can finish once under fresh-work, active-time, and turn limits. The released version remains v5.4.1.
 
 - **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
 - **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
 - **Good to use:** sufficient — first-use and worst-day testers kept the path.
 - **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's closed controller and manual native orchestration. The role-value comparison and milestone value remain `not judged`.
+- **Business:** `kept` for Piece 8 adoption and migration; `broken` for Piece 9's closed controller and failed gross-limit attempt. The approved v0.9 continuation, role-value comparison, and milestone value remain `not judged`.
 - **Structure:** straining — the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
@@ -19,15 +19,15 @@ Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged 
 
 ## What's blocked
 
-The milestone and release are blocked. The baseline already made the central product choice. The four governed contexts produced different conclusions, but their 200,484 gross tokens leave only 49,516 for synthesis, implementation, the real run, and returns. Continuing would knowingly cross the ratified boundary.
+The milestone and release are blocked on finishing and judging Piece 9, not on an owner decision. The old 250,000-gross attempt remains failed. Its four valid carriers may make one separately labeled continuation with 143,772 cumulative fresh tokens, 787.716 active seconds, and exactly five host turns left.
 
 ## What needs the owner
 
-Choose whether to keep the 250,000-gross ceiling or approve contract v0.9: the failed gross run stays failed; its valid four-carrier evidence starts one continuation with at most 200,000 cumulative fresh tokens, 900 cumulative active seconds, exactly five remaining host turns, the same carriers, and no replacement, retry, fallback, helper, or further owner interruption. Gross use stays measured and judged. The continuation has 143,772 fresh tokens and 787.716 active seconds left; the calendar pause for this choice does not count. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing until the combined v6 milestone evidence is ready for one plain-language felt grade and final method ratification. The v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
 
 ## What happens next
 
-If the cost rule changes, resume the four preserved contexts, synthesize before code, build and run, return the roles, and judge against the baseline. Otherwise reopen Shape around affordability. After release, upgrade the waiting private product without changing its live-work truth.
+Resume the four preserved contexts for the approved five-turn continuation: Product synthesizes before code; Engineering builds and runs; Business and Experience return; Product closes. Then review Piece 9 and the v6 milestone against the strong baseline. After release, upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 

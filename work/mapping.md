@@ -415,3 +415,13 @@ At `0e34587`, `/root/selective_map_tester` replayed all 21 completion checks, th
 - Free attack: find any way a piece-specific green can be mistaken for the final v6 release decision, or any owner touchpoint added by the split.
 - Dispatch: only after this receipt is committed.
 - Judgment: pending.
+
+## Round 5 — owner ratifies the Piece 9 cost boundary
+
+The first native Piece 9 attempt produced four valid, distinct role contributions but stopped before Product synthesis or code because its 200,484 gross tokens left too little room under the 250,000-gross boundary. Product did not erase or rescue that failure. It showed one versioned exchange: preserve those same carriers and their evidence; count their 56,228 fresh tokens and 112.284 active seconds; allow one continuation up to 200,000 cumulative fresh tokens and 900 cumulative active seconds; and tighten the path to exactly five remaining host turns with no replacement, retry, fallback, helper, or further owner interruption. Gross remains measured and Business-judged.
+
+**Owner selection, verbatim:**
+
+> Approve v0.9
+
+The selection changes Piece 9's cost proof, not the set or order of pieces. Product and Engineering remain distinct; all four roles remain active for the same reasons; the old attempt remains failed; the release roster and rulings are unchanged. The current evidence routes directly back to Piece 9 setup and the five-turn continuation. No new owner beat is added before the final milestone grade and ratification.
