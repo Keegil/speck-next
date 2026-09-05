@@ -2,24 +2,26 @@
 
 ## What's true now
 
-Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team earns its place,” is **Shaped** and live. Blind use chose the governed Pulse build before unblinding: its fixed-date week worked while the strong control failed the same core command, and legacy behavior held. Business returned `kept`; Experience resolved its concern while narrowing the causal claim; a fresh re-test and separate judge found the repaired result-first direction sufficient. The owner locked the full anti-loop promise: a running result goes to independent review, and only a concrete product finding or new product claim can authorize another build. The product evidence is reviewable, v0.9 remains failed, and further Pulse spend is closed. Engineering is now authorized to change the installed method; no installed-method code has changed yet. The released version remains v5.4.1.
+Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team earns its place,” is **Built** and live. Blind use chose the governed synthetic product before unblinding: its fixed-date week worked while the strong control failed the same core command, and legacy behavior held. The owner locked the result-first promise: a running result goes to independent review, and only a concrete product finding or new product claim can authorize another build. Engineering implemented that rule and returned on the exact checker evidence. The product evidence is reviewable, v0.9 remains failed, and further work on that synthetic product is closed. The package is v6.0.0; the last published tag remains v5.4.1 until the combined release hearing passes.
 
-- **Works:** sufficient — installation, Codex use, migration, recovery, rollback, and the 26 / 8 / 95 / 230 population passed.
-- **Delivers the promise:** sufficient — selective calls, distinct carriers, returns, discovery, and owner-file preservation held.
-- **Good to use:** sufficient — first-use and worst-day testers kept the path.
-- **Quality hangs together:** sufficient — both judges accepted the supported environment and exclusive-command boundary.
-- **Business:** `kept` for Piece 8 adoption and migration, the governed Pulse product change, and the prospective result-first direction; `broken` for Piece 9's closed controller, failed gross-limit attempt, and complete v0.9 cost result. The re-cut Piece 9 and milestone value remain `not judged`.
+> **Built — Piece 9 “The team earns its place,” exact v6.0.0 candidate:** product commits `32b1ba2`, `3a39e3e`, and `c2912e7` cover exactly `AGENTS.md`, `CONTRACT.md`, `README.md`, `capabilities.md`, `package.json`, `.claude/skills/experience/SKILL.md`, `.claude/skills/map-build/SKILL.md`, `.claude/skills/map-build/references/questions.md`, `templates/map.md`, `templates/piece.md`, `templates/state.md`, `devsuite/run.sh`, `devsuite/tasks/separated-product-team/check.py`, and `devsuite/tasks/separated-product-team/host_proof.py`. The committed candidate passed 26 routing, eight assessment, 28 result-disposition, 95 path-transaction, and 230 migration/refusal subjects; all five planted development controls stayed red; the host parser, syntax, version, package, footprint, and positive-control-backed public-detail checks passed. Fresh install is 20 entries / 85,618 bytes; packed install 20 / 85,613; always-read 47,374 / 50,000; five skills. No product implementation commit follows `c2912e7`; `28a8ca3` changes only the Engineering return record.
+
+- **Works:** Piece 9 not judged yet; its deterministic checks pass.
+- **Delivers the promise:** Piece 9 not judged yet; the result-first dispositions and no-duplicate-build mutants pass.
+- **Good to use:** Piece 9 not judged yet; contributor-excluded release use is next.
+- **Quality hangs together:** Piece 9 not judged yet; two independent release judges remain.
+- **Business:** `kept` for Piece 8 adoption and migration, the governed synthetic product change, and the prospective result-first direction; `broken` for Piece 9's retired controller, failed gross-limit attempt, and v0.9 cost experiment. The rebuilt Piece 9 and milestone remain `not judged` pending fresh release evidence.
 - **Structure:** straining — the twentieth installed entry and growing deterministic runtime leave no slack.
 
 ## What's wearing out
 
 - **Self-report:** fresh contexts still catch stale claims; closure and measurements need commands.
-- **Byte measurements:** stale after edits; the final release commit must remeasure them.
+- **Footprint headroom:** all limits pass, but the installed-entry count is exactly 20 / 20 and the always-read surface has 2,626 bytes of headroom.
 - **Host preload:** reviewers must read the candidate from disk, not trust cached instructions.
 
 ## What's blocked
 
-The milestone and release are blocked on Piece 9's kernel implementation and final release review. The old 250,000-gross attempt and v0.9 remain failed. Their product evidence may be reviewed under the ratified result-first contract, but neither cost claim can be rescued.
+The milestone and release are blocked only on the combined fresh release review, Business's binding ruling, and two independent judgments. The old 250,000-gross attempt and v0.9 remain failed; neither cost claim can be rescued.
 
 ## What needs the owner
 
@@ -27,7 +29,7 @@ Nothing before the final milestone grade. The owner ratified the full v6 promise
 
 ## What happens next
 
-The same distinct Engineering carrier changes every live rule home and adds the model-free disposition controls. Product reads the real checker output; no more governed Pulse build runs. Then Piece 9 and the milestone receive one combined release review, followed by release and the waiting private-product upgrade without changing its live-work truth.
+Open one combined Piece 9 and milestone receipt on this Built line. Four fresh people cover first-time Codex adoption, real Codex product-building, Claude as the second host, and worst-day mid-product migration without rebuilding the preserved synthetic product. Two independent judges challenge the same records. If they and Business keep the candidate, publish this exact v6.0.0 tree and upgrade the waiting private product without changing its live-work truth.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 
