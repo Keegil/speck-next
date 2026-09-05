@@ -592,7 +592,7 @@ function transactionPlan(existingMarker, migration) {
   };
 }
 
-function gitReportEnv() {
+function gitReportEnv(reportIndex = null) {
   const env = { ...process.env };
   for (const key of Object.keys(env)) {
     if (key.startsWith("GIT_")) delete env[key];
@@ -604,17 +604,48 @@ function gitReportEnv() {
   env.GIT_PAGER = "cat";
   env.PAGER = "cat";
   env.LC_ALL = "C";
+  if (reportIndex !== null) {
+    if (!path.isAbsolute(reportIndex))
+      transactionError("refusing: the private Git reporting index was not absolute. Nothing was touched.");
+    env.GIT_INDEX_FILE = reportIndex;
+  }
   return env;
+}
+
+function targetGitIndexPath() {
+  const run = spawnSync("git", [
+    "--no-pager",
+    "--literal-pathspecs",
+    "-c", "core.fsmonitor=false",
+    "-c", "core.splitIndex=false",
+    "-c", "core.hooksPath=",
+    "-c", "diff.external=",
+    "rev-parse", "--git-path", "index",
+  ], {
+    cwd: resolvedTarget(),
+    encoding: "utf8",
+    env: gitReportEnv(),
+    timeout: REPORT_TIMEOUT_MS,
+  });
+  if (run.error || run.signal || run.status !== 0 || String(run.stderr || "").trim())
+    transactionError("refusing: git index-path inspection failed before upgrade reporting. Nothing was touched.");
+  let output = String(run.stdout || "");
+  if (output.endsWith("\r\n")) output = output.slice(0, -2);
+  else if (output.endsWith("\n")) output = output.slice(0, -1);
+  if (!output || /[\r\n\0]/.test(output))
+    transactionError("refusing: git returned an unreadable index path before upgrade reporting. Nothing was touched.");
+  return path.isAbsolute(output) ? path.normalize(output) : path.resolve(resolvedTarget(), output);
 }
 
 let gitReportOverridesCache = null;
 
-function gitReportOverrides() {
+function gitReportOverrides(reportIndex) {
   if (gitReportOverridesCache) return gitReportOverridesCache;
   const args = [
     "--no-pager",
     "--literal-pathspecs",
     "-c", "core.fsmonitor=false",
+    "-c", "core.splitIndex=false",
     "-c", "core.hooksPath=",
     "-c", "diff.external=",
     "config",
@@ -626,7 +657,7 @@ function gitReportOverrides() {
   const run = spawnSync("git", args, {
     cwd: resolvedTarget(),
     encoding: "utf8",
-    env: gitReportEnv(),
+    env: gitReportEnv(reportIndex),
     timeout: REPORT_TIMEOUT_MS,
   });
   if (run.error || String(run.stderr || "").trim())
@@ -646,19 +677,20 @@ function gitReportOverrides() {
   return gitReportOverridesCache;
 }
 
-function gitReportRun(args, label) {
+function gitReportRun(args, label, reportIndex) {
   const run = spawnSync("git", [
     "--no-pager",
     "--literal-pathspecs",
     "-c", "core.fsmonitor=false",
+    "-c", "core.splitIndex=false",
     "-c", "core.hooksPath=",
     "-c", "diff.external=",
-    ...gitReportOverrides(),
+    ...gitReportOverrides(reportIndex),
     ...args,
   ], {
     cwd: resolvedTarget(),
     encoding: "utf8",
-    env: gitReportEnv(),
+    env: gitReportEnv(reportIndex),
     timeout: REPORT_TIMEOUT_MS,
   });
   if (run.error || run.signal || run.status === null || String(run.stderr || "").trim())
@@ -666,15 +698,15 @@ function gitReportRun(args, label) {
   return run;
 }
 
-function gitRead(args, label, allowedStatuses = [0]) {
-  const run = gitReportRun(args, label);
+function gitRead(args, label, reportIndex, allowedStatuses = [0]) {
+  const run = gitReportRun(args, label, reportIndex);
   if (!allowedStatuses.includes(run.status))
     transactionError(`refusing: git ${label} failed, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.`);
   return String(run.stdout || "").trimEnd();
 }
 
-function trackedDiff(paths) {
-  return gitRead(["diff", "--no-ext-diff", "--no-textconv", "--no-color", "--", ...paths], "diff");
+function trackedDiff(paths, reportIndex) {
+  return gitRead(["diff", "--no-ext-diff", "--no-textconv", "--no-color", "--", ...paths], "diff", reportIndex);
 }
 
 function quotedDiffPath(relative) {
@@ -694,22 +726,22 @@ function untrackedLinkDiff(relative) {
   ].join("\n");
 }
 
-function porcelainZ(args, label, allowedStatuses = [0]) {
-  const run = gitReportRun(args, label);
+function porcelainZ(args, label, reportIndex, allowedStatuses = [0]) {
+  const run = gitReportRun(args, label, reportIndex);
   if (!allowedStatuses.includes(run.status))
     transactionError(`refusing: git ${label} failed, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.`);
   return String(run.stdout || "");
 }
 
-function reportStatusEntries(paths) {
+function reportStatusEntries(paths, reportIndex) {
   const raw = porcelainZ(
     ["status", "--porcelain=v1", "-z", "--ignored=matching", "--untracked-files=all", "--", ...paths],
-    "status"
+    "status", reportIndex
   );
   return raw.split("\0").filter(Boolean);
 }
 
-function untrackedPaths(paths) {
+function untrackedPaths(paths, reportIndex) {
   const seen = new Set();
   const files = [];
   function addPhysicalLeaves(relative) {
@@ -726,7 +758,7 @@ function untrackedPaths(paths) {
     seen.add(normalized);
     files.push(normalized);
   }
-  for (const entry of reportStatusEntries(paths)) {
+  for (const entry of reportStatusEntries(paths, reportIndex)) {
     if (!/^(?:\?\?|!!) /.test(entry)) continue;
     const file = entry.slice(3);
     addPhysicalLeaves(file);
@@ -734,14 +766,14 @@ function untrackedPaths(paths) {
   return files.sort();
 }
 
-function untrackedDiff(paths) {
+function untrackedDiff(paths, reportIndex) {
   const parts = [];
-  for (const file of untrackedPaths(paths)) {
+  for (const file of untrackedPaths(paths, reportIndex)) {
     if (fs.lstatSync(ensureTargetRelative(file)).isSymbolicLink()) {
       parts.push(untrackedLinkDiff(file));
       continue;
     }
-    const run = gitReportRun(["diff", "--no-index", "--no-ext-diff", "--no-textconv", "--no-color", "--", "/dev/null", file], "diff --no-index");
+    const run = gitReportRun(["diff", "--no-index", "--no-ext-diff", "--no-textconv", "--no-color", "--", "/dev/null", file], "diff --no-index", reportIndex);
     if (![0, 1].includes(run.status))
       transactionError("refusing: git diff --no-index failed while reporting untracked upgrade files, so Speck Next rolled the upgrade back instead of reporting a partial result. Nothing was touched.");
     if (run.status === 0) continue;
@@ -753,18 +785,18 @@ function untrackedDiff(paths) {
   return parts.join("\n");
 }
 
-function gitChanges(paths) {
+function gitChanges(paths, reportIndex) {
   return porcelainZ(
     ["status", "--porcelain=v1", "--ignored=matching", "--untracked-files=all", "--", ...paths],
-    "status"
+    "status", reportIndex
   ).trimEnd();
 }
 
-function gitDiff(paths) {
+function gitDiff(paths, reportIndex) {
   const parts = [];
-  const tracked = trackedDiff(paths);
+  const tracked = trackedDiff(paths, reportIndex);
   if (tracked) parts.push(tracked);
-  const untracked = untrackedDiff(paths);
+  const untracked = untrackedDiff(paths, reportIndex);
   if (untracked) parts.push(untracked);
   return parts.join("\n");
 }
@@ -887,7 +919,23 @@ function Transaction(plan) {
   this.markerCovered = this.primaryRoots.some(root => MARKER === root.relative || MARKER.startsWith(root.relative + path.sep));
   this.markerBefore = null;
   this.markerBeforePath = null;
+  this.reportIndex = null;
 }
+
+Transaction.prototype.prepareReportIndex = function prepareReportIndex() {
+  const source = targetGitIndexPath();
+  const existing = lstatOptional(source);
+  if (existing && (existing.isSymbolicLink() || !existing.isFile()))
+    transactionError("refusing: the repository's Git index is not a regular file, so Speck Next cannot report this upgrade safely. Nothing was touched.");
+  this.reportIndex = path.join(this.transactionRoot, "report-index");
+  if (!existing) return;
+  try {
+    fs.copyFileSync(source, this.reportIndex);
+    applyMode(this.reportIndex, existing.mode);
+  } catch {
+    transactionError("refusing: Speck Next could not copy the Git index into its private reporting transaction. Nothing was touched.");
+  }
+};
 
 Transaction.prototype.deferStageMode = function deferStageMode(absolute, mode) {
   this.stageDirectoryModes.set(absolute, mode);
@@ -1104,6 +1152,7 @@ function applyInstalledSurface(existingMarker, migration) {
   const transaction = new Transaction(plan);
   try {
     const productExists = plan.writes.has("product.md") || entryExists(path.join(target, "product.md"));
+    transaction.prepareReportIndex();
     transaction.prepare();
     transaction.apply();
     const installedEntries = installEntries(
@@ -1112,8 +1161,8 @@ function applyInstalledSurface(existingMarker, migration) {
     const extraReportPaths = transaction.replacedLinks.map(link => link.relative);
     if (transaction.preserveRoot) extraReportPaths.push(transaction.preserveRoot.relative);
     const reportPaths = reportedPaths(extraReportPaths);
-    const changes = gitChanges(reportPaths);
-    const diff = gitDiff(reportPaths);
+    const changes = gitChanges(reportPaths, transaction.reportIndex);
+    const diff = gitDiff(reportPaths, transaction.reportIndex);
     transaction.cleanup();
     return {
       sourceCheckout: transaction.sourceCheckout,

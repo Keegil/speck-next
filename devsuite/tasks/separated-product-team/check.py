@@ -686,6 +686,49 @@ def run_path_transaction_controls(kernel):
                 return (f"file:{mode:o}", path.read_bytes())
             return (f"other:{info.st_mode}",)
 
+        def git_metadata_env():
+            safe = {key: value for key, value in os.environ.items()
+                    if not key.startswith("GIT_")}
+            safe.update({
+                "GIT_OPTIONAL_LOCKS": "0", "GIT_CONFIG_NOSYSTEM": "1",
+                "GIT_CONFIG_GLOBAL": os.devnull, "GIT_PAGER": "cat", "PAGER": "cat",
+                "LC_ALL": "C",
+            })
+            return safe
+
+        def git_metadata_path(repo, name):
+            output = subprocess.run(
+                ["git", "--no-pager", "--literal-pathspecs",
+                 "-c", "core.fsmonitor=false", "-c", "core.hooksPath=",
+                 "-c", "diff.external=", "rev-parse", "--git-path", name],
+                cwd=repo, check=True, capture_output=True, text=True,
+                env=git_metadata_env(),
+            ).stdout.strip()
+            result = pathlib.Path(output)
+            if not result.is_absolute():
+                result = repo / result
+            return pathlib.Path(os.path.abspath(result))
+
+        def index_family_snapshot(repo):
+            active = git_metadata_path(repo, "index")
+            common = subprocess.run(
+                ["git", "--no-pager", "--literal-pathspecs", "rev-parse",
+                 "--git-common-dir"],
+                cwd=repo, check=True, capture_output=True, text=True,
+                env=git_metadata_env(),
+            ).stdout.strip()
+            common_path = pathlib.Path(common)
+            if not common_path.is_absolute():
+                common_path = repo / common_path
+            common_path = pathlib.Path(os.path.abspath(common_path))
+            paths = {active, pathlib.Path(str(active) + ".lock")}
+            for directory in {active.parent, common_path}:
+                paths.update(directory.glob("sharedindex.*"))
+            return tuple(
+                (str(path), exact_path_snapshot(path))
+                for path in sorted(paths, key=lambda item: str(item))
+            )
+
         manifest_files = []
         for manifest_root in ("AGENTS.md", "CLAUDE.md", ".claude/skills", "templates"):
             absolute = kernel / manifest_root
@@ -1392,8 +1435,11 @@ no_index=0
 for arg in "$@"; do
   [ "$arg" = "status" ] && command="status"
   [ "$arg" = "diff" ] && command="diff"
+  [ "$arg" = "config" ] && command="config"
   [ "$arg" = "--no-index" ] && no_index=1
 done
+[ -z "${P8_GIT_SEQUENCE_LOG:-}" ] || printf '%s:%s\n' "$command" "$no_index" >> "$P8_GIT_SEQUENCE_LOG"
+[ -z "${P8_GIT_INDEX_LOG:-}" ] || printf '%s|%s|%s\n' "$command" "$no_index" "${GIT_INDEX_FILE:-}" >> "$P8_GIT_INDEX_LOG"
 case "${P8_GIT_FAILURE:-}" in
   status) [ "$command" = "status" ] && { echo forced status failure >&2; exit 71; } ;;
   tracked) [ "$command" = "diff" ] && [ "$no_index" = 0 ] && { echo forced tracked diff failure >&2; exit 72; } ;;
@@ -1402,6 +1448,25 @@ esac
 exec "$REAL_GIT" "$@"
 ''')
         wrapper.chmod(0o755)
+
+        def private_index_log_ok(log, real_index):
+            if not log.exists():
+                return False
+            records = []
+            for line in log.read_text().splitlines():
+                parts = line.split("|", 2)
+                if len(parts) == 3 and parts[0] in {"config", "status", "diff"}:
+                    records.append(parts)
+            commands = {command for command, _, _ in records}
+            private_paths = {index for _, _, index in records}
+            return (
+                {"config", "status", "diff"}.issubset(commands) and
+                len(private_paths) == 1 and
+                all(pathlib.Path(index).is_absolute() for index in private_paths) and
+                all(".speck-next-transaction-" in index for index in private_paths) and
+                all(pathlib.Path(index) != real_index for index in private_paths) and
+                all(not pathlib.Path(index).exists() for index in private_paths)
+            )
 
         for operation in ("status", "tracked", "untracked"):
             repo, outside, prior_label = full_fault_fixture(f"git-fault-{operation}")
@@ -1493,6 +1558,246 @@ exec "$REAL_GIT" "$@"
             stable_retry(map_report_fault, map_report_clean) and
             (map_report_fault / ".git/index").read_bytes() == map_report_index_before,
         ))
+
+        bridge_report_fault = fresh_repo("carried-map-linked-bridge-index-failure")
+        bridge_report_label = "carried-map-linked-bridge-fixture"
+        bridge_map_bytes = b"# Owner map through nested outside link\r\n\x00\xff\n"
+        bridge_outside = base / "carried-map-linked-bridge-outside"
+        bridge_outside.mkdir()
+        (bridge_outside / "owner-map.md").write_bytes(bridge_map_bytes)
+        os.chmod(bridge_outside / "owner-map.md", 0o641)
+        (bridge_outside / "sentinel.bin").write_bytes(b"\xff\x00outside-bridge\r\n")
+        write_file(
+            bridge_report_fault, ".claude/speck-next.json",
+            v5_marker_bytes(bridge_report_label).decode(),
+        )
+        write_file(bridge_report_fault, "product.md", "# Linked-bridge product\n")
+        (bridge_report_fault / "templates").mkdir()
+        os.symlink(bridge_outside.resolve(), bridge_report_fault / "templates/bridge")
+        os.symlink(
+            "templates/bridge/owner-map.md", bridge_report_fault / "map.md"
+        )
+        write_file(bridge_report_fault, "owner/tracked.txt", "tracked bridge dirt\n")
+        (bridge_report_fault / "owner/tracked.bin").write_bytes(b"\x00\xfftracked-bridge\r\n")
+        commit_fixture(bridge_report_fault, "linked bridge report-failure baseline")
+        write_file(bridge_report_fault, "owner/untracked.txt", "untracked bridge dirt\n")
+        (bridge_report_fault / "owner/untracked.bin").write_bytes(b"\xfe\x00untracked-bridge\r\n")
+        bridge_repo_before = repo_baseline(bridge_report_fault)
+        bridge_outside_before = exact_path_snapshot(bridge_outside)
+        bridge_map_link_before = exact_path_snapshot(bridge_report_fault / "map.md")
+        bridge_map_mode_before = (bridge_report_fault / "map.md").stat().st_mode & 0o777
+        bridge_real_index = git_metadata_path(bridge_report_fault, "index")
+        bridge_index_before = index_family_snapshot(bridge_report_fault)
+        bridge_sequence_log = base / "carried-map-linked-bridge-git-sequence.log"
+        bridge_failure_index_log = base / "carried-map-linked-bridge-failure-index.log"
+        bridge_failed = run_cli_args(
+            kernel, "upgrade", bridge_report_fault,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_FAILURE": "untracked",
+                 "P8_GIT_SEQUENCE_LOG": str(bridge_sequence_log),
+                 "P8_GIT_INDEX_LOG": str(bridge_failure_index_log)},
+        )
+        bridge_sequence = (bridge_sequence_log.read_text().splitlines()
+                           if bridge_sequence_log.exists() else [])
+        bridge_tracked_before_untracked = (
+            "diff:0" in bridge_sequence and "diff:1" in bridge_sequence and
+            bridge_sequence.index("diff:0") < bridge_sequence.index("diff:1")
+        )
+        bridge_failure_ok = (
+            calm_failure(bridge_failed) and "git diff --no-index failed" in bridge_failed.stderr and
+            bridge_tracked_before_untracked and
+            private_index_log_ok(bridge_failure_index_log, bridge_real_index) and
+            repo_unchanged(bridge_report_fault, bridge_repo_before) and
+            exact_path_snapshot(bridge_outside) == bridge_outside_before and
+            exact_path_snapshot(bridge_report_fault / "map.md") == bridge_map_link_before and
+            (bridge_report_fault / "map.md").read_bytes() == bridge_map_bytes and
+            (bridge_report_fault / "map.md").stat().st_mode & 0o777 == bridge_map_mode_before and
+            index_family_snapshot(bridge_report_fault) == bridge_index_before and
+            not transaction_dirt(bridge_report_fault)
+        )
+        bridge_clean_index_log = base / "carried-map-linked-bridge-clean-index.log"
+        bridge_clean = run_cli_args(
+            kernel, "upgrade", bridge_report_fault,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_INDEX_LOG": str(bridge_clean_index_log)},
+        )
+        bridge_clean_ok = (
+            upgrade_report_ok(
+                bridge_clean, "5.4.1", bridge_report_label,
+                source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+            ) and not bridge_clean.stderr and
+            private_index_log_ok(bridge_clean_index_log, bridge_real_index) and
+            index_family_snapshot(bridge_report_fault) == bridge_index_before and
+            exact_path_snapshot(bridge_outside) == bridge_outside_before and
+            (bridge_report_fault / "map.md").is_file() and
+            not (bridge_report_fault / "map.md").is_symlink() and
+            (bridge_report_fault / "map.md").read_bytes() == bridge_map_bytes and
+            (bridge_report_fault / "map.md").stat().st_mode & 0o777 == bridge_map_mode_before and
+            (bridge_report_fault / "templates/bridge").is_symlink() and
+            not transaction_dirt(bridge_report_fault)
+        )
+        bridge_before_retry = repo_baseline(bridge_report_fault)
+        bridge_retry_index_log = base / "carried-map-linked-bridge-retry-index.log"
+        bridge_retry = run_cli_args(
+            kernel, "upgrade", bridge_report_fault,
+            env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                 "P8_GIT_INDEX_LOG": str(bridge_retry_index_log)},
+        )
+        bridge_retry_ok = (
+            bridge_retry.returncode == 0 and not bridge_retry.stderr and
+            private_index_log_ok(bridge_retry_index_log, bridge_real_index) and
+            repo_unchanged(bridge_report_fault, bridge_before_retry) and
+            index_family_snapshot(bridge_report_fault) == bridge_index_before and
+            exact_path_snapshot(bridge_outside) == bridge_outside_before and
+            not transaction_dirt(bridge_report_fault)
+        )
+        results.append((
+            "the linked-bridge carried-map attack keeps its real index family exact through late failure, clean upgrade, and stable retry",
+            bridge_failure_ok and bridge_clean_ok and bridge_retry_ok,
+        ))
+
+        def seed_reporting_index_upgrade(repo, label):
+            write_file(
+                repo, ".claude/speck-next.json", v5_marker_bytes(label).decode()
+            )
+            write_file(repo, "product.md", f"# {label} product\n")
+            write_file(repo, "owner/tracked.txt", f"{label} tracked text\n")
+            (repo / "owner/tracked.bin").write_bytes(b"\x00\xffindex-tracked\r\n")
+            commit_fixture(repo, f"{label} tracked baseline")
+
+        def add_reporting_index_untracked(repo, label):
+            write_file(repo, "owner/untracked.txt", f"{label} untracked text\n")
+            (repo / "owner/untracked.bin").write_bytes(b"\xfe\x00index-untracked\r\n")
+
+        def exercise_reporting_index_variant(name, repo, command, prior_label, setup_ok=True):
+            real_index = git_metadata_path(repo, "index")
+            repo_before = repo_baseline(repo)
+            family_before = index_family_snapshot(repo)
+            failure_sequence_log = base / f"{name}-failure-sequence.log"
+            failure_index_log = base / f"{name}-failure-index.log"
+            failed = run_cli_args(
+                kernel, command, repo,
+                env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                     "P8_GIT_FAILURE": "untracked",
+                     "P8_GIT_SEQUENCE_LOG": str(failure_sequence_log),
+                     "P8_GIT_INDEX_LOG": str(failure_index_log)},
+            )
+            sequence = (failure_sequence_log.read_text().splitlines()
+                        if failure_sequence_log.exists() else [])
+            failure_ok = (
+                calm_failure(failed) and "git diff --no-index failed" in failed.stderr and
+                "diff:0" in sequence and "diff:1" in sequence and
+                sequence.index("diff:0") < sequence.index("diff:1") and
+                private_index_log_ok(failure_index_log, real_index) and
+                repo_unchanged(repo, repo_before) and
+                index_family_snapshot(repo) == family_before and
+                not transaction_dirt(repo)
+            )
+
+            clean_index_log = base / f"{name}-clean-index.log"
+            clean = run_cli_args(
+                kernel, command, repo,
+                env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                     "P8_GIT_INDEX_LOG": str(clean_index_log)},
+            )
+            if command == "upgrade":
+                report_ok = upgrade_report_ok(
+                    clean, "5.4.1", prior_label,
+                    source_checkout, surface_digest, NEXT_PENDING_CHANGED,
+                )
+            else:
+                actual_paths = sorted(
+                    item.relative_to(repo).as_posix()
+                    for item in repo.rglob("*")
+                    if ".git" not in item.relative_to(repo).parts and
+                    (item.is_file() or item.is_symlink())
+                )
+                reported_count, reported_paths = install_report(clean)
+                report_ok = (
+                    clean.returncode == 0 and not clean.stderr and
+                    reported_count == len(actual_paths) and reported_paths == actual_paths and
+                    marker_ok(repo, source_checkout, surface_digest) and
+                    not (repo / "product.md").exists()
+                )
+            clean_ok = (
+                report_ok and not clean.stderr and
+                private_index_log_ok(clean_index_log, real_index) and
+                index_family_snapshot(repo) == family_before and
+                (command == "install" or
+                 "diff --git a/AGENTS.md b/AGENTS.md" in clean.stdout) and
+                not transaction_dirt(repo)
+            )
+
+            before_retry = repo_baseline(repo)
+            retry_index_log = base / f"{name}-retry-index.log"
+            retry = run_cli_args(
+                kernel, "upgrade", repo,
+                env={"PATH": str(wrapper_dir) + os.pathsep + os.environ["PATH"],
+                     "P8_GIT_INDEX_LOG": str(retry_index_log)},
+            )
+            retry_ok = (
+                retry.returncode == 0 and not retry.stderr and
+                private_index_log_ok(retry_index_log, real_index) and
+                repo_unchanged(repo, before_retry) and
+                index_family_snapshot(repo) == family_before and
+                not transaction_dirt(repo)
+            )
+            results.append((
+                f"{name} reporting uses only a private index through late failure, correct success, and stable retry",
+                setup_ok and failure_ok and clean_ok and retry_ok,
+            ))
+
+        normal_index_repo = fresh_repo("private-report-index-normal")
+        normal_index_label = "normal-index-fixture"
+        seed_reporting_index_upgrade(normal_index_repo, normal_index_label)
+        add_reporting_index_untracked(normal_index_repo, normal_index_label)
+        exercise_reporting_index_variant(
+            "normal-index", normal_index_repo, "upgrade", normal_index_label
+        )
+
+        split_index_repo = fresh_repo("private-report-index-split")
+        split_index_label = "split-index-fixture"
+        seed_reporting_index_upgrade(split_index_repo, split_index_label)
+        subprocess.run(
+            ["git", "update-index", "--split-index"], cwd=split_index_repo, check=True
+        )
+        add_reporting_index_untracked(split_index_repo, split_index_label)
+        split_index_path = git_metadata_path(split_index_repo, "index")
+        split_index_ready = any(split_index_path.parent.glob("sharedindex.*"))
+        exercise_reporting_index_variant(
+            "split-index", split_index_repo, "upgrade", split_index_label,
+            setup_ok=split_index_ready,
+        )
+
+        linked_index_main = fresh_repo("private-report-index-linked-main")
+        linked_index_label = "linked-worktree-split-index-fixture"
+        seed_reporting_index_upgrade(linked_index_main, linked_index_label)
+        linked_index_repo = base / "private-report-index-linked-worktree"
+        subprocess.run(
+            ["git", "worktree", "add", "-q", "-b", "piece8-private-report-index",
+             str(linked_index_repo)],
+            cwd=linked_index_main, check=True,
+        )
+        subprocess.run(
+            ["git", "update-index", "--split-index"], cwd=linked_index_repo, check=True
+        )
+        add_reporting_index_untracked(linked_index_repo, linked_index_label)
+        linked_index_path = git_metadata_path(linked_index_repo, "index")
+        linked_index_ready = (
+            linked_index_path.parent != (linked_index_repo / ".git") and
+            any(linked_index_path.parent.glob("sharedindex.*"))
+        )
+        exercise_reporting_index_variant(
+            "linked-worktree-split-index", linked_index_repo, "upgrade",
+            linked_index_label, setup_ok=linked_index_ready,
+        )
+
+        unborn_index_repo = fresh_repo("private-report-index-unborn")
+        unborn_index_path = git_metadata_path(unborn_index_repo, "index")
+        exercise_reporting_index_variant(
+            "unborn-index", unborn_index_repo, "install", None,
+            setup_ok=exact_path_snapshot(unborn_index_path) == ("missing",),
+        )
 
         ignored_repo = fresh_repo("ignored-directory")
         seed_upgrade_repo(ignored_repo, "5.4.1", "ignored-directory-fixture", "# Ignored product\n")
