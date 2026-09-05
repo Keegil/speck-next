@@ -27,6 +27,11 @@ const ASSESSMENT_RECORD_LINE = `**Record:** \`${ASSESSMENT_RECORD}\``;
 const ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending";
 const PRODUCT_TEAM_HEADING = "## Product team";
 const PRODUCT_TEAM_ROLES = ["Product", "Business", "Experience", "Engineering"];
+const ASSESSMENT_CONTRIBUTION_FIELDS = [
+  "Carrier", "Direct evidence", "Conclusion", "Assumptions", "Proposed change", "Active decision",
+];
+const PRODUCT_SYNTHESIS_HEADING = "## Product synthesis";
+const ROUTE_HEADING = "## Route";
 const CONDITIONAL_ROLE_FIELDS = [
   "Protects", "Call when", "May stay out when", "Evidence expires", "Material changes",
 ];
@@ -1494,7 +1499,7 @@ function joinLogicalLineRecords(records) {
   return records.map(record => record.text + record.ending).join("");
 }
 
-function activeMarkdownLines(content) {
+function activeMarkdownLines(content, subject = "product.md") {
   const records = logicalLineRecords(content);
   const lines = records.map(record => record.text);
   const active = Array(lines.length).fill(true);
@@ -1572,8 +1577,8 @@ function activeMarkdownLines(content) {
   }
   if (htmlComment)
     assessmentError(
-      "product.md contains an unclosed HTML comment, so its current assessment evidence cannot be determined.",
-      "Next: close the HTML comment without changing the intended current assessment fields, then run the upgrade again."
+      `${subject} contains an unclosed HTML comment, so its current assessment evidence cannot be determined.`,
+      `Next: close the HTML comment in ${subject} without changing the intended current assessment fields, then run the upgrade again.`
     );
   return { records, lines, active };
 }
@@ -1656,6 +1661,106 @@ function incompleteProductTeamError(issues) {
   );
 }
 
+function assessmentComparisonValue(value) {
+  return value.replace(/\p{Default_Ignorable_Code_Point}/gu, "").trim();
+}
+
+function currentSectionBody(lines, active, start) {
+  let end = lines.length;
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (active[index] && /^##[ \t]+[^#]/.test(lines[index])) { end = index; break; }
+  }
+  return lines.slice(start + 1, end).filter((line, offset) =>
+    active[start + 1 + offset] && assessmentComparisonValue(line)
+  );
+}
+
+function completedAssessmentExpectedRoute(assessment) {
+  if (assessment.route === "Shape") return "Shape reopened";
+  if (assessment.route === "Map") return "Map reopened";
+  return `Resume ${assessment.livePiece} from state.md`;
+}
+
+function validateCompletedAssessmentRecord(recordPath, assessment) {
+  const content = fs.readFileSync(recordPath, "utf8");
+  const { lines, active } = activeMarkdownLines(content, ASSESSMENT_RECORD);
+  const issues = [];
+  const carriers = [];
+
+  for (const role of PRODUCT_TEAM_ROLES) {
+    const heading = `## ${role}`;
+    const headings = lines.flatMap((line, index) =>
+      active[index] && line === heading ? [index] : []
+    );
+    if (headings.length === 0) {
+      issues.push(`${role}: heading missing`);
+      continue;
+    }
+    if (headings.length > 1) {
+      issues.push(`${role}: duplicate heading (${headings.length} current sections)`);
+      continue;
+    }
+
+    const body = currentSectionBody(lines, active, headings[0]);
+    const values = {};
+    for (const field of ASSESSMENT_CONTRIBUTION_FIELDS) {
+      const prefix = `${field}:`;
+      const matches = body.flatMap(line => line.startsWith(prefix) ? [line.slice(prefix.length)] : []);
+      if (matches.length === 0) issues.push(`${role}.${field}: missing`);
+      else if (matches.length > 1)
+        issues.push(`${role}.${field}: duplicate (${matches.length} current fields)`);
+      else if (!assessmentComparisonValue(matches[0])) issues.push(`${role}.${field}: blank`);
+      else values[field] = matches[0];
+    }
+    if (values.Carrier) carriers.push({ role, identity: assessmentComparisonValue(values.Carrier) });
+  }
+
+  const identities = new Map();
+  for (const carrier of carriers) {
+    const roles = identities.get(carrier.identity) || [];
+    roles.push(carrier.role);
+    identities.set(carrier.identity, roles);
+  }
+  for (const [identity, roles] of identities) {
+    if (roles.length > 1)
+      issues.push(`Carrier: ${roles.join(" and ")} use the same identity ${JSON.stringify(identity)}`);
+  }
+
+  const synthesisHeadings = lines.flatMap((line, index) =>
+    active[index] && line === PRODUCT_SYNTHESIS_HEADING ? [index] : []
+  );
+  if (synthesisHeadings.length === 0) issues.push("Product synthesis: heading missing");
+  else if (synthesisHeadings.length > 1)
+    issues.push(`Product synthesis: duplicate heading (${synthesisHeadings.length} current sections)`);
+  else if (currentSectionBody(lines, active, synthesisHeadings[0]).length === 0)
+    issues.push("Product synthesis: blank");
+
+  const routeHeadings = lines.flatMap((line, index) =>
+    active[index] && line === ROUTE_HEADING ? [index] : []
+  );
+  if (routeHeadings.length === 0) issues.push("Route: heading missing");
+  else if (routeHeadings.length > 1)
+    issues.push(`Route: duplicate heading (${routeHeadings.length} current sections)`);
+  else {
+    const routeLines = currentSectionBody(lines, active, routeHeadings[0]);
+    if (routeLines.length === 0) issues.push("Route: blank");
+    else if (routeLines.length > 1)
+      issues.push(`Route: expected one current plain line, found ${routeLines.length}`);
+    else {
+      const expected = completedAssessmentExpectedRoute(assessment);
+      const actual = routeLines[0].trim();
+      if (actual !== expected && actual !== `${expected}.`)
+        issues.push(`Route: ${JSON.stringify(actual)} does not match ${JSON.stringify(expected)}`);
+    }
+  }
+
+  if (issues.length)
+    assessmentError(
+      `the completed upgrade assessment cannot proceed because ${ASSESSMENT_RECORD} is incomplete or ambiguous:\n- ${issues.join("\n- ")}`,
+      `Next: repair ${ASSESSMENT_RECORD} with four distinct complete role contributions, one Product synthesis, and one Route matching product.md; commit the assessment, product.md, and state.md together, then run the upgrade again.`
+    );
+}
+
 function parseAssessment(content, required = false) {
   const { lines, active } = activeMarkdownLines(content);
   const headings = lines.flatMap((line, index) => active[index] && line === ASSESSMENT_HEADING ? [index] : []);
@@ -1702,6 +1807,7 @@ function parseAssessment(content, required = false) {
     const recordPath = path.join(target, ASSESSMENT_RECORD);
     if (!fs.existsSync(recordPath) || !fs.statSync(recordPath).isFile())
       assessmentError(`the upgrade assessment says complete, but ${ASSESSMENT_RECORD} is missing.`);
+    validateCompletedAssessmentRecord(recordPath, assessment);
     if (assessment.route === "Map" || assessment.route === "resume")
       validateCompletedProductTeam(lines, active);
   }

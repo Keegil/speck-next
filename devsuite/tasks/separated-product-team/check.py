@@ -822,6 +822,14 @@ def has_resume_instruction(output):
     )
 
 
+def has_affirmative_assessment_route(output):
+    return (
+        has_resume_instruction(output) or
+        "continue Shape from state.md" in output or
+        "continue Map from state.md" in output
+    )
+
+
 def refusal_unchanged(root, before, run):
     return (
         run.returncode != 0 and
@@ -1722,6 +1730,7 @@ def run_path_transaction_controls(kernel):
         packed_transport_ok = False
         try:
             pack_description = json.loads(pack_run.stdout)
+            pack_metadata = pack_description[0]
             pack_archive = pack_destination / pack_description[0]["filename"]
             with tarfile.open(pack_archive, "r:gz") as archive:
                 packed_names = set(archive.getnames())
@@ -1745,8 +1754,39 @@ def run_path_transaction_controls(kernel):
             )
             packed_adapter = codex_adapter(packed_product)
             packed_marker = json.loads((packed_product / ".claude/speck-next.json").read_text())
+            packed_surface_digest = method_surface_sha256(packed_kernel)
+            installed_surface_digest = method_surface_sha256(packed_product)
+            package_files = json.loads((kernel / "package.json").read_text()).get("files")
+            excluded_prefixes = (
+                "package/work/", "package/docs/reviews/", "package/devsuite/", "package/examples/",
+            )
+            excluded_files = {
+                "package/product.md", "package/map.md", "package/state.md", "package/decisions.md",
+                "package/CONTRACT.md", "package/capabilities.md",
+            }
+            automatic_files = {
+                "package/package.json", "package/README.md", "package/README",
+            }
+            allowed_prefixes = (
+                "package/bin/", "package/.claude/skills/", "package/templates/",
+            )
+            package_scope_ok = all(
+                name in automatic_files or
+                name in {"package/AGENTS.md", "package/CLAUDE.md"} or
+                name.startswith(allowed_prefixes) or
+                re.fullmatch(r"package/(?:LICEN[CS]E|COPYING|NOTICE)(?:\..*)?", name, re.I)
+                for name in packed_names
+            )
+            package_entry_count = pack_metadata.get("entryCount")
+            package_unpacked_bytes = pack_metadata.get("unpackedSize")
             packed_transport_ok = (
                 pack_run.returncode == 0 and pack_archive.is_file() and
+                package_files == ["bin/", "AGENTS.md", "CLAUDE.md", ".claude/skills/", "templates/"] and
+                package_scope_ok and
+                not any(name.startswith(excluded_prefixes) for name in packed_names) and
+                not (packed_names & excluded_files) and
+                package_entry_count == len(pack_metadata.get("files", [])) == len(packed_names) and
+                package_entry_count > 0 and package_unpacked_bytes > 0 and
                 "package/.agents/skills/speck-next" not in packed_names and
                 not packed_source_adapter.exists() and not packed_source_adapter.is_symlink() and
                 packed_install.returncode == 0 and not packed_install.stderr and
@@ -1758,13 +1798,20 @@ def run_path_transaction_controls(kernel):
                 len(list((packed_product / ".claude/skills").glob("*/SKILL.md"))) == 5 and
                 exact_path_snapshot(packed_product / ".claude/skills") ==
                     exact_path_snapshot(packed_kernel / ".claude/skills") and
+                packed_surface_digest == installed_surface_digest == surface_digest and
+                packed_marker.get("methodSurfaceSha256") == installed_surface_digest and
                 packed_marker.get("sourceCheckout") is None and
                 stable_retry(packed_product, packed_install, packed_kernel)
+            )
+            print(
+                f"  [measure] npm-pack entries={package_entry_count} unpacked-bytes={package_unpacked_bytes} "
+                f"installed-entries={packed_count} installed-bytes={packed_bytes} "
+                f"method-sha256={installed_surface_digest}"
             )
         except (FileNotFoundError, IndexError, KeyError, OSError, TypeError, ValueError, tarfile.TarError):
             packed_transport_ok = False
         results.append((
-            "npm transport omits the source link while its packed installer generates one adapter with an exact 20-path and 85,613-byte census",
+            "npm transport contains only release necessities while its packed installer generates one adapter with an exact 20-path, 85,613-byte, matching-digest census",
             packed_transport_ok,
         ))
 
@@ -4426,6 +4473,272 @@ exec "$REAL_GIT" "$@"
             repo = seeded_pending(name)
             complete_pending(repo, status, route, state, team=team)
             return repo
+
+        def record_section(content, heading):
+            match = re.search(
+                rf"^## {re.escape(heading)}\n.*?(?=^## |\Z)", content,
+                re.MULTILINE | re.DOTALL,
+            )
+            if not match:
+                raise AssertionError(f"missing fixture section: {heading}")
+            return match.group(0)
+
+        def replace_record_section(content, heading, replacement):
+            section = record_section(content, heading)
+            return content.replace(section, replacement, 1)
+
+        def mutate_record_field(content, role, field, kind):
+            section = record_section(content, role)
+            line_match = re.search(rf"^{re.escape(field)}:.*$", section, re.MULTILINE)
+            if not line_match:
+                raise AssertionError(f"missing fixture field: {role}.{field}")
+            line = line_match.group(0)
+            if kind == "missing":
+                changed = section.replace(line + "\n", "", 1)
+            elif kind == "blank":
+                changed = section.replace(line, f"{field}: ", 1)
+            elif kind == "duplicate":
+                changed = section.replace(line, line + "\n" + line, 1)
+            else:
+                raise AssertionError(f"unknown field mutation: {kind}")
+            return content.replace(section, changed, 1)
+
+        def completed_record_refusal(label, content, expected, status=None, flagged=False):
+            slug = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+            repo = completed_team_repo("record-refusal-" + slug, product_team(), status)
+            write_file(repo, ASSESSMENT_RECORD, content)
+            commit_fixture(repo, f"{label} assessment-record mutation")
+            refused, atomic = run_atomic_refusal(repo)
+            output = refused.stdout + refused.stderr
+            passed = (
+                atomic and all(needle in output for needle in expected) and
+                ASSESSMENT_RECORD in output and
+                not has_affirmative_assessment_route(output)
+            )
+            results.append((
+                f"completed-record mutant {label} refuses atomically with dirty unrelated bytes",
+                passed,
+            ))
+            if flagged:
+                flagged_run, flagged_atomic = run_atomic_refusal(
+                    repo, "--open-assessment", plant=False
+                )
+                flagged_output = flagged_run.stdout + flagged_run.stderr
+                results.append((
+                    f"--open-assessment cannot override completed-record mutant {label}",
+                    flagged_atomic and all(needle in flagged_output for needle in expected) and
+                    not has_affirmative_assessment_route(flagged_output),
+                ))
+
+        canonical_record = assessment_record("Resume Piece alpha from state.md.")
+        completed_record_refusal(
+            "heading-only", "# Product-team assessment\n",
+            ["Product: heading missing", "Route: heading missing"], flagged=True,
+        )
+        completed_record_refusal(
+            "unclosed HTML comment", "<!--\n" + canonical_record,
+            [f"{ASSESSMENT_RECORD} contains an unclosed HTML comment"],
+        )
+
+        for role in ("Product", "Business", "Experience", "Engineering"):
+            role_section = record_section(canonical_record, role)
+            completed_record_refusal(
+                f"missing {role} role",
+                canonical_record.replace(role_section, "", 1),
+                [f"{role}: heading missing"],
+            )
+            completed_record_refusal(
+                f"duplicate {role} role",
+                canonical_record.replace(role_section, role_section + "\n" + role_section, 1),
+                [f"{role}: duplicate heading"],
+            )
+            for field in (
+                "Carrier", "Direct evidence", "Conclusion", "Assumptions",
+                "Proposed change", "Active decision",
+            ):
+                for kind in ("missing", "blank", "duplicate"):
+                    completed_record_refusal(
+                        f"{kind} {role} {field}",
+                        mutate_record_field(canonical_record, role, field, kind),
+                        [f"{role}.{field}: {kind}"],
+                    )
+
+        shared_record = canonical_record
+        for role in ("Product", "Business", "Experience", "Engineering"):
+            shared_record = re.sub(
+                rf"(^## {role}\nCarrier:) [^\n]+", rf"\1 shared-carrier",
+                shared_record, count=1, flags=re.MULTILINE,
+            )
+        completed_record_refusal(
+            "one carrier across four roles", shared_record,
+            ["Carrier: Product and Business and Experience and Engineering use the same identity"],
+        )
+
+        whitespace_carriers = canonical_record.replace(
+            "Carrier: assessment-product", "Carrier: shared-disguised", 1
+        ).replace(
+            "Carrier: assessment-business", "Carrier:\t shared-disguised  ", 1
+        )
+        completed_record_refusal(
+            "same carrier with surrounding whitespace", whitespace_carriers,
+            ["Carrier: Product and Business use the same identity"],
+        )
+
+        ignorable_carriers = canonical_record.replace(
+            "Carrier: assessment-product", "Carrier: shared-ignorable", 1
+        ).replace(
+            "Carrier: assessment-business", "Carrier: shared-\u200bignorable", 1
+        )
+        completed_record_refusal(
+            "same carrier with default-ignorable formatting", ignorable_carriers,
+            ["Carrier: Product and Business use the same identity"],
+        )
+
+        synthesis_section = record_section(canonical_record, "Product synthesis")
+        completed_record_refusal(
+            "missing Product synthesis", canonical_record.replace(synthesis_section, "", 1),
+            ["Product synthesis: heading missing"],
+        )
+        completed_record_refusal(
+            "blank Product synthesis",
+            replace_record_section(canonical_record, "Product synthesis", "## Product synthesis\n\n"),
+            ["Product synthesis: blank"],
+        )
+        completed_record_refusal(
+            "duplicate Product synthesis",
+            canonical_record.replace(synthesis_section, synthesis_section + "\n" + synthesis_section, 1),
+            ["Product synthesis: duplicate heading"],
+        )
+
+        route_section = record_section(canonical_record, "Route")
+        completed_record_refusal(
+            "missing Route", canonical_record.replace(route_section, "", 1),
+            ["Route: heading missing"],
+        )
+        completed_record_refusal(
+            "blank Route", replace_record_section(canonical_record, "Route", "## Route\n\n"),
+            ["Route: blank"],
+        )
+        completed_record_refusal(
+            "duplicate Route",
+            canonical_record.replace(route_section, route_section + "\n" + route_section, 1),
+            ["Route: duplicate heading"],
+        )
+
+        mismatch_specs = (
+            ("Shape", ASSESSMENT_COMPLETE_SHAPE, "Map reopened."),
+            ("Map", ASSESSMENT_COMPLETE_MAP, "Shape reopened."),
+            ("resume", None, "Resume Piece beta from state.md."),
+        )
+        for label, status, wrong_route in mismatch_specs:
+            content = assessment_record(wrong_route)
+            completed_record_refusal(
+                f"{label} Route mismatch", content,
+                ["Route:", "does not match"], status=status,
+            )
+
+        hidden_record_specs = {
+            "blockquote": "\n".join("> " + line for line in canonical_record.splitlines()) + "\n",
+            "fence": "```markdown\n" + canonical_record + "```\n",
+            "HTML comment": "<!--\n" + canonical_record + "-->\n",
+        }
+        for container, hidden in hidden_record_specs.items():
+            completed_record_refusal(
+                f"{container} role evidence does not count", hidden,
+                ["Product: heading missing", "Route: heading missing"],
+            )
+            clean_repo = completed_team_repo(
+                "record-live-after-" + re.sub(r"[^a-z0-9]+", "-", container.lower()),
+                product_team(),
+            )
+            write_file(clean_repo, ASSESSMENT_RECORD, hidden + "\n" + canonical_record)
+            commit_fixture(clean_repo, f"live assessment after {container}")
+            clean_before = repository_snapshot(clean_repo)
+            clean_first = run_cli(kernel, "upgrade", clean_repo)
+            clean_second = run_cli(kernel, "upgrade", clean_repo)
+            results.append((
+                f"current completed record after closed {container} stays valid and repeatable",
+                upgrade_report_ok(
+                    clean_first, CURRENT_VERSION, source_checkout, source_checkout,
+                    surface_digest,
+                    "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                    surface_digest,
+                ) and
+                upgrade_report_ok(
+                    clean_second, CURRENT_VERSION, source_checkout, source_checkout,
+                    surface_digest,
+                    "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                    surface_digest,
+                ) and repository_snapshot(clean_repo) == clean_before,
+            ))
+
+        pending_unvalidated = seeded_pending("pending-record-unvalidated")
+        write_file(pending_unvalidated, ASSESSMENT_RECORD, "# Heading only while pending\n")
+        commit_fixture(pending_unvalidated, "keep incomplete assessment pending")
+        pending_before = repository_snapshot(pending_unvalidated)
+        pending_first = run_cli(kernel, "upgrade", pending_unvalidated)
+        pending_second = run_cli(kernel, "upgrade", pending_unvalidated)
+        results.append((
+            "pending assessment does not validate or rewrite its incomplete record",
+            upgrade_report_ok(
+                pending_first, CURRENT_VERSION, source_checkout, source_checkout,
+                surface_digest, NEXT_PENDING_CLEAN, surface_digest,
+            ) and
+            upgrade_report_ok(
+                pending_second, CURRENT_VERSION, source_checkout, source_checkout,
+                surface_digest, NEXT_PENDING_CLEAN, surface_digest,
+            ) and repository_snapshot(pending_unvalidated) == pending_before,
+        ))
+
+        dirty_valid = completed_team_repo("completed-record-dirty-repeat", product_team())
+        with (dirty_valid / "state.md").open("a") as handle:
+            handle.write("Tracked owner progress remains dirty.\n")
+        write_file(dirty_valid, "work/owner-untracked.md", "Untracked owner work remains dirty.\n")
+        dirty_valid_before = repo_baseline(dirty_valid)
+        dirty_valid_first = run_cli(kernel, "upgrade", dirty_valid)
+        dirty_valid_second = run_cli(kernel, "upgrade", dirty_valid)
+        results.append((
+            "valid four-carrier resume preserves dirty unrelated bytes on repeat",
+            upgrade_report_ok(
+                dirty_valid_first, CURRENT_VERSION, source_checkout, source_checkout,
+                surface_digest,
+                "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                surface_digest,
+            ) and
+            upgrade_report_ok(
+                dirty_valid_second, CURRENT_VERSION, source_checkout, source_checkout,
+                surface_digest,
+                "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                surface_digest,
+            ) and repo_unchanged(dirty_valid, dirty_valid_before),
+        ))
+
+        for label, ending in (("CRLF", "\r\n"), ("lone-CR", "\r")):
+            line_repo = completed_team_repo(
+                "completed-record-" + label.lower(), product_team()
+            )
+            line_bytes = canonical_record.replace("\n", ending).encode()
+            (line_repo / ASSESSMENT_RECORD).write_bytes(line_bytes)
+            commit_fixture(line_repo, f"use {label} assessment record")
+            line_before = repository_snapshot(line_repo)
+            line_first = run_cli(kernel, "upgrade", line_repo)
+            line_second = run_cli(kernel, "upgrade", line_repo)
+            results.append((
+                f"valid {label} completed record stays byte-identical on repeat",
+                upgrade_report_ok(
+                    line_first, CURRENT_VERSION, source_checkout, source_checkout,
+                    surface_digest,
+                    "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                    surface_digest,
+                ) and
+                upgrade_report_ok(
+                    line_second, CURRENT_VERSION, source_checkout, source_checkout,
+                    surface_digest,
+                    "Next: there are no upgrade changes to commit; resume Piece alpha from state.md.",
+                    surface_digest,
+                ) and repository_snapshot(line_repo) == line_before and
+                (line_repo / ASSESSMENT_RECORD).read_bytes() == line_bytes,
+            ))
 
         def product_team_refusal(label, team, expected, status=None, flagged=False):
             slug = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")

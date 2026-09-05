@@ -5,6 +5,13 @@
   "bin": {
     "speck-next": "bin/speck-next.js"
   },
+  "files": [
+    "bin/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".claude/skills/",
+    "templates/"
+  ],
   "repository": "github:Keegil/speck-next",
   "license": "MIT"
 }
