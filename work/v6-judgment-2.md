@@ -72,3 +72,49 @@ Continue the existing records rather than opening new ones:
 - **Free skeptical attack:** repeat the same-carrier assessment with four distinct action texts but disguise the repeated carrier only with surrounding whitespace. Report the result either way. It must refuse atomically.
 
 No Pulse run, role redesign, controller work, new method rule, second Claude call, or owner interruption belongs in this repair. After these focused records return, both judges continue their existing judgment files against the repaired Built line.
+
+---
+
+## Repaired-candidate continuation — Judge 2
+
+### Continuation receipt
+
+This is the same independent judge carrier, `/root/v6_judge_two`, continuing the original judgment without reading the other judge. The product under judgment is repair commit `ca33c64f613ae0004c8dd1d9809dbf26ed9c172b`, Built at the state-only commit `e3f5b559ff29fe12d54f7ed72951e9c626be5b7c`, under focused receipt `5c214fa3dd4654fecea1bf944242710df2c544aa`. The two fresh continuations were committed at `4e637a5dd2a80e33e21dfdd55ab3bbd5b2008cbb`; active-role returns followed at `8bf5c7680a62532680178b29197af3348ebd64bb`.
+
+Git keeps the boundary honest: `ca33c64` changes exactly `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`; `e3f5b55` changes only `state.md` and contains the repaired **Built** line; `5c214fa` opens the focused receipt after Built; and `4e637a5` changes only the two existing tester records after the receipt. No product commit follows `ca33c64`.
+
+### The ordered repair is complete
+
+1. **Package scope closed.** The exact repaired pack contains 20 runtime entries / 191,381 unpacked bytes and none of the original work, review, development-suite, example, or source-state freight. It installs the same 20-entry / 85,613-byte method with the same aggregate digest. The first-adopter continuation independently enumerated both the exact allowlist and the absence population (`work/v6-first-adoption.md:318-381,425-442`). I independently packed `ca33c64` and obtained the same 20 paths and 191,381-byte figure.
+2. **Completed-assessment admission closed.** The repair validates exactly one complete contribution for each role, every required field, four distinct nonblank carriers, one Product synthesis, and a route matching the canonical status before any target write. The expanded 335-subject migration/refusal population covers missing, blank, duplicate, hidden, route-mismatched, whitespace-disguised, and default-ignorable-disguised evidence. On the real CLI, all six focused invalid subjects refused atomically with no affirmative route, while a valid four-carrier record resumed only Feature Alpha twice without altering history or dirty owner bytes (`work/v6-worst-day.md:163-206`).
+3. **The compatible Codex gap closed.** From a nested fresh repository, Codex CLI 0.147.0 with explicit compatible model `gpt-5.6-sol` completed its first and only invocation in 85.4 seconds. It discovered all five workflows, selected Shape from the actual repository state, used the preserved owner skill, asked one answerable product question, and changed no file (`work/v6-first-adoption.md:385-423,495-520`). There was no manual method read, path hint, retry, fallback, second invocation, or owner repair.
+4. **The controls stayed honest.** The original oversized package and three false-green migrations remain in the records as failed pre-fix controls. The required skeptical carrier attack used whitespace plus U+200B and U+2060; all four identities normalized to one, the CLI refused, and the whole snapshot stayed unchanged (`work/v6-worst-day.md:187-191`). The package/discovery attack found no unexpected entry, duplicate body, containment escape, or coexistence failure (`work/v6-first-adoption.md:522-545`). The installed method, role design, result dispositions, templates, product, decisions, contract, and preserved Pulse products are byte-identical to the prior hearing.
+
+### Challenges to the favorable continuation
+
+The successful Codex turn used an explicit compatible model rather than the stale incompatible global Astra default. That is exactly the focused receipt's condition and proves Speck on a real supported Codex/model pair; it does not claim that every local Codex configuration is compatible. Its 260,556 input tokens and 85-second orientation are expensive for one question. They remain Business cost evidence, not a product failure: the bounded first turn produced the right result without owner repair or another invocation.
+
+The Codex search briefly entered the adjacent disposable pack source before recovering the adopter's Git root. The read-only run changed nothing, the final decision used only adopter state, and the skeptical containment walk found no path escape. This is not a reproduced product defect.
+
+The migration continuation covers the exact defect class and its siblings, not every filesystem or network failure. That is sufficient here because the repaired code changed only completed-assessment admission and package inclusion; the earlier valid upgrade, Claude, product-builder, role-action, preservation, and refusal evidence remains applicable under an unchanged method digest.
+
+### Final rulings on `ca33c64`
+
+- **Works: kept.** The real Pulse result, fresh and packed installation, native Codex start, preserved Claude start, valid upgrade, invalid-assessment refusals, and idempotent resume all ran on their real paths.
+- **Delivers the promise: kept.** The separated team produced a materially better tested result, failed cost experiments stayed failed, duplicate Pulse work stayed closed, active roles returned, the runtime package is narrow, and fabricated separation can no longer resume migrated work.
+- **Good to use: kept for the repaired product.** A first Codex adopter gets one clear next action; Claude retains the same honest start; and the worst-day owner sees either an atomic, actionable refusal or the existing live piece resumed without repair. The owner's ten-hour development experience remains failed and is not relabeled by this ruling.
+- **Quality hangs together: kept.** The two concrete weaknesses from the first hearing are repaired without weakening the strong product result, host support, method bytes, migration preservation, or role separation.
+- **Structure: straining, unchanged.** The 20/20 installed-entry ceiling, growing deterministic population, and historical development cost leave little slack. This is the same strain recorded in the original judgment, not a new defect and not authority for another build.
+
+### Required separate rulings
+
+- **Piece 9: sufficient.** Its result-first distinction, selective separated actions, independent review, and no-duplicate-build boundary all stand. It may become Judged.
+- **v6 milestone Business case: `kept`.** I accept Business's binding return at `work/separated-product-team.md:505`: the material product difference, selective action, clean package, honest migration, primary-host result, zero owner repair, and no recurring service burden earn release. The v0.9 cost experiment and ten-hour development path remain failed; durable field value remains assigned to the waiting private product rather than claimed here.
+- **Migration honesty: kept.** Pending, atomic refusal, exact preservation, complete-record admission, correct route, valid resume, dirty work, and repeatability all have real-path evidence.
+- **Owner-attention cost: kept prospectively, failed historically.** The repaired release adds no owner beat, requires no owner repair, asks one answerable first question, and forbids duplicate product work. The 85-second orientation stays visible cost. The owner's lived ten-hour path remains an unacceptable failed experience.
+- **Codex-first compatibility: kept for the supported-host claim.** The same installed body is natively discoverable and usable on Codex 0.147.0 with a compatible model. Unsupported local model/CLI pairings are host configuration failures, not claimed compatibility.
+- **Claude support: kept.** `CLAUDE.md`, all canonical skills, the method digest, adapter, and installed surface are unchanged; the prior nested Claude discovery and honest Shape opening remain valid.
+- **Distinct actions, not duplicate prose: kept on this subject.** Business rejected the unsupported price and bounded value, Experience removed completion pressure, Engineering found and implemented the seam, and Product integrated before implementation; the governed product then beat the strong control. Universal necessity and cheapest-path causality remain unclaimed.
+- **Another build: not authorized.** The focused continuations found no concrete product defect and introduced no new product claim. The 85-second/260,556-input-token Codex start, historical v0.9 failure, ten-hour owner experience, disposition-helper semantic limit, and existing structure strain are cost or method facts only. Under the owner's result-first decision, none permits more product work.
+
+**Final judgment: Piece 9 and the repaired v6 milestone are sufficient. Release may proceed after the other independent judgment and the owner's required milestone grade; this judgment requires no further build.**
