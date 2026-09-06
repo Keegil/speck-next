@@ -2,34 +2,34 @@
 
 ## What's true now
 
-Shape and Map are ratified. Piece 8, “The right roles show up,” is **Judged sufficient** at `2ece4a6`. Piece 9, “The team earns its place,” is **Built** again after its first combined review sent the exact candidate back for two release defects. Blind use still keeps the governed synthetic result and closes further work on that product. The repaired package now carries only runtime material, and a completed migration now refuses malformed, duplicate-role, same-carrier, or route-mismatched assessment evidence before any write or resume instruction. The package is v6.0.0; the last published tag remains v5.4.1 until focused re-review passes.
+Shape and Map are ratified. Piece 8, “The right roles show up,” and Piece 9, “The team earns its place,” are **Judged sufficient**. The selective-product-team milestone is proven and owner-graded: the owner graded its ten-hour development path as failed, then ratified the result-first product in plain language and directed its release. The exact v6.0.0 package carries only runtime material; native Codex and Claude starts both found the same method; and a completed migration refuses malformed, duplicate-role, same-carrier, disguised-carrier, or route-mismatched evidence before any write or resume instruction. Both independent judges found the repaired candidate sufficient and authorized no further build. Publication of this exact tree is next.
 
 > **Built — Piece 9 “The team earns its place,” repaired v6.0.0 candidate:** the original product commits `32b1ba2`, `3a39e3e`, and `c2912e7` remain the method candidate; repair commit `ca33c64` changes exactly `package.json`, `bin/speck-next.js`, and `devsuite/tasks/separated-product-team/check.py`. The committed tree passed 26 routing, eight assessment, 28 result-disposition, 95 path-transaction, and 335 migration/refusal subjects; all five planted development controls stayed red; host parser, syntax, version, package, footprint, diff, and positive-control-backed public-detail checks passed. The release package is 20 entries / 191,381 unpacked bytes; fresh install is 20 entries / 85,618; packed install 20 / 85,613; method digest is `1ccba108dcc2eb6f1e15812e53e8e243ee09ee586d69f7b45ac7dad472872d70`; always-read is 48,369 / 50,000; five skills. No product implementation commit follows `ca33c64`; `b8ce6e8` changes only the Engineering return record.
 
-- **Works:** the first release candidate was judged broken; the repaired candidate's deterministic checks pass and focused re-review is pending.
-- **Delivers the promise:** the first release candidate was judged broken on fabricated migration evidence; the repaired admission population passes and judgment is pending.
-- **Good to use:** the first release candidate was judged broken on package freight and false resume assurance; focused adoption and migration use is next.
-- **Quality hangs together:** the first release candidate was judged broken; both independent judges must continue on the repaired Built line.
-- **Business:** Piece 9 is `kept`; the milestone remains `broken` until the repaired package, migration, and compatible Codex start return.
-- **Structure:** straining — the twentieth installed entry and growing deterministic runtime leave no slack.
+- **Works:** sufficient — both judges kept the repaired package, install, native host starts, valid resume, invalid-assessment refusal, and preserved running product.
+- **Delivers the promise:** sufficient — the separated roles changed different product decisions, the governed result beat its strong control, failed costs stayed failed, and duplicate product work stayed closed.
+- **Good to use:** sufficient — Codex gave a first adopter one honest next action, Claude preserved the same opening, and worst-day migration either refused precisely or resumed the existing piece without owner repair.
+- **Quality hangs together:** sufficient — the two defects from the first hearing reversed on their original controls without changing the installed method or weakening earlier evidence.
+- **Business:** Piece 9 `kept`; v6 milestone `kept`.
+- **Structure:** straining — the installed-entry count is exactly 20 / 20; current always-read headroom is measured below.
 
 ## What's wearing out
 
 - **Self-report:** fresh contexts still catch stale claims; closure and measurements need commands.
-- **Footprint headroom:** all limits pass, but the installed-entry count is exactly 20 / 20 and the always-read surface has 2,626 bytes of headroom.
+- **Footprint headroom:** all limits pass, but the installed-entry count is exactly 20 / 20. The landing command `wc -c AGENTS.md product.md map.md state.md` returned 46,070 bytes, leaving 3,930 below 50,000.
 - **Host preload:** reviewers must read the candidate from disk, not trust cached instructions.
 
 ## What's blocked
 
-The milestone and release are blocked only on focused repair review: a compatible native Codex start, the repaired package and worst-day continuations, active Business and Experience returns, and both continuing judgments. The old 250,000-gross attempt and v0.9 remain failed; neither cost claim can be rescued.
+Nothing blocks the v6.0.0 release. The old 250,000-gross attempt and v0.9 remain failed; neither cost claim can be rescued. Durable value on a second real product remains unclaimed until that product runs the method.
 
 ## What needs the owner
 
-Nothing before the final milestone grade. The owner ratified the full v6 promise and directed release without further method-only detours; the v5-era felt grade remains non-blocking ([work/v5-hearing.md](work/v5-hearing.md)).
+Nothing. The owner ratified the full v6 promise, graded the ten-hour development experience as failed, and directed release without further method-only detours.
 
 ## What happens next
 
-Open the focused repair receipt on this Built line. Continue only first-time Codex adoption and worst-day migration against the repaired tree; preserve the product-builder and Claude records because their method digest and product logic did not change. Return Business and Experience, then continue both independent judgments. If they keep the repaired candidate, publish this exact v6.0.0 tree and upgrade the waiting private product without changing its live-work truth.
+Fast-forward this exact landing to `main`, tag and publish `v6.0.0`, verify a clean pinned install, then upgrade the waiting private product. Its one honest four-context assessment must resume the live piece already named by its state; it must not backfill history, reopen Shape or Map without evidence, or duplicate product work. No kernel piece starts from cost or method strain alone.
 
 “Three producers” remains landed. Its bite tally and four stacked rules stay with density work; self-measurement stays with the computed-check piece ([record](work/three-producers.md)). CI limit enforcement was triggered by the measured 50,591-byte breach at `6665ac0`; re-cut its future order after the v6 milestone and private-product upgrade. Also queued: the v11 converter · promise conservation.
 
