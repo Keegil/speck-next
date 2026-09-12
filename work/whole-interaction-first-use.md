@@ -56,3 +56,26 @@ I could not perform that Experience return, lift the hold, claim Built or Judged
 ## Verdict
 
 **KEPT, with useful resistance.** In this use, the installed method turned conflicting handoff language into one executable assignment at the correct boundary. It prevented a plausible but unsupported advance, preserved the unresolved whole-experience finding, and still produced concrete forward motion without demanding new product work. The strongest evidence was the expanded comparison itself: the grocery consequence becomes legible while the week is pushed out of the primary viewport, so a contributor return is substantive rather than ceremonial.
+
+## Judge-directed continuation — receipt `8c8292d`
+
+I cold-read the changed Build rules in the installed subject's `AGENTS.md`, the user-visible craft requirement carried there, the matching assignment fields in `templates/piece.md` and `templates/state.md`, the subject's current `state.md`, and this existing record. I did not read contributor conclusions or the judge's work record.
+
+The changed rules require the called Experience carrier to compose the complete user job and meaningful states from the approved drawing before code; Product makes that composition binding; and one Engineering owner integrates and reruns the complete sequence. The visible craft requirement is grounded in the actual drawing and in hierarchy across the whole journey rather than isolated component correctness.
+
+I therefore extended the disposable subject's `state.md` with a named pre-code assignment for the whole-week readability repair. The composition now specifies:
+
+- prepared dates, day choices, and recognizable meals lead on arrival;
+- the selected meal and its correction lead while open, while the rest of the week recedes but remains recognizable;
+- the grocery consequence leads when expanded, while the correction and week recede but remain recoverable;
+- the retry banner, composer, navigation, price detail, and undated-meal comparison may not compete with the current household job.
+
+I assigned the next authorized Engineering carrier as the single integration owner for arrival, open meal, correction, expanded consequence, and return to week, including the shared container, ordering, viewport behavior, and complete-sequence rerun. I did not name a nonexistent carrier identifier, implement a GUI change, create a role conclusion, or lift the hold.
+
+### Skeptical attack
+
+I attacked the assignment with two tempting shortcuts: several disconnected component patches that each improve a local symptom, and one favorable final screenshot that makes the week look readable at rest. Neither can release dependent work. The first does not prove that the shared sequence preserves hierarchy as state changes; the second omits the open and expanded states where the recorded viewport competition appears. The updated assignment now makes release depend on the affected complete-sequence rerun, the called Experience contributor resolving the original finding from that sequence, and Product explicitly lifting the hold.
+
+### Continuation verdict
+
+**KEPT.** The changed method led to a more actionable pre-code handoff than the earlier return request: it names the full job, the reference, the hierarchy in each state, the competing surfaces, and one accountable integration owner. It also resisted both shortcut attacks without inventing a product result. No further continuation was performed.
