@@ -2,7 +2,7 @@
 
 [A floor, not a form: grow this file when the piece needs more.]
 
-**Serves:** [job/moment/foundation] · **Consumes:** [screen drawings/sections/material]
+**Serves:** [job/moment/foundation] · **Consumes:** [actual drawing/output reference, sections, material]
 
 **Outcome:** [What works when this lands. Commit this before product code.]
 
@@ -33,7 +33,7 @@
 | Engineering | [distinct from Product] | [repo, runtime, dependencies, data, and real behavior] | | | | [consequence · earliest informative run] |
 | [Business or Experience, only when called] | [distinct carrier] | [role-owned direct evidence] | | | | [consequence · earliest informative run] |
 
-**Product synthesis:** [One resolved outcome and builder-ready handoff. Product preserves dissent and does not implement.]
+**Product synthesis:** [One resolved outcome and builder-ready handoff. For a substantial user-facing change, called Experience composes the complete user job and meaningful states from the approved drawing and declared feel, using the existing drawing or this work record rather than requiring a new artifact. Name that actual drawing/output reference and the one Engineering carrier that owns integration. Product makes the composition binding, preserves dissent, and does not implement.]
 
 **Preserved dissent:** [Consequence · evidence · earliest settling run. Show the owner only when it changes a promise, user-facing choice, risk, or order.]
 
@@ -42,6 +42,8 @@
 [For every active role: carrier · named earliest informative run · run evidence · what changed or held · resulting product change. The named run and its return are both required before landing; if either is missing, the concern remains unresolved and the piece cannot land.]
 
 [A replacement is a new carrier that inherits the same evidence and prior contribution. Record the lineage; both original and replacement stay excluded from testing and judgment.]
+
+[For a concrete failure of the integrated experience, whoever observes it: name the failed complete sequence, the dependent work now held, and the independent work that may continue. After the fix, record the affected complete-sequence re-run, called Experience's decision on whether the original concrete finding is resolved, and every other role return whose consequence changed. Product lifts the hold only when that finding is resolved. Authorization exhaustion closes further model work while preserving the failure and hold. This is conditional; do not add a fixed extra return to unaffected runs or summon the team for a genuine unrelated small change. A small component repair or unrelated return does not lift the larger hold.]
 
 ## False inactive repair
 

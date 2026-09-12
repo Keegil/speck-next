@@ -8,6 +8,8 @@ Current consumer: the September 12 continuation in `work/separated-product-team.
 
 ## Current rulings
 
+**Built — Piece 9 whole-interaction repair candidate:** the changed method, craft, piece/state templates, contract, capability record, structural checker and reconciled product definition run through source/packed install and populated idempotent upgrade. Method digest `9881c10d660b7446d85853aabed941bbc94c2d419c20a23c964dbaea68a79351`; 20 installed entries, five skills; host-parser positive controls, 28 disposition controls, structural distribution and diff/syntax checks passed. Exact runs and the interrupted full-matrix limitation are in the September 12 continuation of `work/separated-product-team.md`. This is Built for fresh method use, not a repaired Odd GUI or a sufficient judgment.
+
 - Works: not judged for this repair.
 - Delivers the promise: not judged for this repair.
 - Good to use: not judged for this repair.

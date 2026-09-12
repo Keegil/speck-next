@@ -599,10 +599,12 @@ def run_result_disposition_controls():
 
 
 def static_contract_homes(kernel):
+    # Structural distribution only. Fresh installed-method use proves whether builders act on it.
     required = {
         "AGENTS.md": ["Product and Engineering are always called", "named run and its return",
                       "token estimate", "Exhausting any part forbids another",
                       "Contributor-excluded fresh use", "duplicate product work",
+                      "called Experience composes the complete user job", "one Engineering carrier owns the complete job",
                       "wrongly kept inactive", "concern was handled", "replacement carrier",
                       "Finish an upgrade", ASSESSMENT_RECORD, "complete — Shape reopened",
                       "complete — Map reopened", "from state.md", "upgradeAssessmentRecord",
@@ -627,12 +629,17 @@ def static_contract_homes(kernel):
                              "concrete fresh-review product finding"],
         "templates/piece.md": ["## Role call decisions", "## Informative role returns",
                                "## False inactive repair", "## Handled-concern miss escalation",
-                               "Token estimate:", "Execution authorization:", "Result disposition:"],
+                               "Token estimate:", "Execution authorization:", "Result disposition:",
+                               "affected complete-sequence re-run"],
         "templates/state.md": ["overdue informative returns", "false inactive call",
-                               "cost experiment passed or failed", "duplicate product build"],
+                               "cost experiment passed or failed", "duplicate product build",
+                               "Authorization exhaustion preserves the failure"],
+        ".claude/skills/craft/SKILL.md": ["called Experience composes", "finding-driven re-run"],
         "CONTRACT.md": ["On a later re-map, Product contributes", "named run and its return",
                         "gross, cached, and fresh tokens", "Exhausting any authorization forbids another",
                         "contributor-excluded fresh use", "cannot trigger duplicate product work",
+                        "called Experience composes the complete user job", "one Engineering carrier owns it",
+                        "adds no universal return",
                         "writes the version marker last", "replacement carrier inherits",
                         ASSESSMENT_RECORD, "method-surface digests", "Every fixed marker carries",
                         "before changing any repository byte", "complete non-Git path kinds and bytes",
@@ -662,10 +669,11 @@ def static_contract_homes(kernel):
                       "47,374 bytes"],
         "capabilities.md": ["Selective product team", "result-disposition subjects",
                             "reviewable / failed / closed",
+                            "dependent work advancing over a concrete failure of the integrated experience",
                             "assessment-control subjects", "complete-target snapshot",
                             "ambiguity-recovery", "inactive-container",
                             "95 path-transaction subjects", "Codex discovery symlink",
-                            "20 file-system entries / 85,618 bytes", "47,374 / 50,000 bytes"],
+                            "20 file-system entries / 90,756 bytes", "45,873 / 50,000 bytes"],
     }
     stale = {
         "AGENTS.md": ["Every substantial piece gets four product-building roles"],

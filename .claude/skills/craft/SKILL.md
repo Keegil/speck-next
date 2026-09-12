@@ -17,9 +17,11 @@ Correct is not finished until it is crafted. Before building a visible surface, 
 - **Give color a job.** Keep accents rare enough to matter. Use background shifts to separate sections and color to create deliberate emphasis. One temperature everywhere is bland, not restrained.
 - **Make components belong here.** Buttons, cards, and inputs should feel specific to this product. Forms should feel like conversations rather than spreadsheets. In an AI-first product, let the model infer, pre-fill, and ask for confirmation instead of showing fields it can replace.
 
-## Read the whole flow
+## Read the complete interaction
 
 After changing copy, read its entire flow as one text. Find repeated ideas, references that no longer point anywhere, and broken transitions at the time of change. An owner once caught a screen still re-arguing what an earlier screen had already taught him — three elements on it, all dead duplicates of what he had just read.
+
+For a substantial user-facing change, called Experience composes the complete user job and meaningful states from the approved drawing and declared feel before code, using the existing drawing or piece work record. Product makes that composition binding in its handoff. One Engineering owner carries it through the integrated run and any finding-driven re-run, even when bounded parts are delegated. Inspect the sequence as a person experiences it, including the transitions and the result that later work will build on. A concrete failure of the integrated experience holds that dependent work until the affected complete sequence is fixed and run again, whoever observes it. Called Experience then reads the changed sequence and decides whether the original finding is resolved; other roles return only when their consequence changed. If authorization runs out first, preserve the failure and stop the affected work. Independent unrelated work and genuine unrelated small changes continue without extra ceremony. A small component repair or unrelated return does not lift the larger hold.
 
 ## Look before calling it done
 
