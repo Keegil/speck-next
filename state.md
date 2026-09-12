@@ -1,5 +1,13 @@
 # State
 
+## Piece 9 reopened for a field failure — September 12
+
+Build, “The team earns its place.” Odd's owner rejected a rendered interaction after repeated inspected screenshots and local technical repairs. The final changed experience had not returned to the Experience contributor before the next technical journey was scheduled. On September 12 the owner directed a repair in both the methodology and its use. The existing product-excellence promise is unchanged; the field finding reopens this piece's build, not Shape or the order of queued pieces. Historical v6.0.0 evidence stays attributed to that release.
+
+Current consumer: the September 12 continuation in `work/separated-product-team.md`. Product, Engineering, Experience and Business are called. The bounded repair changes how builders preserve a whole interaction and respond to failed experience evidence before advancing dependent work. No release, new skill, standing role, or additional owner approval beat is planned. Candidate rules must be used by fresh builders on a failed interaction and a small unchanged-context fix, then independently judged before adoption in Odd. Odd's broader build remains held; its data and Piece 1 are preserved.
+
+### Previous release checkpoint
+
 ## What's true now
 
 Shape and Map are ratified. Piece 8, “The right roles show up,” and Piece 9, “The team earns its place,” are **Judged sufficient**. The selective-product-team milestone is proven and owner-graded: the owner graded its ten-hour development path as failed, then ratified the result-first product in plain language and directed its release. The exact v6.0.0 package carries only runtime material; native Codex and Claude starts both found the same method; and a completed migration refuses malformed, duplicate-role, same-carrier, disguised-carrier, or route-mismatched evidence before any write or resume instruction. Both independent judges found the repaired candidate sufficient and authorized no further build. Publication of this exact tree is next.
