@@ -71,3 +71,21 @@ https://github.com/Keegil/speck-next/releases/tag/v7.0.0
 The real published command `npx -y github:Keegil/speck-next#v7.0.0 install /tmp/speck-v7/released-install` exited 0. Reading its marker and resolving discovery confirmed 7.0.0, method digest `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`, the canonical skills target, and absent `product.md`/`map.md`. That is the actual published package, not only a local pack. The release code/method matches the independently reviewed candidate; later changes are evidence and release documentation.
 
 Setup commit time was 08:06:45 UTC; release read-back was complete by the observed 08:25:18 UTC clock reading on September 25. This interval covers bounded implementation through release, not the preceding scoping. No sibling project was modified.
+
+
+## September 25 — requested adoption across existing repositories
+
+The owner requested: “Thanks! Please upgrade all the repos we have that use Speck Next.” Marker and AGENTS-header searches under Code, the project registry, saved Codex projects, managed worktree roots and an independent home-directory inventory found Odd and Splang Slack, plus two extant Odd worktree checkouts. The kernel already runs v7. Temporary v7 test subjects were excluded; no old-Speck repository was converted and no absent archival checkout was recreated.
+
+Each checkout ran `npx -y github:Keegil/speck-next#v7.0.0 upgrade <absolute checkout path>`. Only changed method files were staged, committed and pushed on that checkout's existing branch. The p2r worktree branch gained an upstream on the same Odd remote; its previous base was already present remotely. No application branch was merged into another.
+
+| Checkout | Branch | Upgrade commit | Preserved non-method entries |
+|---|---|---|---:|
+| `/Users/kjetil/Code/odd` | `codex/odd-preparation-app` | `507113caa5815084b6b0377357821f1117980f25` | 1715 |
+| `/Users/kjetil/Code/telum/splang-slack` | `main` | `6ee302b7adb1f1cd5b9b447713cb1670bb028fb9` | 68 |
+| `/Users/kjetil/Code/odd-worktrees/p2r-review-20260908` | `codex/odd-p2r-review-resume-20260908` | `41b1e74d6c46c81d22c2093b1180a2a59bce23da` | 540 |
+| `/Users/kjetil/Code/odd-worktrees/boka-visual-20260908` | `codex/odd-boka-visual-20260908` | `45a272620ba23b02e53931248e8160fc39840757` | 519 |
+
+Verification before commit confirmed the updater preserved every baseline owner-file fingerprint and the Git index. Independent context `/root/discover_installations` then compared all 17 canonical source files per checkout against `git show v7.0.0:<path>`: 68 byte comparisons matched. It rehashed all 2,842 non-method entries including modes, verified marker version/digest and Codex discovery, checked each commit's scope with `git diff-tree`, and confirmed original dirty status exactly. Odd's modified `scripts/preparation-fresh-repair-proof.mjs` and `.local/`, and Splang Slack's modified `work/roles/mapping-business.md`, remain untouched. Both review worktrees are clean.
+
+`git ls-remote origin refs/heads/<branch>` matched each committed SHA. GitHub's contents API at each exact pushed SHA returned marker version 7.0.0 and method digest `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`. All four upgrades are verified locally and remotely. Product behavior was not re-tested: this adoption changes method files only and does not resolve any existing product finding.
