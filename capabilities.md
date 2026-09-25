@@ -1,19 +1,15 @@
 # Kernel capabilities
 
-One row per capability: what failure it prevents, what it costs, what proof it has earned, what would retire it.
+The v7 candidate is `fa1ead7`, installed method SHA-256 `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`. Commands, returned results and review records are in [work/proportional-v7.md](work/proportional-v7.md). Historical v6 evidence remains attributed to that release.
 
-**Evidence ledger:** Rows below cite **v6 and earlier** runs unless this file explicitly refreshes them after v7 ships. **v7 method proof is pending** — parent Product replaces this table with measured install/upgrade/use/review evidence from the v7 release candidate.
+| Capability | Current evidence | Limits |
+|---|---|---|
+| Proportional task entry | Fresh small-project use created one Python script, no method files or owner questions; default output and seven additional cases passed. | One local CLI project, not general field adoption. |
+| Care on affected behavior | Fresh CSV addition preserved JSON callers and tenant filtering, passed nine tests, and retained an unrelated dashboard hold. | Synthetic module-boundary tests, not production authentication or UI. |
+| Independent review | One separate Claude Opus reviewer ran the ten-test installer suite and challenged actual outputs from both fresh uses. | Review was pre-scheduled; spontaneous reviewer recruitment is untested. |
+| Install and upgrade | Source and packed installs, 36 version/product combinations, dirty owner records, retries, refusals, unsafe aliases and forced rollback exercised. Reviewer independently returned ten tests OK. | Native marker-bearing Speck Next versions through 7.0.0. Old-Speck conversion is not implemented. |
+| Both host entrypoints | Claude imports AGENTS.md; the installed Codex discovery link resolves to the same five canonical skills. Source and packed tests check that link. | These checks establish discovery files, not a complete new Claude product-build trial. |
+| Small shipped surface | Measured 17 source files, 28,271 bytes, down from 90,291 at `a1b3840` (68.7%); AGENTS.md is 6,006 bytes. | Text size is not measured runtime token or latency savings. |
+| Default development checks | `bash devsuite/run.sh` runs the deterministic v7 suite; old model campaigns require `--legacy`. | No automatic enforcement of prose footprint or behavioral independence. |
 
-| Capability | Prevents | Costs | Proof earned | Retires when |
-|---|---|---|---|---|
-| `AGENTS.md` (v7 method page) | one-size-fits-all ceremony; missing-docs kickoff | always loaded; target ~lean page | **v7 pending** — prior: governance cross-vendor read (2026-08-13); end-to-end product under v6 | host stops loading it, or a leaner page proves equal |
-| Proportional entry + adaptive phases | overhead driving owners away from Speck on small work | judgment in every session | **v7 pending** — design in `work/proportional-v7.md` (2026-09-25) | real small-project uses still feel forced through full loop |
-| `experience` + `judge` skills (on demand) | self-certified substantive work | ~KB when invoked | **historical (v6):** hearing form in anger across campaigns; **v7:** scoped independent review, not fixed roster — **pending** | review stops catching real promise-breakers |
-| `shape-product` + questions | unfalsifiable promises | on demand | synthetic reshape (2026-08-13); **v7 proportional invoke — pending** | shaping cannot tighten first real product |
-| `map-build` + questions | aimless building | on demand | failure-derived bridge rules (2026-08-17); **v7 optional map — pending** | owner cannot see order without map |
-| `craft` skill | generic UI as “done” | on demand | doctrine distilled; integrated-sequence hold **historical** | declared feel consistently met cheaper |
-| dev suite (`devsuite/`, not installed) | kernel regressions | repo-side CI time | **v6 green subjects (2026-09-06)** — **v7 migration/refusal subjects pending** parent | superseded suite |
-| Marker-based install/upgrade | corrupt owner trees | upgrade command | **v6 transactions** — **v7 policy sans assessment gate pending** | unsafe upgrade writes bytes |
-| Old-Speck converter | false migration hope | N/A | **Not implemented** — README/CONTRACT honest refuse | ships as separate piece |
-
-Not built: promise-conservation CI gate, old-Speck unmarked conversion.
+Shape, mapping and visual craft remain available on demand. Their larger-product and visual behavior has not been newly demonstrated by these two CLI uses. Broader owner adoption, comparative operating cost and durable value await real use. No extra work is commissioned by listing those limits.

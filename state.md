@@ -1,19 +1,21 @@
 # State
 
-## Building Speck Next v7 — September 25
+## Speck Next v7 accepted — September 25
 
-The owner reports skipping Speck Next for smaller projects because of overhead and requests a major version that applies judgment to both the parts of the method and their intensity. That request supersedes the queued kernel work. v6.0.0 and the September 12 whole-interaction repair remain historical results at `a1b3840`; their limits have not been relabeled.
+One live release piece: **Proportionate work**, independently accepted and ready to publish as v7.0.0. The owner requested a major release because overhead made smaller projects unattractive. The new method chooses planning, records, expertise, checks and review for the task rather than enforcing fixed phases and rosters.
 
-Current work: one coherent adaptive method, slimmer optional templates/skills, and an upgrade path that preserves owner records without imposing the retired team assessment. Product integrated three distinct feasibility, experience and adoption contributions in [work/proportional-v7.md](work/proportional-v7.md). Engineering and Cursor own separate implementation files.
+The accepted candidate is `fa1ead7`; installed method SHA-256 is `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`. Only release documentation/evidence has changed since it was tested.
 
-## Evidence and open work
+## What ran
 
-Implementation and fresh-use checks are in progress. Nothing in v7 is yet claimed Built, independently accepted or released. Existing `.local/` and Python cache files are unrelated and remain outside this work.
+- The independent reviewer ran `python3 devsuite/proportional-v7/check.py`: ten tests OK, including source/packed installs, owner-record preservation, supported upgrade states, refusal and forced rollback. Its hardlink attack also preserved owner bytes.
+- A fresh builder completed a small CLI with one script and no method paperwork. Another added tenant-isolated CSV export with nine tests while preserving an unrelated failed-dashboard hold. Independent review exercised and accepted both results.
+- The shipped method source measures 28,271 bytes versus 90,291 at `a1b3840`, a 68.7% reduction. This does not establish runtime cost savings.
 
-The relevant unresolved risk is losing necessary care while removing fixed ceremony. Source/packed install and owner-byte preservation checks, fresh ordinary/risky task use and independent review will test it. Comparative token savings and broad field adoption are not established by a smaller instruction set.
+Commands, failed interim checks, contributor returns, raw cost fields, method-use records and independent judgment: [work/proportional-v7.md](work/proportional-v7.md). The token estimate was exceeded in reported cached-input categories; the bounded context/elapsed scope held. No further build is commissioned by that cost finding.
 
-## What happens next
+## Limits and next action
 
-Finish the candidate, run it, fix concrete findings, obtain independent review, and release v7 within the bounded work record. No new product platform or old-Speck converter is part of this release. Ordinary implementation proceeds from the user's release request; the optional question about retaining a full sequence for larger products can still steer the candidate.
+Publish v7.0.0, verify the remote tag, then consume it through a normal requested install or upgrade. Independent review was pre-scheduled in the two use trials; spontaneous reviewer recruitment, broader UI/large-product behavior, comparative cost and durable adoption remain unproved. No known blocking defect remains. Old-Speck unmarked conversion is deferred.
 
-Previous field limits remain: the September 12 repair did not prove a repaired Odd GUI, its resolving Experience return, substantial nonvisual use, or durable field value. Those belong to their original product work; this release neither erases nor commissions them.
+The previous v6 and September 12 evidence retains its original scope. A repaired Odd GUI and resolving interaction run remain that product's work, not claims made by this release. Existing untracked local artifacts are unrelated and excluded.

@@ -1,6 +1,6 @@
 # Current map — v7
 
-The owner's September 25 request puts proportionality first. One live piece: **Proportionate work**. It changes entry, planning, records, staffing, review and upgrade together so a remaining v6 rule cannot silently restore the old overhead.
+The owner's September 25 request puts proportionality first. One live release piece: **Proportionate work** [independently accepted; publishing v7.0.0]. It changes entry, planning, records, staffing, review and upgrade together so a remaining v6 rule cannot silently restore the old overhead.
 
 Order: implement the coherent method and compatible upgrade → run source/packed installation and preservation checks → fresh use on a small project and a risky change → independent review of the candidate and actual evidence → release v7. The existing plain-file and Node platform stays. This is the smallest useful complete release; splitting the method from its templates or upgrade would leave users with conflicting instructions.
 

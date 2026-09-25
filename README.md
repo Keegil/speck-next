@@ -29,8 +29,17 @@ No vocabulary lesson. The agent used the real product while building.
 
 **Upgrade:** `npx -y github:Keegil/speck-next upgrade` on **marker-bearing** Speck Next repos (supported legacy through v7). Preserves owner records; supersedes v6 **procedure** (assessments, mandatory gates) without erasing product findings. **Old Speck** (unmarked v11 and earlier) has **no** converter yet — the command refuses honestly.
 
-Hard limits and promises: [CONTRACT.md](CONTRACT.md). Capability proof ledger: [capabilities.md](capabilities.md) (v7 evidence pending measured release).
+Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capabilities.md](capabilities.md).
 
 ## Status
 
-Current kernel target: **v7** (proportional method). This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
+Current version: **7.0.0**, with a method that scales to the request. This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
+
+## Install and check
+
+```sh
+npx -y github:Keegil/speck-next#v7.0.0 install /path/to/repo
+npx -y github:Keegil/speck-next#v7.0.0 upgrade /path/to/repo
+```
+
+For development, `bash devsuite/run.sh` runs deterministic installation, upgrade, preservation and refusal tests without model calls. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.
