@@ -57,6 +57,17 @@ Current-home census used case-insensitive keys `substantial|always|at least|four
 
 Final independent behavioral acceptance: sufficient. The same independent reviewer executed the small CLI and the risky module's nine tests, verified tenant filtering, CSV field projection and unchanged JSON behavior, and accepted both artifacts. It initially inferred an unsupported `signed_in` field; Product challenged that premise using the fixture's original module/tests, and the reviewer explicitly withdrew it and narrowed the security claim to the actual actor/tenant boundary. No speculative API change or method rule was added. All three verbatim reviewer returns are in `work/proportional-v7-review.md`.
 
-Final readiness: candidate method and installer accepted for v7.0.0; publishing is the remaining action. No unresolved blocking finding. The initial context/elapsed bounds held; token estimate did not. Actual independent-context usage: three contributors, one Composer implementation session, two fresh-use contexts and one Opus review session, reused for corrections and evidence returns. This is seven delegated contexts, not a fixed future staffing recommendation.
+Final readiness: candidate method and installer accepted for v7.0.0 and published. No unresolved blocking finding. The initial context/elapsed bounds held; token estimate did not. Actual independent-context usage: three contributors, one Composer implementation session, two fresh-use contexts and one Opus review session, reused for corrections and evidence returns. This is seven delegated contexts, not a fixed future staffing recommendation.
 
 Next real consumer: the owner's next native Speck Next install or upgrade. No sibling repository was upgraded automatically; each keeps its unfinished work and chooses its next requested task on adoption.
+
+
+## Published release read-back
+
+`git push --atomic origin main v7.0.0` succeeded. `git ls-remote origin 'refs/tags/v7.0.0*'` returned annotated tag `1b43909af55b209c2a4c14b8d016aa1c905ab255` and target `3852067d7d4aa1c950db5be3ae5ad57a3130fc4f`. `gh release view v7.0.0 --json url,tagName,isDraft,isPrerelease,targetCommitish` returned the release URL below, isDraft false and isPrerelease false.
+
+https://github.com/Keegil/speck-next/releases/tag/v7.0.0
+
+The real published command `npx -y github:Keegil/speck-next#v7.0.0 install /tmp/speck-v7/released-install` exited 0. Reading its marker and resolving discovery confirmed 7.0.0, method digest `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`, the canonical skills target, and absent `product.md`/`map.md`. That is the actual published package, not only a local pack. The release code/method matches the independently reviewed candidate; later changes are evidence and release documentation.
+
+Setup commit time was 08:06:45 UTC; release read-back was complete by the observed 08:25:18 UTC clock reading on September 25. This interval covers bounded implementation through release, not the preceding scoping. No sibling project was modified.
