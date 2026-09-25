@@ -290,3 +290,8 @@ The owner's quoted direction ratifies this result-first promise in his own words
 - Judge: a separate new carrier, dispatched only after a sufficient test.
 - Dispatch: only after this receipt is committed.
 - Verdict and judgment: pending.
+
+
+## September 25, 2026 — v7 proportionality
+
+The owner requested a major revision because mandatory overhead makes small projects unattractive. The full verbatim request, the three distinct role contributions plus Product synthesis, the single-release order, and the bounded checks are recorded once in [proportional-v7.md](proportional-v7.md). This reopens Shape around adaptive task-level judgment. Implementation of the explicitly requested candidate proceeds; the historical v6 ratifications above do not ratify the new wording. The owner can steer the concrete candidate in this conversation.

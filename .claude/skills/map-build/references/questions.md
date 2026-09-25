@@ -18,7 +18,7 @@ Ask one or two at a time. Give options, costs, and a recommendation. Keep the ow
 
 7. For each piece, what runs, which user types test it, and what does the judge rule on? Put one line in the map.
 8. Which pieces touch money, auth, private data, or irreversible sends and need extra care from the start?
-9. Product and Engineering join every substantial piece. For Business and Experience, which product-specific call conditions fire, what current direct evidence keeps either out, is that evidence still valid, and has a listed material change or uncertainty appeared? For every called role, what is the earliest run that can test its conclusion?
+9. Where could business, experience, or engineering judgment change the cut or order? What run would settle that uncertainty cheapest?
 
 ## Name milestones
 
@@ -26,6 +26,6 @@ Ask one or two at a time. Give options, costs, and a recommendation. Keep the ow
 
 ## Decide what it runs on
 
-11. What do the pieces require: data shape, model access, latency, privacy, a token estimate, and enforceable authorization in turns or contexts, time, retries/fallbacks, owner interruptions, and pre-first-run reading? Requirements come before brands; estimate crossings are cost findings, while authorization exhaustion stops more model work.
+11. What do the pieces require: data shape, model access, latency, privacy, owner budget? Requirements before brands.
 12. What are the options and their real costs: monthly money, lock-in, operating burden, and reversal cost after a stated number of pieces? Include the boring option. The owner picks a care level. Over-engineering past it is the recorded “we went a bit overboard” failure, just as under-engineering is.
 13. What would reopen this decision? Put it in `decisions.md`.

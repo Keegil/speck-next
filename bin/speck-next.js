@@ -18,26 +18,6 @@ const MARKER = path.join(".claude", "speck-next.json");
 const BASE_REPORTED_PATHS = [...SURFACE, MARKER, "map.md", "product.md"];
 const STALE_SKILL = path.join(".claude", "skills", "independent-review");
 const PRESERVE_ROOT_PREFIX = ".speck-next-preserved";
-const MAP_TEMPLATE = "# Map\n\nNo map yet. When shaping closes, the ordered build pieces land here — each naming what it serves and which shaped material it consumes, exactly one live, unconsumed shaped material listed at the bottom.\n";
-const RC1_UNIVERSAL_STATUS = "**Upgrade status:** Unassessed under v6. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, Product, Business, Experience, and Engineering assess this product in four separate contexts. Reopen Shape only if that assessment finds a wrong promise.";
-const REJECTED_RC2_STATUS = "**Upgrade status:** Unassessed under Speck Next 6.0.0-rc.2. Historical work keeps its original evidence and is not backfilled as role-shaped. Before the next substantial piece, separate Product, Business, Experience, and Engineering carriers assess the existing product and current map once. Business and Experience then define their observable call conditions, trusted evidence, expiry, and material changes. Reopen Shape only for a wrong promise and Map only for a wrong piece or order.";
-const ASSESSMENT_HEADING = "## Speck Next upgrade assessment";
-const ASSESSMENT_RECORD = "work/product-team-assessment.md";
-const ASSESSMENT_RECORD_LINE = `**Record:** \`${ASSESSMENT_RECORD}\``;
-const ASSESSMENT_PENDING = "**Speck Next upgrade assessment:** pending";
-const PRODUCT_TEAM_HEADING = "## Product team";
-const PRODUCT_TEAM_ROLES = ["Product", "Business", "Experience", "Engineering"];
-const ASSESSMENT_CONTRIBUTION_FIELDS = [
-  "Carrier", "Direct evidence", "Conclusion", "Assumptions", "Proposed change", "Active decision",
-];
-const PRODUCT_SYNTHESIS_HEADING = "## Product synthesis";
-const ROUTE_HEADING = "## Route";
-const CONDITIONAL_ROLE_FIELDS = [
-  "Protects", "Call when", "May stay out when", "Evidence expires", "Material changes",
-];
-const TRIVIAL_PRODUCT_TEAM_VALUES = new Set(["tbd", "todo", "none", "n/a", "placeholder"]);
-const ASSESSMENT_BLOCK = `${ASSESSMENT_HEADING}\n\n${ASSESSMENT_PENDING}\n${ASSESSMENT_RECORD_LINE}\n`;
-const RECOVERABLE_FIELDLESS_VERSION = "6.0.0-rc.2";
 const NULL_DEVICE = process.platform === "win32" ? "NUL" : "/dev/null";
 const REPORT_TIMEOUT_MS = 10000;
 const GENERATED_FILE_MODE = 0o644;
@@ -70,8 +50,8 @@ function parseCli(argv) {
   }
   if (paths.length > 1)
     die("refusing: install and upgrade accept at most one target directory. No target was accessed and nothing was touched.");
-  if (openAssessment && command !== "upgrade")
-    die("refusing: --open-assessment is available only with upgrade. No target was accessed and nothing was touched.");
+  if (openAssessment)
+    die("refusing: --open-assessment was retired in Speck Next v7. Run upgrade without that flag; historical assessments and product findings are preserved without a mandatory reassessment. No target was accessed and nothing was touched.");
   return { command, target: path.resolve(paths[0] || "."), openAssessment };
 }
 
@@ -574,7 +554,7 @@ function verifyCodexAdapter(root, adapter, phase) {
   }
 }
 
-function desiredWrites(migration, markerBytes) {
+function desiredWrites(markerBytes) {
   const sourceCheckout = sourceCommit();
   const manifest = surfaceManifest(SRC);
   const methodSurfaceSha256 = surfaceDigest(SRC, manifest);
@@ -592,18 +572,6 @@ function desiredWrites(migration, markerBytes) {
       kind: "link",
       target: codexAdapter.target,
       source: "codex-adapter",
-    });
-  const targetMap = path.join(target, "map.md");
-  const mapEntry = lstatOptional(targetMap);
-  const linkedMapTarget = mapEntry && mapEntry.isSymbolicLink() ? statOptional(targetMap) : null;
-  if (!mapEntry || (!mapEntry.isFile() && !(mapEntry.isSymbolicLink() && linkedMapTarget && linkedMapTarget.isFile())))
-    writes.set("map.md", { kind: "file", bytes: Buffer.from(MAP_TEMPLATE), mode: GENERATED_FILE_MODE, source: "map" });
-  if (migration.productContent !== null)
-    writes.set("product.md", {
-      kind: "file",
-      bytes: Buffer.from(migration.productContent),
-      mode: lstatOptional(path.join(target, "product.md")).mode,
-      source: "product",
     });
   writes.set(MARKER, { kind: "file", bytes: markerBytes, mode: GENERATED_FILE_MODE, source: "marker" });
   return { sourceCheckout, manifest, methodSurfaceSha256, writes, codexAdapter };
@@ -689,7 +657,32 @@ function markerSourceCheckout(marker) {
   return marker && (marker.sourceCheckout || marker.commit) || null;
 }
 
-function markerBytes(existing, provenance, assessmentRecord) {
+function protectOwnerRecordAliases(roots) {
+  // A link into a replaced method directory can change owner records without
+  // writing their own paths. map.md has its existing localization transaction.
+  const pending = ["product.md", "state.md", "decisions.md", "work"];
+  while (pending.length) {
+    const relative = pending.pop();
+    const absolute = ensureTargetRelative(relative);
+    const entry = lstatOptional(absolute);
+    if (!entry) continue;
+    if (entry.isSymbolicLink()) {
+      const destinations = [
+        path.resolve(path.dirname(absolute), fs.readlinkSync(absolute)),
+        realpathOptional(absolute),
+      ].filter(Boolean);
+      if (roots.some(root => destinations.some(destination => {
+        const replaced = ensureTargetRelative(root.relative);
+        return pathInside(replaced, destination) || pathInside(destination, replaced);
+      })))
+        transactionError(`refusing: owner record ${normalizedRelative(relative)} links into a method path this upgrade replaces. Make that record local while preserving its contents, then retry. Nothing was touched.`);
+    } else if (entry.isDirectory()) {
+      for (const name of fs.readdirSync(absolute)) pending.push(path.join(relative, name));
+    }
+  }
+}
+
+function markerBytes(existing, provenance) {
   let installedAt = new Date().toISOString();
   if (existing && existing.version === VERSION &&
       markerSourceCheckout(existing) === provenance.sourceCheckout && existing.installedAt)
@@ -699,15 +692,15 @@ function markerBytes(existing, provenance, assessmentRecord) {
     version: VERSION,
     sourceCheckout: provenance.sourceCheckout,
     methodSurfaceSha256: provenance.methodSurfaceSha256,
-    upgradeAssessmentRecord: assessmentRecord,
+    upgradeAssessmentRecord: null,
   };
   next.installedAt = installedAt;
   return Buffer.from(JSON.stringify(next, null, 2) + "\n");
 }
 
-function transactionPlan(existingMarker, migration) {
-  const plan = desiredWrites(migration, Buffer.alloc(0));
-  const marker = markerBytes(existingMarker, plan, migration.assessmentRecord);
+function transactionPlan(existingMarker) {
+  const plan = desiredWrites(Buffer.alloc(0));
+  const marker = markerBytes(existingMarker, plan);
   plan.writes.set(MARKER, { kind: "file", bytes: marker, source: "marker" });
   const primaryRoots = new Map();
   for (const candidate of candidateRoots(plan)) {
@@ -716,6 +709,7 @@ function transactionPlan(existingMarker, migration) {
     if (!primaryRoots.has(key)) primaryRoots.set(key, { relative: root.relative, kind: root.kind, members: [] });
     primaryRoots.get(key).members.push(candidate.relative);
   }
+  protectOwnerRecordAliases([...primaryRoots.values()]);
   if (localizeCarriedMapAlias(plan, [...primaryRoots.values()])) {
     const mapRoot = plannedRoot({ relative: "map.md", kind: "file" });
     const key = normalizedRelative(mapRoot.relative);
@@ -1369,8 +1363,8 @@ Transaction.prototype.cleanup = function cleanup() {
   throw failure;
 };
 
-function applyInstalledSurface(existingMarker, migration) {
-  const plan = transactionPlan(existingMarker, migration);
+function applyInstalledSurface(existingMarker) {
+  const plan = transactionPlan(existingMarker);
   const transaction = new Transaction(plan);
   try {
     const productExists = plan.writes.has("product.md") || entryExists(path.join(target, "product.md"));
@@ -1414,544 +1408,23 @@ function normalizedVersion(version) {
   return String(version || "").trim().replace(/^v/i, "");
 }
 
-function migrationSource(version) {
-  const normalized = normalizedVersion(version);
-  const match = normalized.match(/^(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?$/);
-  if (!match) return "unknown";
-  if (normalized === "6.0.0-rc.1") return "rc.1";
-  return Number(match[1]) < 6 ? "pre-v6" : "current";
-}
-
-function backtickRunLength(line, column) {
-  let end = column;
-  while (line[end] === "`") end += 1;
-  return end - column;
-}
-
-function escapedBacktickOpener(line, column) {
-  let backslashes = 0;
-  for (let index = column - 1; index >= 0 && line[index] === "\\"; index -= 1)
-    backslashes += 1;
-  return backslashes % 2 === 1;
-}
-
-const HTML_BLOCK_TAGS = "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul";
-const HTML_BLOCK_TAG = new RegExp(`^<\\/?(?:${HTML_BLOCK_TAGS})(?:[ \\t]|\\/?>|$)`, "i");
-
-function startsNonCommentHtmlBlock(line) {
-  const start = line.match(/^ {0,3}(.*)$/);
-  if (!start || !start[1].startsWith("<") || start[1].startsWith("<!--")) return false;
-  const text = start[1];
-  return /^(?:<(?:script|pre|style|textarea)(?:[ \t]|>|$)|<\?|<![A-Z]|<!\[CDATA\[)/i.test(text) ||
-    HTML_BLOCK_TAG.test(text);
-}
-
-function startsNewMarkdownBlock(line) {
-  if (/^[ \t]*$/.test(line)) return true;
-  if (/^(?: {4}| {0,3}\t)/.test(line)) return true;
-  if (/^[ \t]*>/.test(line)) return true;
-  if (/^ {0,3}(?:`{3,}|~{3,})/.test(line)) return true;
-  if (/^ {0,3}#{1,6}(?:[ \t]+|$)/.test(line)) return true;
-  if (/^ {0,3}(?:[-+*](?:[ \t]+|$)|\d{1,9}[.)](?:[ \t]+|$))/.test(line)) return true;
-  if (/^ {0,3}(?:=+|-+)[ \t]*$/.test(line)) return true;
-  if (/^ {0,3}(?:(?:\*[ \t]*){3,}|(?:_[ \t]*){3,}|(?:-[ \t]*){3,})$/.test(line)) return true;
-  return startsNonCommentHtmlBlock(line);
-}
-
-function findBalancedCodeSpanEnd(lines, lineIndex, column, runLength, allowMultiline) {
-  const endLine = allowMultiline ? lines.length : lineIndex + 1;
-  for (let index = lineIndex; index < endLine; index += 1) {
-    const line = lines[index];
-    if (index !== lineIndex && startsNewMarkdownBlock(line)) return null;
-    let cursor = index === lineIndex ? column + runLength : 0;
-    while (cursor < line.length) {
-      const tick = line.indexOf("`", cursor);
-      if (tick === -1) break;
-      const length = backtickRunLength(line, tick);
-      if (length === runLength) return { line: index, column: tick + length };
-      cursor = tick + length;
-    }
-  }
-  return null;
-}
-
-function logicalLineRecords(content) {
-  const records = [];
-  let start = 0;
-  for (let index = 0; index < content.length; index += 1) {
-    let ending = "";
-    if (content[index] === "\r") {
-      ending = content[index + 1] === "\n" ? "\r\n" : "\r";
-    } else if (content[index] === "\n") {
-      ending = "\n";
-    } else {
-      continue;
-    }
-    records.push({ text: content.slice(start, index), ending });
-    if (ending === "\r\n") index += 1;
-    start = index + 1;
-  }
-  records.push({ text: content.slice(start), ending: "" });
-  return records;
-}
-
-function joinLogicalLineRecords(records) {
-  return records.map(record => record.text + record.ending).join("");
-}
-
-function activeMarkdownLines(content, subject = "product.md") {
-  const records = logicalLineRecords(content);
-  const lines = records.map(record => record.text);
-  const active = Array(lines.length).fill(true);
-  let fence = null;
-  let htmlComment = false;
-  let codeSpanEnd = null;
-  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
-    const line = lines[lineIndex];
-    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/);
-    if (fence) {
-      active[lineIndex] = false;
-      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length) fence = null;
-      continue;
-    }
-    if (!htmlComment && /^[ \t]*>/.test(line)) {
-      active[lineIndex] = false;
-      continue;
-    }
-    if (!htmlComment && marker) {
-      fence = marker[1];
-      active[lineIndex] = false;
-      continue;
-    }
-    let cursor = codeSpanEnd && codeSpanEnd.line === lineIndex ? codeSpanEnd.column : 0;
-    if (codeSpanEnd) {
-      active[lineIndex] = false;
-      if (codeSpanEnd.line > lineIndex) continue;
-      codeSpanEnd = null;
-    }
-    let commentTouched = htmlComment;
-    while (true) {
-      if (htmlComment) {
-        const close = line.indexOf("-->", cursor);
-        if (close === -1) break;
-        htmlComment = false;
-        commentTouched = true;
-        cursor = close + 3;
-      } else {
-        const open = line.indexOf("<!--", cursor);
-        const tick = line.indexOf("`", cursor);
-        if (open === -1 && tick === -1) break;
-        if (tick !== -1 && (open === -1 || tick < open)) {
-          const length = backtickRunLength(line, tick);
-          if (escapedBacktickOpener(line, tick)) {
-            cursor = tick + length;
-            continue;
-          }
-          // A real comment makes its whole line inactive. Inline code later on
-          // that line may shield same-line literals, but cannot reach forward
-          // and suppress evidence on the next clean line.
-          const close = findBalancedCodeSpanEnd(
-            lines, lineIndex, tick, length, !commentTouched
-          );
-          if (!close) {
-            cursor = tick + length;
-            continue;
-          }
-          if (close.line === lineIndex) {
-            cursor = close.column;
-            continue;
-          }
-          for (let touched = lineIndex; touched <= close.line; touched += 1)
-            active[touched] = false;
-          codeSpanEnd = close;
-          break;
-        }
-        htmlComment = true;
-        commentTouched = true;
-        // Starting at the opener's dashes also handles the valid short forms
-        // <!--> and <!---> while the first --> still closes ordinary comments.
-        cursor = open + 2;
-      }
-    }
-    if (commentTouched) active[lineIndex] = false;
-  }
-  if (htmlComment)
-    assessmentError(
-      `${subject} contains an unclosed HTML comment, so its current assessment evidence cannot be determined.`,
-      `Next: close the HTML comment in ${subject} without changing the intended current assessment fields, then run the upgrade again.`
-    );
-  return { records, lines, active };
-}
-
-function assessmentError(message, repair = "Next: restore consistent assessment evidence, then run the upgrade again.") {
-  die(`refusing: ${message}\nNothing in the repository changed.\n${repair}`);
-}
-
-function unusableProductTeamValue(value) {
-  const trimmed = value.replace(/\p{Default_Ignorable_Code_Point}/gu, "").trim();
-  return !trimmed || /^\[[^\]]*\]$/.test(trimmed) ||
-    TRIVIAL_PRODUCT_TEAM_VALUES.has(trimmed.toLowerCase());
-}
-
-function validateCompletedProductTeam(lines, active) {
-  const headings = lines.flatMap((line, index) =>
-    active[index] && line === PRODUCT_TEAM_HEADING ? [index] : []
-  );
-  if (headings.length !== 1) {
-    const issue = headings.length === 0
-      ? "Product team section: missing"
-      : `Product team section: duplicate (${headings.length} current sections)`;
-    incompleteProductTeamError([issue]);
-  }
-
-  const start = headings[0];
-  let end = lines.length;
-  for (let index = start + 1; index < lines.length; index += 1) {
-    if (active[index] && /^##[ \t]+[^#]/.test(lines[index])) { end = index; break; }
-  }
-
-  const rows = Object.fromEntries(PRODUCT_TEAM_ROLES.map(role => [role, []]));
-  const rolePattern = /^- \*\*(Product|Business|Experience|Engineering)\*\* —(.*)$/;
-  for (let index = start + 1; index < end; index += 1) {
-    if (!active[index]) continue;
-    const match = lines[index].match(rolePattern);
-    if (match) rows[match[1]].push(match[2].trim());
-  }
-
-  const issues = [];
-  for (const role of ["Product", "Engineering"]) {
-    if (rows[role].length === 0) issues.push(`${role}: responsibility missing`);
-    else if (rows[role].length > 1) issues.push(`${role}: duplicate row`);
-    else if (unusableProductTeamValue(rows[role][0]))
-      issues.push(`${role}: responsibility unusable`);
-  }
-
-  const escapedLabels = CONDITIONAL_ROLE_FIELDS.map(label =>
-    label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  );
-  const fieldPattern = new RegExp(
-    `(?:^| · )(${escapedLabels.join("|")}):(.*?)(?= · (?:${escapedLabels.join("|")}):|$)`,
-    "g"
-  );
-  for (const role of ["Business", "Experience"]) {
-    if (rows[role].length === 0) {
-      for (const field of CONDITIONAL_ROLE_FIELDS) issues.push(`${role}.${field}: missing`);
-      continue;
-    }
-    if (rows[role].length > 1) {
-      issues.push(`${role}: duplicate row`);
-      continue;
-    }
-    const fields = Object.fromEntries(CONDITIONAL_ROLE_FIELDS.map(field => [field, []]));
-    for (const match of rows[role][0].matchAll(fieldPattern)) fields[match[1]].push(match[2]);
-    for (const field of CONDITIONAL_ROLE_FIELDS) {
-      if (fields[field].length === 0) issues.push(`${role}.${field}: missing`);
-      else if (fields[field].length > 1) issues.push(`${role}.${field}: duplicate`);
-      else if (unusableProductTeamValue(fields[field][0]))
-        issues.push(`${role}.${field}: unusable`);
-    }
-  }
-  if (issues.length) incompleteProductTeamError(issues);
-}
-
-function incompleteProductTeamError(issues) {
-  assessmentError(
-    `the completed upgrade assessment cannot proceed because product.md does not contain one usable Product team definition:\n- ${issues.join("\n- ")}`,
-    `Next: restore ${ASSESSMENT_PENDING}, finish product.md's Product team section with the existing four-role assessment evidence, commit product.md, ${ASSESSMENT_RECORD}, and state.md together, then run the upgrade again.`
-  );
-}
-
-function assessmentComparisonValue(value) {
-  return value.replace(/\p{Default_Ignorable_Code_Point}/gu, "").trim();
-}
-
-function currentSectionBody(lines, active, start) {
-  let end = lines.length;
-  for (let index = start + 1; index < lines.length; index += 1) {
-    if (active[index] && /^##[ \t]+[^#]/.test(lines[index])) { end = index; break; }
-  }
-  return lines.slice(start + 1, end).filter((line, offset) =>
-    active[start + 1 + offset] && assessmentComparisonValue(line)
-  );
-}
-
-function completedAssessmentExpectedRoute(assessment) {
-  if (assessment.route === "Shape") return "Shape reopened";
-  if (assessment.route === "Map") return "Map reopened";
-  return `Resume ${assessment.livePiece} from state.md`;
-}
-
-function validateCompletedAssessmentRecord(recordPath, assessment) {
-  const content = fs.readFileSync(recordPath, "utf8");
-  const { lines, active } = activeMarkdownLines(content, ASSESSMENT_RECORD);
-  const issues = [];
-  const carriers = [];
-
-  for (const role of PRODUCT_TEAM_ROLES) {
-    const heading = `## ${role}`;
-    const headings = lines.flatMap((line, index) =>
-      active[index] && line === heading ? [index] : []
-    );
-    if (headings.length === 0) {
-      issues.push(`${role}: heading missing`);
-      continue;
-    }
-    if (headings.length > 1) {
-      issues.push(`${role}: duplicate heading (${headings.length} current sections)`);
-      continue;
-    }
-
-    const body = currentSectionBody(lines, active, headings[0]);
-    const values = {};
-    for (const field of ASSESSMENT_CONTRIBUTION_FIELDS) {
-      const prefix = `${field}:`;
-      const matches = body.flatMap(line => line.startsWith(prefix) ? [line.slice(prefix.length)] : []);
-      if (matches.length === 0) issues.push(`${role}.${field}: missing`);
-      else if (matches.length > 1)
-        issues.push(`${role}.${field}: duplicate (${matches.length} current fields)`);
-      else if (!assessmentComparisonValue(matches[0])) issues.push(`${role}.${field}: blank`);
-      else values[field] = matches[0];
-    }
-    if (values.Carrier) carriers.push({ role, identity: assessmentComparisonValue(values.Carrier) });
-  }
-
-  const identities = new Map();
-  for (const carrier of carriers) {
-    const roles = identities.get(carrier.identity) || [];
-    roles.push(carrier.role);
-    identities.set(carrier.identity, roles);
-  }
-  for (const [identity, roles] of identities) {
-    if (roles.length > 1)
-      issues.push(`Carrier: ${roles.join(" and ")} use the same identity ${JSON.stringify(identity)}`);
-  }
-
-  const synthesisHeadings = lines.flatMap((line, index) =>
-    active[index] && line === PRODUCT_SYNTHESIS_HEADING ? [index] : []
-  );
-  if (synthesisHeadings.length === 0) issues.push("Product synthesis: heading missing");
-  else if (synthesisHeadings.length > 1)
-    issues.push(`Product synthesis: duplicate heading (${synthesisHeadings.length} current sections)`);
-  else if (currentSectionBody(lines, active, synthesisHeadings[0]).length === 0)
-    issues.push("Product synthesis: blank");
-
-  const routeHeadings = lines.flatMap((line, index) =>
-    active[index] && line === ROUTE_HEADING ? [index] : []
-  );
-  if (routeHeadings.length === 0) issues.push("Route: heading missing");
-  else if (routeHeadings.length > 1)
-    issues.push(`Route: duplicate heading (${routeHeadings.length} current sections)`);
-  else {
-    const routeLines = currentSectionBody(lines, active, routeHeadings[0]);
-    if (routeLines.length === 0) issues.push("Route: blank");
-    else if (routeLines.length > 1)
-      issues.push(`Route: expected one current plain line, found ${routeLines.length}`);
-    else {
-      const expected = completedAssessmentExpectedRoute(assessment);
-      const actual = routeLines[0].trim();
-      if (actual !== expected && actual !== `${expected}.`)
-        issues.push(`Route: ${JSON.stringify(actual)} does not match ${JSON.stringify(expected)}`);
-    }
-  }
-
-  if (issues.length)
-    assessmentError(
-      `the completed upgrade assessment cannot proceed because ${ASSESSMENT_RECORD} is incomplete or ambiguous:\n- ${issues.join("\n- ")}`,
-      `Next: repair ${ASSESSMENT_RECORD} with four distinct complete role contributions, one Product synthesis, and one Route matching product.md; commit the assessment, product.md, and state.md together, then run the upgrade again.`
-    );
-}
-
-function parseAssessment(content, required = false) {
-  const { lines, active } = activeMarkdownLines(content);
-  const headings = lines.flatMap((line, index) => active[index] && line === ASSESSMENT_HEADING ? [index] : []);
-  if (headings.length === 0) {
-    if (required) assessmentError(`the marker requires ${ASSESSMENT_HEADING}, but that canonical section is missing.`);
-    return null;
-  }
-  if (headings.length !== 1)
-    assessmentError(`product.md contains ${headings.length} canonical upgrade-assessment sections; exactly one is required.`);
-  const start = headings[0];
-  let end = lines.length;
-  for (let index = start + 1; index < lines.length; index += 1) {
-    if (active[index] && /^##[ \t]+[^#]/.test(lines[index])) { end = index; break; }
-  }
-  const statusPrefix = "**Speck Next upgrade assessment:**";
-  const statusLines = [];
-  const recordLines = [];
-  for (let index = start + 1; index < end; index += 1) {
-    if (!active[index]) continue;
-    if (lines[index].startsWith(statusPrefix)) statusLines.push(lines[index]);
-    if (lines[index].startsWith("**Record:**")) recordLines.push(lines[index]);
-  }
-  if (statusLines.length !== 1)
-    assessmentError(`the canonical upgrade-assessment section has ${statusLines.length} status fields; exactly one is required.`);
-  if (recordLines.length !== 1 || recordLines[0] !== ASSESSMENT_RECORD_LINE)
-    assessmentError(`the canonical upgrade-assessment section must contain exactly ${ASSESSMENT_RECORD_LINE}.`);
-
-  const status = statusLines[0];
-  let assessment;
-  if (status === ASSESSMENT_PENDING) {
-    assessment = { state: "pending", route: null, record: ASSESSMENT_RECORD };
-  } else if (status === "**Speck Next upgrade assessment:** complete — Shape reopened") {
-    assessment = { state: "complete", route: "Shape", record: ASSESSMENT_RECORD };
-  } else if (status === "**Speck Next upgrade assessment:** complete — Map reopened") {
-    assessment = { state: "complete", route: "Map", record: ASSESSMENT_RECORD };
-  } else {
-    const resumed = status.match(/^\*\*Speck Next upgrade assessment:\*\* complete — resumed (.+) from state\.md$/);
-    const livePiece = resumed && resumed[1].trim();
-    if (!livePiece || /^\[.*\]$/.test(livePiece))
-      assessmentError(`the canonical upgrade-assessment status is not pending or one of the three allowed completed routes.`);
-    assessment = { state: "complete", route: "resume", livePiece, record: ASSESSMENT_RECORD };
-  }
-  if (assessment.state === "complete") {
-    const recordPath = path.join(target, ASSESSMENT_RECORD);
-    if (!fs.existsSync(recordPath) || !fs.statSync(recordPath).isFile())
-      assessmentError(`the upgrade assessment says complete, but ${ASSESSMENT_RECORD} is missing.`);
-    validateCompletedAssessmentRecord(recordPath, assessment);
-    if (assessment.route === "Map" || assessment.route === "resume")
-      validateCompletedProductTeam(lines, active);
-  }
-  return assessment;
-}
-
-function removeGeneratedLine(content, generated) {
-  const { records, lines, active } = activeMarkdownLines(content);
-  const matches = lines.flatMap((line, index) => active[index] && line === generated ? [index] : []);
-  if (matches.length > 1)
-    assessmentError(`product.md contains ${matches.length} current copies of a generated upgrade status; its origin is ambiguous.`);
-  if (matches.length === 0) return { content, removed: false };
-  records[matches[0]].text = "";
-  return { content: joinLogicalLineRecords(records), removed: true };
-}
-
-function appendAssessment(content) {
-  const records = logicalLineRecords(content);
-  const ending = records.reduce(
-    (nearest, record) => record.ending || nearest,
-    "\n"
-  );
-  const prefix = /[\r\n]$/.test(content) ? ending : ending + ending;
-  const block = ASSESSMENT_BLOCK.replace(/\n/g, ending);
-  return content + prefix + block;
-}
-
-function hasOwn(object, key) {
-  return Object.prototype.hasOwnProperty.call(object, key);
-}
-
 function entryExists(absolute) {
-  try {
-    fs.lstatSync(absolute);
-    return true;
-  } catch (error) {
-    if (error.code === "ENOENT") return false;
-    throw error;
-  }
+  return lstatOptional(absolute) !== null;
 }
 
-function markerAssessmentDisposition(prior) {
-  if (!hasOwn(prior, "upgradeAssessmentRecord")) return { known: false, record: null };
-  const record = prior.upgradeAssessmentRecord;
-  if (record !== null && record !== ASSESSMENT_RECORD)
-    assessmentError(
-      `the marker's upgradeAssessmentRecord is ${JSON.stringify(record)}; it must be null or ${JSON.stringify(ASSESSMENT_RECORD)}.`,
-      "Next: restore the marker's explicit assessment disposition from version control, then run the upgrade again."
-    );
-  return { known: true, record };
-}
-
-function openAssessmentError() {
-  assessmentError(
-    "--open-assessment applies only to a current rc.2 repository whose marker is missing upgradeAssessmentRecord and whose regular product.md has no canonical or generated assessment evidence.",
-    "Next: run the upgrade again without --open-assessment so the repository's existing evidence determines the route."
-  );
-}
-
-function planProductTeamAssessment(source, prior, openAssessmentRequested) {
-  const productPath = path.join(target, "product.md");
-  const disposition = markerAssessmentDisposition(prior);
-  if (!entryExists(productPath)) {
-    if (disposition.record === ASSESSMENT_RECORD)
-      assessmentError(
-        `the marker requires ${ASSESSMENT_RECORD}, but product.md is missing.`,
-        "Next: restore product.md and its canonical assessment block, then run the upgrade again."
-      );
-    if (openAssessmentRequested) openAssessmentError();
-    return {
-      message: "Product team migration: product.md is missing, so no product history or assessment was invented.",
-      assessment: null,
-      assessmentRecord: null,
-      productContent: null,
-    };
+function migrationSource(version) {
+  if (typeof version !== "string") return "unknown";
+  const normalized = normalizedVersion(version);
+  const match = normalized.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$/);
+  if (!match) return "unknown";
+  const source = match.slice(1, 4).map(Number);
+  const current = VERSION.split(".").map(Number);
+  if (!source.every(Number.isSafeInteger) || source[0] < 1) return "unknown";
+  for (let index = 0; index < 3; index += 1) {
+    if (source[index] > current[index]) return "future";
+    if (source[index] < current[index]) return "supported";
   }
-  if (!fs.lstatSync(productPath).isFile())
-    assessmentError(
-      "product.md exists but is not a regular file.",
-      "Next: restore product.md as a regular file, then run the upgrade again."
-    );
-
-  const original = fs.readFileSync(productPath, "utf8");
-  const existing = parseAssessment(original, disposition.record === ASSESSMENT_RECORD);
-  const rc1 = removeGeneratedLine(original, RC1_UNIVERSAL_STATUS);
-  const rejectedRc2 = removeGeneratedLine(rc1.content, REJECTED_RC2_STATUS);
-  const generatedAssessment = rc1.removed || rejectedRc2.removed;
-  const recordPath = path.join(target, ASSESSMENT_RECORD);
-  if (!existing && entryExists(recordPath))
-    assessmentError(
-      `${ASSESSMENT_RECORD} exists without a canonical assessment block in product.md.`,
-      `Next: restore the matching canonical block or move the orphan record aside, then run the upgrade again.`
-    );
-
-  if (disposition.known && disposition.record === null) {
-    if (existing || generatedAssessment || source !== "current")
-      assessmentError(
-        "the marker says no upgrade assessment applies, but the repository contains evidence that one is required.",
-        "Next: restore the marker and product assessment evidence from the same successful upgrade, then run it again."
-      );
-    if (openAssessmentRequested) openAssessmentError();
-    return {
-      message: "Product team migration: not needed (the marker explicitly records that no one-time assessment applies).",
-      assessment: null,
-      assessmentRecord: null,
-      productContent: null,
-    };
-  }
-
-  if (existing) {
-    if (openAssessmentRequested) openAssessmentError();
-    return {
-      message: `Product team migration: kept the explicit ${existing.state} upgrade assessment; product.md was unchanged.`,
-      assessment: existing,
-      assessmentRecord: ASSESSMENT_RECORD,
-      productContent: null,
-    };
-  }
-
-  const ambiguousCurrent = source === "current" && !disposition.known && !generatedAssessment;
-  const recoverableAmbiguity = ambiguousCurrent &&
-    normalizedVersion(prior.version) === RECOVERABLE_FIELDLESS_VERSION;
-  if (openAssessmentRequested && !recoverableAmbiguity) openAssessmentError();
-
-  if (ambiguousCurrent && !openAssessmentRequested)
-    assessmentError(
-      recoverableAmbiguity
-        ? "this current rc.2 marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied."
-        : `this ${JSON.stringify(prior.version)} marker has no upgradeAssessmentRecord field and product.md has no surviving canonical or generated assessment evidence; Speck Next will not guess whether the one-time assessment applied.`,
-      recoverableAmbiguity
-        ? "Next: run the upgrade again with --open-assessment to conservatively open the one-time assessment. Product work will not resume until that assessment records its route."
-        : "Next: restore consistent assessment evidence for this version, then run the upgrade again."
-    );
-
-  const productContent = appendAssessment(rejectedRc2.content);
-  const assessment = parseAssessment(productContent, true);
-  let message = openAssessmentRequested
-    ? "Product team migration: --open-assessment preserved every existing product byte and appended one explicit pending upgrade assessment."
-    : "Product team migration: preserved historical product bytes and appended one explicit pending upgrade assessment.";
-  if (!openAssessmentRequested && rc1.removed)
-    message = "Product team migration: removed the exact generated rc.1 status and appended one explicit pending upgrade assessment; every other historical byte was preserved.";
-  else if (!openAssessmentRequested && rejectedRc2.removed)
-    message = "Product team migration: repaired the rejected rc.2 generated status into one explicit pending upgrade assessment; every other historical byte was preserved.";
-  return { message, assessment, assessmentRecord: ASSESSMENT_RECORD, productContent };
+  return "current";
 }
 
 function versionWithProvenance(version, sourceCheckout, methodSurfaceSha256) {
@@ -1978,36 +1451,13 @@ function preservationLines(preserved) {
   );
 }
 
-function upgradeNext(changes, diff, assessment, productExists) {
-  const hasChanges = Boolean(changes || diff);
-  if (!productExists) {
-    return hasChanges
-      ? "Next: review the reported paths and complete diff, commit the upgrade, then open Shape to create and ratify product.md before Map or any substantial work."
-      : "Next: there are no upgrade changes to commit; open Shape to create and ratify product.md before Map or any substantial work.";
-  }
-  if (assessment && assessment.state === "pending") {
-    return hasChanges
-      ? `Next: review the reported paths and complete diff, commit the upgrade, then complete ${ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md.`
-      : `Next: there are no upgrade changes to commit; complete ${ASSESSMENT_RECORD} by following “Finish an upgrade” in AGENTS.md.`;
-  }
-  if (assessment && assessment.route === "Shape") {
-    return hasChanges
-      ? "Next: review the reported paths and complete diff, commit the upgrade, then continue Shape from state.md."
-      : "Next: there are no upgrade changes to commit; continue Shape from state.md.";
-  }
-  if (assessment && assessment.route === "Map") {
-    return hasChanges
-      ? "Next: review the reported paths and complete diff, commit the upgrade, then continue Map from state.md."
-      : "Next: there are no upgrade changes to commit; continue Map from state.md.";
-  }
-  if (assessment && assessment.route === "resume") {
-    return hasChanges
-      ? `Next: review the reported paths and complete diff, commit the upgrade, then resume ${assessment.livePiece} from state.md.`
-      : `Next: there are no upgrade changes to commit; resume ${assessment.livePiece} from state.md.`;
-  }
-  return hasChanges
-    ? "Next: review the reported paths and complete diff, commit the upgrade, then resume current work from state.md."
-    : "Next: there are no upgrade changes to commit; resume current work from state.md.";
+function upgradeNext(changes, diff) {
+  const continuation = entryExists(path.join(target, "state.md"))
+    ? "read current state.md and the user's request, then choose the work and care they need. Historical method assessments do not reopen or resolve product findings."
+    : "continue from the user's current request, adding records and care only as the work needs them.";
+  return (changes || diff)
+    ? `Next: review the reported paths and complete diff, commit the upgrade, then ${continuation}`
+    : `Next: there are no upgrade changes to commit; ${continuation}`;
 }
 
 if (cmd === "install") {
@@ -2019,13 +1469,13 @@ if (cmd === "install") {
         `If it's a Speck Next repo, use: npx github:Keegil/speck-next upgrade\n` +
         `If it's an old-Speck or custom repo, converting it is a later version's job. Nothing was touched.`);
   try {
-    const install = applyInstalledSurface(null, { message: "", assessment: null, assessmentRecord: null, productContent: null });
+    const install = applyInstalledSurface(null);
     for (const line of localizationLines(install.localizedLinks)) console.log(line);
     for (const line of retiredLinkLines(install.retiredLinks)) console.log(line);
     for (const line of preservationLines(install.preserved)) console.log(line);
     console.log(`Installed Speck Next ${versionWithProvenance(VERSION, install.sourceCheckout, install.methodSurfaceSha256)} into ${targetDisplay} — ${install.installedEntries.length} installed or carried-forward files on disk.`);
     console.log(`Installed paths:\n${install.installedEntries.join("\n")}`);
-    console.log("Next: open an agent session there and say what you want to build — shaping starts in that conversation.");
+    console.log("Next: open an agent session there and say what you want to do; the agent chooses the amount of method the request needs.");
   } catch (error) {
     die(error.speckMessage || error.message);
   }
@@ -2038,26 +1488,30 @@ if (cmd === "install") {
   let prior;
   try { prior = JSON.parse(fs.readFileSync(markerPath, "utf8")); }
   catch { die(`refusing: ${MARKER} is not valid JSON. Nothing was touched.`); }
+  if (!prior || typeof prior !== "object" || Array.isArray(prior) ||
+      (prior.name !== undefined && prior.name !== "speck-next"))
+    die(`refusing: ${MARKER} is not a Speck Next marker object. Nothing was touched.`);
   const source = migrationSource(prior.version);
   if (source === "unknown")
     die(`refusing: ${MARKER} carries an unknown version (${JSON.stringify(prior.version)}). Nothing was touched.`);
-  const migration = planProductTeamAssessment(source, prior, openAssessment);
+  if (source === "future")
+    die(`refusing: ${MARKER} carries a future version (${JSON.stringify(prior.version)}); this installer is ${VERSION}. Nothing was touched.`);
   try {
-    const upgraded = applyInstalledSurface(prior, migration);
+    const upgraded = applyInstalledSurface(prior);
     const from = versionWithProvenance(prior.version, markerSourceCheckout(prior), prior.methodSurfaceSha256 || null);
     const to = versionWithProvenance(VERSION, upgraded.sourceCheckout, upgraded.methodSurfaceSha256);
     for (const line of localizationLines(upgraded.localizedLinks)) console.log(line);
     for (const line of retiredLinkLines(upgraded.retiredLinks)) console.log(line);
     for (const line of preservationLines(upgraded.preserved)) console.log(line);
     console.log(`Upgraded Speck Next ${from} -> ${to} in ${targetDisplay}.`);
-    console.log(migration.message);
+    console.log("Upgrade policy: historical product records and findings are preserved; v7 requires no product-team assessment.");
     console.log(upgraded.changes
       ? `Working-tree changes across the complete installed surface plus product.md:\n${upgraded.changes}`
       : "Working-tree changes across the complete installed surface plus product.md: none.");
     console.log(upgraded.diff
       ? `Complete installed-surface plus product.md diff (working tree against HEAD):\n${upgraded.diff}`
       : "Complete installed-surface plus product.md diff: empty.");
-    console.log(upgradeNext(upgraded.changes, upgraded.diff, migration.assessment, upgraded.productExists));
+    console.log(upgradeNext(upgraded.changes, upgraded.diff));
   } catch (error) {
     die(error.speckMessage || error.message);
   }
@@ -2067,8 +1521,8 @@ if (cmd === "install") {
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
   npx github:Keegil/speck-next upgrade [dir] --open-assessment
-                                                conservatively open an ambiguous rc.2 assessment
+                                                retired in v7; refuses without changing files
 
 The method itself is one page: AGENTS.md. Everything else is five skills your agent loads on demand, and six file skeletons in templates/.
-Pin a released tag, e.g.: npx -y github:Keegil/speck-next#v5.0.0 install  (all tags: github.com/Keegil/speck-next/tags)`);
+Pin a released tag, e.g.: npx -y github:Keegil/speck-next#v7.0.0 install  (all tags: github.com/Keegil/speck-next/tags)`);
 }

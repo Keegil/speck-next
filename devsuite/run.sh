@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Dev suite: measures the kernel on tiny scored tasks. Usage:
-#   ./devsuite/run.sh               run all tasks with a live agent (DEVSUITE_DRIVER=codex|claude)
-#   ./devsuite/run.sh --control     no agent; every task's KEY check must go RED (proves checks can fail)
-#   ./devsuite/run.sh --ungoverned  strip AGENTS.md/CLAUDE.md/.claude from the clone first (control arm)
-#   ./devsuite/run.sh bug-hunt      run one task
+# Default: deterministic v7 install, upgrade, preservation and refusal checks.
+# Historical model campaigns require an explicit --legacy. Their role-policy
+# assertions describe the release they measured, not v7 acceptance criteria.
+#   ./devsuite/run.sh
+#   ./devsuite/run.sh --legacy --control
+#   ./devsuite/run.sh --legacy bug-hunt
 #
 # Honest measurement note: live drivers also carry the owner's global agent
 # instructions (~/.claude, ~/.codex), which themselves teach evidence honesty.
@@ -12,6 +13,14 @@
 set -u
 cd "$(dirname "$0")/.."
 REPO="$(pwd)"
+if [ "${1:-}" != "--legacy" ]; then
+  if [ "$#" -gt 0 ]; then
+    echo "v7 checks take no arguments. Historical campaigns require --legacy." >&2
+    exit 2
+  fi
+  exec python3 "$REPO/devsuite/proportional-v7/check.py"
+fi
+shift
 SUITE="$REPO/devsuite"
 RUNS="${DEVSUITE_RUNS:-/tmp/claude-501/devsuite-runs}/run-$(date +%s)"
 DRIVER="${DEVSUITE_DRIVER:-codex}"

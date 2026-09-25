@@ -1,47 +1,27 @@
 ---
 name: map-build
-description: Turns a shaped product into an ordered map of pieces, milestones, proof plans, and the choice of what the product runs on. Use after shaping or when evidence changes the pieces.
+description: Orders build pieces, milestones, and proof when multiple dependencies exist. Skip when a single slice has no ordering problem.
 ---
 
 # map-build
 
-Mapping decides what gets built, in what order, and how each piece will be accepted. Run numbered rounds in `work/mapping.md`. Keep the owner’s words verbatim. Present one or two choices at a time with real costs and your recommendation; never hand over a finished map and call it a conversation.
+Use when multiple pieces have real dependencies — or when evidence shows the cut or order is wrong. Not a gate before every build.
 
-Use relevant prompts from `references/questions.md`. Start `map.md` from `templates/map.md` and expand it when the product needs more.
+Optional rounds in `work/mapping.md`. Prompts in `references/questions.md`. Start `map.md` from `templates/map.md`; keep only useful fields.
 
-Before Product integrates the first Map after Shape, Product, Business, Experience, and Engineering each contribute from a distinct context. On a later re-map, Product contributes and calls every role whose protected concern, evidence, expiry, or ordering changed; uncertainty calls the relevant role. Record the four call decisions. An inactive Business or Experience entry contains only its product-specific condition and the direct current evidence that kept it out. Every called role records the carrier, evidence, conclusion, assumptions, proposed change, active decision, consequence, and earliest informative run. Product preserves dissent and presents one ordering recommendation. Original and replacement role carriers cannot later test or judge this map.
+Infer routine order from accepted intent, dependencies, and technical constraints. Ask the owner only **consequential** unresolved tradeoffs (what ships first, what promise or risk changes). No mandatory fresh approval for routine mapping.
+
+Bring separate expertise when ordering, value, experience, or feasibility is genuinely uncertain. Record dissent that changes promises, user choices, risk, or order.
 
 ## Rules
 
-1. **Cut pieces from shaped work.** Derive them from promises, moments, screen drawings, and supporting material. Every piece names what it serves and consumes. A piece serving nothing is scope creep.
+1. **Pieces from shaped work** — each serves and consumes something real.
+2. **Order** — default from dependencies; escalate consequential forks to the owner.
+3. **Proof per piece** — runs and checks that matter; scale review to risk.
+4. **Milestones** — smallest increments that prove end-to-end value; note when first user surface appears.
+5. **Running platform** — consequential platform/care choices in `decisions.md`.
+6. **Completion check when non-trivial** — grep/count shaped items vs pieces; report honestly.
+7. **Exit** — map is usable for builders; durable direction the owner cares about can be agreed in ordinary conversation — no formal ratification chain.
+8. **Re-cut** — record what moved when dependencies change.
 
-2. **Let the owner choose the order.** Present real choices: visible surface first or machinery first, which moment appears first, and what unlocks the users or data later pieces need. Record options, costs, recommendation, and the owner’s exact answer. Put the reason for the chosen order in the map so future changes show what they disturb.
-
-3. **Write each piece’s proof plan before it goes live.** Name any real result already in hand, the runs, the checks that must pass for it to become Built, the user types who will test it, and what the judge must rule on. Before model-bearing work, declare a token estimate split into gross, cached, and fresh tokens and hard authorization in model turns or contexts, elapsed time, retries and fallbacks, owner interruptions, and pre-first-run time and files. The token estimate is Business cost evidence; exhausting authorization forbids another model-bearing turn.
-
-   Also record the role calls: Product and Engineering always; Business and Experience when their product-specific condition, missing or expired evidence, a material change, or uncertainty requires them. For every role expected to be active, name the earliest run that can actually test its conclusion. A role that declares a material consequence stays active.
-
-4. **Name milestones.** Each is the smallest group of pieces that proves a real increment end to end. Say when the first real user surface appears. If it appears late, put that cost in the map and get the owner’s agreement.
-
-5. **End mapping with the running-platform decision.** Start from the pieces’ needs. Give options with money, lock-in, operating burden, and reversal cost. Ask the owner to state the care level; a weekend product and a regulated one differ.
-
-   Record the choice and reopening conditions in `decisions.md`. Choosing platforms throughout earlier rounds creates sprawl.
-
-6. **Run the completion test.** Do not assert it. Check that:
-   - every `job:`, `moment:`, `claim:`, and foundation in `product.md` belongs to a piece;
-   - every screen in the shaped decks and journeys belongs to exactly one piece — a caption is the screen’s title line, and the mapping record states the exact pattern it grepped; report the count even when it is zero, and match each caption to one piece;
-   - every supporting item belongs to a piece or appears as unconsumed;
-   - every piece has a proof plan; and
-   - milestones cover every piece.
-
-Grep, count, and match the named sets. Report every population and result to the owner.
-
-7. **Require three things before exit.** The completion test is green. A fresh tester probes the map against the owner’s record, repo, and independent evidence, then a separate judge challenges and rules — both with receipts committed before they ran. Finally, the owner ratifies the order — in their own words, or by a recorded selection of a drafted option.
-
-8. **Check every piece plan against the whole.** Before review, compare it with standing decisions and whole-product properties. A piece plan can permit work a standing decision forbids while every count stays green. A "no model here" foundation piece once quietly owned three judgments the owner's ruling gives to the model. Once a real result exists, plan another build only for a concrete product finding from fresh review or a genuinely new product claim. Route method and cost findings to the kernel or a future run for subtraction; they stay visible but do not authorize duplicate product work.
-
-Derive the map’s accounting summary from its pieces; regenerate it instead of editing two copies. State the full population behind every count. Cite owner records by filename and date, never a bare round number.
-
-9. **Ask for ratification in plain language.** Explain what will be built, in which order, why, and at what cost. Link `map.md`; do not paste it. The owner judges the explanation, then ratifies in the record.
-
-10. **Treat every re-cut as a new round.** Record what moved, why, what it disturbs, and whose concern, evidence, expiry, or ordering changed. Re-run the completion test and ask the owner to ratify the changed order.
+Derive summaries from pieces; cite records by file and date.

@@ -1,3 +1,19 @@
+# September 25, 2026 — proportionate method for v7
+
+The owner requests substantially more judgment about which methodology applies and how intensively, reports skipping small projects, and asks for a quick, inexpensive major release. [The verbatim request and integrated handoff](work/proportional-v7.md) are the current authority.
+
+Replace universal phase, staffing, artifact and reviewer counts with task-level judgment about purpose, uncertainty, consequences, reversibility and continuity. Preserve actual use, adequate independent checking of substantive work, owner control over consequential choices, and relevant risk protections. One fresh reviewer may both exercise and judge a bounded result; further separation must protect a concrete concern. The simpler path applies from the first request, including a new small project without method documents.
+
+Considered retaining the full sequence for larger products: rejected as the default recommendation because project size alone cannot determine the right care for each request. A larger product may need more of every capability, chosen from current evidence. Reducing words while retaining mandatory ceremonies would leave the adoption failure unchanged.
+
+One release joins method, templates and upgrade. Keep plain git/files and Node, both host discovery paths and installer transaction protections. Existing owner records remain intact; old Speck procedural requirements are superseded by v7, while actual product promises and unresolved findings continue to bind. Do not implement the queued old-Speck converter.
+
+Reopen a specific decision if executed use skips a needed protection, forces administration without benefit, loses an owner record, or the owner requests a different tradeoff. A more elaborate future method needs evidence that it helps this work.
+
+---
+
+## Earlier decisions — historical where superseded above
+
 # Decisions
 
 **2026-09-12 · Repair the whole-experience build loop — owner direction.** In Odd, the owner rejected an interaction that had passed local controls and repeated screenshot inspection, then said: “Thanks! This sounds like it needs to be fixed both in the methodology and the way we work with it.” This concrete field failure reopens Piece 9's build under the existing product-excellence promise. The next repair must make an unresolved experience finding affect the next work before more complexity is added, while retaining small-change exemptions and finite execution authorization. No new framework, role, installed file, owner gate or public release is implied. Product excellence gets a whole-interaction producer; owner attention and iteration use the existing visible build; safety remains unchanged; smallness requires editing existing rules; upgrade integrity and truth require tested distribution; plain language and enjoyment remain judged from actual use. Implementation follows the four called roles' contributions in the piece record. Reopen if the repair merely adds documentation or delays ordinary small fixes.

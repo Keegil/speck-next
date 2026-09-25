@@ -1,3 +1,17 @@
+# Current map — v7
+
+The owner's September 25 request puts proportionality first. One live piece: **Proportionate work**. It changes entry, planning, records, staffing, review and upgrade together so a remaining v6 rule cannot silently restore the old overhead.
+
+Order: implement the coherent method and compatible upgrade → run source/packed installation and preservation checks → fresh use on a small project and a risky change → independent review of the candidate and actual evidence → release v7. The existing plain-file and Node platform stays. This is the smallest useful complete release; splitting the method from its templates or upgrade would leave users with conflicting instructions.
+
+The checks, contributors, bound and completion evidence are in [work/proportional-v7.md](work/proportional-v7.md). First user surface: the installed instructions applied to an ordinary request. The release is ready when they produce useful work without unnecessary administration while the relevant risk and honesty protections still hold.
+
+The converter and speculative enforcement work below remain deferred. Their old process descriptions are historical, not active v7 obligations. No supporting material from this release is currently unassigned.
+
+---
+
+## Previous release map — historical v6 plan
+
 # Map
 
 Ratified result-first re-cut: after fresh blind product use, same-carrier Business and Experience returns, a repaired re-test, and independent judgment, the owner locked the complete promise on 2026-09-05 with **“Lock it, then keep going until you have released Speck Next v6, bro! No insane detours and methodology circle jerk, not in here when building Speck Next, and not in the products using Speck Next.”** Piece 8 installed and migrated the right contract. Piece 9 now makes the kernel obey the proved distinction between a valid product result, a failed cost experiment, and closed further spend, without repeating the completed build or relabeling any failure. Substrate stays plain git plus Node for install and upgrade, with Codex as the primary product-building host and Claude as a supported second host. The first real user surface was the selective installed method in Piece 8; Piece 9's real product comparison uses the preserved Pulse builds.

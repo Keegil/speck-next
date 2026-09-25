@@ -484,3 +484,8 @@ At `be9cc92`, independent judge `/root/result_shape_map_judge` ruled Map suffici
 ### Round 6 — owner ratification
 
 After seeing the full judged promise, the owner selected it verbatim with **“Lock it, then keep going until you have released Speck Next v6, bro! No insane detours and methodology circle jerk, not in here when building Speck Next, and not in the products using Speck Next.”** The two-piece order, Codex-first/Claude-supported release proof, exact milestone roster, Business block, owner grade, budgets, and final leak scan remain. Piece 9 becomes Shaped and live. Engineering may implement the prospective kernel rule; another Pulse build remains forbidden.
+
+
+## September 25, 2026 — v7 proportionality
+
+The owner requested a major revision because mandatory overhead makes small projects unattractive. The full verbatim request, the three distinct role contributions plus Product synthesis, the single-release order, and the bounded checks are recorded once in [proportional-v7.md](proportional-v7.md). This reopens Map around adaptive task-level judgment. Implementation of the explicitly requested candidate proceeds; the historical v6 ratifications above do not ratify the new wording. The owner can steer the concrete candidate in this conversation.
