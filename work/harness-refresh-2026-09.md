@@ -29,3 +29,18 @@ Accepted method candidate: `93ce912`. Installed method: 17 files, 29,960 bytes; 
 - A final-source install into a fresh Git fixture returned 7.0.1 and the digest above, matched `AGENTS.md`, resolved the Codex skill link, and created no product record. Installer implementation and tests were unchanged by the prose refinements.
 
 This is a research-grounded guidance correction, **unbenchmarked** for software quality, task success, time, and token savings. Prior v7 use trials retain their original scope. The published studies motivate these changes; they do not validate Speck's implementation. The independent review did not independently verify the research sources; source review was separate.
+
+## Release and adoption
+
+[v7.0.1](https://github.com/Keegil/speck-next/releases/tag/v7.0.1) was published and read back on September 29. The annotated tag resolves to `2173a039fd5c03f68cf4d4376cd055c562cb513b`. `npx -y github:Keegil/speck-next#v7.0.1 install <fresh-git-fixture>` passed; installed version, digest, exact instructions, Codex link, and absence of generated product/map records were verified.
+
+The existing adoption request was carried forward to these four checkouts:
+
+| Checkout | Branch | Pushed commit |
+|---|---|---|
+| Odd | `codex/odd-preparation-app` | `c6df6900ba16859b49d45d0dc272ae803683d9a4` |
+| Splang Slack | `main` | `3c4c13cd0cf9a90260a724f4b9e91e6cbc86273a` |
+| Odd p2r review | `codex/odd-p2r-review-resume-20260908` | `7603c815202ab5634736220c18279302c2041616` |
+| Odd boka review | `codex/odd-boka-visual-20260908` | `15e3ed749067e6e901ace88b909ce460cc859b2d` |
+
+The upgrade worker compared all 68 installed canonical files and preserved 2,842 tracked owner fingerprints and 14,263 untracked paths, including modes. The integrator independently rechecked all canonical files, markers/digest, exact original dirty statuses, four-file-only commit scopes, and remote branch SHAs. No other native adopter was found under `~/Code`; local snapshots and test subjects were excluded. Raw local evidence: `/tmp/speck-701-rollout.json` and `/tmp/speck-701-rollout-verified.json`. Next use is ordinary product work; no additional harness campaign is scheduled.
