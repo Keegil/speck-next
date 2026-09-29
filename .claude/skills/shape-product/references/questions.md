@@ -1,40 +1,35 @@
 # Questions for shaping
 
-Use what this product needs. Ask one or two at a time and keep the owner’s answers verbatim.
+Choose prompts for the uncertainty that could change this product. Use existing answers first. Bring the owner choices about their intent, priorities, or consequences; investigate factual questions and build small probes when evidence can answer them.
 
-## The core
+## When the outcome or audience is unclear
 
-1. In one sentence, what does the user get? Name their outcome, not our feature. Stop rather than accept a feature list; everything downstream measures against this sentence.
-2. Who pays or relies on this, and what do they use today instead?
-3. What jobs do they hire it for? Give each a short stable name and one sentence covering the situation, job, and outcome.
-4. What would this person honestly get from free general AI plus fifteen minutes, a spreadsheet, or a competitor’s free tier? A real product once locked its price against a competitor's paid tier when the true reference price was zero.
-5. Why would they still pay? If the only answer is “nicer UX,” fix the product.
-6. What remains special if a competitor copies every feature? Name each supporting claim, whether it must run on the shipped path, and which canned substitute would be a lie.
-7. What must this product never become, even if competitors do? Write three to five “we are not” lines, each naming the failure it prevents.
-8. What must remain true of the whole when every check is green? The deepest recorded failure: a project traded away its AI-first core while every checklist row stayed green, because the property owned no row.
+- Who needs this, in what situation, and what should they be able to accomplish? What would an observed success look like?
+- What do they do today? Which part is difficult enough to justify changing that habit?
+- Which existing behavior do people rely on and expect to keep?
 
-## Rebuild the category when the job calls for it
+## When value or direction is unsettled
 
-Use these questions when product direction calls for rethinking the category. AI-specific questions apply only when AI is part of the agreed direction. Keep useful conclusions in `product.md` when durable promises need it.
+- What do the actual alternatives provide, including free options? For a commercial product, who would pay, and what improvement would make the price worthwhile?
+- Which familiar parts of this category serve the user's job? Which could be removed or redesigned if we started from the job itself?
+- What must stay true across the whole product even when individual features pass their checks? What behavior or process will produce that property, and how would a person notice it missing?
+- What evidence would change the recommendation to build, change direction, or stop?
 
-9. Who is the best human who ever did this job for someone: a great accountant, a travel agent who knew them, a concierge, or a private tutor? How do they ask, infer, explain assumptions, accept correction, remember, and adapt? That relationship is the bar, not the incumbent app.
-10. Which category concepts are real, and which are fossils left by paper, physical limits, or software that could not think? Folders came from filing cabinets; tax software copied paper line numbers instead of asking “I sold shares; what do I owe?” Which concepts would survive if the builder had never seen the incumbent? Delete and rebuild fossils; do not automate them.
-11. From the domain’s first principles and the user’s own language, which forces drive outcomes and which concepts belong at the product’s center?
-12. What living model of the user or situation does the work? What does it infer and ask? Where can the user see and correct assumptions? Let surfaces converse with that model: work up front, pre-fill, and ask for confirmation. What is the user still typing that the model should know?
-13. If AI is an agreed differentiator, which promised behavior depends on the real model? Verify that behavior on the shipped path; a product's other useful functions may work without AI.
-14. For each AI-visible surface, what must the model consume? What shape must the answer take? Which user data must it cite? Give three good and three unacceptable answers.
-15. For every collected signal, where does it change behavior and where can the user inspect and edit it? Otherwise, why is it deliberately unused? Data collected but unused is the “AI bolted onto a tracker” failure.
+## When behavior or feel needs definition
 
-## Drawn surfaces
+- Which moment matters most to the person using this? Describe what starts it, what happens next, and what they should understand, control, or feel.
+- Where could the product earn or lose trust? What should happen when an assumption is wrong, an action fails, or the person changes their mind?
+- Which existing examples show the intended feel? What concrete choices in layout, interaction, or language would preserve or spoil it?
+- What real situation could test the proposed flow or drawing before committing to it?
 
-16. Where should the user think “this gets me”? For each moment, name the surface, trigger, beats in order, desired reaction, and exact scenario that proves it.
-17. Which moments earn or lose trust, such as the first data request, suggestion, payment, or failure? What does the bad version feel like?
-18. How should the product feel? Give three to five adjectives, two or three “feels like X, not Y” references, checkable restraint rules, and treatments that would cheapen it. Without a declared feel, later review becomes generic craft advice.
-19. Which words must never reach a user? Include overclaiming pitch language, internal terms, test words, and generic AI cheerleading, each with its replacement.
+## When AI is part of the agreed direction
 
-## Before closing
+- Which promised behavior needs a real model, and what run on the shipped path would demonstrate it? Which substitute would misrepresent that promise?
+- What information should the model use, and what makes its response useful or unacceptable in this situation? Which claims need supporting sources?
+- What can the system infer safely? Where can the person inspect and correct assumptions? How does each collected signal change behavior or serve another stated purpose?
 
-20. Under deadline pressure, what holds, what flexes, and what waits?
-21. How will each promise be judged, and by whom? Never by its author.
-22. Which foundations will the product need, and what triggers each one? A design system when the second screen exists · the core data model before real data accumulates · auth and tenancy before the second user · CI before the second contributor. Foundations fire on triggers, not upfront, but a foundation without a trigger never gets built.
-23. Which judgments (product, business, experience, engineering) must stay honest for this product? What uncertainty would force separate expertise before we bet? Any one-off specialist with a single responsibility and exit trigger?
+## When constraints or foundations could change the plan
+
+- What holds, flexes, or waits under the actual time and cost budget?
+- Which exposure makes a foundation necessary, such as storing private data, accepting payments, or sharing records? What must work before that exposure, and what can safely wait?
+- Which consequential uncertainty needs specialist judgment or independent evidence before we commit?

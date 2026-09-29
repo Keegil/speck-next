@@ -1,31 +1,34 @@
 # Questions for mapping
 
-Ask one or two at a time. Give options, costs, and a recommendation. Keep the owner’s answers verbatim in `work/mapping.md`.
+Choose prompts where the work's boundaries, dependencies, or order are uncertain. Start from the accepted request and relevant existing records. Resolve routine technical order yourself; bring the owner tradeoffs that change the result, priorities, risk, or budget.
 
-## Cut the pieces
+## When the work needs dividing
 
-1. From the promises, moments, screen drawings, and supporting material, what are the natural pieces? What does each serve and consume? Offer a cut for the owner to reshape.
-2. Which supporting item has no piece? List it as unconsumed or ask the owner to kill it.
-3. Does any piece serve nothing in `product.md`? Either a promise is missing, which reopens shaping, or the piece is scope creep.
+- What is the smallest complete increment that someone can use or that proves a necessary dependency? What does each part contribute to that result?
+- Which drawings, examples, data, or other supporting material affect the work? Where will they be used, tested, or deliberately deferred?
+- Does the proposed work cover the agreed scope? Which behavior is missing, and which additions lack a clear purpose?
 
-## Choose the order
+## When order could change the outcome
 
-4. When does the first real user surface appear, and what does the owner want to see first? Machinery first is valid only when the map states its cost: nothing visible until later.
-5. Which order unlocks the users, households, or data needed to prove later pieces soonest? A piece scheduled last can silently lock out the proof of every piece before it — that happened.
-6. What would each order cost to change after three pieces? Put early learning first and expensive reversals late.
+- What must exist to exercise each part: data, accounts, another feature, or an external service? Which order makes those dependencies available soon enough to test the work?
+- Which uncertainty could invalidate later work? What is the smallest real probe that could settle it before an expensive commitment?
+- When can someone first complete a useful job? What does delaying that result buy, and is it worth the wait?
+- If priorities or assumptions change, which work would be costly to undo? Which order preserves useful choices within the budget?
 
-## Define acceptance
+## When parts or workers share an interface
 
-7. For each piece, what runs, which user types test it, and what does the judge rule on? Put one line in the map.
-8. Which pieces touch money, auth, private data, or irreversible sends and need extra care from the start?
-9. Where could business, experience, or engineering judgment change the cut or order? What run would settle that uncertainty cheapest?
+- What observable contract do both sides need: inputs, outputs, errors, and relevant retry or compatibility behavior? Can existing types, examples, or tests express it clearly?
+- Who owns the authoritative contract, and do both sides have its actual content and version? How will changes reach affected consumers?
+- What run will exercise both sides together? Matching schemas or mocks can help development; which real interaction remains to be proved?
+- If the contract changes, in what order can producers and consumers change without breaking the affected job?
 
-## Name milestones
+## When proof or protection affects the plan
 
-10. What is the smallest set of pieces that proves a real increment end to end, which the owner can drive and grade? Name it and the next one.
+- What complete job will run for each useful increment, and what observations would establish that it works? Which failure or recovery behavior matters to that claim?
+- Which parts affect money, access, private data, data integrity, or irreversible actions? What protection and test setup must exist before exposing them?
+- What evidence and relevant context will an independent reviewer need for substantive work? Which dependency must be available to obtain that evidence?
 
-## Decide what it runs on
+## When a platform choice remains open
 
-11. What do the pieces require: data shape, model access, latency, privacy, owner budget? Requirements before brands.
-12. What are the options and their real costs: monthly money, lock-in, operating burden, and reversal cost after a stated number of pieces? Include the boring option. The owner picks a care level. Over-engineering past it is the recorded “we went a bit overboard” failure, just as under-engineering is.
-13. What would reopen this decision? Put it in `decisions.md`.
+- What does the work require of its data, latency, reliability, privacy, and operating budget? Which existing setup already meets those needs?
+- What would the viable alternatives cost to run, maintain, and replace? Which consequential tradeoff needs the owner's choice, and what evidence would reopen it?

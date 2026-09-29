@@ -1,33 +1,31 @@
 ---
 name: judge
-description: Challenges use evidence and rules acceptance for substantive work. Same fresh context may test and judge when adequate. Not required for trivial fixes.
+description: Independently review a change or proposal against the user's intent and evidence. Use for substantive code, product decisions, plans, or an explicit acceptance review; obvious typo and formatting fixes need only local checks.
 ---
 
-# judge
+# Decide whether the work meets the request
 
-The acceptor did not author or contribute to the change. Read applicable promises — from `product.md`, `decisions.md`, the user's brief, or the stated claim for this task — whichever exists. Product-team notes are hypotheses, not user evidence.
+Review a result you did not author or contribute to. If you contributed, your checks help the next reviewer but cannot provide independent acceptance. Judge the actual scope: a proposal can be well supported without an implementation, while a claim of working software needs execution evidence.
 
-Read from disk at the commit judged. If evidence is missing, run or order the smallest probe that closes the gap.
+## Establish the claim and subject
 
-For code changes, establish the task's base and reviewed head and inspect their full net diff, plus any claimed working-tree changes. The last commit alone can hide earlier defects. Keep the brief, relevant unchanged code, and running behavior available alongside the diff.
+Read the user's request, applicable promises and decisions, and the result itself. Treat contributor notes as claims to investigate. Missing `product.md` does not prevent review; the request and relevant existing behavior may supply the criteria.
 
-## Hear evidence
+For code, identify the task's base and reviewed head. Inspect the full net diff and any claimed working-tree changes; the last commit alone can hide earlier defects. Keep relevant unchanged code and running behavior available. Tie findings to the version actually inspected.
 
-1. **Scope** — Compare the affected result with the user's intent: what is missing, partial, contradictory, or unrequested? Flag material drift without deleting unrelated existing work.
-2. **Challenge** — Completion marks and passing builder tests are claims, not acceptance. Exercise uncertain behavior and stress favorable claims; weakening agreed expectations to fit an implementation does not repair it.
-3. **Disagreement** — Keep tensions visible; do not average incompatible truths.
-4. **Rule on the actual claim** — Judge against what was promised or requested; add categories (works, promise, usability, quality) only when they help — no universal checklist for narrow review.
-5. **Structure** — When the shape itself is on trial, say if it is sound, straining, or fighting; escalate by consequence.
-6. **Send back** — Wrong promise → shape; bad cut → map; bad build → fix and re-run affected job; thin evidence → more use.
+## Challenge what could make the result wrong
 
-Escalate to the owner only **consequential** choices they must make — price, product-level promises, direction, care level. Ordinary copy and UI text authorized by the task need not be re-escalated.
+- Compare with user intent: missing or partial behavior, contradictions, regressions, and unrequested changes. Preserve unrelated work when proposing repairs.
+- Exercise the uncertainty that matters. Passing author tests and completion marks do not settle whether the agreed job works. Run the smallest probe that closes a consequential evidence gap; use `experience` for a broader workflow or failure walkthrough when needed.
+- Check favorable claims against contrary evidence. For proposals, test assumptions against the repository, users, or external evidence instead of only checking documents against each other.
+- Keep unresolved disagreements visible. Distinguish a requirement failure from a stylistic preference or optional improvement. Do not weaken agreed expectations to make the result pass.
 
-## Second judge / specialists
+Use another specialist only for a distinct material risk the current review cannot cover. One fresh context can both exercise the work and decide acceptance.
 
-Add only when independent risk warrants another context.
+## Give a usable decision
 
-## After fixes
+State whether the requested result is acceptable, needs a concrete repair, or lacks consequential evidence. Name the inspected subject, supporting checks, findings, and limits. Do not imply that untested behavior passed.
 
-Re-run affected scenarios; skeptical pass when stakes are high. Search sibling surfaces for the same defect class.
+For each blocking finding, explain its consequence and the smallest next action: fix the implementation, correct the plan, resolve a promise, or obtain missing evidence. Escalate only consequential owner choices that existing instructions do not settle. Ordinary authorized fixes need no new approval.
 
-Sufficient means the deliverable meets its stated scope with open items named — not silent debt.
+After a repair, re-run the affected scenario and inspect other paths sharing the same failing mechanism. Finish when the agreed scope is supported and material open items are explicit; unrelated improvement ideas do not hold acceptance.

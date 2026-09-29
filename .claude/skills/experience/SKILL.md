@@ -1,35 +1,32 @@
 ---
 name: experience
-description: Fresh use of the product or shaping artifacts to produce evidence for independent acceptance. Invoke for substantive deliverables; scale personas to risk — not a fixed headcount.
+description: Exercise user workflows to gather evidence about behavior, usability, and recovery. Use for acceptance testing, exploratory walkthroughs, or checking interacting features; routine local checks need no separate testing workflow.
 ---
 
-# experience
+# Exercise the affected user job
 
-A **fresh** context uses the running product (or probes shaping material against independent evidence). The person who built or contributed cannot be the sole acceptor for substantive work.
+Gather direct evidence about whether someone can complete the requested job and recover from relevant failures. Testing can support a builder or an independent reviewer; it is not acceptance by itself.
 
-Give testers promises and the product — not builder conclusions. Clean clone at the commit under test; read files from disk.
+## Identify what you are testing
 
-Record what happened: commands, screens, moments, verdict tied to evidence. Identity proof when accounts exist: empty state → establish subject → verify match.
+Read the request and relevant promises. Identify the actual build, commit, or working-tree snapshot being evaluated, with the needed entry point and test data. Include uncommitted changes when they are part of the claim. Use isolation when it protects data or makes the result reproducible; a clean clone is useful only if it contains the subject under review.
 
-## How much review
+Choose the smallest set of scenarios that can establish or overturn the claim. One affected flow may be enough. Add accounts, personas, or failure conditions for distinct risks, rather than to fill a roster. Coordinate parallel tests that share mutable state.
 
-| Deliverable | Typical use |
-|---|---|
-| Trivial reversible fix | Builder check; no dispatch |
-| Narrow feature | One fresh walk of affected job |
-| Substantive or risky change | Broader walk; add worker, permission, or worst-day scripts from references when that risk is real |
-| Milestone / many promises | Multiple perspectives only when distinct risks need them |
+## Run the scenarios
 
-`references/walk.md` and `references/worst-day.md` are cookbooks — not mandatory four-person staffing.
+Start where the user starts and finish the complete affected job. Check resulting state when the product claims to save, send, or generate something. For account-sensitive behavior, verify which account owns the data and inspect access from the relevant permissions.
 
-Parallel runs on shared environments need coordination; fabricated or reconstructed records do not count.
+Select additional checks only when needed:
 
-For pre-product artifacts, probe owner record, repo, fixtures, or behavior — not sibling documents alone.
+- [Workflow walkthrough](references/walk.md): interactions across screens or features, rendering, accessibility, and recovery.
+- [Consequential failures](references/worst-day.md): permissions, data integrity, outages, irreversible actions, or other high-consequence behavior.
+- [Agent and skill evaluation](references/agent-evaluation.md): testing a methodology, skill, or harness, including activation boundaries and comparisons.
 
-Token counts, if reported, are cost — not quality.
+Before a product exists, test a proposal against raw user evidence, repository behavior, or a small fixture. Agreement among its documents alone cannot validate it. Use safe stand-ins for irreversible actions and explain their limits.
 
-## When evaluating an agent or its harness
+## Return evidence someone can assess
 
-Use a small set of real tasks, including the failure being repaired and a simpler case that should stay cheap. Compare with the prior setup; isolate the effect of individual changes when practical. Name task selection, model, tools, budget, starting state, outcomes, and elapsed/token cost. Track human intervention and review/rework separately when effort savings are claimed. For claims about continuing product work, include a follow-up change on the produced checkout and check retained behavior. Judge resulting behavior and data, not a prescribed tool sequence or the agent's success report. Inspect traces for misleading grades and environment failures; keep trials isolated. Repeat when variability could change the decision, within the agreed budget. A single successful run is an example, not a reliability estimate. If no comparison ran, label the change unbenchmarked rather than claiming a gain. For external research informing the comparison, use [source coverage](../shape-product/references/research.md).
+Report the subject tested, actions actually run, observed results, reproducible findings, and material gaps. Keep expected behavior separate from observations. Mark unavailable runtime checks as untested. If a failure is repaired, re-run the affected complete sequence before closing that finding.
 
-Append records where useful. No v6 receipt or Built-line ritual unless the owner explicitly requires that governance in current records.
+Stop when the affected scope has adequate evidence or a concrete blocker is identified. For substantive acceptance, the reviewer must not have contributed to the change. That same fresh context may gather evidence and use `judge` to decide acceptance; a second testing context is not inherently necessary.

@@ -33,7 +33,7 @@ Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capa
 
 ## Status
 
-Current version: **7.0.2**, with a method that scales to the request. The patch broadens research coverage, checks complete changes against intent, and keeps AI-specific shaping conditional. [Upstream comparison and limits](work/upstream-round-2026-09.md). The [first research pass](work/harness-refresh-2026-09.md) retains its original scope. This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
+Current version: **7.0.3**, with five focused skills for product direction, dependent work, interface design, workflow testing, and independent review. Each states when it applies, what it needs, and what useful completion looks like. Detailed prompts and evaluation advice load only when relevant. [Skill design and validation](work/skills-refresh-2026-09.md). Earlier research: [upstream comparison](work/upstream-round-2026-09.md) and [harness guidance](work/harness-refresh-2026-09.md). This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
 
 ## Install and check
 

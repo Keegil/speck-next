@@ -1,25 +1,22 @@
 ---
 name: craft
-description: Visual and interaction quality for user-visible surfaces. Use when the request touches UI the user will see; skip for non-surface work.
+description: Design or refine UI layout, visual hierarchy, copy, and interaction states. Use when building or improving screens and user flows; a plain typo correction needs no design pass.
 ---
 
-# craft
+# Make the interface work and feel right
 
-Correct is not finished until it reads as intentional — **for the surfaces this task touches**.
+Start from the affected user job, the current rendered surface, and the product's existing components, language, and visual direction. Read relevant promises in `product.md` if present. Use nearby established patterns when direction is already clear; a missing design document does not require a branding exercise.
 
-Read declared feel in `product.md` when it exists. Without it, use general craft judgment and say so in review.
+## Design the affected interaction
 
-## Build with character (when relevant)
+Make the primary action and its result easy to understand. Choose hierarchy, spacing, typography, and color to support that job. Reuse the product's components before inventing new patterns. Preserve owner choices; distinguish a demonstrated usability defect from a stylistic preference.
 
-- Typography hierarchy; whitespace; states you actually ship (loading, empty, error, success — skeleton only when loading is in scope).
-- Motion matches feel; reduced-motion respected.
-- Color and depth serve the product, not decoration.
-- Components feel native to this product; AI-first flows infer and confirm instead of empty forms.
+Cover the states this change introduces or alters, such as empty data, saving, success, or failure. Make recovery and the next action reachable. Read copy through the complete sequence so repeated questions, false success messages, and broken transitions become visible.
 
-## Complete interaction
+For changed controls, preserve keyboard access, focus, readable contrast, and useful labels. Inspect affected viewport sizes and text scaling; respect reduced motion when adding animation. AI-specific interaction belongs only where the product already calls for it, with assumptions visible and correctable.
 
-For user-facing changes, the integrator owns the **whole job** through one honest run. Read copy and flow as one sequence; fix dead repeats and broken transitions. A concrete integrated failure holds dependent work until the fixed sequence is re-run; unrelated work continues.
+## Check the rendered result
 
-## Before calling it done
+Run the affected job on the real surface. Inspect layout and behavior together, including relevant states; source code alone cannot establish visual quality. Fix what the run exposes and re-run the sequence. If rendering is unavailable, name what remains unseen instead of claiming the visual result is verified.
 
-Render and inspect affected surfaces. Iterate on weak states. Record runtime-vs-code defects in work notes when the next builder would hit them again.
+Return the implemented result, what was inspected, and any material limitation. Save screenshots or notes only when they help review or continuity. For substantive changes, a fresh reviewer must still assess the result; polishing your own work is not independent acceptance. Broader acceptance testing belongs with `experience` when the task needs it.

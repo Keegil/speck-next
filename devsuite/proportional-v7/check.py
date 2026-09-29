@@ -112,7 +112,7 @@ class UpgradeTests(unittest.TestCase):
         pending = b"# Product\r\n## Speck Next upgrade assessment\r\n**Speck Next upgrade assessment:** pending\r\n**Record:** `work/product-team-assessment.md`\r\n"
         malformed = b"# Owner bytes\r\n<!-- unclosed historical assessment\n\xff\x00"
         stale = b"## Speck Next upgrade assessment\n**Speck Next upgrade assessment:** complete \xe2\x80\x94 resumed STALE-PIECE from state.md\n"
-        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", VERSION)):
+        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", "7.0.2", VERSION)):
             for product in (None, pending, malformed, stale):
                 with self.subTest(version=version, product=product):
                     root = self.repo(version, product)

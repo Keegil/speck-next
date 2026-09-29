@@ -1,37 +1,31 @@
 ---
 name: shape-product
-description: Owner conversation that produces or updates product.md when durable promises need definition or a bet changes them. Not required for every task or missing file.
+description: Define or revise product direction, audience, scope, and durable promises. Use when deciding what to build or changing what a product should deliver; ordinary implementation and a missing product.md do not require shaping.
 ---
 
-# shape-product
+# Define the product direction
 
-Use when promises must survive sessions, multiple builders, or review — not because `product.md` is absent.
+Turn the request into enough shared understanding to make the next useful decision. The result may be a short brief, a revised product promise, or a recommendation to stop.
 
-For research-heavy choices, use [source coverage](references/research.md). An assessment may end with a reason to stop; it need not become a build. When revising promises, preserve unrelated agreed behavior and make intended removals explicit.
+## Start with what is already known
 
-Shape in conversation. One or two questions at a time. Optional rounds in `work/shaping.md` from `templates/rounds.md`; quote the owner verbatim. Start `product.md` from `templates/product.md`; keep only useful fields.
+Read the user's request and relevant existing decisions, product behavior, and records. Separate settled choices from assumptions and consequential unknowns. Preserve unrelated agreed behavior; make intended removals explicit.
 
-Pull prompts from `references/questions.md` as needed. Supporting material gets a stated purpose for later mapping.
+Use the owner's stated scope and budget. A personal tool need not become a business, and a product need not use AI. Ask one or two questions at a time only when the answer changes the user outcome, risk, or order. Give a recommendation and explain the consequence of the choice.
 
-Keep shaping only while open questions need evidence the build can gather. When settled enough to build, build.
+## Resolve the uncertainty that matters
 
-Bring separate judgment when a consequential uncertainty needs it; one integrator gives one recommendation. Shaping contributors cannot independently accept the same deliverable later.
+- Describe who needs what result, in what situation, and what the first useful version lets them accomplish. Use a concrete example to expose ambiguous promises.
+- Name any property that must survive across the whole product, such as privacy or a calm experience. Explain what in the design produces it and how a consequential tradeoff affects it.
+- Test uncertain claims against users, current alternatives, domain evidence, or a small working example. A differentiator must exist on the actual delivery path. When a cheap build would answer the question, run that experiment instead of extending the interview.
+- Set a foundation's due point from its consequences: for example, access control before exposing private data to another user. Apply protections to the affected behavior, even in a small first version.
 
-For durable owner-facing direction, agreement in normal conversation suffices. Optional fresh review against repo/fixtures/behavior when stakes warrant — not a mandatory pre-approval gate or ratification chain.
+For unresolved audience, value, feel, or scope questions, select from [shaping questions](references/questions.md). For external comparisons or unfamiliar capabilities, use [research guidance](references/research.md). Load only the reference needed for the current decision.
 
-## Rules (apply what fits)
+## Leave a usable result
 
-1. **Outcome first.** User result, not feature list.
-2. **Earn conventions.** Record why category defaults serve this job.
-3. **Real differentiators.** Shipped path with real data/model.
-4. **Provable moments.** Trigger, beats, feeling, proof scenario.
-5. **Honest wedge.** What free alternatives already give; why pay anyway.
-6. **Whole-product properties.** Name what must stay true; decisions say their effect.
-7. **Cut hard.** Stable names (`job:`, `moment:`). Omit unused sections.
-8. **Product language rules** apply to owner-facing text too.
-9. **Foundation triggers** — due when fired, not never.
-10. **Verbatim owner words** in shaping records when recorded.
-11. **Test drawings** against domain/repo/fixtures before owner judges pixels.
-12. **Concerns optional** — short notes if lenses help later.
+State the intended outcome, scope, constraints, important assumptions, and the next action. Keep a short brief in chat unless it must survive sessions or builders. For durable promises, update the relevant parts of `product.md`; the repository-root `templates/product.md` is an optional starting point. Preserve exact wording when attributing a quote to the owner.
 
-When `product.md` is adequate and dependencies are simple, skip `map-build`.
+Stop when the requested decision is supported, or enough is known to build the next slice. Agreement in ordinary conversation suffices for owner choices. A substantive proposal still needs independent review before it is treated as accepted; contributing to the proposal does not count as that review.
+
+Use `map-build` only if dependencies need ordering. A settled brief with a single useful slice can go straight to implementation.

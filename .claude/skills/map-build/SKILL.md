@@ -1,29 +1,29 @@
 ---
 name: map-build
-description: Orders build pieces, milestones, and proof when multiple dependencies exist. Skip when a single slice has no ordering problem.
+description: Plan build order, integration boundaries, and verification for dependent pieces or parallel contributors. Use when sequencing or shared interfaces need decisions; skip a single self-contained change.
 ---
 
-# map-build
+# Plan dependent work
 
-Use when multiple pieces have real dependencies — or when evidence shows the cut or order is wrong. Not a gate before every build.
+Produce an order that lets builders make useful progress and integrate their work. Start from the accepted request, existing behavior, constraints, and any relevant product or decision records. A chat brief is sufficient input.
 
-Optional rounds in `work/mapping.md`. Prompts in `references/questions.md`. Start `map.md` from `templates/map.md`; keep only useful fields.
+## Choose the pieces and order
 
-Infer routine order from accepted intent, dependencies, and technical constraints. Ask the owner only **consequential** unresolved tradeoffs (what ships first, what promise or risk changes). No mandatory fresh approval for routine mapping.
+- Cut work into increments with observable results. For each, identify what it delivers, what it depends on, and the check that will establish it works. Add an owner when delegating.
+- Prefer an early complete user job or real dependency round-trip. Put uncertain assumptions where they can be tested cheaply before other work relies on them.
+- Resolve routine sequencing from the dependencies. Bring consequential architecture, product scope, or care-level choices to the owner with a recommendation; preserve decisions already made.
+- Before closing the plan, compare it with the actual request: what is covered, deferred, or missing? Include existing behavior that a migration must preserve. Counting headings is not evidence of coverage.
 
-Bring separate expertise when ordering, value, experience, or feasibility is genuinely uncertain. Record dissent that changes promises, user choices, risk, or order.
+If the cut or ordering remains unclear, use the relevant [mapping questions](references/questions.md). Bring specialist judgment only for uncertainty that can change the plan.
 
-When pieces or parallel workers meet at an interface, reuse or agree its observable contract: inputs, outputs, errors, and relevant retry or compatibility behavior. Name one authoritative owner/source and give consumers the actual content and version. Use existing types, examples, or tests when enough; no contract registry is required. Verify both sides together before claiming integration; a mock or matching schema alone cannot prove their behavior. Sequence breaking changes with affected consumers.
+## Make parallel work meet
 
-## Rules
+At a shared interface, reuse or agree the observable contract: inputs, outputs, errors, and relevant retry or compatibility behavior. Name its authoritative owner/source and give consumers the actual content and version. Existing types, examples, or tests can be sufficient; a new registry is unnecessary.
 
-1. **Pieces from shaped work** — each serves and consumes something real.
-2. **Order** — default from dependencies; escalate consequential forks to the owner.
-3. **Proof per piece** — runs and checks that matter; scale review to risk.
-4. **Milestones** — smallest increments that prove end-to-end value; note when first user surface appears.
-5. **Running platform** — consequential platform/care choices in `decisions.md`.
-6. **Completion check when non-trivial** — grep/count shaped items vs pieces; report honestly.
-7. **Exit** — map is usable for builders; durable direction the owner cares about can be agreed in ordinary conversation — no formal ratification chain.
-8. **Re-cut** — record what moved when dependencies change.
+Give contributors bounded responsibilities and identify shared files or runtime state. One integrator owns the complete behavior. Verify both sides together before claiming integration; matching schemas or mocks alone cannot prove it. Sequence breaking changes with their consumers.
 
-Derive summaries from pieces; cite records by file and date.
+## Leave a plan builders can use
+
+Return the ordered pieces, dependencies, integration checks, and any unresolved consequential decision. Use `map.md` when this must survive sessions or coordinate builders; the repository-root `templates/map.md` is optional. Keep only useful fields. Add milestones only when they help track meaningful delivery.
+
+Finish when the next piece is actionable and the remaining order is sufficiently clear. Independent review applies to substantive planning decisions before acceptance, without a separate approval ceremony for routine ordering. Revisit the plan when evidence changes a dependency or promise; record the consequential change where future builders will find it.
