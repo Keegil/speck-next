@@ -69,4 +69,19 @@ Raw local materials and returns: `/tmp/speck-skills-703/`, with separate catalog
 
 ## Release and adoption
 
-Independent reviewer accepted `42680aef4348be509962eb13f14da3763cf80ae9` with no substantive blocker. It also reran the ten installer tests successfully in 33.471 seconds and verified a packaged installation. The 7.0.3 release is prepared; publication and adopter read-back follow this record. Existing native adopters remain the four previously upgraded checkouts; their owner edits will be preserved.
+Independent reviewer accepted `42680aef4348be509962eb13f14da3763cf80ae9` with no substantive blocker. It also reran the ten installer tests successfully in 33.471 seconds and verified a packaged installation.
+
+[v7.0.3 is published](https://github.com/Keegil/speck-next/releases/tag/v7.0.3). The remote annotated tag resolves to `d7cd35db89560560b60fece5095f2688c5fae2c2`, which changes only validation records after the accepted method candidate. Installation through `npx -y github:Keegil/speck-next#v7.0.3 install` matched all 19 canonical files and the expected digest, resolved the Codex adapter, and generated no product/map files.
+
+All four existing native adopters were upgraded, committed and pushed, with remote SHA read-back:
+
+| Checkout | Upgrade commit |
+|---|---|
+| `/Users/kjetil/Code/odd` | `7a32764052465f3e7b2ca8c748da6e3e33e218a7` |
+| `/Users/kjetil/Code/telum/splang-slack` | `3ea91af6fa5b4a6a77e05e4f17b35f92e85fa9dc` |
+| `/Users/kjetil/Code/odd-worktrees/p2r-review-20260908` | `7a0590a8c92c0683ba08ee8f2717c3927b7780ca` |
+| `/Users/kjetil/Code/odd-worktrees/boka-visual-20260908` | `1ab44bcac6f7726b075521f2599294cdfe98a3ac` |
+
+The rollout verified 76 canonical byte matches, all markers/digests and both host skill paths. It preserved 2,842 tracked owner fingerprints, 14,263 untracked paths, index state during upgrade, and original dirty statuses. Each commit has nine method paths. The integrator separately rechecked every current canonical file, checkout HEAD, marker version and original status. App tests were not rerun for instruction-only copies. Local proof: `/tmp/speck-skills-703/rollout-verified.json` and `published-smoke.json`.
+
+Next consumer: ordinary work in these checkouts. No further optimization campaign is commissioned.

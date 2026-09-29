@@ -2,7 +2,7 @@
 
 ## Current work — skill composition, September 29
 
-The five skills now have distinct discovery descriptions, plain instructions, concrete inputs/results, and conditional references. Candidate `42680aef4348be509962eb13f14da3763cf80ae9` has independent acceptance, two executed use trials, twelve metadata-selection examples, five valid skill manifests, and passing installer checks. Version 7.0.3 is prepared for publication and the four native adopter upgrades. See [work/skills-refresh-2026-09.md](work/skills-refresh-2026-09.md). Automatic host activation and comparative effectiveness remain unmeasured. Existing unrelated local files are excluded.
+**7.0.3 is released and adopted in all four existing product checkouts.** The five skills have distinct discovery descriptions, plain instructions, concrete inputs/results, and conditional references. Candidate `42680aef4348be509962eb13f14da3763cf80ae9` has independent acceptance, two executed use trials, twelve metadata-selection examples, five valid skill manifests, and passing installer checks. The remote release tag resolves to `d7cd35db89560560b60fece5095f2688c5fae2c2`. Published installation, all 76 adopter file comparisons, owner-data preservation, original dirty statuses and pushed commits were verified. See [work/skills-refresh-2026-09.md](work/skills-refresh-2026-09.md). Automatic host activation and comparative effectiveness remain unmeasured. Next consumer: ordinary product work; no further optimization campaign is commissioned. Existing unrelated local files are excluded.
 
 ## 7.0.2 released — September 29
 
