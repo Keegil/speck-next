@@ -22,4 +22,10 @@ The version-dependent installer tests now retain 7.0.0 as a migration source and
 
 ## Evidence and limits
 
-Candidate validation and independent review pending. This is a research-grounded guidance correction, **unbenchmarked** for software quality, task success, time, and token savings. Prior v7 use trials retain their original scope. The published studies motivate these changes; they do not validate Speck's implementation.
+Accepted method candidate: `93ce912`. Installed method: 17 files, 29,960 bytes; `AGENTS.md` is 6,869 bytes. SHA-256: `f57becee9e3688f6a0c1e0d08f13ca3a0666b121c0fb382d10b41c97a563119c`.
+
+- Independent Claude Opus reviewed the original patch at `d63687f` from a limited source packet and ran `python3 devsuite/proportional-v7/check.py`: all 10 tests passed in 27.0 seconds, including 40 supported-version/product combinations and packed installation. CLI exit 0 and its terminal success event were verified (session `17040823-9817-4625-8993-9e5986ff4abb`). No blocking findings.
+- Its nonblocking notes prompted shorter instructions, explicit preservation of independent acceptance, and conditional isolation of experimental changes. A fresh independent Codex context read the final files and refinement diff at `93ce912` and accepted the typo, recurring-defect, and harness-comparison boundaries. These are text-review findings, not agent-use trials. Cursor had no review quota; Claude's quota prevented a second pass there. No extra credits were purchased.
+- A final-source install into a fresh Git fixture returned 7.0.1 and the digest above, matched `AGENTS.md`, resolved the Codex skill link, and created no product record. Installer implementation and tests were unchanged by the prose refinements.
+
+This is a research-grounded guidance correction, **unbenchmarked** for software quality, task success, time, and token savings. Prior v7 use trials retain their original scope. The published studies motivate these changes; they do not validate Speck's implementation. The independent review did not independently verify the research sources; source review was separate.

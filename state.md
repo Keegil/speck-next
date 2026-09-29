@@ -2,7 +2,7 @@
 
 ## Current work — September 29
 
-The owner requested a quick current-research check. A small 7.0.1 guidance patch is awaiting independent review and installer verification. See [work/harness-refresh-2026-09.md](work/harness-refresh-2026-09.md) for primary sources, changes, and limits. Next: verify, review, publish and propagate the accepted patch to existing Speck Next checkouts. No behavioral improvement has been measured.
+The owner requested a quick current-research check. The 7.0.1 guidance patch is accepted: independent review, ten installer tests, final refinement review and source-install smoke check completed. Method candidate `93ce912`; digest `f57becee9e3688f6a0c1e0d08f13ca3a0666b121c0fb382d10b41c97a563119c`. See [work/harness-refresh-2026-09.md](work/harness-refresh-2026-09.md) for primary sources, changes, and limits. Next: publish and propagate the accepted patch to existing Speck Next checkouts. No behavioral improvement has been measured.
 
 ## Speck Next v7.0.0 released — September 25
 
