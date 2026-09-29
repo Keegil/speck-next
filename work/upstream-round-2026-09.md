@@ -42,3 +42,16 @@ Two bounded uses ran:
 - The reviewer exercised a synthetic two-commit taskbook change. Both supplied tests passed, but a fresh combination showed creation-time ordering including completed rows in an open-task list. The defect lived in the first commit; the second changed only README completion claims. The reviewer inspected the full base/head range and rejected completion on the executed result. The fixture stayed unchanged. This tests the full-change/combined-behavior path without claiming a before/after gain over 7.0.1.
 
 Local raw subjects: `/tmp/speck-702-offline-trial/product.md` and `/var/folders/f7/by4sp65x1pj0kyz1rm27085h0000gn/T/speck-702-review-m04f29vl/review-subject`. Fixture base `5a6f8e739788ad26b59c3526b24c0f9b0cd789d2`, reviewed head `b6d6703dd1ee15e9c9dd3a19036017dc95306c2a`. Final-source installation independently matched the expected digest and created no product record.
+
+## Release and adoption
+
+[v7.0.2](https://github.com/Keegil/speck-next/releases/tag/v7.0.2) was published and read back on September 29. The annotated tag resolves to `f84f73d2e556abce98470e18001ea64c225f1a3d`. A fresh `npx -y github:Keegil/speck-next#v7.0.2 install <git-fixture>` matched all 18 canonical files and the reviewed digest, resolved Codex discovery, and created neither product nor map records.
+
+| Checkout | Branch | Pushed commit |
+|---|---|---|
+| Odd | `codex/odd-preparation-app` | `fecf42636efdbbf61155a1f1f74438f5e3cefb30` |
+| Splang Slack | `main` | `9b784bacaba51e14497b1a9135462ca84b8105c7` |
+| Odd p2r review | `codex/odd-p2r-review-resume-20260908` | `a0b8a4a5bd24fb8a1aada360b083edc23b920c2f` |
+| Odd boka review | `codex/odd-boka-visual-20260908` | `ab2595f8b6187aa4b151f4c37b418434e1894a3c` |
+
+The upgrade worker preserved 2,842 tracked owner fingerprints, 14,263 untracked paths and exact original dirty statuses. The integrator independently compared all 72 installed canonical files, markers/digest, nine-path-only commit scopes, original dirty statuses and remote branch SHAs. No additional native adopter was found; local snapshots and test subjects were excluded. Local evidence: `/tmp/speck-702-rollout-summary.json`, `/tmp/speck-702-rollout.json`, `/tmp/speck-702-rollout-verified.json`. The existing adoption request is fulfilled for this patch.
