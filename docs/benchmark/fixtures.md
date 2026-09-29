@@ -1,6 +1,6 @@
 # The benchmark: what's frozen, and how it stays fair
 
-> **Status: shelved by owner decision, 2026-08-13** ([decisions.md](../../decisions.md)) — v1 is accepted on demonstrated confidence instead of a head-to-head. This design is kept intact: its planted-bug classes seed the development suite (`devsuite/`), and the contest remains runnable if the question ever needs settling by measurement.
+> **Historical, unexecuted design; shelved by owner decision, 2026-08-13** ([decisions.md](../../decisions.md)). Its planted-bug classes informed the development suite. The complete contest would still require the scripts, portable snapshots, and baseline runs listed below. Its original requirements are preserved as history, not current release gates.
 
 speck-next has to beat Speck v11.2.0 in a head-to-head before it earns the job. This file freezes the raw material for that contest **before any kernel design exists**, so the contest can't be quietly bent toward the challenger. It freezes in two stages:
 

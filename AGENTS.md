@@ -48,7 +48,7 @@ Run the real product while building user-visible work. First external dependency
 
 For bug repairs, reproduce the reported failure when feasible, test the suspected cause, and re-run the original scenario after the fix. Say when reproduction or verification remains unavailable.
 
-Concrete failure of an integrated user job holds dependent work until fixed and the affected complete sequence is re-run. Unrelated work may continue. Do not ceremonially re-review already proved work. Strains worth remembering go in `state.md` when they affect future builders.
+Concrete failure of an integrated user job holds dependent work until fixed and the affected complete sequence is re-run. Unrelated work may continue. Do not ceremonially re-review already proved work. Recurring friction belongs in `state.md` when it affects future builders.
 
 Reuse working setup and targeted checks; inspect relevant logs, resulting data, and rendered behavior. When stuck, diagnose the failed run before retrying. For recurring defects or consequential invariants, prefer focused tests, types, or lints with actionable errors over more instructions. Keep the investment proportional.
 
@@ -68,7 +68,7 @@ Auth, money, privacy, data integrity, regulation, and irreversible actions need 
 
 ## Upgrade (v7)
 
-`npx -y github:Keegil/speck-next upgrade` on marker-bearing Speck Next repos; preserves owner bytes; supersedes v6 **procedure** only. Old Speck (unmarked) conversion not implemented — see README and CONTRACT.
+`npx -y github:Keegil/speck-next upgrade` on marker-bearing Speck Next repos; preserves owner bytes; supersedes v6 **procedure** only. Old Speck (unmarked) conversion is not implemented. See Speck Next's [installation guidance](https://github.com/Keegil/speck-next#install-and-check) for prerequisites and release pins.
 
 ## Examples
 

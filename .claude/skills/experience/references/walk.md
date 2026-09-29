@@ -13,4 +13,4 @@ Use the real product as the person affected by this change. Select the checks th
 
 Judge taste against the product's declared feel. A broken stated rule is a concrete finding; a preference is your response, not an objective defect. Surface an owner choice only when it changes the result and cannot be settled from the brief.
 
-Return the result, the actions you actually ran, concrete findings, and any material limits. Explain whether the affected job works and feels appropriate, with evidence for those claims. The independent reviewer may use this record and judge the result in the same context; no fixed screenshot count, verdict roster, or second hearing is required.
+Return the result, the actions you actually ran, concrete findings, and any material limits. Explain whether the affected job works and feels appropriate, with evidence for those claims. An independent reviewer can use this record and decide acceptance in the same context.

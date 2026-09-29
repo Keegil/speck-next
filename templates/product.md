@@ -1,37 +1,27 @@
 # [Product name]
 
-[Starting example — copy fields that help; omit the rest.]
+[Optional starting point for durable direction. Keep only useful sections.]
 
-[One sentence: the user's outcome, not our feature.]
+## Who and what
 
-[Who it serves · what they use now · why this.]
+[Who needs this, in what situation, and what they can accomplish. What they use today and why change.]
 
-## Jobs
-- `job: [name]` — [situation, job, outcome]
+## Promises and scope
 
-## Wedge
-[What stays special if features are copied · honest comparison.]
+[Agreed behavior, intended boundaries, and existing behavior to preserve.]
 
-## We are not
-- [Boundary and the failure it prevents.]
+## Across the whole product
 
-## Whole-product properties
-[What must remain true when checks are green.]
+[What must stay true, how the design produces it, and a situation that would demonstrate it.]
 
-## Magic moments
-- `moment: [name]` — [surface · trigger · beats · feeling · proof scenario]
+## Experience
 
-## Feel
-[Adjectives · “X, not Y” · restraint · cheapeners · banned words.]
+[A complete user job, important interactions, and concrete examples of the intended feel.]
 
-## AI surfaces
-[Only if the product has them: inputs, answer shape, citations, good/bad examples.]
+## Constraints and foundations
 
-## Foundations
-- [foundation] — Trigger: [when it becomes due]
+[Current time, cost, and protection requirements. Foundations needed before a stated exposure; what can wait.]
 
-## Concerns (optional)
-[Short notes on what product, business, experience, or engineering judgment must protect here — not a four-row contract.]
+## Open assumptions
 
-## Under deadline pressure
-[What holds, flexes, and waits.]
+[What could change this direction and the evidence or owner choice needed to resolve it.]

@@ -1,17 +1,17 @@
 # Speck Next
 
-Speck Next is a small kernel — one page of instructions, five on-demand skills, optional templates — that helps an agent build products **proportionally**. The owner says what they want; the method scales from a typo fix to a multi-month product without forcing the same ceremony every time.
+Speck Next helps an agent build products with as little process as the work needs. One entrypoint, five on-demand skills, and optional templates support anything from a typo fix to a continuing product.
 
 ## What a session feels like
 
 > **You:** People keep asking if the app can show who's coming to tomorrow's classes.
 >
 > **Agent:** Smallest real version: a "Tomorrow" list on the studio dashboard. Building it now.
-> …It runs — I've been clicking through as a studio owner. Long names overflow on phones; fixed. Try tomorrow's view.
+> …It runs. I checked the flow as a studio owner and fixed overflowing names on phones. An independent reviewer checked the feature. Try tomorrow's view.
 >
 > **You:** Sort by class time, not alphabetically.
 >
-> **Agent:** Done, re-checked in the app. Fresh eyes walked it cold; nothing blocking. Landed.
+> **Agent:** Done. Class-time ordering is checked in the app; the rest of the view still works.
 
 No vocabulary lesson. The agent used the real product while building.
 
@@ -33,13 +33,15 @@ Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capa
 
 ## Status
 
-Current version: **7.0.3**, with five focused skills for product direction, dependent work, interface design, workflow testing, and independent review. Each states when it applies, what it needs, and what useful completion looks like. Detailed prompts and evaluation advice load only when relevant. [Skill design and validation](work/skills-refresh-2026-09.md). Earlier research: [upstream comparison](work/upstream-round-2026-09.md) and [harness guidance](work/harness-refresh-2026-09.md). This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
+Current version: **7.0.4**. Skills and templates share the same proportional workflow, and automated checks catch release, link, discovery, and size drift. [Consistency review and validation](work/consistency-2026-09.md). [Skill design](work/skills-refresh-2026-09.md) and [research](work/upstream-round-2026-09.md) retain their measured scope. This repository uses [AGENTS.md](AGENTS.md). Historical material: [prior records](docs/history/v7.0.3-records.md), [Pulse example](examples/pulse/README.md), and [reviews](docs/reviews/).
 
 ## Install and check
 
+Have Node.js/npm and Git available. The target directory must already exist and be a Git repository. For a new project, create it and run `git init` there first. Install into a fresh repository; use upgrade for a repository that already has a Speck Next marker.
+
 ```sh
-npx -y github:Keegil/speck-next#v7.0.2 install /path/to/repo
-npx -y github:Keegil/speck-next#v7.0.2 upgrade /path/to/repo
+npx -y github:Keegil/speck-next#v7.0.4 install /path/to/repo
+npx -y github:Keegil/speck-next#v7.0.4 upgrade /path/to/repo
 ```
 
-For development, `bash devsuite/run.sh` runs deterministic installation, upgrade, preservation and refusal tests without model calls. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.
+For development, `bash devsuite/run.sh` checks release consistency, skill metadata, packaged references, discovery and size limits, then installation, upgrade, preservation and refusal behavior. It uses no model calls. GitHub Actions runs the same default checks. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.

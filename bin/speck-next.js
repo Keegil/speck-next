@@ -1473,7 +1473,7 @@ if (cmd === "install") {
     for (const line of localizationLines(install.localizedLinks)) console.log(line);
     for (const line of retiredLinkLines(install.retiredLinks)) console.log(line);
     for (const line of preservationLines(install.preserved)) console.log(line);
-    console.log(`Installed Speck Next ${versionWithProvenance(VERSION, install.sourceCheckout, install.methodSurfaceSha256)} into ${targetDisplay} — ${install.installedEntries.length} installed or carried-forward files on disk.`);
+    console.log(`Installed Speck Next ${versionWithProvenance(VERSION, install.sourceCheckout, install.methodSurfaceSha256)} into ${targetDisplay} — ${install.installedEntries.length} installed or carried-forward entries on disk.`);
     console.log(`Installed paths:\n${install.installedEntries.join("\n")}`);
     console.log("Next: open an agent session there and say what you want to do; the agent chooses the amount of method the request needs.");
   } catch (error) {
@@ -1523,6 +1523,6 @@ if (cmd === "install") {
   npx github:Keegil/speck-next upgrade [dir] --open-assessment
                                                 retired in v7; refuses without changing files
 
-The method itself is one page: AGENTS.md. Everything else is five skills your agent loads on demand, and six file skeletons in templates/.
-Pin a released tag, e.g.: npx -y github:Keegil/speck-next#v7.0.0 install  (all tags: github.com/Keegil/speck-next/tags)`);
+The method starts in AGENTS.md, with five on-demand skills and six optional templates.
+Pin this version: npx -y github:Keegil/speck-next#v${VERSION} install  (all tags: github.com/Keegil/speck-next/tags)`);
 }

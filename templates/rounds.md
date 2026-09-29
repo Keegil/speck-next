@@ -1,11 +1,11 @@
-# [Shaping | Mapping] — owner conversation
+# Conversation notes
 
-[Optional — numbered rounds when a long conversation needs a record.]
+[Optional when a long conversation needs continuity. Keep useful exchanges.]
 
-[Append-only. Owner verbatim. Settled choices → `product.md`, `map.md`, or `decisions.md`.]
+## [Date] — [Topic]
 
-## Round 1 — [topic] ([date])
+**Question:** [Choice and relevant tradeoffs.]
 
-**Question:** [Choice, options, costs, recommendation.]
+**Answer:** [Exact owner quote, or clearly labeled summary.]
 
-> [Owner's answer, verbatim.]
+**Result:** [Settled choice and its current source, or remaining uncertainty.]

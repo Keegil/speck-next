@@ -1,0 +1,52 @@
+name: Release checks
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'package*.json'
+      - 'README.md'
+      - 'CONTRACT.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'bin/**'
+      - '.claude/skills/**'
+      - '.agents/skills/**'
+      - 'templates/**'
+      - 'devsuite/**'
+      - '.github/workflows/check.yml'
+  pull_request:
+    paths:
+      - 'package*.json'
+      - 'README.md'
+      - 'CONTRACT.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'bin/**'
+      - '.claude/skills/**'
+      - '.agents/skills/**'
+      - 'templates/**'
+      - 'devsuite/**'
+      - '.github/workflows/check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Check release surface and installer without model calls
+        run: bash devsuite/run.sh

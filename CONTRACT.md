@@ -36,11 +36,11 @@ Mandatory phase ratification chains; universal four-role ceremonies; fixed minim
 
 | Limit | Ceiling | Notes |
 |---|---|---|
-| Installed files | ≤ 20 files / 100 KB | Measured at release; see `capabilities.md` |
-| Skills | ≤ 6 | Five canonical + discovery symlink |
-| Always read | `AGENTS.md` + repo context | ≤ 50 KB combined agent read budget (v6 contract); v7 `AGENTS.md` size measured at release — see `capabilities.md` |
+| Installed files | ≤ 20 regular files / 100 KB | Includes the marker; the directory discovery symlink is reported separately. Owner files are not method files. |
+| Skills | ≤ 6 | Count actual skill entrypoints; a discovery alias is not another skill. |
+| Repository context | `AGENTS.md` + relevant repo context | ≤ 50 KB combined read budget; select further detail for the task rather than loading every record. |
 | Method file per piece | ≤ 1 when used | Zero for trivial fixes |
 
-CI enforcement of limits remains aspirational until wired; releases still measure.
+`devsuite/surface-check.py` checks the installed file, byte, and skill ceilings, release versions, metadata, links, and both host entrypoints. The default suite and GitHub Actions run it with negative controls. The combined agent/context budget and whether a work record earns its keep still require judgment; these are not mechanically verified by file counts.
 
 Historical v6 contract text and assessment-parser specification are retired from user-loaded docs; prior proof rows in `capabilities.md` are historical unless marked refreshed for v7.

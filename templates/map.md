@@ -1,19 +1,15 @@
-# Map
+# Build order
 
-[Use when multiple build pieces have real dependencies — otherwise skip this file.]
+[Optional for dependent work. Keep useful fields; explain why this order fits the constraints.]
 
-[Why this order · running platform → `decisions.md`.]
+## Ordered work
 
-## Milestones
+- **[Increment]:** [Observable result. Dependencies. Check that will establish it works. Owner when delegated.]
 
-- `milestone: [name]` — pieces: [list] · proves: [increment the owner can drive].
+## Shared interfaces
 
-## Pieces
+[Authoritative contract source, version, and owner. Affected consumers, change order, integration owner, and check of both sides together.]
 
-[Order these; mark one live when helpful.]
+## Scope and open decisions
 
-1. **[piece]** [LIVE/next/done] — serves: [job/moment/foundation] · consumes: [drawings/material] · proof: [runs and checks that matter] · risky: [care needed / no]
-
-## Unconsumed material
-
-- [Visible until consumed or removed.]
+[Agreed behavior and supporting material covered, deferred, or missing. Consequential unresolved choices and the next useful action.]

@@ -93,6 +93,7 @@ class UpgradeTests(unittest.TestCase):
         return result
 
     def test_source_and_packed_fresh_install(self):
+        source_surface = source_digest = None
         for kernel in (KERNEL, self.packed):
             with self.subTest(kernel=str(kernel)):
                 root = self.repo()
@@ -106,13 +107,26 @@ class UpgradeTests(unittest.TestCase):
                 marker = json.loads((root / ".claude/speck-next.json").read_text())
                 self.assertEqual(marker["version"], VERSION)
                 self.assertIsNone(marker["upgradeAssessmentRecord"])
+                # Compare the complete installed result, not just AGENTS.md.
+                # Package filters must not silently omit a skill, reference or
+                # template. Marker timestamps/provenance legitimately differ.
+                installed_surface = {
+                    path: value for path, value in snapshot(root).items()
+                    if path.split("/")[0] != ".git" and path != ".claude/speck-next.json"
+                }
+                if kernel == KERNEL:
+                    source_surface = installed_surface
+                    source_digest = marker["methodSurfaceSha256"]
+                else:
+                    self.assertEqual(installed_surface, source_surface)
+                    self.assertEqual(marker["methodSurfaceSha256"], source_digest)
                 self.stable_retry(root, kernel)
 
     def test_supported_versions_preserve_pending_or_missing_product(self):
         pending = b"# Product\r\n## Speck Next upgrade assessment\r\n**Speck Next upgrade assessment:** pending\r\n**Record:** `work/product-team-assessment.md`\r\n"
         malformed = b"# Owner bytes\r\n<!-- unclosed historical assessment\n\xff\x00"
         stale = b"## Speck Next upgrade assessment\n**Speck Next upgrade assessment:** complete \xe2\x80\x94 resumed STALE-PIECE from state.md\n"
-        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", "7.0.2", VERSION)):
+        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", "7.0.2", "7.0.3", VERSION)):
             for product in (None, pending, malformed, stale):
                 with self.subTest(version=version, product=product):
                     root = self.repo(version, product)

@@ -1,20 +1,19 @@
 # State
 
-[Resume ongoing work — skip for one-shot tasks.]
+[Optional handoff for ongoing work. Keep only what helps someone resume.]
 
-## What's true now
-[Live focus · claims with evidence · open integrated failures and holds.]
+## Goal and current result
 
-## What's wearing out
-[Strains worth fixing when consequence warrants — not automatic reorder rules.]
+[Requested outcome, current progress, and relevant constraints.]
 
-## What's blocked
+## Evidence and limits
 
-## What needs the owner
-[Choices, tradeoffs, recommendation.]
+[Build, commit, or working-tree snapshot checked. Runs, observations, review status, and untested claims.]
 
-## What happens next
-[Next useful command or action; setup needed to resume. Verify against the checkout and runtime.]
+## Open issues
 
-## Evidence
-[Runs, commits, review notes — only what future builders need.]
+[Failures, affected dependencies, or consequential owner choices.]
+
+## Next action
+
+[Command or action and required setup, verified against the checkout and runtime.]

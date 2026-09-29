@@ -1,5 +1,9 @@
 # Decisions
 
-[Append-only consequential choices.]
+[Optional record of consequential choices. Keep their current status visible.]
 
-**[date] · [Decision.]** [Choice · alternatives · effect on whole-product properties · what reopens it. Platform and care level when relevant.]
+## [Date] — [Decision]
+
+**Status:** [Active, or superseded by a linked decision.]
+
+[Choice, alternatives, and reason. Effect on promises, what must stay true across the product, and relevant constraints. What would reopen it.]

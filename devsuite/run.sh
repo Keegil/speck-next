@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Default: deterministic v7 install, upgrade, preservation and refusal checks.
+# Default: release consistency, guard controls, and deterministic installer checks.
 # Historical model campaigns require an explicit --legacy. Their role-policy
 # assertions describe the release they measured, not v7 acceptance criteria.
 #   ./devsuite/run.sh
@@ -18,6 +18,8 @@ if [ "${1:-}" != "--legacy" ]; then
     echo "v7 checks take no arguments. Historical campaigns require --legacy." >&2
     exit 2
   fi
+  python3 "$REPO/devsuite/surface-check.py" || exit "$?"
+  python3 -B "$REPO/devsuite/test_surface_check.py" || exit "$?"
   exec python3 "$REPO/devsuite/proportional-v7/check.py"
 fi
 shift

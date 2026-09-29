@@ -14,14 +14,14 @@ The agent uses judgment throughout: understand the request, resolve consequentia
 - Extra coordination earns its cost. Stop when the request is satisfied with adequate evidence, and reduce effort when uncertainty falls. Explicit user budgets remain binding.
 - Upgrades preserve owner records and unresolved findings. Older process obligations are superseded without claiming unfinished product work is complete.
 
-The precise promises and checks live in [CONTRACT.md](CONTRACT.md). The installed entrypoint is `AGENTS.md`, with five optional skills, templates, and the existing dependency-free Node installer. Claude and Codex load the same method.
+The precise promises live in [CONTRACT.md](CONTRACT.md). [AGENTS.md](AGENTS.md) and the five skills guide the work; templates offer optional records. The dependency-free Node installer distributes the same method to Claude and Codex. Automated checks protect the release's structure and installed footprint; [capabilities.md](capabilities.md) separates those checks from behavioral evidence.
 
-## This release
+## The user journey
 
-The September 25 owner request reopens the method's proportionality promise and makes v7 the current work. [work/proportional-v7.md](work/proportional-v7.md) keeps the request, distinct Product, Business, Experience and Engineering contributions, the implementation handoff and evidence. They are contributors to this release, not mandatory staffing for future tasks.
-
-The user journey is direct: bring a request, see the smallest useful result, steer real choices, and receive the verified outcome. For continuing work, the agent grows a brief and a plan as dependencies appear. For consequential work, it adds the particular checks and independent expertise needed before committing to the affected decision.
+Bring a request, see the smallest useful result, steer consequential choices, and receive the verified outcome. For continuing work, the agent grows a brief and a plan as dependencies appear. For consequential work, it adds the particular checks and independent expertise needed.
 
 ## Foundations and limits
 
-Keep the existing plain-file method and transactional installer. Reconsider the installer only when an executed preservation or compatibility check fails. Add no runtime service or dependency for this release. Old-Speck conversion remains deferred; native Speck Next marker-based upgrades are the supported migration path. The bounded v7 evidence will not establish universal adoption or comparative cost savings.
+Keep the existing plain-file method and transactional installer. Reconsider the installer only when an executed preservation or compatibility check fails. No runtime service or model dependency is needed. Old-Speck conversion remains deferred; native Speck Next marker-based upgrades are supported.
+
+Versioned evidence and earlier decisions retain their original scope in [prior records](docs/history/v7.0.3-records.md). Comparative cost savings and general product-quality gains remain unproved.

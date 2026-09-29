@@ -1,11 +1,11 @@
-# [Piece name]
+# [Work item]
 
-[Optional — use when a bounded chunk needs continuity across sessions.]
+[Optional for work needing its own handoff. Keep useful fields.]
 
-**Serves:** [job/moment/foundation] · **Consumes:** [drawing/material]
+**Outcome:** [What this delivers and its agreed scope.]
 
-**Outcome:** [What works when this lands.]
+**Dependencies:** [Prerequisites, shared contract sources, and owner when delegated.]
 
-**Proof:** [Runs, checks, review scope if substantive — scale to risk.]
+**Evidence:** [Subject checked, observed results, review status if substantive, and material gaps.]
 
-**Notes:** [Integrator owns complete user job when UI changes. Holds, strains, open items, what not to relearn.]
+**Next:** [Remaining action or failure to resolve.]
