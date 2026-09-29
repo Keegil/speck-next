@@ -13,6 +13,8 @@ Infer routine order from accepted intent, dependencies, and technical constraint
 
 Bring separate expertise when ordering, value, experience, or feasibility is genuinely uncertain. Record dissent that changes promises, user choices, risk, or order.
 
+When pieces or parallel workers meet at an interface, reuse or agree its observable contract: inputs, outputs, errors, and relevant retry or compatibility behavior. Name one authoritative owner/source and give consumers the actual content and version. Use existing types, examples, or tests when enough; no contract registry is required. Verify both sides together before claiming integration; a mock or matching schema alone cannot prove their behavior. Sequence breaking changes with affected consumers.
+
 ## Rules
 
 1. **Pieces from shaped work** — each serves and consumes something real.

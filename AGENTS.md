@@ -9,6 +9,7 @@ Speck Next helps an agent build products proportionally: match clarification, pl
 | Situation | Typical path |
 |---|---|
 | Tiny fix (typo, obvious bug, reversible one-commit change) | Fix, run a targeted check, done. No method files unless continuity needs them. |
+| Research or assess an idea | Answer the decision; stopping without a build can be the right result. Use [source coverage](.claude/skills/shape-product/references/research.md) when external evidence matters. |
 | Small new project | Short brief (even in chat); first slice running quickly. Add `product.md` only when promises must survive sessions; add `map.md` only when multiple pieces have real dependencies. |
 | Narrow risky change (auth, money, privacy, data integrity, regulation, irreversibility) | Same loop plus protections on **that behavior** (not diff size): least privilege, integrity checks, safe stand-ins, rollback evidence. |
 | Larger or uncertain product | `shape-product` / `map-build` when durable direction or dependencies need records; independent review before landing substantive deliverables. |
@@ -45,6 +46,8 @@ This page (v7) supersedes **generated procedural obligations** from earlier Spec
 
 Run the real product while building user-visible work. First external dependency contact is a real round-trip. Use the `craft` skill where surfaces matter; apply its advice to relevant states only.
 
+For bug repairs, reproduce the reported failure when feasible, test the suspected cause, and re-run the original scenario after the fix. Say when reproduction or verification remains unavailable.
+
 Concrete failure of an integrated user job holds dependent work until fixed and the affected complete sequence is re-run. Unrelated work may continue. Do not ceremonially re-review already proved work. Strains worth remembering go in `state.md` when they affect future builders.
 
 Reuse working setup and targeted checks; inspect relevant logs, resulting data, and rendered behavior. When stuck, diagnose the failed run before retrying. For recurring defects or consequential invariants, prefer focused tests, types, or lints with actionable errors over more instructions. Keep the investment proportional.
@@ -56,6 +59,8 @@ Harness choices are hypotheses. Before claiming gains from changed prompts, tool
 **Substantive** means a change to meaningful behavior, promises, architecture, or decisions whose correctness cannot be settled by an obvious local check — e.g. a one-line typo or formatting fix is not substantive. Substantive delivered work gets fresh independent review (non-contributor; may exercise and accept in one context). Trivial obvious reversible fixes: targeted check only.
 
 Scale extra perspectives to distinct material risk — not a fixed roster. The `experience` and `judge` skills are optional depth; not mandatory headcounts or v6 receipt/Built ceremony unless the owner explicitly requires that governance in current records.
+
+Give reviewers the user's intent and the whole task change, including earlier commits and any claimed uncommitted work, plus relevant unchanged code and use evidence. Completion checkboxes are claims to verify.
 
 ## Protected behavior
 

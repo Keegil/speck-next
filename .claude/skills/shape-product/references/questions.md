@@ -15,13 +15,13 @@ Use what this product needs. Ask one or two at a time and keep the owner’s ans
 
 ## Rebuild the category when the job calls for it
 
-Always consider these questions. Convention may be right, but earn that answer and record it in `product.md`.
+Use these questions when product direction calls for rethinking the category. AI-specific questions apply only when AI is part of the agreed direction. Keep useful conclusions in `product.md` when durable promises need it.
 
 9. Who is the best human who ever did this job for someone: a great accountant, a travel agent who knew them, a concierge, or a private tutor? How do they ask, infer, explain assumptions, accept correction, remember, and adapt? That relationship is the bar, not the incumbent app.
 10. Which category concepts are real, and which are fossils left by paper, physical limits, or software that could not think? Folders came from filing cabinets; tax software copied paper line numbers instead of asking “I sold shares; what do I owe?” Which concepts would survive if the builder had never seen the incumbent? Delete and rebuild fossils; do not automate them.
 11. From the domain’s first principles and the user’s own language, which forces drive outcomes and which concepts belong at the product’s center?
 12. What living model of the user or situation does the work? What does it infer and ask? Where can the user see and correct assumptions? Let surfaces converse with that model: work up front, pre-fill, and ask for confirmation. What is the user still typing that the model should know?
-13. If you unplug the model, does the product collapse? If it still basically works, reconceive it. A shipped product once traded its AI-first core away while every checklist stayed green, and a passing test literally enforced the model's absence.
+13. If AI is an agreed differentiator, which promised behavior depends on the real model? Verify that behavior on the shipped path; a product's other useful functions may work without AI.
 14. For each AI-visible surface, what must the model consume? What shape must the answer take? Which user data must it cite? Give three good and three unacceptable answers.
 15. For every collected signal, where does it change behavior and where can the user inspect and edit it? Otherwise, why is it deliberately unused? Data collected but unused is the “AI bolted onto a tracker” failure.
 

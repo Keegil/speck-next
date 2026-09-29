@@ -7,6 +7,8 @@ description: Owner conversation that produces or updates product.md when durable
 
 Use when promises must survive sessions, multiple builders, or review — not because `product.md` is absent.
 
+For research-heavy choices, use [source coverage](references/research.md). An assessment may end with a reason to stop; it need not become a build. When revising promises, preserve unrelated agreed behavior and make intended removals explicit.
+
 Shape in conversation. One or two questions at a time. Optional rounds in `work/shaping.md` from `templates/rounds.md`; quote the owner verbatim. Start `product.md` from `templates/product.md`; keep only useful fields.
 
 Pull prompts from `references/questions.md` as needed. Supporting material gets a stated purpose for later mapping.
