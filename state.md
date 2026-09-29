@@ -1,6 +1,10 @@
 # State
 
-## Current work — September 29
+## Current work — upstream follow-up, September 29
+
+The owner identified spec-kit as a missing source in the first research scan. The broader review now includes that upstream, OpenSpec, Superpowers, independent measurements and our own contradictory shaping reference. **7.0.2 is accepted**, with conditional research coverage, intent checks over full task changes, and AI-specific shaping only for agreed AI direction. Ten installer tests, an independent review, a non-AI brief trial and an executed two-commit review fixture passed their stated checks. See [work/upstream-round-2026-09.md](work/upstream-round-2026-09.md). Next: publish and upgrade existing adopters. No comparative quality or productivity gain has been measured.
+
+## 7.0.1 released — September 29
 
 The owner requested a quick current-research check. **7.0.1 is released and adopted in all four existing product checkouts.** Independent review, ten installer tests, final refinement review, and source/published-tag install smoke checks completed. Release tag resolves to `2173a039fd5c03f68cf4d4376cd055c562cb513b`; accepted method candidate `93ce912`; digest `f57becee9e3688f6a0c1e0d08f13ca3a0666b121c0fb382d10b41c97a563119c`. Product upgrade commits were pushed and read back; owner files and pre-existing edits were preserved. See [work/harness-refresh-2026-09.md](work/harness-refresh-2026-09.md) for primary sources, changes, and limits. Next consumer: normal work in those checkouts. No behavioral improvement has been measured, and no further kernel work is commissioned.
 

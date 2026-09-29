@@ -1,5 +1,7 @@
 # Kernel capabilities
 
+The accepted 7.0.2 method candidate is `ddcbf34`: 18 files / 34,042 bytes, `AGENTS.md` 7,489 bytes, digest `1422a90272fd694f177600eaf8f6239befd3c9f69a325e8f8879f3f0ac421af6`. Ten installer tests passed, including 44 migration combinations. A fresh shaping context respected an explicit non-AI brief; an independent reviewer exercised a two-commit fixture and found a composed-behavior defect missed by its supplied tests. The [upstream comparison and validation record](work/upstream-round-2026-09.md) separates these bounded uses from unbenchmarked effectiveness claims. No upstream workflow engine or automatic specification reconciliation was added.
+
 The accepted 7.0.1 method candidate is `93ce912`: 17 files / 29,960 bytes, `AGENTS.md` 6,869 bytes, digest `f57becee9e3688f6a0c1e0d08f13ca3a0666b121c0fb382d10b41c97a563119c`. Independent review, ten installer tests (including 40 migration combinations), and a final-source install smoke check passed. The [research and verification record](work/harness-refresh-2026-09.md) names scope and limits. Behavioral effects are unbenchmarked; the v7.0.0 evidence below retains its original scope.
 
 The v7.0.0 candidate was `fa1ead7`, installed method SHA-256 `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`. Commands, returned results and review records are in [work/proportional-v7.md](work/proportional-v7.md). Historical v6 evidence remains attributed to that release.

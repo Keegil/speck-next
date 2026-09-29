@@ -30,4 +30,15 @@ No new skill, phase, scheduler, runtime service, or dependency. One on-demand re
 
 Coverage remains selective. We did not compare private production harnesses, run a platform/IDE benchmark, inspect every community extension, or validate host-level sandboxing and permission enforcement. Those are distinct runtime concerns; adding prose here cannot establish them. We did not perform a controlled before/after effectiveness comparison. Research-backed guidance is **unbenchmarked**, not a demonstrated quality or productivity improvement.
 
-Validation and release evidence will be recorded below after execution.
+## Validation
+
+Accepted candidate `ddcbf347e2cc125085b48d1e9eafaeeb737b677d`. The method has 18 files / 34,042 bytes; `AGENTS.md` is 7,489 bytes. Installed SHA-256: `1422a90272fd694f177600eaf8f6239befd3c9f69a325e8f8879f3f0ac421af6`.
+
+A fresh independent reviewer accepted the patch without substantive blockers. It ran the ten installer tests successfully (31.221 seconds, exit 0), including 44 supported-version/product combinations, packed installation, preservation/refusal and rollback. Package inspection and a fresh install verified the added reference, all three incoming links and the Codex discovery link. Its source spot-checks covered spec-kit convergence, the Superpowers review helper and METR's measurement limits. This was a fresh context, not a different model family; it did not independently recheck every release detail.
+
+Two bounded uses ran:
+
+- A fresh shaping context was asked for a short durable brief for an offline personal swimming log, explicitly without AI, accounts or cloud and without building an app. It produced only `product.md`, preserving the requested boundary. The independent reviewer accepted its fit to that raw request. This demonstrates one case, not general proportionality.
+- The reviewer exercised a synthetic two-commit taskbook change. Both supplied tests passed, but a fresh combination showed creation-time ordering including completed rows in an open-task list. The defect lived in the first commit; the second changed only README completion claims. The reviewer inspected the full base/head range and rejected completion on the executed result. The fixture stayed unchanged. This tests the full-change/combined-behavior path without claiming a before/after gain over 7.0.1.
+
+Local raw subjects: `/tmp/speck-702-offline-trial/product.md` and `/var/folders/f7/by4sp65x1pj0kyz1rm27085h0000gn/T/speck-702-review-m04f29vl/review-subject`. Fixture base `5a6f8e739788ad26b59c3526b24c0f9b0cd789d2`, reviewed head `b6d6703dd1ee15e9c9dd3a19036017dc95306c2a`. Final-source installation independently matched the expected digest and created no product record.
