@@ -31,7 +31,7 @@ Finish when the agreed outcome has adequate evidence for its scope. Further work
 
 `templates/` are starting examples — copy useful fields only; delete the rest.
 
-Keep context small and navigable: link to the source of truth, load detail when needed, and replace stale guidance. For work crossing sessions, leave the current goal, verified progress, unresolved failures, and next useful command in `state.md`; resume from the actual checkout and runtime, not the handoff's claims alone.
+Keep context small: link to authoritative detail and replace stale guidance. When work needs a handoff, leave the goal, verified progress, open failures, and next command in `state.md`. Verify that handoff against the checkout and runtime.
 
 ## Precedence
 
@@ -47,9 +47,9 @@ Run the real product while building user-visible work. First external dependency
 
 Concrete failure of an integrated user job holds dependent work until fixed and the affected complete sequence is re-run. Unrelated work may continue. Do not ceremonially re-review already proved work. Strains worth remembering go in `state.md` when they affect future builders.
 
-Make feedback cheap: reuse working setup and targeted check commands; expose relevant logs, resulting data, and rendered behavior to the builder. When progress stalls, inspect the failed run and fix the missing capability or environment problem before repeating it. For recurring defects or consequential invariants, prefer a focused regression test, type check, or lint with an actionable failure over another paragraph of instructions. Keep these investments proportional to the job.
+Reuse working setup and targeted checks; inspect relevant logs, resulting data, and rendered behavior. When stuck, diagnose the failed run before retrying. For recurring defects or consequential invariants, prefer focused tests, types, or lints with actionable errors over more instructions. Keep the investment proportional.
 
-Model and harness choices are hypotheses. When changing prompts, tools, context handling, or delegation, compare representative outcomes and cost against the simpler setup before claiming improvement. Revisit scaffolding as models change; remove what no longer helps while preserving owner promises and protected behavior. The `experience` skill has guidance for these comparisons.
+Harness choices are hypotheses. Before claiming gains from changed prompts, tools, context handling, or delegation, compare outcomes and cost with a simpler setup (see `experience`). Revisit scaffolding as models change; preserve owner promises, protected behavior, and independent acceptance.
 
 ## Review
 

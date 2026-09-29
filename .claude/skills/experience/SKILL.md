@@ -30,6 +30,6 @@ Token counts, if reported, are cost — not quality.
 
 ## When evaluating an agent or its harness
 
-Use a small set of real tasks, including the failure being repaired and a simpler case that should stay cheap. Compare one meaningful change at a time with the prior setup; name model, tools, budget, starting state, outcomes, and elapsed/token cost. Judge resulting behavior and data, not a prescribed tool sequence or the agent's success report. Inspect traces for misleading grades and environment failures; keep trials isolated. Repeat when variability could change the decision, within the agreed budget. A single successful run is an example, not a reliability estimate. If no comparison ran, label the change unbenchmarked rather than claiming a gain.
+Use a small set of real tasks, including the failure being repaired and a simpler case that should stay cheap. Compare with the prior setup; isolate the effect of individual changes when practical. Name model, tools, budget, starting state, outcomes, and elapsed/token cost. Judge resulting behavior and data, not a prescribed tool sequence or the agent's success report. Inspect traces for misleading grades and environment failures; keep trials isolated. Repeat when variability could change the decision, within the agreed budget. A single successful run is an example, not a reliability estimate. If no comparison ran, label the change unbenchmarked rather than claiming a gain.
 
 Append records where useful. No v6 receipt or Built-line ritual unless the owner explicitly requires that governance in current records.
