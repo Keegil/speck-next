@@ -1,5 +1,9 @@
 # State
 
+## Current work — September 29
+
+The owner requested a quick current-research check. A small 7.0.1 guidance patch is awaiting independent review and installer verification. See [work/harness-refresh-2026-09.md](work/harness-refresh-2026-09.md) for primary sources, changes, and limits. Next: verify, review, publish and propagate the accepted patch to existing Speck Next checkouts. No behavioral improvement has been measured.
+
 ## Speck Next v7.0.0 released — September 25
 
 **Proportionate work is released as v7.0.0.** The public GitHub release and remote annotated tag were read back successfully; the tag resolves to `3852067d7d4aa1c950db5be3ae5ad57a3130fc4f`. The owner requested a major release because overhead made smaller projects unattractive. The new method chooses planning, records, expertise, checks and review for the task rather than enforcing fixed phases and rosters.

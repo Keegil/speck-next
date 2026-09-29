@@ -14,6 +14,7 @@
 [Choices, tradeoffs, recommendation.]
 
 ## What happens next
+[Next useful command or action; setup needed to resume. Verify against the checkout and runtime.]
 
 ## Evidence
 [Runs, commits, review notes — only what future builders need.]

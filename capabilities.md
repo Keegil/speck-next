@@ -1,5 +1,7 @@
 # Kernel capabilities
 
+The 7.0.1 guidance refresh is documented in [work/harness-refresh-2026-09.md](work/harness-refresh-2026-09.md). Its behavioral effects are unbenchmarked; the v7.0.0 evidence below retains its original scope.
+
 The v7 candidate is `fa1ead7`, installed method SHA-256 `b13f6e10f4069b641dccb2f38f3bf73a82d23a224c6ab11d4091905b37742b96`. Commands, returned results and review records are in [work/proportional-v7.md](work/proportional-v7.md). Historical v6 evidence remains attributed to that release.
 
 | Capability | Current evidence | Limits |

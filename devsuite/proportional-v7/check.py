@@ -15,6 +15,8 @@ import unittest
 
 KERNEL = Path(__file__).resolve().parents[2]
 VERSION = json.loads((KERNEL / "package.json").read_text())["version"]
+MAJOR, MINOR, PATCH = map(int, VERSION.split("."))
+FUTURE_PATCH = f"{MAJOR}.{MINOR}.{PATCH + 1}"
 
 
 def run(*args, cwd=None, env=None):
@@ -110,7 +112,7 @@ class UpgradeTests(unittest.TestCase):
         pending = b"# Product\r\n## Speck Next upgrade assessment\r\n**Speck Next upgrade assessment:** pending\r\n**Record:** `work/product-team-assessment.md`\r\n"
         malformed = b"# Owner bytes\r\n<!-- unclosed historical assessment\n\xff\x00"
         stale = b"## Speck Next upgrade assessment\n**Speck Next upgrade assessment:** complete \xe2\x80\x94 resumed STALE-PIECE from state.md\n"
-        for version in ("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", VERSION):
+        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", VERSION)):
             for product in (None, pending, malformed, stale):
                 with self.subTest(version=version, product=product):
                     root = self.repo(version, product)
@@ -149,7 +151,7 @@ class UpgradeTests(unittest.TestCase):
 
     def test_unknown_future_and_malformed_markers_refuse(self):
         markers = [None, [], "not an object", {}, {"version": 7}, {"name": "other", "version": VERSION}]
-        markers += [{"version": value} for value in ("0.9.0", "banana", "7", "07.0.0", "7.0.1", "7.1.0", "8.0.0", "999999999999999999999.0.0")]
+        markers += [{"version": value} for value in ("0.9.0", "banana", "7", "07.0.0", FUTURE_PATCH, "7.1.0", "8.0.0", "999999999999999999999.0.0")]
         for value in markers:
             with self.subTest(marker=value):
                 root = self.repo("6.0.0")

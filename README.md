@@ -33,13 +33,13 @@ Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capa
 
 ## Status
 
-Current version: **7.0.0**, with a method that scales to the request. This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
+Current version: **7.0.1**, with a method that scales to the request. The patch adds concise guidance for usable feedback, session continuity, and evidence-based harness changes. [Research and limits](work/harness-refresh-2026-09.md). This repository dogfoods [AGENTS.md](AGENTS.md). History: [docs/history/](docs/history/). Reviews: [docs/reviews/](docs/reviews/).
 
 ## Install and check
 
 ```sh
-npx -y github:Keegil/speck-next#v7.0.0 install /path/to/repo
-npx -y github:Keegil/speck-next#v7.0.0 upgrade /path/to/repo
+npx -y github:Keegil/speck-next#v7.0.1 install /path/to/repo
+npx -y github:Keegil/speck-next#v7.0.1 upgrade /path/to/repo
 ```
 
 For development, `bash devsuite/run.sh` runs deterministic installation, upgrade, preservation and refusal tests without model calls. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.
