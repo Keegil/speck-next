@@ -19,4 +19,18 @@ Template edits and check implementation have separate file owners. The integrato
 
 ## Evidence
 
-Pending final checks and independent review. No claim of improved agent productivity or complete behavior coverage is made by static validation.
+Accepted method candidate: `18f249115a8f9688d9552d83159db0ab7e2ce2d1`. Installed method digest: `1173d762521086f1557fc3a30eaed57f54edf7273a493739d7636fd97c49a739`. The canonical method is 19 regular files / 37,428 bytes, 115 bytes smaller than 7.0.3. The six templates total 2,874 bytes, down from 3,020. A fresh source installation has 20 regular files including its marker, plus one discovery symlink: 37,701 bytes including the link target. The exported snapshot reports 37,696 because its marker has no Git source checkout.
+
+- A non-contributor reviewed the complete exported candidate and accepted it with no blocking findings. The [independent verdict and returned handoff](../docs/reviews/consistency-7.0.4.md) preserve scope and limitations.
+- That reviewer ran the default suite once: nine guard-control tests and ten installer tests passed, including 52 version/product combinations. The controls introduce real metadata, version, link, discovery and footprint failures. An additional disposable npm-package omission failed the complete-install comparison as intended.
+- [GitHub Actions run 36612678569](https://github.com/Keegil/speck-next/actions/runs/36612678569) passed at the exact candidate SHA on Ubuntu with Node 22 and Python 3.13. The whole hosted job took 27 seconds. Records-only commits and release tags do not repeat the suite; relevant source changes do.
+- A forward use of the state template preserved an existing uncommitted stock-filter repair, identified missing case-insensitive selection despite two passing supplied tests, and returned an executed reproduction. The integrator independently read back the subject hash and runtime gap. This is one synthetic handoff, not a completed second-agent implementation or evidence of automatic host activation.
+- All five skill manifests passed the skill creator's validator. Pulse's basic log/display/help commands ran against a temporary journal; the optional model path was not exercised or requalified.
+
+Cursor Opus and Claude CLI Opus review attempts both stopped at weekly usage limits before reading files. They supply no review evidence. Acceptance came from a fresh non-contributor in the same model family; cross-model review remains unavailable for this patch.
+
+Static checks do not establish semantic consistency, remote URL availability, arbitrary YAML support, agent productivity, or complete behavior coverage. The review covers the changed composition; earlier skill-use and proportionality trials keep their original versioned scope.
+
+## Distribution
+
+Ready for publication after independent acceptance and hosted CI. Published installation and the four adopter upgrades remain to be verified. Their fresh preservation baseline matches 7.0.3: 2,842 tracked owner files and 14,263 untracked paths; pre-existing Odd and Splang edits remain in place.
