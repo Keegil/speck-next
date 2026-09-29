@@ -30,4 +30,43 @@ The guides differ on exact wording and workflow rigidity. We use capability plus
 
 ## Validation
 
-In progress. Metadata selection will be distinguished from actual host loading, and fresh use from measured comparative effectiveness. No general quality, reliability, token, or productivity gain is claimed.
+Method candidate: `42680aef4348be509962eb13f14da3763cf80ae9`; surface SHA-256 `202dd85244864649c2978d4f6c54e82c4d1a4f3f6a8b1baa51ed3ffd1e350a6c`.
+
+- All five entrypoints passed the bundled Codex `skill-creator/scripts/quick_validate.py`. Bodies are 284–410 words. This validates format, not behavior.
+- `bash devsuite/run.sh`: ten tests passed in 92.854 seconds, including 48 version/product migration combinations, source/packed installs, owner preservation, refusal and rollback.
+- Packed install includes the new reference and resolves all local reference links. Source-install read-back matched all 19 canonical files and the Codex discovery link, without generating product/map files. The first smoke commands correctly refused a missing directory and then a non-Git directory; after creating the disposable Git repository, installation succeeded.
+- Surface: 19 canonical files / 37,543 bytes. With the marker, the fresh installation has 20 regular files / 37,796 bytes, plus one directory symlink. The installer's 21 reported entries include that alias. This remains within the existing 20-file/100-KB content ceiling; the ceiling has not changed.
+
+### Description selection
+
+Two separate non-contributing contexts received the old or new five-skill metadata and the same 12 requests. They did not read bodies or the other return. Each chose an immediate set and any later skill needed; order within a set is immaterial. These are single metadata-selection simulations, not actual host activation measurements or reliability estimates. The old selector had researched general authoring guidance; the new selector had previously exercised the old shaping method in another task. Neither authored this patch. Their contexts were not experimentally identical.
+
+| Request | Old selection | New selection |
+|---|---|---|
+| Correct an existing confirmation-label typo | craft | none |
+| Short offline, non-AI hiking-log brief in chat | shape → experience + judge | shape |
+| Divide an agreed CSV/worker/status flow between contributors, no product file | map → experience + judge | map → judge |
+| Review a five-commit PR | judge | judge |
+| Improve a cramped settings layout and save/error states | craft → experience + judge | craft → experience + judge |
+| Exercise sandbox checkout decline and retry | experience | experience |
+| Explain an existing debounce helper without edits | none | none |
+| Implement agreed payment-webhook deduplication | implementation → experience + judge | implementation → experience + judge |
+| Research whether to keep or stop a project; no build | experience + judge later | shape → judge |
+| Independently try and accept a recurring-booking change | experience + judge | experience → judge |
+| Add one gitignore entry | none | none |
+| Independently review a tenant-isolation proposal | judge | judge |
+
+The useful observations are fewer irrelevant workflow selections on a typo, short brief, and planning task, plus explicit discovery for a product-direction assessment. These examples do not establish a general improvement rate. Substantive deliverables still require independent review under the kernel; the selectors' planned choices are not acceptance records.
+
+### Forward use from raw requests
+
+A non-contributing reviewer received an exported packet pinned to the candidate, the user request, and raw trial materials, without the intended answer, suspected defect, other reviewers' outputs, or author conclusions.
+
+1. **Plan from a chat brief:** it selected `map-build`, returned an actionable CSV-import plan for two contributors, assigned interface ownership and integration, and included real retry/no-duplicate checks. It required no product file, shaping interview, new platform, or routine owner approval. The request supplied no actual application checkout, and the plan did not pretend to inspect one.
+2. **Review the delivered working tree:** it selected `judge` and used targeted execution without a separate experience workflow. Fixture base `a5eb37533ca7b0c33fae97ddc625e7e6e43ffd5c`, head `7b7213dbbffbc11a3dbb710a70a42084f6f8bb02`; the final commit only documents the change. The claimed uncommitted function was `return [row for row in rows if row["stock"] > 0 and (category is None or row["category"] == category)]`. The request required case-insensitive category filtering and preservation of stock filtering. Both supplied tests passed; fresh mixed-case probes failed. The reviewer found that defect while correctly recognizing that the uncommitted change had already repaired the committed zero-stock regression. Its source SHA-256 was `95f01651cb2b0a9fc1df7cc646807e7297f71950e5217effbf4314f911c4c449`.
+
+Raw local materials and returns: `/tmp/speck-skills-703/`, with separate catalogs, requests, source smoke, package check, installer log, versioned fixture, and `review-results/`. These are bounded synthetic examples, not a before/after execution comparison. Native Codex contexts were used; a new Claude runtime trial and cross-model review did not run. No general quality, reliability, token, or productivity gain is claimed.
+
+## Release and adoption
+
+Independent reviewer accepted `42680aef4348be509962eb13f14da3763cf80ae9` with no substantive blocker. It also reran the ten installer tests successfully in 33.471 seconds and verified a packaged installation. The 7.0.3 release is prepared; publication and adopter read-back follow this record. Existing native adopters remain the four previously upgraded checkouts; their owner edits will be preserved.

@@ -1,6 +1,10 @@
 # State
 
-## Current work — upstream follow-up, September 29
+## Current work — skill composition, September 29
+
+The five skills now have distinct discovery descriptions, plain instructions, concrete inputs/results, and conditional references. Candidate `42680aef4348be509962eb13f14da3763cf80ae9` has independent acceptance, two executed use trials, twelve metadata-selection examples, five valid skill manifests, and passing installer checks. Version 7.0.3 is prepared for publication and the four native adopter upgrades. See [work/skills-refresh-2026-09.md](work/skills-refresh-2026-09.md). Automatic host activation and comparative effectiveness remain unmeasured. Existing unrelated local files are excluded.
+
+## 7.0.2 released — September 29
 
 The owner identified spec-kit as a missing source in the first research scan. The broader review now includes that upstream, OpenSpec, Superpowers, independent measurements and our own contradictory shaping reference. **7.0.2 is released and adopted in all four existing product checkouts**, with conditional research coverage, intent checks over full task changes, and AI-specific shaping only for agreed AI direction. Ten installer tests, an independent review, a non-AI brief trial and an executed two-commit review fixture passed their stated checks. The release tag resolves to `f84f73d2e556abce98470e18001ea64c225f1a3d`; published installation and product upgrade commits were read back successfully. All 72 canonical file comparisons match; owner data and pre-existing edits remain intact. See [work/upstream-round-2026-09.md](work/upstream-round-2026-09.md). Next consumer: normal product work. No comparative quality or productivity gain has been measured, and no further research campaign is commissioned.
 
