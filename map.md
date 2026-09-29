@@ -1,6 +1,6 @@
 # Build order
 
-The current request is a bounded consistency repair across the existing method. The product direction and installer design are settled.
+The consistency repair is complete and released as 7.0.4, including verified upgrades of all four existing product checkouts. The product direction and installer design remain settled. This records the completed build order; current status is in [state.md](state.md).
 
 ## Ordered work
 
