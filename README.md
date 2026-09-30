@@ -33,15 +33,46 @@ Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capa
 
 ## Status
 
-Current version: **7.0.4**. Skills and templates share the same proportional workflow, and automated checks catch release, link, discovery, and size drift. [Consistency review and validation](work/consistency-2026-09.md). [Skill design](work/skills-refresh-2026-09.md) and [research](work/upstream-round-2026-09.md) retain their measured scope. This repository uses [AGENTS.md](AGENTS.md). Historical material: [prior records](docs/history/v7.0.3-records.md), [Pulse example](examples/pulse/README.md), and [reviews](docs/reviews/).
+Current version: **7.1.0**. The optional toolkit bundles Graft, ripgrep, jq, ast-grep and RTK with pinned downloads, a managed cache and the same CLI for Claude and Codex. The five skills, optional records and proportional workflow remain the method. [Toolkit verification](work/toolkit-7.1.md) records current scope and limits. Earlier [consistency](work/consistency-2026-09.md), [skill](work/skills-refresh-2026-09.md) and [research](work/upstream-round-2026-09.md) results retain their measured scope.
 
 ## Install and check
 
 Have Node.js/npm and Git available. The target directory must already exist and be a Git repository. For a new project, create it and run `git init` there first. Install into a fresh repository; use upgrade for a repository that already has a Speck Next marker.
 
 ```sh
-npx -y github:Keegil/speck-next#v7.0.4 install /path/to/repo
-npx -y github:Keegil/speck-next#v7.0.4 upgrade /path/to/repo
+npx -y github:Keegil/speck-next#v7.1.0 install /path/to/repo
+npx -y github:Keegil/speck-next#v7.1.0 upgrade /path/to/repo
 ```
 
-For development, `bash devsuite/run.sh` checks release consistency, skill metadata, packaged references, discovery and size limits, then installation, upgrade, preservation and refusal behavior. It uses no model calls. GitHub Actions runs the same default checks. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.
+## Optional toolkit
+
+Set up the tools once, then use them where they help. The manager supports macOS and Linux on arm64/x64. It requires Node.js 20 or newer, npm, Git, `tar`, `unzip`, and network access for downloads; Linux needs glibc for some binaries. Graft's native dependencies may require a compiler toolchain and Python. Normal method installation does not download the toolkit. Windows setup is not supported in this release.
+
+```sh
+npx -y github:Keegil/speck-next#v7.1.0 tools setup
+npx -y github:Keegil/speck-next#v7.1.0 tools doctor
+npx -y github:Keegil/speck-next#v7.1.0 tools run rg -- -n 'customerId' src
+npx -y github:Keegil/speck-next#v7.1.0 tools run jq -- '.version' package.json
+npx -y github:Keegil/speck-next#v7.1.0 tools run graft -- build .
+npx -y github:Keegil/speck-next#v7.1.0 tools run graft -- skeleton src/example.ts .
+npx -y github:Keegil/speck-next#v7.1.0 tools run ast-grep -- run --lang ts --pattern 'console.log($$$ARGS)' src
+npx -y github:Keegil/speck-next#v7.1.0 tools run rtk -- git status
+```
+
+| Tool | Useful for |
+|---|---|
+| [Graft](https://github.com/trailhq/Graft) | Code signatures and caller navigation. Build a missing graph explicitly; use source and tests to check consequential findings. |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) | Fast, targeted text searches, including files a code graph cannot index. |
+| [jq](https://github.com/jqlang/jq) | Extracting and transforming the JSON fields the task actually needs. |
+| [ast-grep](https://github.com/ast-grep/ast-grep) | Structural code searches and reviewed, repeatable rewrites. |
+| [RTK](https://github.com/rtk-ai/rtk) | Compact readable summaries of supported command output. Inspect original output for errors, ambiguity and completion evidence. |
+
+Setup owns `~/.cache/speck-next/tools` (or `SPECK_NEXT_TOOL_HOME`) and records provenance. Choose a dedicated real directory; symlinks and nonempty unowned caches are refused. Existing PATH tools are reported without replacement; the launcher uses the managed versions. Downloads are checksum-verified. Graft installs native dependencies with npm lifecycle scripts enabled and retains their resolved lockfile; its pinned tarball does not freeze every transitive dependency across fresh installs.
+
+The launcher preserves child exit status and disables tool telemetry. No PATH edits, global agent configuration or vendor integration hooks are installed. Tools retain their normal runtime behavior: Graft may write `~/.graft` update state and check npm for updates; RTK records local usage. Graft's explicit build writes its repository cache and ignore entry; its paid deep mode is not run automatically. RTK is invoked explicitly, so it does not silently rewrite shell commands. Keep machine-consumed JSON, patches and mutation commands on their original tools.
+
+`tools doctor --json` probes versions and returns machine-readable status, with exit 1 when the complete managed bundle is unavailable. It does not install or repair anything. `tools remove` renames the owned cache to a reported retired directory for recovery; it does not reclaim its disk space or delete existing installations, vendor runtime state or project indexes. Exact versions, sources, licenses and download hashes live in [the manifest](bin/toolkit-manifest.json). Availability and smaller outputs do not establish whole-task token savings.
+
+## Development
+
+`bash devsuite/run.sh` checks release consistency, skill metadata, references, discovery, footprint, toolkit failure paths, and method install/upgrade preservation. These deterministic checks make no model calls or tool downloads. `python3 devsuite/toolkit-smoke.py` exercises the real downloads and all five tools in a temporary cache. Historical model campaigns require `--legacy`; their old fixed-team expectations do not govern v7.

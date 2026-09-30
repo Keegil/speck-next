@@ -2,14 +2,14 @@
 
 ## Goal and current result
 
-Version 7.0.4 is released and adopted in all four existing product checkouts. Release instructions and current records are aligned, all six optional templates are refreshed, and automatic consistency checks pass locally and on GitHub. The five skills retain the boundaries introduced in 7.0.3. The shipped method is slightly smaller.
+The owner approved bundling Graft, ripgrep, jq, ast-grep and RTK in v7.1. The optional toolkit is being implemented behind the existing CLI, with managed versions and task-specific use. The method keeps its five skills and optional records. [Current work](work/toolkit-7.1.md).
 
 ## Evidence and limits
 
-Candidate `18f2491` has independent acceptance, nine passing guard controls, ten passing installer tests including 52 upgrade combinations, and a useful executed handoff trial. GitHub Actions passed at that candidate SHA. Release tag `v7.0.4` resolves to `561800e7c305493a0eaf230d7088f69f367bd328`. Published installation and all four pushed upgrades were verified, including owner data and existing edits. Full evidence is in [work/consistency-2026-09.md](work/consistency-2026-09.md); [capabilities](capabilities.md) distinguish current checks from earlier behavioral examples.
+Version 7.0.4 remains the last published and adopted release; its checks and preservation proof are in [the consistency record](work/consistency-2026-09.md). The new tool versions, cache lifecycle, real executions and failure paths need verification before v7.1 release. [Capabilities](capabilities.md) retain versioned evidence.
 
-Automatic host activation, full-stack Claude/Codex behavior, and comparative productivity remain unmeasured. This patch's independent review was from the same model family; both attempted cross-model lanes were quota-blocked. Existing unrelated local files and adopter edits remain intact.
+Automatic host activation and comparative productivity remain unmeasured. Existing unrelated local files, adopter edits and globally installed tools must remain intact. Tool availability and reduced output sizes do not establish task-level savings.
 
 ## Next action
 
-Use the method for ordinary product work. No further optimization campaign is commissioned. Earlier release histories and completed plans are preserved in [prior records](docs/history/v7.0.3-records.md).
+Finish the bounded toolkit implementation, run real tool and preservation checks, obtain independent review, then publish v7.1 and verify adoption. Earlier release histories and completed plans are preserved in [prior records](docs/history/v7.0.3-records.md).

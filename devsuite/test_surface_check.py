@@ -49,6 +49,7 @@ class SurfaceControls(unittest.TestCase):
     def test_stale_readme_version_and_pins(self):
         self.rejected_edit("README.md", lambda b: re.sub(rb"Current version:.*", b"Current version: **0.0.0**", b), "Current version")
         self.rejected_edit("README.md", lambda b: re.sub(rb"speck-next#v[\d.]+ install", b"speck-next#v0.0.0 install", b), "command pins 0.0.0")
+        self.rejected_edit("AGENTS.md", lambda b: re.sub(rb"speck-next#v[\d.]+ tools", b"speck-next#v0.0.0 tools", b), "command pins 0.0.0")
 
     def test_stale_cli_help_pin(self):
         self.rejected_edit("bin/speck-next.js", lambda b: b.replace(b"#v${VERSION} install", b"#v0.0.0 install"), "CLI help: command pins 0.0.0")

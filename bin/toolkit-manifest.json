@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-09-30",
+  "tools": {
+    "graft": {
+      "version": "0.21.1",
+      "kind": "npm",
+      "package": "@nanonets/graft",
+      "url": "https://registry.npmjs.org/@nanonets/graft/-/graft-0.21.1.tgz",
+      "integrity": "sha512-0CSgoGx+FyzgCkFDhM94pvPnYaTU9jL19BixqMmZ0eyQK618GINPHhQ5Xtto7LcHdNiBGl5RFQcwJob6Mxq4nA==",
+      "executable": "graft",
+      "versionArgs": [
+        "--version"
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://github.com/trailhq/Graft/blob/main/LICENSE",
+      "sourceUrl": "https://www.npmjs.com/package/@nanonets/graft/v/0.21.1",
+      "engines": {
+        "node": ">=20"
+      },
+      "publishedAt": "2026-09-29T11:26:22.311Z"
+    },
+    "rg": {
+      "version": "15.2.0",
+      "kind": "archive",
+      "executable": "rg",
+      "versionArgs": [
+        "--version"
+      ],
+      "license": "MIT OR Unlicense",
+      "licenseUrl": "https://github.com/BurntSushi/ripgrep/blob/15.2.0/COPYING",
+      "sourceUrl": "https://github.com/BurntSushi/ripgrep/releases/tag/15.2.0",
+      "publishedAt": "2026-07-15T16:26:10Z",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-aarch64-apple-darwin.tar.gz",
+          "sha256": "3750b2e93f37e0c692657da574d7019a101c0084da05a790c83fd335bad973e4",
+          "format": "tar.gz",
+          "binary": "ripgrep-15.2.0-aarch64-apple-darwin/rg"
+        },
+        "linux-arm64": {
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-aarch64-unknown-linux-musl.tar.gz",
+          "sha256": "800b1e7206afe799dfb5a6901f23147cfaabe0e52210538100f61e86e1740915",
+          "format": "tar.gz",
+          "binary": "ripgrep-15.2.0-aarch64-unknown-linux-musl/rg"
+        },
+        "darwin-x64": {
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-apple-darwin.tar.gz",
+          "sha256": "af7825fcc69a2afc7a7aea55fc9af90e26421d8f20fe59df32e233c0b8a231c1",
+          "format": "tar.gz",
+          "binary": "ripgrep-15.2.0-x86_64-apple-darwin/rg"
+        },
+        "win32-x64": {
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-pc-windows-msvc.zip",
+          "sha256": "71b2fef860abe467217a538ff31de02f5258807c0129f771846f87bd029aafc5",
+          "format": "zip",
+          "binary": "ripgrep-15.2.0-x86_64-pc-windows-msvc/rg.exe"
+        },
+        "linux-x64": {
+          "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz",
+          "sha256": "33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c",
+          "format": "tar.gz",
+          "binary": "ripgrep-15.2.0-x86_64-unknown-linux-musl/rg"
+        }
+      }
+    },
+    "jq": {
+      "version": "1.8.2",
+      "kind": "archive",
+      "executable": "jq",
+      "versionArgs": [
+        "--version"
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://github.com/jqlang/jq/blob/jq-1.8.2/COPYING",
+      "sourceUrl": "https://github.com/jqlang/jq/releases/tag/jq-1.8.2",
+      "publishedAt": "2026-06-20T14:11:27Z",
+      "platforms": {
+        "linux-x64": {
+          "url": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64",
+          "sha256": "b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f",
+          "format": "executable",
+          "binary": "jq"
+        },
+        "linux-arm64": {
+          "url": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-arm64",
+          "sha256": "8b85c817833814ddca00a144c33705546355afccf0cf39b188f3cdb48b852309",
+          "format": "executable",
+          "binary": "jq"
+        },
+        "darwin-x64": {
+          "url": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-macos-amd64",
+          "sha256": "e94b266e3c26690550006abe63152b782280f4e14374accdf04cbde844f00bc0",
+          "format": "executable",
+          "binary": "jq"
+        },
+        "darwin-arm64": {
+          "url": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-macos-arm64",
+          "sha256": "2d75340ba57a4b4b4c8708a21c2dc8e958a48aaa8bba13b27f77f6e4c0eca07e",
+          "format": "executable",
+          "binary": "jq"
+        },
+        "win32-x64": {
+          "url": "https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-windows-amd64.exe",
+          "sha256": "a6fc67fedaf9128a3309a1e2ebb8b986aeccf70122ee46d2cb4849e423f0c627",
+          "format": "executable",
+          "binary": "jq.exe"
+        }
+      }
+    },
+    "ast-grep": {
+      "version": "0.45.3",
+      "kind": "archive",
+      "executable": "ast-grep",
+      "versionArgs": [
+        "--version"
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://github.com/ast-grep/ast-grep/blob/0.45.3/LICENSE",
+      "sourceUrl": "https://github.com/ast-grep/ast-grep/releases/tag/0.45.3",
+      "publishedAt": "2026-08-31T01:42:23Z",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-aarch64-apple-darwin.zip",
+          "sha256": "6d2279dea5bea2ad79c66ea93f5fe54ba926e398a8a26de76c56db68fe59eac6",
+          "format": "zip",
+          "binary": "ast-grep"
+        },
+        "linux-arm64": {
+          "url": "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-aarch64-unknown-linux-gnu.zip",
+          "sha256": "b39cfbc58da4b869a88b8a4bc57bd5deb0d24541e704cf7c257da7b53ec81c8f",
+          "format": "zip",
+          "binary": "ast-grep",
+          "requires": "glibc-based Linux"
+        },
+        "darwin-x64": {
+          "url": "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-x86_64-apple-darwin.zip",
+          "sha256": "b2ffd26f42810340326a9e8a084bdc3647a8795c1a3f21fc06bd7bef3c7c5b2c",
+          "format": "zip",
+          "binary": "ast-grep"
+        },
+        "win32-x64": {
+          "url": "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-x86_64-pc-windows-msvc.zip",
+          "sha256": "3751b7d6be7fd39a80df1180ffe7e053903dcf92d3190e5a8336ff1746af9059",
+          "format": "zip",
+          "binary": "ast-grep.exe"
+        },
+        "linux-x64": {
+          "url": "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-x86_64-unknown-linux-gnu.zip",
+          "sha256": "f8ac830881339d1edee6b2652f54798c0f4da5a827f2db38a08ee31117783ce8",
+          "format": "zip",
+          "binary": "ast-grep",
+          "requires": "glibc-based Linux"
+        }
+      }
+    },
+    "rtk": {
+      "version": "0.50.0",
+      "kind": "archive",
+      "executable": "rtk",
+      "versionArgs": [
+        "--version"
+      ],
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/rtk-ai/rtk/blob/v0.50.0/LICENSE",
+      "sourceUrl": "https://github.com/rtk-ai/rtk/releases/tag/v0.50.0",
+      "publishedAt": "2026-09-24T10:02:31Z",
+      "platforms": {
+        "darwin-arm64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.50.0/rtk-aarch64-apple-darwin.tar.gz",
+          "sha256": "fe54761a9950266e3a78ddb66a8af5e067251169da306a288e0751de63d836fe",
+          "format": "tar.gz",
+          "binary": "rtk"
+        },
+        "linux-arm64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.50.0/rtk-aarch64-unknown-linux-gnu.tar.gz",
+          "sha256": "d1cc49dfa2cd443fc32625444b59fe616b6c80478cca210985118347174dd758",
+          "format": "tar.gz",
+          "binary": "rtk",
+          "requires": "glibc-based Linux"
+        },
+        "darwin-x64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.50.0/rtk-x86_64-apple-darwin.tar.gz",
+          "sha256": "ac23e20024ab3c71e7f50069f8b34190aec1b2d8f0c2cc19834039b3dac73373",
+          "format": "tar.gz",
+          "binary": "rtk"
+        },
+        "win32-x64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.50.0/rtk-x86_64-pc-windows-msvc.zip",
+          "sha256": "cb03399305135dd59ee23eb59a3260ccdeea5a8e08fbc7a271b115b85583a6c9",
+          "format": "zip",
+          "binary": "rtk.exe"
+        },
+        "linux-x64": {
+          "url": "https://github.com/rtk-ai/rtk/releases/download/v0.50.0/rtk-x86_64-unknown-linux-musl.tar.gz",
+          "sha256": "bc2b8902b0d9c796c82ef45f16ae2307e17757afeca5ee156235a3dc7bda5f89",
+          "format": "tar.gz",
+          "binary": "rtk"
+        }
+      }
+    }
+  }
+}

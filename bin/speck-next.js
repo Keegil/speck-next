@@ -8,6 +8,17 @@ const path = require("path");
 const crypto = require("crypto");
 const { spawnSync } = require("child_process");
 
+// Toolkit setup is separate from project installation: it owns its cache only.
+if (process.argv[2] === "tools") {
+  require("./toolkit.js").main(process.argv.slice(3)).then(code => {
+    process.exitCode = code ?? 0;
+  }).catch(error => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+  return;
+}
+
 const SRC = path.join(__dirname, "..");
 const VERSION = require(path.join(SRC, "package.json")).version;
 const SURFACE = ["AGENTS.md", "CLAUDE.md", path.join(".claude", "skills"), "templates"];
@@ -1520,6 +1531,11 @@ if (cmd === "install") {
 
   npx github:Keegil/speck-next install [dir]   place the method into a fresh git repo (default: current dir)
   npx github:Keegil/speck-next upgrade [dir]   refresh the method files in a Speck Next repo
+  npx github:Keegil/speck-next tools setup    install the pinned optional toolkit in its own cache
+  npx github:Keegil/speck-next tools doctor   inspect managed and existing tool versions
+  npx github:Keegil/speck-next tools run <tool> -- <args>
+                                                run graft, rg, jq, ast-grep, or rtk
+  npx github:Keegil/speck-next tools remove   retire only the managed toolkit cache
   npx github:Keegil/speck-next upgrade [dir] --open-assessment
                                                 retired in v7; refuses without changing files
 

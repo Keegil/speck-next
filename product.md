@@ -22,6 +22,6 @@ Bring a request, see the smallest useful result, steer consequential choices, an
 
 ## Foundations and limits
 
-Keep the existing plain-file method and transactional installer. Reconsider the installer only when an executed preservation or compatibility check fails. No runtime service or model dependency is needed. Old-Speck conversion remains deferred; native Speck Next marker-based upgrades are supported.
+Keep the existing plain-file method and transactional installer. The optional toolkit provides pinned Graft, ripgrep, jq, ast-grep and RTK through a separate managed cache. Its setup is explicit; ordinary work chooses tools by usefulness and can continue without them. Existing project checks and installed tools remain available. No runtime service or model dependency is needed. Old-Speck conversion remains deferred; native Speck Next marker-based upgrades are supported.
 
 Versioned evidence and earlier decisions retain their original scope in [prior records](docs/history/v7.0.3-records.md). Comparative cost savings and general product-quality gains remain unproved.

@@ -174,7 +174,7 @@ def check(root):
                 resolved = ((installed / decoded.lstrip("/")) if decoded.startswith("/") else path.parent / decoded).resolve()
                 if not resolved.is_relative_to(installed) or not resolved.exists():
                     errors.append(f"{relative}: local link {raw!r} does not resolve to a shipped path")
-        pin_pattern = r"github:Keegil/speck-next#v?([^\s`]+)\s+(?:install|upgrade)\b"
+        pin_pattern = r"github:Keegil/speck-next#v?([^\s`]+)\s+(?:install|upgrade|tools)\b"
         for label, text in texts:
             for pinned in re.findall(pin_pattern, text):
                 if pinned != version:

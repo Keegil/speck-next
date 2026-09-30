@@ -50,3 +50,5 @@ jobs:
           python-version: '3.13'
       - name: Check release surface and installer without model calls
         run: bash devsuite/run.sh
+      - name: Exercise pinned toolkit downloads and real commands
+        run: python3 devsuite/toolkit-smoke.py

@@ -54,6 +54,14 @@ Reuse working setup and targeted checks; inspect relevant logs, resulting data, 
 
 Harness choices are hypotheses. Before claiming gains from changed prompts, tools, context handling, or delegation, compare outcomes and cost with a simpler setup (see `experience`). Revisit scaffolding as models change; preserve owner promises, protected behavior, and independent acceptance.
 
+## Optional toolkit
+
+`npx -y github:Keegil/speck-next#v7.1.0 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
+
+Choose the tool for the question: **rg** for exact text, **jq** for selected JSON fields, **Graft** for signatures and caller navigation, **ast-grep** for structural searches or reviewed rewrites, **RTK** for selected readable summaries of noisy output. A known file often needs only a targeted read. Reuse project tests, types, linters and browser tools.
+
+For Graft, explicitly build a missing index; check freshness and verify consequential caller claims against source and tests. Structural commands need no model calls; deep analysis needs separate authorization. For RTK, keep machine-consumed data and mutation commands on their original tools. Inspect raw output for failures, ambiguity and completion evidence; compressed output alone does not prove success. Use these CLIs directly without vendor setup hooks or global configuration changes.
+
 ## Review
 
 **Substantive** means a change to meaningful behavior, promises, architecture, or decisions whose correctness cannot be settled by an obvious local check — e.g. a one-line typo or formatting fix is not substantive. Substantive delivered work gets fresh independent review (non-contributor; may exercise and accept in one context). Trivial obvious reversible fixes: targeted check only.

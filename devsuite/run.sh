@@ -20,6 +20,7 @@ if [ "${1:-}" != "--legacy" ]; then
   fi
   python3 "$REPO/devsuite/surface-check.py" || exit "$?"
   python3 -B "$REPO/devsuite/test_surface_check.py" || exit "$?"
+  python3 -B "$REPO/devsuite/test_toolkit.py" || exit "$?"
   exec python3 "$REPO/devsuite/proportional-v7/check.py"
 fi
 shift

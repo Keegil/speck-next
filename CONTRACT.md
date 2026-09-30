@@ -44,3 +44,9 @@ Mandatory phase ratification chains; universal four-role ceremonies; fixed minim
 `devsuite/surface-check.py` checks the installed file, byte, and skill ceilings, release versions, metadata, links, and both host entrypoints. The default suite and GitHub Actions run it with negative controls. The combined agent/context budget and whether a work record earns its keep still require judgment; these are not mechanically verified by file counts.
 
 Historical v6 contract text and assessment-parser specification are retired from user-loaded docs; prior proof rows in `capabilities.md` are historical unless marked refreshed for v7.
+
+## Optional toolkit (v7.1)
+
+Graft, ripgrep, jq, ast-grep and RTK are available through an explicit toolkit setup. The method-file ceilings above cover the installed instructions and templates; optional third-party binaries, dependencies and generated indexes have a separate, visible disk footprint. Core install and upgrade remain dependency-free and do not require toolkit setup.
+
+The toolkit pins upstream artifacts and verifies their checksums before installation. It owns its cache, preserves existing installations and project records, and reports failures without claiming setup completed. Its launcher propagates child exit status. Setup does not install global hooks or enable model calls. Tool-generated summaries and graphs support navigation; original output, source and appropriate checks establish consequential claims. Token and latency benefits require comparisons on actual tasks.

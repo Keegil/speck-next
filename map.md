@@ -1,18 +1,18 @@
 # Build order
 
-The consistency repair is complete and released as 7.0.4, including verified upgrades of all four existing product checkouts. The product direction and installer design remain settled. This records the completed build order; current status is in [state.md](state.md).
+The owner approved the complete optional toolkit for v7.1. The method and project installer remain settled; the new cache lifecycle is separate. Current status is in [state.md](state.md).
 
 ## Ordered work
 
-1. **Align the surface.** Correct release instructions, review all skills and references, make the six templates plain and optional, and distinguish current records from history. Keep the same files and five skills so existing adopters remain compatible.
-2. **Catch recurring drift.** Run cheap consistency checks against the source and a real disposable installation. Verify that stale versions, broken references, invalid metadata, and exceeded limits produce actionable failures. Keep model calls out of the default checks.
-3. **Verify and distribute.** Review the combined candidate independently, exercise useful template behavior, run the default suite and published installation, then upgrade existing native adopters while preserving owner files and edits.
+1. **Pin and install.** Verify official Graft, ripgrep, jq, ast-grep and RTK artifacts; implement setup, diagnosis, execution and retirement within an owned cache.
+2. **Integrate and exercise.** Connect CLI dispatch and selective agent guidance. Test installation failures, preservation, retries and child exit codes, then run all five actual tools on a disposable subject.
+3. **Review and distribute.** Review the frozen candidate independently, run hosted checks and published installation, then upgrade existing native adopters while preserving owner files and edits.
 
 ## Integration
 
-The integrator owns agreement among the entrypoint, skills, templates, documentation and package. Template and check contributors own separate paths. The actual installed tree determines footprint and reference coverage; file counts do not establish agent quality.
+The manager/test contributor and release-manifest contributor own separate paths. The integrator owns CLI dispatch, installed guidance, real tool checks and publication. The manifest is the package-level source for versions, platforms and verified artifacts. Toolkit setup owns only its cache; method install/upgrade does not download tools.
 
-Evidence and release status: [work/consistency-2026-09.md](work/consistency-2026-09.md) and [state.md](state.md).
+Evidence and release status: [work/toolkit-7.1.md](work/toolkit-7.1.md) and [state.md](state.md).
 
 ## Deferred work
 

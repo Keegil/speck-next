@@ -126,7 +126,7 @@ class UpgradeTests(unittest.TestCase):
         pending = b"# Product\r\n## Speck Next upgrade assessment\r\n**Speck Next upgrade assessment:** pending\r\n**Record:** `work/product-team-assessment.md`\r\n"
         malformed = b"# Owner bytes\r\n<!-- unclosed historical assessment\n\xff\x00"
         stale = b"## Speck Next upgrade assessment\n**Speck Next upgrade assessment:** complete \xe2\x80\x94 resumed STALE-PIECE from state.md\n"
-        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", "7.0.2", "7.0.3", VERSION)):
+        for version in dict.fromkeys(("1.0.0", "2.0.0", "3.2.0", "4.0.0", "5.4.1", "6.0.0-rc.1", "6.0.0-rc.2", "6.0.0", "7.0.0", "7.0.1", "7.0.2", "7.0.3", "7.0.4", VERSION)):
             for product in (None, pending, malformed, stale):
                 with self.subTest(version=version, product=product):
                     root = self.repo(version, product)
@@ -142,6 +142,23 @@ class UpgradeTests(unittest.TestCase):
                     self.assertNotIn("STALE-PIECE", next_line)
                     self.assertFalse((root / "work/product-team-assessment.md").exists())
                     self.stable_retry(root)
+
+    def test_source_and_packed_toolkit_available_without_setup(self):
+        for kernel in (KERNEL, self.packed):
+            with self.subTest(kernel=str(kernel)):
+                cache = self.repo() / "absent tool cache"
+                env = dict(os.environ, SPECK_NEXT_TOOL_HOME=str(cache))
+                cli = str(kernel / "bin/speck-next.js")
+                result = run("node", cli, "tools", "doctor", "--json", env=env)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                report = json.loads(result.stdout)
+                self.assertFalse(report["ready"])
+                self.assertEqual({tool["name"] for tool in report["tools"]},
+                                 {"graft", "rg", "jq", "ast-grep", "rtk"})
+                self.assertFalse(cache.exists())
+                for name in ("toolkit.js", "toolkit-manifest.json"):
+                    self.assertEqual((kernel / "bin" / name).read_bytes(),
+                                     (KERNEL / "bin" / name).read_bytes())
 
     def test_packed_upgrade_preserves_dirty_owner_records(self):
         root = self.repo("5.4.1", b"# Product\nAn unresolved promise.\n")
