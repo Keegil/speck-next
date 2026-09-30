@@ -2,14 +2,14 @@
 
 ## Goal and current result
 
-The owner approved bundling Graft, ripgrep, jq, ast-grep and RTK in v7.1. The optional toolkit is being implemented behind the existing CLI, with managed versions and task-specific use. The method keeps its five skills and optional records. [Current work](work/toolkit-7.1.md).
+Version 7.1.0 is published with the optional Graft, ripgrep, jq, ast-grep and RTK toolkit. All five are installed in the operator's managed cache, and all four existing native checkouts are upgraded, committed and pushed. The method keeps its five skills and optional records. [Release record](work/toolkit-7.1.md).
 
 ## Evidence and limits
 
-Version 7.0.4 remains the last published and adopted release; its checks and preservation proof are in [the consistency record](work/consistency-2026-09.md). The new tool versions, cache lifecycle, real executions and failure paths need verification before v7.1 release. [Capabilities](capabilities.md) retain versioned evidence.
+Release `0a53a59` passed 34 deterministic tests and the real Linux toolkit smoke in [GitHub CI](https://github.com/Keegil/speck-next/actions/runs/36687661422). macOS execution, published npx installation and independent Claude review also passed. Review found and verified the repair of interrupted-setup recovery. The adopter rollout preserved 2,842 tracked owner paths, 14,263 nonignored untracked paths and existing staged content. [Capabilities](capabilities.md) retain scope and limits.
 
-Automatic host activation and comparative productivity remain unmeasured. Existing unrelated local files, adopter edits and globally installed tools must remain intact. Tool availability and reduced output sizes do not establish task-level savings.
+Automatic host activation and comparative productivity remain unmeasured. Windows setup is unsupported; macOS arm64 and Linux x64 were exercised. Vendor runtime caches and update checks can still occur. Tool availability and reduced output sizes do not establish task-level savings.
 
 ## Next action
 
-Finish the bounded toolkit implementation, run real tool and preservation checks, obtain independent review, then publish v7.1 and verify adoption. Earlier release histories and completed plans are preserved in [prior records](docs/history/v7.0.3-records.md).
+Use the toolkit selectively during ordinary project work. Future harness changes should follow observed task outcomes and costs. Earlier release histories and completed plans are preserved in [prior records](docs/history/v7.0.3-records.md).

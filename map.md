@@ -1,12 +1,12 @@
 # Build order
 
-The owner approved the complete optional toolkit for v7.1. The method and project installer remain settled; the new cache lifecycle is separate. Current status is in [state.md](state.md).
+The optional toolkit shipped in v7.1.0. The method and project installer remain separate from its cache lifecycle. Current status is in [state.md](state.md).
 
 ## Ordered work
 
-1. **Pin and install.** Verify official Graft, ripgrep, jq, ast-grep and RTK artifacts; implement setup, diagnosis, execution and retirement within an owned cache.
-2. **Integrate and exercise.** Connect CLI dispatch and selective agent guidance. Test installation failures, preservation, retries and child exit codes, then run all five actual tools on a disposable subject.
-3. **Review and distribute.** Review the frozen candidate independently, run hosted checks and published installation, then upgrade existing native adopters while preserving owner files and edits.
+1. **Pin and install — complete.** Verified official artifacts and shipped setup, diagnosis, execution and retirement within an owned cache.
+2. **Integrate and exercise — complete.** Connected selective agent guidance; exercised all five tools, preservation, partial failure, interrupted setup and child exit codes.
+3. **Review and distribute — complete.** Independent acceptance, hosted Linux checks, publication, published installation and four preserved adopter upgrades are recorded in the release evidence.
 
 ## Integration
 
