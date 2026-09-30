@@ -17,6 +17,8 @@ KERNEL = Path(__file__).resolve().parents[2]
 VERSION = json.loads((KERNEL / "package.json").read_text())["version"]
 MAJOR, MINOR, PATCH = map(int, VERSION.split("."))
 FUTURE_PATCH = f"{MAJOR}.{MINOR}.{PATCH + 1}"
+FUTURE_MINOR = f"{MAJOR}.{MINOR + 1}.0"
+FUTURE_MAJOR = f"{MAJOR + 1}.0.0"
 
 
 def run(*args, cwd=None, env=None):
@@ -182,7 +184,7 @@ class UpgradeTests(unittest.TestCase):
 
     def test_unknown_future_and_malformed_markers_refuse(self):
         markers = [None, [], "not an object", {}, {"version": 7}, {"name": "other", "version": VERSION}]
-        markers += [{"version": value} for value in ("0.9.0", "banana", "7", "07.0.0", FUTURE_PATCH, "7.1.0", "8.0.0", "999999999999999999999.0.0")]
+        markers += [{"version": value} for value in ("0.9.0", "banana", "7", "07.0.0", FUTURE_PATCH, FUTURE_MINOR, FUTURE_MAJOR, "999999999999999999999.0.0")]
         for value in markers:
             with self.subTest(marker=value):
                 root = self.repo("6.0.0")
