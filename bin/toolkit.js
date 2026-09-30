@@ -3,11 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
-const { spawn, spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 
 const OWNER = 'speck-next-toolkit-v1';
 const MARKER = '.speck-next-tools.json';
 const RECEIPT = '.speck-tool.json';
+const STAGE = '.speck-stage.json';
 const LIMIT = 256 * 1024 * 1024;
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const exists = file => { try { return fs.lstatSync(file); } catch (e) { if (e.code === 'ENOENT') return null; throw e; } };
@@ -45,21 +46,120 @@ function ownedHome(home, create = false) {
   return true;
 }
 
+function alive(pid) {
+  try { process.kill(pid, 0); return true; }
+  catch (error) { if (error.code === 'ESRCH') return false; throw error; }
+}
+
+function writeRecord(file, record) {
+  const temporary = `${file}.next`;
+  fs.writeFileSync(temporary, JSON.stringify(record) + '\n', { mode: 0o600 });
+  fs.renameSync(temporary, file);
+}
+
+function identity(record) {
+  return record.owner === OWNER && /^[a-f0-9]{32}$/.test(record.token) &&
+    Number.isInteger(record.pid) && record.pid > 0 && Array.isArray(record.groups) &&
+    record.groups.every(pid => Number.isInteger(pid) && pid > 0);
+}
+
+function idle(record) {
+  return !alive(record.pid) && record.groups.every(pid => !alive(-pid));
+}
+
+function acquire(home) {
+  const lock = path.join(home, '.lock');
+  if (exists(lock)) {
+    safeChain(lock);
+    const old = readJson(path.join(lock, 'owner.json'));
+    if (!identity(old)) throw Error(`Unrecognized toolkit lock: ${lock}; inspect it before retrying.`);
+    if (!idle(old)) throw Error('Toolkit is busy: its owner or an installation subprocess is still running. Retry after it exits.');
+    // Competing recovery attempts cannot remove a new owner's lock.
+    const claim = path.join(lock, `recover-${old.token}`);
+    try { fs.mkdirSync(claim); } catch { throw Error('Toolkit recovery is busy; retry shortly.'); }
+    if (readJson(path.join(lock, 'owner.json')).token !== old.token) throw Error('Toolkit lock changed; retry.');
+    fs.renameSync(lock, `${home}.retired-lock-${old.token}`);
+  }
+  const record = { owner: OWNER, token: crypto.randomBytes(16).toString('hex'), pid: process.pid, groups: [] };
+  try { fs.mkdirSync(lock); } catch { throw Error('Toolkit is busy; retry after the current operation exits.'); }
+  writeRecord(path.join(lock, 'owner.json'), record);
+  return { lock, record, stage: null };
+}
+
+function stageRecord(directory) {
+  safeChain(directory);
+  const record = readJson(path.join(directory, STAGE));
+  if (!identity(record)) throw Error(`Unowned staging directory: ${directory}`);
+  return record;
+}
+
+function recoverStages(home) {
+  for (const name of fs.readdirSync(home).filter(name => name.startsWith('.stage-'))) {
+    const directory = path.join(home, name);
+    const record = stageRecord(directory);
+    if (!idle(record)) throw Error(`Installation staging is still active: ${directory}`);
+    const retired = `${home}.retired-stage-${record.token}-${name}`;
+    if (exists(retired)) throw Error(`Recovery destination already exists: ${retired}`);
+    fs.renameSync(directory, retired);
+    console.log(`Retired interrupted installation to ${retired}`);
+  }
+}
+
+// The child waits for registration before executing anything. If the parent dies
+// before registering its process group, IPC disconnect makes this child exit.
+const COMMAND_WORKER = `
+const {spawn}=require('child_process'); let started=false;
+process.on('disconnect',()=>{if(!started) process.exit(1)});
+process.on('SIGTERM',()=>{if(!started) process.exit(143)});
+process.once('message',({file,args,options})=>{
+  started=true; const child=spawn(file,args,{...options,stdio:['ignore','inherit','inherit']});
+  child.on('error',e=>{console.error(e.message);process.exit(1)});
+  child.on('exit',(code,signal)=>process.exit(code===null?128+(require('os').constants.signals[signal]||1):code));
+});`;
+
 function command(file, args, options = {}) {
-  const result = spawnSync(file, args, { encoding: 'utf8', timeout: 120000, maxBuffer: LIMIT, ...options });
-  if (result.error || result.status !== 0)
-    throw Error(`${path.basename(file)} failed: ${result.error?.message || (result.stderr || result.stdout || `exit ${result.status}`).toString().trim()}`);
-  return result.stdout;
+  const { session, timeout = 120000, encoding = 'utf8', ...childOptions } = options;
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ['-e', COMMAND_WORKER], {
+      detached: true, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
+    const stdout = [], stderr = []; let length = 0, failure;
+    const stop = error => { failure = error; try { process.kill(-child.pid, 'SIGKILL'); } catch {} };
+    const timer = setTimeout(() => stop(Error(`${path.basename(file)} timed out`)), timeout);
+    const collect = target => chunk => { length += chunk.length; if (length > LIMIT) stop(Error('Command output exceeds limit')); else target.push(chunk); };
+    child.stdout.on('data', collect(stdout)); child.stderr.on('data', collect(stderr));
+    child.on('error', error => { failure = error; });
+    child.on('close', code => {
+      clearTimeout(timer);
+      if (session) {
+        session.record.groups = session.record.groups.filter(pid => alive(-pid));
+        writeRecord(path.join(session.lock, 'owner.json'), session.record);
+        if (session.stage) writeRecord(path.join(session.stage, STAGE), session.record);
+      }
+      const out = Buffer.concat(stdout), err = Buffer.concat(stderr);
+      if (failure || code !== 0) reject(failure || Error(`${path.basename(file)} failed: ${(err.length ? err : out).toString().trim() || `exit ${code}`}`));
+      else resolve(encoding === null ? out : out.toString(encoding));
+    });
+    child.on('spawn', () => {
+      try {
+        if (session) {
+          session.record.groups.push(child.pid);
+          writeRecord(path.join(session.lock, 'owner.json'), session.record);
+          if (session.stage) writeRecord(path.join(session.stage, STAGE), session.record);
+        }
+        child.send({ file, args, options: childOptions });
+      } catch (error) { stop(error); }
+    });
+  });
 }
 
 function environment() {
   return { ...process.env, DO_NOT_TRACK: '1', RTK_TELEMETRY_DISABLED: '1' };
 }
 
-function versionOf(binary, spec, env) {
+async function versionOf(binary, spec, env, session) {
   const args = spec.versionArgs || ['--version'];
-  const output = command(spec.kind === 'npm' ? process.execPath : binary,
-    spec.kind === 'npm' ? [binary, ...args] : args, { timeout: 10000, env }).trim();
+  const output = (await command(spec.kind === 'npm' ? process.execPath : binary,
+    spec.kind === 'npm' ? [binary, ...args] : args, { timeout: 10000, env, session })).trim();
   const escaped = spec.version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return { output, matches: new RegExp(`(^|[^0-9])${escaped}($|[^0-9.])`).test(output) };
 }
@@ -112,7 +212,7 @@ function safeMember(name) {
     throw Error(`Unsafe archive member: ${JSON.stringify(name)}`);
 }
 
-function extractBinary(archive, artifact, destination) {
+async function extractBinary(archive, artifact, destination, session) {
   if (artifact.format === 'executable') {
     fs.copyFileSync(archive, destination, fs.constants.COPYFILE_EXCL);
   } else {
@@ -120,22 +220,22 @@ function extractBinary(archive, artifact, destination) {
     if (!zip && artifact.format !== 'tar.gz') throw Error(`Unsupported archive format: ${artifact.format}`);
     safeMember(artifact.binary);
     if (/[*?\[\]{}]/.test(artifact.binary)) throw Error('Archive binary must be an exact member name');
-    const listing = command(zip ? 'unzip' : 'tar', zip ? ['-Z1', archive] : ['-tzf', archive]);
+    const listing = await command(zip ? 'unzip' : 'tar', zip ? ['-Z1', archive] : ['-tzf', archive], { session });
     const members = listing.trimEnd().split('\n');
     members.forEach(safeMember);
     if (members.filter(name => name === artifact.binary).length !== 1)
       throw Error(`Archive must contain exactly one ${artifact.binary}`);
-    const bytes = command(zip ? 'unzip' : 'tar', zip ? ['-p', archive, artifact.binary] : ['-xOzf', archive, '--', artifact.binary], { encoding: null });
+    const bytes = await command(zip ? 'unzip' : 'tar', zip ? ['-p', archive, artifact.binary] : ['-xOzf', archive, '--', artifact.binary], { encoding: null, session });
     fs.writeFileSync(destination, bytes, { flag: 'wx', mode: 0o755 });
   }
   fs.chmodSync(destination, 0o755);
 }
 
-async function installOne(home, name, spec, platform, allowHttp) {
+async function installOne(home, name, spec, platform, allowHttp, session) {
   const env = environment();
   const current = managed(home, name, spec);
   if (current) {
-    if (!versionOf(current.binary, spec, env).matches) throw Error(`${name}: managed version does not match pin ${spec.version}`);
+    if (!(await versionOf(current.binary, spec, env, session)).matches) throw Error(`${name}: managed version does not match pin ${spec.version}`);
     console.log(`${name} ${spec.version}: already installed`);
     return;
   }
@@ -145,6 +245,8 @@ async function installOne(home, name, spec, platform, allowHttp) {
   const parent = path.dirname(directory);
   fs.mkdirSync(parent, { recursive: true, mode: 0o700 });
   const stage = fs.mkdtempSync(path.join(home, `.stage-${name}-`));
+  session.stage = stage;
+  writeRecord(path.join(stage, STAGE), session.record);
   try {
     const archive = path.join(stage, spec.kind === 'npm' ? 'download.tgz' : 'download');
     await download(artifact.url, artifact, archive, allowHttp);
@@ -152,8 +254,8 @@ async function installOne(home, name, spec, platform, allowHttp) {
     if (spec.kind === 'npm') {
       safeChain(path.join(home, '.npm-cache'));
       fs.writeFileSync(path.join(stage, 'package.json'), JSON.stringify({ private: true }) + '\n');
-      command('npm', ['install', '--prefix', stage, '--no-audit', '--no-fund', '--omit=dev', archive], {
-        cwd: stage, env: { ...env, npm_config_cache: path.join(home, '.npm-cache'), npm_config_update_notifier: 'false' }, timeout: 180000 });
+      await command('npm', ['install', '--prefix', stage, '--no-audit', '--no-fund', '--omit=dev', archive], {
+        session, cwd: stage, env: { ...env, npm_config_cache: path.join(home, '.npm-cache'), npm_config_update_notifier: 'false' }, timeout: 180000 });
       const pkg = readJson(path.join(stage, 'node_modules', spec.package, 'package.json'));
       const entry = typeof pkg.bin === 'string' ? pkg.bin : pkg.bin?.[spec.executable || name];
       if (!entry) throw Error(`${name}: npm package does not declare its executable`);
@@ -161,9 +263,9 @@ async function installOne(home, name, spec, platform, allowHttp) {
       if (!inside(stage, resolved)) throw Error(`${name}: executable escapes managed package`);
       executable = path.relative(stage, resolved);
       safeChain(resolved);
-    } else extractBinary(archive, artifact, path.join(stage, executable));
+    } else await extractBinary(archive, artifact, path.join(stage, executable), session);
     const binary = path.join(stage, executable);
-    if (!versionOf(binary, spec, env).matches) throw Error(`${name}: executable does not report pinned version ${spec.version}`);
+    if (!(await versionOf(binary, spec, env, session)).matches) throw Error(`${name}: executable does not report pinned version ${spec.version}`);
     const lock = path.join(stage, 'package-lock.json');
     const receipt = { owner: OWNER, name, version: spec.version, platform, executable,
       source: artifact.url, integrity: artifact.sha256 || artifact.integrity,
@@ -174,9 +276,11 @@ async function installOne(home, name, spec, platform, allowHttp) {
     safeChain(directory);
     if (exists(directory)) throw Error(`${name}: installation appeared while staging; nothing overwritten`);
     fs.renameSync(stage, directory);
+    fs.unlinkSync(path.join(directory, STAGE));
     console.log(`${name} ${spec.version}: installed`);
   } finally {
-    if (exists(stage)) fs.rmSync(stage, { recursive: true });
+    session.stage = null;
+    if (exists(stage) && session.record.groups.every(pid => !alive(-pid))) fs.rmSync(stage, { recursive: true });
   }
 }
 
@@ -189,23 +293,23 @@ function pathTool(name) {
   return null;
 }
 
-function doctor(home, manifest) {
+async function doctor(home, manifest) {
   let owned = false, error = null;
   try { owned = ownedHome(home); } catch (e) { error = e.message; }
-  const tools = Object.entries(manifest.tools).map(([name, spec]) => {
+  const tools = await Promise.all(Object.entries(manifest.tools).map(async ([name, spec]) => {
     const result = { name, pinnedVersion: spec.version, managed: { status: 'missing' }, existing: null };
     if (owned) try {
       const item = managed(home, name, spec);
       if (item) {
-        const probe = versionOf(item.binary, spec, environment());
+        const probe = await versionOf(item.binary, spec, environment());
         result.managed = { status: probe.matches ? 'ready' : 'version-mismatch', path: item.binary, version: probe.output };
       }
     } catch (e) { result.managed = { status: 'invalid', error: e.message }; }
     const external = pathTool(spec.executable || name);
-    if (external) try { result.existing = { path: external, ...versionOf(external, { ...spec, kind: 'external' }, environment()), adopted: false }; }
+    if (external) try { result.existing = { path: external, ...await versionOf(external, { ...spec, kind: 'external' }, environment()), adopted: false }; }
     catch (e) { result.existing = { path: external, error: e.message, adopted: false }; }
     return result;
-  });
+  }));
   return { home, error, ready: !error && tools.every(tool => tool.managed.status === 'ready'), tools };
 }
 
@@ -224,7 +328,7 @@ function remove(home, manifest) {
   }
   const retired = `${home}.retired-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
   fs.renameSync(home, retired);
-  fs.rmdirSync(path.join(retired, '.lock'));
+  fs.rmSync(path.join(retired, '.lock'), { recursive: true });
   console.log(`Managed toolkit retired to ${retired}. No PATH or project settings changed.`);
 }
 
@@ -239,7 +343,7 @@ async function main(args, options = {}) {
       return 0;
     }
     if (action === 'doctor' && (rest.length === 0 || rest.join(' ') === '--json')) {
-      const report = doctor(home, manifest);
+      const report = await doctor(home, manifest);
       console.log(JSON.stringify(report, null, 2));
       return report.ready ? 0 : 1;
     }
@@ -270,13 +374,29 @@ async function main(args, options = {}) {
     }
     if (action === 'remove' && !exists(home)) { console.log('No managed toolkit installed.'); return 0; }
     ownedHome(home, action === 'setup');
-    const lock = path.join(home, '.lock');
-    try { fs.mkdirSync(lock); } catch { throw Error(`Toolkit is busy, or a previous setup left ${lock}. Inspect it before retrying.`); }
+    const session = acquire(home);
+    const interrupted = signal => {
+      for (const pid of session.record.groups) { try { process.kill(-pid, 'SIGTERM'); } catch {} }
+      // Leave receipts for retry: a native child may need time to terminate.
+      process.exit(128 + os.constants.signals[signal]);
+    };
+    const onInt = () => interrupted('SIGINT'), onTerm = () => interrupted('SIGTERM');
+    process.on('SIGINT', onInt); process.on('SIGTERM', onTerm);
     try {
-      if (action === 'setup') for (const [name, spec] of Object.entries(manifest.tools))
-        await installOne(home, name, spec, platform, options.allowHttp === true);
-      else remove(home, manifest);
-    } finally { if (exists(lock)) fs.rmdirSync(lock); }
+      recoverStages(home);
+      if (action === 'setup') {
+        let failures = 0;
+        for (const [name, spec] of Object.entries(manifest.tools)) {
+          try { await installOne(home, name, spec, platform, options.allowHttp === true, session); }
+          catch (error) { failures++; console.error(`Toolkit: ${name}: ${error.message}`); }
+        }
+        if (failures) { console.error(`Toolkit: ${failures} tool(s) failed; successful installations retained. Retry tools setup.`); return 1; }
+      } else remove(home, manifest);
+    } finally {
+      process.removeListener('SIGINT', onInt); process.removeListener('SIGTERM', onTerm);
+      if (exists(session.lock) && session.record.groups.every(pid => !alive(-pid)))
+        fs.rmSync(session.lock, { recursive: true });
+    }
     return 0;
   } catch (error) { console.error(`Toolkit: ${error.message}`); return 1; }
 }

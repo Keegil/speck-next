@@ -6,6 +6,8 @@ import http.server
 import io
 import json
 import os
+import signal
+import time
 from pathlib import Path
 import subprocess
 import tarfile
@@ -42,12 +44,14 @@ class ToolkitTests(unittest.TestCase):
         return {"kind": "archive", "version": "1.2.3", "executable": "rg", "platforms": {
             "linux-x64": {"url": self.url + "/artifact", "sha256": hashlib.sha256(data).hexdigest(), "format": format, "binary": binary}}}
 
-    def cli(self, *args, env=None, options=None):
+    def cli(self, *args, env=None, options=None, background=False):
         self.manifest_file.write_text(json.dumps(self.manifest))
-        return subprocess.run(["node", "-e", RUN, str(MODULE), str(self.manifest_file), json.dumps(args),
+        invoke = subprocess.Popen if background else subprocess.run
+        kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.PIPE} if background else {"capture_output": True, "timeout": 20}
+        return invoke(["node", "-e", RUN, str(MODULE), str(self.manifest_file), json.dumps(args),
                                json.dumps({"platform": "linux-x64", **(options or {})})],
                               env=dict(os.environ, SPECK_NEXT_TOOL_HOME=str(self.home), **(env or {})),
-                              capture_output=True, text=True, timeout=20)
+                              text=True, **kwargs)
 
     def success(self, result):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -55,6 +59,80 @@ class ToolkitTests(unittest.TestCase):
     def tree(self, directory=None):
         directory = directory or self.home
         return {str(p.relative_to(directory)): p.read_bytes() for p in directory.rglob("*") if p.is_file() and not p.is_symlink()}
+
+    def wait_for(self, predicate, seconds=10):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            if predicate():
+                return
+            time.sleep(0.05)
+        self.fail("Timed out waiting for fixture process")
+
+    def test_failure_still_installs_remaining_tools(self):
+        self.manifest["tools"]["bad"] = json.loads(json.dumps(self.manifest["tools"]["rg"]))
+        self.manifest["tools"]["bad"]["platforms"]["linux-x64"]["sha256"] = "0" * 64
+        self.manifest["tools"] = {"bad": self.manifest["tools"]["bad"], "rg": self.manifest["tools"]["rg"]}
+        result = self.cli("setup")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("1 tool(s) failed", result.stderr)
+        self.assertTrue((self.home / "rg/1.2.3/.speck-tool.json").exists())
+        self.success(self.cli("run", "rg", "--", "--version"))
+
+    def interrupted_setup(self, kill_signal, keep_child):
+        self.success(self.cli("setup"))
+        installed = (self.home / "rg/1.2.3/.speck-tool.json").read_bytes()
+        block = self.root / "block"
+        started = self.root / "started"
+        block.touch()
+        slow = b'#!/bin/sh\nif [ -f "$TEST_BLOCK" ]; then touch "$TEST_STARTED"; while [ -f "$TEST_BLOCK" ]; do sleep 0.1; done; fi\necho "fixture 1.2.3"\n'
+        self.manifest["tools"]["jq"] = self.artifact(slow)
+        child = self.cli("setup", background=True, env={"TEST_BLOCK": str(block), "TEST_STARTED": str(started)})
+        self.addCleanup(lambda: child.poll() is None and child.kill())
+        self.wait_for(started.exists)
+        # A concurrent setup is refused while the parent owns the cache.
+        result = self.cli("setup")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("busy", result.stderr)
+        child.send_signal(kill_signal)
+        child.wait(timeout=5)
+        stage = next(self.home.glob(".stage-jq-*"))
+        (stage / "witness.txt").write_bytes(b"preserve abandoned bytes")
+        if keep_child:
+            result = self.cli("setup")
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("subprocess is still running", result.stderr)
+            self.assertTrue(stage.exists())
+        block.unlink()
+        child.communicate(timeout=5)
+        # Native descendants may take a moment to exit after termination.
+        deadline = time.monotonic() + 10
+        while True:
+            result = self.cli("setup")
+            if result.returncode == 0 or time.monotonic() > deadline:
+                break
+            self.assertIn("busy", result.stderr)
+            time.sleep(0.1)
+        self.success(result)
+        self.assertEqual((self.home / "rg/1.2.3/.speck-tool.json").read_bytes(), installed)
+        retired = list(self.root.glob("managed tools.retired-stage-*"))
+        self.assertEqual(len(retired), 1)
+        self.assertEqual((retired[0] / "witness.txt").read_bytes(), b"preserve abandoned bytes")
+        self.success(self.cli("remove"))
+
+    def test_sigint_setup_recovers_without_manual_cleanup(self):
+        self.interrupted_setup(signal.SIGINT, False)
+
+    def test_killed_parent_cannot_recover_while_child_runs(self):
+        self.interrupted_setup(signal.SIGKILL, True)
+
+    def test_unknown_staging_is_not_claimed(self):
+        self.success(self.cli("setup"))
+        stage = self.home / ".stage-graft-user"
+        stage.mkdir()
+        (stage / "owner.txt").write_bytes(b"keep")
+        self.assertEqual(self.cli("setup").returncode, 1)
+        self.assertEqual(self.cli("remove").returncode, 1)
+        self.assertEqual((stage / "owner.txt").read_bytes(), b"keep")
 
     def test_setup_preflight_and_help_do_not_write(self):
         for options, message in (({"platform": "win32-x64"}, "unsupported"),
