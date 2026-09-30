@@ -22,7 +22,11 @@ Ten deterministic toolkit controls passed, covering integrity/version failure pr
 
 Telemetry is disabled for managed launches; normal vendor runtime behavior remains. Graft may use `~/.graft` and background update checks, and RTK records local usage. No host HOME override, global agent settings, integration hooks or automatic paid/model operations are part of the manager. Structural graph completeness, automatic host tool selection and whole-task savings are not established by these checks.
 
-Release consistency, packed installation, independent review, hosted Linux smoke and adopter rollout are pending at this candidate. Exact verification and release results will be recorded here before closure.
+The complete deterministic suite passed at `79b56d6`: nine surface controls, fourteen toolkit controls and eleven installer checks, including fifty-six supported-version/product combinations and source/packed toolkit parity. The installed method is 38,852 bytes across nineteen canonical files plus its marker and discovery link.
+
+[Independent review](../docs/reviews/toolkit-7.1.md) first found interrupted-setup recovery broken. The repaired candidate `79b56d6` was accepted after real SIGINT and SIGKILL installations, safe refusal while an orphan installer remained active, successful retries, diagnosis and removal. Setup also continues after individual tool failures. All five tools are installed in the operator's managed cache; retry preserved them and five existing global configuration files remained byte-identical.
+
+Hosted Linux smoke, release publication and adopter rollout are pending. Exact results will be recorded here before closure.
 
 ## Sources
 
