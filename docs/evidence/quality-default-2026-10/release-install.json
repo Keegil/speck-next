@@ -1,0 +1,21 @@
+{
+  "package": "github:Keegil/speck-next#v7.1.1",
+  "install_exit": 0,
+  "isolated_npm_cache": true,
+  "canonical_files_matched": 19,
+  "marker": {
+    "name": "speck-next",
+    "version": "7.1.1",
+    "sourceCheckout": "0dd97b4",
+    "methodSurfaceSha256": "164991f435aa3e0103e47ef8753311dbf5132228983d4cb35bd7097e0d35d325",
+    "upgradeAssessmentRecord": null,
+    "installedAt": "2026-10-10T11:43:18.817Z"
+  },
+  "codex_discovery_verified": true,
+  "no_forced_product_records": true,
+  "initial_toolkit_doctor_exit": 1,
+  "initial_toolkit_cache": "absent",
+  "toolkit_restored": true,
+  "final_toolkit_doctor_exit": 0,
+  "source_commit": "0dd97b469caf3919c81c212d08a876764dfdd863"
+}

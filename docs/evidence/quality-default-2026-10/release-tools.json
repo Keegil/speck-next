@@ -1,0 +1,72 @@
+{
+  "home": "/Users/kjetil/.cache/speck-next/tools",
+  "error": null,
+  "ready": true,
+  "tools": [
+    {
+      "name": "graft",
+      "pinnedVersion": "0.21.1",
+      "managed": {
+        "status": "ready",
+        "path": "/Users/kjetil/.cache/speck-next/tools/graft/0.21.1/node_modules/@nanonets/graft/dist/cli.js",
+        "version": "0.21.1"
+      },
+      "existing": {
+        "path": "/Users/kjetil/.nvm/versions/node/v24.0.2/bin/graft",
+        "output": "0.12.0",
+        "matches": false,
+        "adopted": false
+      }
+    },
+    {
+      "name": "rg",
+      "pinnedVersion": "15.2.0",
+      "managed": {
+        "status": "ready",
+        "path": "/Users/kjetil/.cache/speck-next/tools/rg/15.2.0/tool",
+        "version": "ripgrep 15.2.0 (rev e89fff89ac)\n\nfeatures:+pcre2\nsimd(compile):+NEON\nsimd(runtime):+NEON\n\nPCRE2 10.45 is available (JIT is available)"
+      },
+      "existing": {
+        "path": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path/rg",
+        "output": "ripgrep 15.2.0 (rev e89fff89ac)\n\nfeatures:+pcre2\nsimd(compile):+NEON\nsimd(runtime):+NEON\n\nPCRE2 10.45 is available (JIT is available)",
+        "matches": true,
+        "adopted": false
+      }
+    },
+    {
+      "name": "jq",
+      "pinnedVersion": "1.8.2",
+      "managed": {
+        "status": "ready",
+        "path": "/Users/kjetil/.cache/speck-next/tools/jq/1.8.2/tool",
+        "version": "jq-1.8.2"
+      },
+      "existing": {
+        "path": "/usr/bin/jq",
+        "output": "jq-1.7.1-apple",
+        "matches": false,
+        "adopted": false
+      }
+    },
+    {
+      "name": "ast-grep",
+      "pinnedVersion": "0.45.3",
+      "managed": {
+        "status": "ready",
+        "path": "/Users/kjetil/.cache/speck-next/tools/ast-grep/0.45.3/tool",
+        "version": "ast-grep 0.45.3"
+      },
+      "existing": null
+    },
+    {
+      "name": "rtk",
+      "pinnedVersion": "0.50.0",
+      "managed": {
+        "status": "ready",
+        "path": "/Users/kjetil/.cache/speck-next/tools/rtk/0.50.0/tool",
+        "version": "rtk 0.50.0"
+      },
+      "existing": null
+    }
+  ]
+}

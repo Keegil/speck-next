@@ -4,9 +4,9 @@
 
 Execution quality is now part of ordinary scope in the source method. The root page, product contract and five existing skills require deliberate design and relevant practices, actual inspection, scoped refinement, and review of workmanship. New UI work does not need a separate request for polish. Tiny fixes remain small. [Change record](work/quality-default-2026-10.md).
 
-Published version 7.1.0 and its optional toolkit retain their prior release evidence in [the release record](work/toolkit-7.1.md). This source increment adds no installed file, skill or runtime dependency.
+Published version [7.1.1](https://github.com/Keegil/speck-next/releases/tag/v7.1.1) includes the execution-quality repair. Its optional toolkit is unchanged. This increment adds no installed file, skill or runtime dependency. [Release and adoption evidence](work/quality-release-7.1.1.md); prior toolkit evidence remains in [the toolkit record](work/toolkit-7.1.md).
 
-The accepted source was pushed at `37a9721`; GitHub release checks passed at that SHA. All four existing native checkouts received the same method files through upgrade commits, with owner files and ongoing edits preserved and remote heads verified. [Distribution evidence](work/quality-default-2026-10.md#distribution). No new version tag was published.
+The accepted source was initially pushed at `37a9721`. Release tag v7.1.1 resolves to `0dd97b4`; GitHub checks passed at that SHA. A fresh published installation matched the source. All four existing native checkouts received the tagged upgrade, with owner files and ongoing edits preserved and remote heads and marker contents verified. The missing optional tool cache was restored and all five managed tools diagnosed ready.
 
 ## Evidence and limits
 

@@ -1,0 +1,23 @@
+{
+  "roots": [
+    "/Users/kjetil/Code",
+    "/Users/kjetil/.cursor/worktrees",
+    "/Users/kjetil/.codex/worktrees",
+    "/Users/kjetil/Documents",
+    "/Users/kjetil/Desktop"
+  ],
+  "markers": [
+    "/Users/kjetil/Code/telum/splang-slack",
+    "/Users/kjetil/Code/odd",
+    "/Users/kjetil/Code/odd-worktrees/boka-visual-20260908",
+    "/Users/kjetil/Code/odd-worktrees/p2r-review-20260908"
+  ],
+  "headers": [
+    "/Users/kjetil/Code/speck-next",
+    "/Users/kjetil/Code/telum/splang-slack",
+    "/Users/kjetil/Code/odd",
+    "/Users/kjetil/Code/odd-worktrees/boka-visual-20260908",
+    "/Users/kjetil/Code/odd-worktrees/p2r-review-20260908"
+  ],
+  "configured_extra": []
+}

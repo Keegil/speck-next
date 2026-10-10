@@ -1,0 +1,74 @@
+[
+  {
+    "path": "/Users/kjetil/Code/telum/splang-slack",
+    "branch": "main",
+    "head": "49d1755a7be4a40f75e9b3b7a5a888f288cfdf05",
+    "version": "7.1.1",
+    "methodSurfaceSha256": "164991f435aa3e0103e47ef8753311dbf5132228983d4cb35bd7097e0d35d325",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 68,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/odd",
+    "branch": "codex/odd-preparation-app",
+    "head": "4455a76a00bf06a9bb6aa63c135fb90bb8207c1e",
+    "version": "7.1.1",
+    "methodSurfaceSha256": "164991f435aa3e0103e47ef8753311dbf5132228983d4cb35bd7097e0d35d325",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 16613,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/boka-visual-20260908",
+    "branch": "codex/odd-boka-visual-20260908",
+    "head": "83926bbde81cf90df5b43bd5c2445e824cc5a685",
+    "version": "7.1.1",
+    "methodSurfaceSha256": "164991f435aa3e0103e47ef8753311dbf5132228983d4cb35bd7097e0d35d325",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 519,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/p2r-review-20260908",
+    "branch": "codex/odd-p2r-review-resume-20260908",
+    "head": "91bd43528b539a5c61042ce8848730b88dc6ce11",
+    "version": "7.1.1",
+    "methodSurfaceSha256": "164991f435aa3e0103e47ef8753311dbf5132228983d4cb35bd7097e0d35d325",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 540,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true
+  }
+]
