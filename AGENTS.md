@@ -64,7 +64,7 @@ Harness choices are hypotheses. Before claiming gains from changed prompts, tool
 
 ## Optional toolkit
 
-`npx -y github:Keegil/speck-next#v7.1.0 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
+`npx -y github:Keegil/speck-next#v7.1.1 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
 
 Choose the tool for the question: **rg** for exact text, **jq** for selected JSON fields, **Graft** for signatures and caller navigation, **ast-grep** for structural searches or reviewed rewrites, **RTK** for selected readable summaries of noisy output. A known file often needs only a targeted read. Reuse project tests, types, linters and browser tools.
 
