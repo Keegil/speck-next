@@ -16,7 +16,9 @@ Use the owner's stated scope and budget. A personal tool need not become a busin
 ## Resolve the uncertainty that matters
 
 - Describe who needs what result, in what situation, and what the first useful version lets them accomplish. Use a concrete example to expose ambiguous promises.
-- Name any property that must survive across the whole product, such as privacy or a calm experience. Explain what in the design produces it and how a consequential tradeoff affects it.
+- Let relevant current alternatives, standards, and first principles inform product form. Surface weak assumptions and familiar patterns that unnecessarily burden users. When agreed ambition calls for it, rethink the form from the job and current capabilities; preserve settled direction and scope.
+- Name any property that must survive across the whole product, such as privacy or a calm experience. Express intended feel with concrete examples when words are vague.
+- Explain what in the design produces durable properties and how a consequential tradeoff affects them.
 - Test uncertain claims against users, current alternatives, domain evidence, or a small working example. A differentiator must exist on the actual delivery path. When a cheap build would answer the question, run that experiment instead of extending the interview.
 - Set a foundation's due point from its consequences: for example, access control before exposing private data to another user. Apply protections to the affected behavior, even in a small first version.
 

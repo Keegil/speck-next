@@ -2,14 +2,16 @@
 
 ## Goal and current result
 
-Version 7.1.0 is published with the optional Graft, ripgrep, jq, ast-grep and RTK toolkit. All five are installed in the operator's managed cache, and all four existing native checkouts are upgraded, committed and pushed. The method keeps its five skills and optional records. [Release record](work/toolkit-7.1.md).
+Execution quality is now part of ordinary scope in the source method. The root page, product contract and five existing skills require deliberate design and relevant practices, actual inspection, scoped refinement, and review of workmanship. New UI work does not need a separate request for polish. Tiny fixes remain small. [Change record](work/quality-default-2026-10.md).
+
+Published version 7.1.0 and its optional toolkit retain their prior release evidence in [the release record](work/toolkit-7.1.md). This source increment adds no installed file, skill or runtime dependency.
 
 ## Evidence and limits
 
-Release `0a53a59` passed 34 deterministic tests and the real Linux toolkit smoke in [GitHub CI](https://github.com/Keegil/speck-next/actions/runs/36687661422). macOS execution, published npx installation and independent Claude review also passed. Review found and verified the repair of interrupted-setup recovery. The adopter rollout preserved 2,842 tracked owner paths, 14,263 nonignored untracked paths and existing staged content. [Capabilities](capabilities.md) retain scope and limits.
+Claude Opus 5.5 independently accepted the source change and exercised six frozen trial apps. The deterministic suite passed 34 tests; the final source passed a fresh installed-surface check at 43,306 bytes, twenty regular installed files including the marker, and five skills. Both host entrypoints share the same files. [Review](docs/reviews/quality-default-2026-10.md) and [capabilities](capabilities.md) retain precise scope.
 
-Automatic host activation and comparative productivity remain unmeasured. Windows setup is unsupported; macOS arm64 and Linux x64 were exercised. Vendor runtime caches and update checks can still occur. Tool availability and reduced output sizes do not establish task-level savings.
+The executed comparisons did not establish quality gains or reliable adherence. Reading and packing builders skipped image inspection and left keyboard-focus defects even after explicit instructions. Tiny typo repairs stayed small. Native Codex attempted real rendering, correctly reported a sandbox limitation, then captured desktop/mobile images in a browser-capable isolated run; the trace does not establish that the author opened them. The integrator viewed those images. These are illustrative uses, not accepted products or general behavioral proof.
 
 ## Next action
 
-Use the toolkit selectively during ordinary project work. Future harness changes should follow observed task outcomes and costs. Earlier release histories and completed plans are preserved in [prior records](docs/history/v7.0.3-records.md).
+Use the revised guidance in ordinary work and have review reject concrete workmanship gaps within the requested scope. Treat the current default-quality promise as a requirement whose reliable adoption remains unproved. Further methodology changes need an observed failure or a new owner request; do not restart a synthetic build campaign solely to obtain a favorable score.

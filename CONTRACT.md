@@ -6,7 +6,7 @@ Version **v7**. These are outcome-level promises for the installed kernel. Check
 
 Help an agent build products **proportionally**: right-sized clarification, planning, records, expertise, verification, and review for each request — from a one-line fix to a multi-month product — without turning every task into a methodology campaign.
 
-## The eight promises
+## The nine promises
 
 1. **Proportional entry** — Work starts at actual scope. Missing templates or phases never block ordinary questions, analysis, or small builds. *Fails if* agents refuse work solely because `product.md` or `map.md` is absent.
 
@@ -24,9 +24,11 @@ Help an agent build products **proportionally**: right-sized clarification, plan
 
 8. **Small kernel, honest upgrade** — Installed method stays within published size/skill limits; upgrade preserves owner records and refuses unsafe trees; old-Speck conversion remains out of scope until explicitly shipped. *Fails if* install/upgrade corrupts owner bytes or claims unsupported conversion.
 
+9. **Thoughtful professional execution** — Ordinary authorized work includes relevant domain practices, deliberate choices for the audience and job, inspection of the affected complete result, and refinement of concrete weaknesses within scope. New or changed UI flows receive coherent visual and interaction design; engineering, writing, and analysis receive care appropriate to their use. *Fails if* an agent treats basic function or checklist conformance as sufficient while leaving concrete workmanship gaps within the requested scope, or requires the owner to request ordinary quality separately.
+
 ## What we refuse to trade away
 
-Fresh independent review for substantive results (scaled, not roster-fixed). Owner control of consequential choices. Repair-and-re-run for concrete integrated failures. Applicable protections on high-consequence behavior. Preservation of owner product records on supported upgrade paths.
+Fresh independent review for substantive results (scaled, not roster-fixed). Owner control of consequential choices. Repair-and-re-run for concrete integrated failures. Applicable protections on high-consequence behavior. Preservation of owner product records on supported upgrade paths. Thoughtful execution within agreed scope and budget.
 
 ## What stays out
 

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daypack</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <p class="eyebrow">DAY TRIP</p>
+      <h1>Pack light.<br><em>Forget nothing.</em></h1>
+      <p class="intro">A small checklist for a good day out.</p>
+    </header>
+
+    <section class="card add-card" aria-labelledby="add-heading">
+      <h2 id="add-heading">Add to the bag</h2>
+      <form id="item-form">
+        <label>
+          <span>Item</span>
+          <input id="item-name" name="item" placeholder="e.g. Rain jacket" autocomplete="off" required maxlength="80">
+        </label>
+        <label>
+          <span>Category</span>
+          <select id="item-category" name="category">
+            <option value="clothes">Clothes</option>
+            <option value="food">Food</option>
+            <option value="equipment">Equipment</option>
+          </select>
+        </label>
+        <button class="add-button" type="submit">Add item <span aria-hidden="true">＋</span></button>
+      </form>
+    </section>
+
+    <section class="progress-card" aria-labelledby="progress-title">
+      <div>
+        <p id="progress-title" class="eyebrow">PACKING PROGRESS</p>
+        <p id="progress-copy" class="progress-copy" aria-live="polite">Your bag is empty</p>
+      </div>
+      <strong id="progress-percent">0%</strong>
+      <div class="progress-track" aria-hidden="true"><div id="progress-bar"></div></div>
+    </section>
+
+    <section id="list-section" aria-labelledby="list-heading">
+      <div class="list-title">
+        <h2 id="list-heading">Your checklist</h2>
+        <span id="remaining-count">0 left</span>
+      </div>
+      <div id="empty-state" class="empty-state">
+        <span aria-hidden="true">↗</span>
+        <p>Your bag is waiting.</p>
+        <small>Add the first thing you don’t want to forget.</small>
+      </div>
+      <div id="groups"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

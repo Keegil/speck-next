@@ -1,0 +1,271 @@
+:root {
+  --bg: #f4f0e8;
+  --surface: #fffdf8;
+  --ink: #1a1a18;
+  --muted: #5c574f;
+  --accent: #2d5a4a;
+  --accent-soft: #d8ebe3;
+  --warn: #b45309;
+  --over: #9f1239;
+  --border: #e2dbd0;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(26, 26, 24, 0.06);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #ebe4d6 0%, var(--bg) 55%);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  margin: 0.35rem 0 1.25rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.field input {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  background: #fff;
+}
+
+.field input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.budget-field {
+  max-width: 10rem;
+  margin-bottom: 0.85rem;
+}
+
+.budget-numbers {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.budget-numbers .sep {
+  color: var(--muted);
+}
+
+.meter {
+  height: 10px;
+  background: #ece6dc;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.meter-fill.warn {
+  background: var(--warn);
+}
+
+.meter-fill.over {
+  background: var(--over);
+}
+
+.budget-message {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.budget-message.over {
+  color: var(--over);
+  font-weight: 600;
+}
+
+.add-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 520px) {
+  .add-form {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+
+  .add-form .field:nth-child(3) {
+    grid-column: 1;
+  }
+
+  .add-form .btn {
+    grid-column: 2;
+    justify-self: end;
+  }
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  background: #fff;
+  color: var(--ink);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn.primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.btn.ghost:hover {
+  color: var(--over);
+  border-color: #f0c4cf;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.book-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.book-list:empty {
+  display: none;
+}
+
+.book-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.65rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.book-item:hover {
+  background: #faf6ef;
+}
+
+.book-item.selected {
+  border-color: var(--accent-soft);
+  background: #f3faf6;
+}
+
+.book-item input[type="checkbox"] {
+  margin-top: 0.35rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+}
+
+.book-meta strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.book-meta span {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.book-hours {
+  font-size: 0.9rem;
+  color: var(--muted);
+  white-space: nowrap;
+  padding-top: 0.15rem;
+}
+
+.empty-state {
+  margin: 0;
+  padding: 1rem 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.empty-state.hidden {
+  display: none;
+}

@@ -1,3 +1,9 @@
+# October 10, 2026 — quality in ordinary work
+
+After reporting that agents repeatedly required a separate request for polished UX and best practices, the owner authorized the recommended method-wide repair with “Do it, bro!” Ordinary scope includes appropriate craftsmanship in product choices, interfaces, engineering, writing and delivery. Smallness reduces scope and coordination while preserving care within the result. Existing skills produce and inspect that quality; independent review considers workmanship as well as conformance. Owner taste, consequential direction choices, explicit budgets and protected behavior retain their existing authority.
+
+The added promise describes the required outcome; its guidance is independently accepted, while the first executed comparisons did not establish reliable adoption or general quality gains. [Change and evidence](work/quality-default-2026-10.md). Revisit on a concrete quality or proportionality failure, rather than adding universal checklists or more mandatory staff.
+
 # September 25, 2026 — proportionate method for v7
 
 The owner requests substantially more judgment about which methodology applies and how intensively, reports skipping small projects, and asks for a quick, inexpensive major release. [The verbatim request and integrated handoff](work/proportional-v7.md) are the current authority.

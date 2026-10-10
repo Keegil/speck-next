@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekend Reading</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Weekend reading</h1>
+      <p class="tagline">Pick books that fit your hours.</p>
+    </header>
+
+    <section class="panel budget" aria-labelledby="budget-heading">
+      <h2 id="budget-heading">Your weekend</h2>
+      <label class="field">
+        <span>Available hours</span>
+        <input type="number" id="available-hours" min="0" step="0.5" value="8" inputmode="decimal">
+      </label>
+      <div class="summary" role="status" aria-live="polite">
+        <div class="summary-row">
+          <span>Planned</span>
+          <strong id="planned-hours">0</strong>
+          <span class="unit">h</span>
+        </div>
+        <div class="summary-row">
+          <span>Remaining</span>
+          <strong id="remaining-hours">8</strong>
+          <span class="unit">h</span>
+        </div>
+        <p id="budget-message" class="budget-message"></p>
+      </div>
+    </section>
+
+    <section class="panel add" aria-labelledby="add-heading">
+      <h2 id="add-heading">Add a book</h2>
+      <form id="add-form" class="add-form">
+        <label class="field">
+          <span>Title</span>
+          <input type="text" id="title" name="title" required autocomplete="off" placeholder="The Left Hand of Darkness">
+        </label>
+        <label class="field">
+          <span>Author</span>
+          <input type="text" id="author" name="author" required autocomplete="off" placeholder="Ursula K. Le Guin">
+        </label>
+        <label class="field field-narrow">
+          <span>Hours</span>
+          <input type="number" id="hours" name="hours" min="0.5" step="0.5" required value="4" inputmode="decimal">
+        </label>
+        <button type="submit" class="btn btn-primary">Add book</button>
+      </form>
+    </section>
+
+    <section class="panel list" aria-labelledby="list-heading">
+      <div class="list-header">
+        <h2 id="list-heading">Library</h2>
+        <span id="book-count" class="badge">0 books</span>
+      </div>
+      <ul id="book-list" class="book-list"></ul>
+      <p id="empty-state" class="empty-state">No books yet. Add one above to start planning.</p>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

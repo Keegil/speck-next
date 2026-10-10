@@ -5,7 +5,7 @@ description: Exercise user workflows to gather evidence about behavior, usabilit
 
 # Exercise the affected user job
 
-Gather direct evidence about whether someone can complete the requested job and recover from relevant failures. Testing can support a builder or an independent reviewer; it is not acceptance by itself.
+Gather direct evidence about whether someone can complete the requested job with clarity, ease, responsiveness, and visual coherence for the scope, and recover from relevant failures. Reported roughness — sluggish, confusing, or visually incoherent behavior without a crash — is an actionable scoped finding. Testing can support a builder or an independent reviewer; it is not acceptance by itself.
 
 ## Identify what you are testing
 

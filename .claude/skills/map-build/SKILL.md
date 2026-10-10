@@ -9,7 +9,7 @@ Produce an order that lets builders make useful progress and integrate their wor
 
 ## Choose the pieces and order
 
-- Cut work into increments with observable results. For each, identify what it delivers, what it depends on, and the check that will establish it works. Add an owner when delegating.
+- Cut work into increments with observable results, each a coherent user job when possible. Include design and refinement in the work that exposes a surface. For each, identify what it delivers, what it depends on, and the checks that establish behavior and relevant workmanship. Add an owner when delegating.
 - Prefer an early complete user job or real dependency round-trip. Put uncertain assumptions where they can be tested cheaply before other work relies on them.
 - Resolve routine sequencing from the dependencies. Bring consequential architecture, product scope, or care-level choices to the owner with a recommendation; preserve decisions already made.
 - Before closing the plan, compare it with the actual request: what is covered, deferred, or missing? Include existing behavior that a migration must preserve. Counting headings is not evidence of coverage.

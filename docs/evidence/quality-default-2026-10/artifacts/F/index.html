@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Day-trip pack list</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="header__text">
+          <h1>Day-trip bag</h1>
+          <p class="tagline">Pack once, enjoy the trail.</p>
+        </div>
+        <div class="progress-card" aria-live="polite">
+          <div class="progress-card__numbers">
+            <span id="packed-count">0</span>
+            <span class="muted">/</span>
+            <span id="total-count">0</span>
+            <span class="muted">packed</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar">
+            <div class="progress-bar__fill" id="progress-fill"></div>
+          </div>
+          <p class="progress-card__left" id="left-label">Nothing on the list yet.</p>
+        </div>
+      </header>
+
+      <section class="add-panel" aria-labelledby="add-heading">
+        <h2 id="add-heading" class="visually-hidden">Add item</h2>
+        <form id="add-form" class="add-form">
+          <label class="field">
+            <span class="field__label">Item</span>
+            <input
+              type="text"
+              id="item-name"
+              name="name"
+              placeholder="e.g. Rain jacket"
+              autocomplete="off"
+              required
+              maxlength="120"
+            />
+          </label>
+          <label class="field field--category">
+            <span class="field__label">Category</span>
+            <select id="item-category" name="category" required>
+              <option value="clothes">Clothes</option>
+              <option value="food">Food</option>
+              <option value="equipment">Equipment</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn--primary">Add</button>
+        </form>
+      </section>
+
+      <nav class="filters" aria-label="Filter by category">
+        <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+        <button type="button" class="filter-chip" data-filter="clothes">Clothes</button>
+        <button type="button" class="filter-chip" data-filter="food">Food</button>
+        <button type="button" class="filter-chip" data-filter="equipment">Equipment</button>
+      </nav>
+
+      <main>
+        <ul id="item-list" class="item-list" aria-label="Packing list"></ul>
+        <p id="empty-state" class="empty-state">Add your first item above.</p>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weekend Reading</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <h1>Weekend reading</h1>
+        <p class="tagline">Pick books, match your hours, enjoy the stack.</p>
+      </header>
+
+      <section class="panel budget-panel" aria-labelledby="budget-heading">
+        <h2 id="budget-heading">Your weekend</h2>
+        <label class="budget-field">
+          <span>Available hours</span>
+          <input
+            type="number"
+            id="available-hours"
+            min="0"
+            step="0.5"
+            value="8"
+            inputmode="decimal"
+          />
+        </label>
+        <div class="budget-summary" id="budget-summary" aria-live="polite">
+          <span class="planned"><strong id="planned-hours">0</strong> h planned</span>
+          <span class="divider">/</span>
+          <span class="available"><strong id="display-available">8</strong> h available</span>
+        </div>
+        <p class="budget-status" id="budget-status" role="status"></p>
+      </section>
+
+      <section class="panel add-panel" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add a book</h2>
+        <form id="add-form" class="add-form">
+          <label>
+            <span>Title</span>
+            <input type="text" id="title" name="title" required autocomplete="off" />
+          </label>
+          <label>
+            <span>Author</span>
+            <input type="text" id="author" name="author" required autocomplete="off" />
+          </label>
+          <label>
+            <span>Hours to read</span>
+            <input
+              type="number"
+              id="hours"
+              name="hours"
+              min="0.5"
+              step="0.5"
+              required
+              inputmode="decimal"
+            />
+          </label>
+          <button type="submit" class="btn primary">Add book</button>
+        </form>
+      </section>
+
+      <section class="panel list-panel" aria-labelledby="list-heading">
+        <div class="list-header">
+          <h2 id="list-heading">Library</h2>
+          <p class="list-hint">Check books you want this weekend.</p>
+        </div>
+        <ul id="book-list" class="book-list" aria-label="Books"></ul>
+        <p id="empty-state" class="empty-state">No books yet. Add one above.</p>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

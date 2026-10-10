@@ -18,9 +18,17 @@ Ask only when a missing choice changes user-facing behavior, risk, or order — 
 
 Honor explicit budgets. If planning cost grows past useful work, stop planning and run something small. Bound costly uncertain experiments and retries.
 
+## Execution quality
+
+Ordinary authorized work includes thoughtful professional execution across product choices, interaction and visual design, engineering, writing, and delivery. Smaller scope means fewer things delivered well, not lower care within what ships.
+
+Establish relevant repository conventions and domain practices; consult current primary guidance when unfamiliar or when a consequential choice depends on it. Make deliberate choices suited to the audience and job. For code, use supported APIs and clear responsibilities, and check the performance and failure paths that matter to this job. For writing and analysis, check factual support, structure, and clarity for the intended reader. Build the earliest useful slice, inspect the affected complete result, and refine concrete weaknesses before treating the work finished. Choose expertise and checks for the uncertainty they resolve.
+
+New or changed user-facing flows warrant deliberate visual design, clear interactions, honest states, responsiveness, and polish within scope without the owner having to ask for beauty or best practices. Tiny content or typo fixes need no redesign or ceremony. An early runnable slice is a learning point; functional completeness alone does not establish finished quality for what the slice is meant to demonstrate. Craftsmanship findings count within scope for stopping and review; optional unrelated improvements do not block completion.
+
 ## Stopping
 
-Finish when the agreed outcome has adequate evidence for its scope. Further work needs an actual finding, new request, or unresolved consequential choice — not ceremony. Lack of independent review must be disclosed as **unreviewed**; disclosure does not substitute for independent acceptance of substantive work.
+Finish when the agreed outcome has adequate evidence for its scope, including workmanship appropriate to the audience and job. Further work needs an actual finding, new request, or unresolved consequential choice — not ceremony. Lack of independent review must be disclosed as **unreviewed**; disclosure does not substitute for independent acceptance of substantive work.
 
 ## Records (optional)
 
@@ -44,7 +52,7 @@ This page (v7) supersedes **generated procedural obligations** from earlier Spec
 
 ## Build and use the product
 
-Run the real product while building user-visible work. First external dependency contact is a real round-trip. Use the `craft` skill where surfaces matter; apply its advice to relevant states only.
+Run the real product while building user-visible work. First external dependency contact is a real round-trip. Use [craft](.claude/skills/craft/SKILL.md) for new UI and changes to layout or interaction; apply it to the affected job and states. View the rendered interface, directly or through captured images, as well as testing its behavior. The execution-quality expectation also applies to ordinary work that needs no skill.
 
 For bug repairs, reproduce the reported failure when feasible, test the suspected cause, and re-run the original scenario after the fix. Say when reproduction or verification remains unavailable.
 

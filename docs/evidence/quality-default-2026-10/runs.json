@@ -1,0 +1,196 @@
+[
+  {
+    "anonymous_subject": "A",
+    "run": "candidate-b",
+    "variant": "revised-initial",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 52.74,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 1,
+      "editToolCall": 5,
+      "shellToolCall": 5
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/candidate-b/.claude/skills/craft/SKILL.md",
+        "limit": 40
+      }
+    ],
+    "method_subset_sha256": "87a5e4b10035ca0b9f66ecc472cfd6d2471a2bf5769665f9426e7366b999b462",
+    "author_report": "Building a small weekend reading-list app with local persistence. Checking the workspace and creating the files.\n\n\n## Weekend Reading app\n\nA small static app in this directory:\n\n| File | Role |\n|------|------|\n| `index.html` | Layout: budget, add form, library list |\n| `styles.css` | Warm, readable styling |\n| `app.js` | State, `localStorage`, UI updates |\n| `verify.mjs` | Optional automated check (not required to use the app) |\n\n**Run it:** open `index.html` in a browser, or from this folder:\n\n```bash\npython3 -m http.server 8080\n```\n\nthen visit `http://localhost:8080`.\n\n**Features**\n\n- Add books (title, author, estimated hours)\n- Set weekend available hours\n- Checkbox to include books in this weekend\u2019s plan\n- Planned vs available hours with a meter and over-budget message\n- Remove books\n- Everything persists in `localStorage` under `weekend-reading-v1`\n\n**What I checked**\n\nRan `node verify.mjs` with isolated Playwright (not the shared Playwright MCP): local HTTP server on a random port, headless Chromium via the installed Chrome-for-Testing binary. Verified add book, set budget, select (12 h planned), reload (book, 10 h budget, selection kept), remove, reload (empty list). **All passed.**\n\n**Not inspected:** manual visual pass in a real browser window, mobile viewports, accessibility audit beyond basic labels/checkboxes.\n\nNo git commit, as requested. If you want `verify.mjs` dropped or a one-liner README for serving, say the word.",
+    "source_sha256": {
+      "index.html": "ec9a4bb4a3a280bcb7824531de64ba5ec187022add6e4dd8db7d40b5477f9f3b",
+      "styles.css": "0f90793cadf5ebb7e641118bb3942140299169143f8c85a8b728e3936fbbcd13",
+      "app.js": "14c7ff72a6773eac1d4ed311e490304c197d55faa74c1ca2b793759459c4b7d3"
+    }
+  },
+  {
+    "anonymous_subject": "B",
+    "run": "control-a",
+    "variant": "old",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 59.87,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 1,
+      "editToolCall": 5,
+      "shellToolCall": 6
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/control-a/.claude/skills/craft/SKILL.md",
+        "limit": 80
+      }
+    ],
+    "method_subset_sha256": "86f08950dfddb46efbad59b0a7334bf503036b465485cb0c43e10288f1e26fbc",
+    "author_report": "Building a small weekend reading-list app with persistence. Checking the workspace and craft guidance, then implementing.\nWeekend reading planner is in place \u2014 a small static app you can open locally.\n\n## Run it\n\nFrom this directory:\n\n```bash\nopen index.html\n```\n\nOr serve it (optional):\n\n```bash\npython3 -m http.server 8080\n```\n\nThen open `http://localhost:8080`.\n\n## What it does\n\n- **Add books** \u2014 title, author, estimated hours  \n- **Weekend budget** \u2014 set available hours; see planned vs remaining and over-budget messaging  \n- **This weekend** \u2014 checkbox per book; planned total sums selected books only  \n- **Remove** \u2014 drops a book from the library  \n- **Persistence** \u2014 `localStorage` key `weekend-reading-v1` keeps books, selection, and hour budget across reloads  \n\nFiles: `index.html`, `styles.css`, `app.js`.\n\n## What I checked\n\nAutomated run via isolated Playwright (`scripts/verify.mjs`): local HTTP server on port 0, headless Chromium (installed binary at `chromium-1223`), then server and browser closed.\n\n| Check | Result |\n|--------|--------|\n| Planned hours after selecting a 6h book | PASS |\n| Planned hours after reload | PASS |\n| Available hours (10) after reload | PASS |\n| Selection still checked after reload | PASS |\n| Add book + remove book in the same flow | exercised in script |\n\n**Not inspected:** shared Playwright MCP (per your note). No manual visual pass on multiple viewport sizes \u2014 only the headless workflow above. Independent review: **unreviewed**.\n\nIf you want tweaks (sort order, \u201cclear weekend picks\u201d, export), say what you prefer.",
+    "source_sha256": {
+      "index.html": "d49bd4973a8aa4eac436e13f7d5774aded609ba806e6745db08e8f1b6fae102d",
+      "styles.css": "cd4c9d7ca7d8509107336ba4e97c3d98da59b1c0e941c57f14b88877ed628f78",
+      "app.js": "625bd1cea3e96ea1cc41607dc265ac5109ea08de77d6e97d48e23d196ab47dba"
+    }
+  },
+  {
+    "anonymous_subject": "C",
+    "run": "control-b",
+    "variant": "old",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 50.6,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 1,
+      "editToolCall": 5,
+      "shellToolCall": 4
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/control-b/.claude/skills/craft/SKILL.md",
+        "limit": 80
+      }
+    ],
+    "method_subset_sha256": "86f08950dfddb46efbad59b0a7334bf503036b465485cb0c43e10288f1e26fbc",
+    "author_report": "Building a small weekend reading-list app with persistence. Checking the workspace and craft guidance, then implementing quickly.\n\n\nCreating a single-page app with localStorage persistence and a Playwright verification script.\n\n\n## Result\n\nA small **weekend reading planner** lives in this directory:\n\n| File | Role |\n|------|------|\n| `index.html` | Layout: hour budget, add-book form, library list |\n| `styles.css` | Readable bookish UI, selected/over-budget states |\n| `app.js` | Add/remove books, weekend selection, budget math, `localStorage` (`weekend-reading-v1`) |\n| `verify.mjs` | One-shot local server + Playwright checks (optional) |\n\n**Run it:** open `index.html` in a browser, or from this folder:\n\n```bash\npython3 -m http.server 8080\n```\n\nthen visit `http://localhost:8080`.\n\n**Behavior:** Add title, author, and hours; set available weekend hours; check books for this weekend; planned vs available updates with a bar and message (including over-budget); remove clears the row. List, selection, and hour budget survive reload.\n\n## What was checked\n\nAutomated run via **isolated Playwright** (not the shared Playwright MCP): local HTTP server on port 0, own Chromium, server and browser closed when the script exits.\n\nAll **6 checks passed:**\n\n- Planned hours = 6 after selecting a 6h book with 10h available  \n- List, selection, and 10h budget persist after reload  \n- Remove empties the list; removal persists after reload  \n\n**Not inspected:** manual visual pass in a real window, mobile viewports, or accessibility tooling beyond basic labels in the script. Shared Playwright MCP was not used per your note.\n\n**Not committed**, as requested.",
+    "source_sha256": {
+      "index.html": "7ced5f7b81c9d3b79744b3e366f68c9239d593d764aeafd2694c1b2a32c31dd1",
+      "styles.css": "00836539ed595994f757604663812858e872a6908b1b5daaf9ff64e5d850ba81",
+      "app.js": "e668327ad709f6593de80d980c154f921dda957e66a13b437491da357ca5c938"
+    }
+  },
+  {
+    "anonymous_subject": "D",
+    "run": "candidate-a",
+    "variant": "revised-initial",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 49.79,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 1,
+      "editToolCall": 6,
+      "shellToolCall": 3
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/candidate-a/.claude/skills/craft/SKILL.md",
+        "limit": 30
+      }
+    ],
+    "method_subset_sha256": "87a5e4b10035ca0b9f66ecc472cfd6d2471a2bf5769665f9426e7366b999b462",
+    "author_report": "Building a small weekend reading-list app with local persistence. Checking the workspace, then implementing and verifying it.\nHere\u2019s what\u2019s in place: a single-page **Weekend reading** app in this directory.\n\n## Run it\n\nOpen `index.html` in a browser (double-click or drag into a window), or serve the folder:\n\n```bash\ncd /Users/kjetil/Code/speck-next/.local/quality-default-2026-10-10/candidate-a\npython3 -m http.server 8765\n```\n\nThen visit `http://127.0.0.1:8765/`.\n\n## What it does\n\n- **Add books** \u2014 title, author, estimated hours  \n- **Weekend budget** \u2014 available hours with live **planned / available** totals  \n- **Select** books for this weekend (checkboxes)  \n- **Status** \u2014 room left, tight fit, or over budget  \n- **Remove** books from the library  \n- **Persistence** \u2014 books, selection, and budget in `localStorage` (`weekend-reading-v1`)\n\nFiles: `index.html`, `styles.css`, `app.js`.\n\n## What I checked\n\nAutomated checks via a local Node script (`verify.mjs`) \u2014 **not** the shared Playwright MCP. It started HTTP on port 0, launched Chromium from `/Users/kjetil/Library/Caches/ms-playwright/chromium_headless_shell-1223/\u2026`, then shut down server and browser.\n\n| Check | Result |\n|--------|--------|\n| Add two books | OK |\n| Planned hours (one / two selected) | OK (6 h, then 10 h) |\n| Budget message when plan equals available | OK (\u201ctight\u201d) |\n| Remove book | OK |\n| `localStorage` after actions | OK |\n| Reload keeps list, 10 h budget, selection | OK |\n\n**Not inspected:** manual visual pass in a headed browser, mobile layout, or `file://` vs `http://` (automation used HTTP only).\n\nNo git commit was made. You can delete `verify.mjs` if you only want the app files.",
+    "source_sha256": {
+      "index.html": "89df4ca57c6fcdf6f7436aff3d0db7f57ab676e8fbf5c9bda1c7e265acb924d4",
+      "styles.css": "8567c8e911642af58b45339bc83aa6c459bf13e4fce741a206e57b0692ab0e4d",
+      "app.js": "c602f1266c5c39667da2f8bb1f7b9e82e4b934547f15cad30836e340c5601194"
+    }
+  },
+  {
+    "anonymous_subject": "E",
+    "run": "candidate-holdout",
+    "variant": "revised-final",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 126.47,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 3,
+      "editToolCall": 6,
+      "shellToolCall": 5
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/candidate-holdout/.claude/skills/craft/SKILL.md",
+        "limit": 80
+      },
+      {
+        "path": "/Users/kjetil/.cursor/projects/Users-kjetil-Code-speck-next-local-quality-default-2026-10-10-candidate-holdout/terminals/356382.txt",
+        "limit": 30
+      },
+      {
+        "path": "/Users/kjetil/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core/browsers.json",
+        "limit": 40
+      }
+    ],
+    "method_subset_sha256": "91e4b8a912450284545363d57700eb0bf9189b05e47f20d91e2871f91ff2aaf1",
+    "author_report": "Building a quick day-trip packing app with local persistence. Checking the workspace and shipping a runnable slice.\nHere\u2019s a small **day-trip bag** packing list that runs entirely in the browser with no backend.\n\n## Run it\n\nOpen `index.html` in a browser, or serve the folder locally:\n\n```bash\ncd /Users/kjetil/Code/speck-next/.local/quality-default-2026-10-10/candidate-holdout\npython3 -m http.server 8080\n```\n\nThen visit `http://localhost:8080`.\n\n## What you get\n\n- **Add** items with a name and category (clothes, food, equipment)\n- **Mark packed** with checkboxes (packed rows are struck through)\n- **Progress** card shows how many items are still unpacked\n- **Filter** by category\n- **Remove** items\n- **Persistence** via `localStorage` key `day-trip-bag-v1` (survives reload)\n\nFiles: `index.html`, `styles.css`, `app.js`, plus `verify.mjs` for automated checks.\n\n## What I checked\n\nAutomated run via **isolated Playwright** (not the shared Playwright MCP): local HTTP server on port 0, headless Chromium using the installed binary at `chromium_headless_shell-1223` (Playwright in the codex runtime expects revision 1234, which isn\u2019t in the cache).\n\n**VERIFY OK:** add two items \u2192 pack one \u2192 remaining count `1` \u2192 `localStorage` written \u2192 **reload** keeps 2 items and 1 packed \u2192 category filter \u2192 remove \u2192 list count correct.\n\n**Not inspected:** manual visual review in a real window, responsive breakpoints, or reduced-motion preferences. Shared Playwright MCP was not used per your instructions.\n\nNo git commit was made. **Unreviewed** substantive delivery per AGENTS.md \u2014 scope is small and covered by the script above.That background verify run **failed** because Playwright expected Chromium revision **1234**, while your cache only has **1223** \u2014 so launch died before any app checks ran.\n\nI pointed `verify.mjs` at the installed headless shell under `chromium_headless_shell-1223` and re-ran it; that pass completed in about a second with **VERIFY OK** (add, pack, persist, reload, remove, filter). The packing app itself was already fine \u2014 this was only the automation setup.\n\nTo re-check anytime:\n\n```bash\ncd /Users/kjetil/Code/speck-next/.local/quality-default-2026-10-10/candidate-holdout && node verify.mjs\n```",
+    "source_sha256": {
+      "index.html": "65952598bcd4c15214253ed6618ed2937ee9f524391bcd45a272b0a0f334c244",
+      "styles.css": "4ab4ce724014f8fcd98c46a1e865cf86c5546308dc59bedb34de20eb997a23d3",
+      "app.js": "d307221e925fbab75f30fca4f65dec073d050401845039d7dd2e7c0c5ee305db"
+    }
+  },
+  {
+    "anonymous_subject": "F",
+    "run": "control-holdout",
+    "variant": "old",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 53.94,
+    "terminal_subtype": "success",
+    "terminal_is_error": false,
+    "completed_tool_counts": {
+      "readToolCall": 1,
+      "editToolCall": 5,
+      "shellToolCall": 4
+    },
+    "read_calls": [
+      {
+        "path": "LOCAL_RUNS/control-holdout/.claude/skills/craft/SKILL.md",
+        "limit": 80
+      }
+    ],
+    "method_subset_sha256": "86f08950dfddb46efbad59b0a7334bf503036b465485cb0c43e10288f1e26fbc",
+    "author_report": "Building a day-trip packing app with local persistence. Checking the workspace and creating the app.\n\n\nCreating the app files and a Playwright verification script.\n\n\nHere\u2019s what you have: a **day-trip packing list** as plain HTML/CSS/JS in this folder, with no backend.\n\n## Run it\n\n```bash\ncd /Users/kjetil/Code/speck-next/.local/quality-default-2026-10-10/control-holdout\npython3 -m http.server 8080\n```\n\nOpen `http://localhost:8080` (or open `index.html` directly \u2014 `localStorage` still works).\n\n## What it does\n\n- **Add** items with a name and category: clothes, food, or equipment  \n- **Mark packed** via checkbox (strikethrough + progress)  \n- **Progress** shows packed/total, bar, and \u201cX items left to pack\u201d  \n- **Filter** by category  \n- **Remove** per row  \n- **Persist** list + packed state in `localStorage` (`daytrip-pack-list-v1`)\n\nFiles: `index.html`, `styles.css`, `app.js`.\n\n## What I checked\n\nAutomated run via **isolated Playwright** (not the shared Playwright MCP): `verify.mjs` starts HTTP on port 0, launches local Chromium (`chromium_headless_shell-1223`), then closes server and browser.\n\n| Check | Result |\n|--------|--------|\n| Add items (food + clothes) | OK |\n| \u201c2 items left\u201d progress copy | OK |\n| Pack one \u2192 \u201c1 item left\u201d | OK |\n| Remove item | OK |\n| Reload \u2192 item + packed state kept | OK |\n| Food filter shows food item | OK |\n\n**Not inspected:** manual visual polish on multiple viewports, reduced-motion, or accessibility beyond what the script touched. Shared Playwright MCP was not used.\n\nNo git commit (per your request). **Unreviewed** substantive UI work per Speck guidance.",
+    "source_sha256": {
+      "index.html": "7432d3cd599c7e8c1299d9983e0585e51bf61bef48125bca8f0bd564bc40425a",
+      "styles.css": "ee1d7a1135d8c16c69910b6e095d08e0734c394c8d0a26ce7ddb398db5cf0137",
+      "app.js": "fb3b6597385cc53d576426fd6fd0618f0bf1d729997796fd610a78edc1c528e6"
+    }
+  },
+  {
+    "run": "control-tiny",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 18.14,
+    "final_text": "You will receive a reminder on Saturday.\n",
+    "other_product_or_record_files": [],
+    "tool_calls": 3
+  },
+  {
+    "run": "candidate-tiny",
+    "model": "composer-2.5",
+    "exit": 0,
+    "elapsed_seconds": 14.49,
+    "final_text": "You will receive a reminder on Saturday.\n",
+    "other_product_or_record_files": [],
+    "tool_calls": 3
+  }
+]

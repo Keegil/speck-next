@@ -1,0 +1,264 @@
+:root {
+  --bg: #f4f0e8;
+  --surface: #fffdf8;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --accent: #0d5c4b;
+  --accent-soft: #d4ebe4;
+  --warn: #b45309;
+  --over: #b91c1c;
+  --border: #e7e0d4;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(28, 25, 23, 0.08);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #e8f0ec 0%, var(--bg) 55%);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.app {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.budget-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 10rem;
+}
+
+.budget-label input {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.budget-summary {
+  margin-top: 1rem;
+}
+
+.budget-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-bottom: 0.25rem;
+}
+
+.budget-row strong {
+  font-size: 1.35rem;
+  color: var(--accent);
+}
+
+.unit {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.budget-message {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+
+.budget-message.ok {
+  color: var(--accent);
+}
+
+.budget-message.warn {
+  color: var(--warn);
+}
+
+.budget-message.over {
+  color: var(--over);
+  font-weight: 600;
+}
+
+.budget-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.budget-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.budget-fill.warn {
+  background: var(--warn);
+}
+
+.budget-fill.over {
+  background: var(--over);
+}
+
+.add-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.add-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.add-form input {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.btn {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.85rem;
+  background: #fff;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 600;
+  justify-self: start;
+}
+
+.btn.primary:hover {
+  filter: brightness(1.05);
+}
+
+.btn.danger {
+  color: var(--over);
+  border-color: #fecaca;
+  background: #fff5f5;
+  font-size: 0.85rem;
+}
+
+.book-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.book-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.book-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.book-item input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.book-meta h3 {
+  margin: 0 0 0.15rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.book-meta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.book-hours {
+  font-size: 0.9rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.empty-state {
+  color: var(--muted);
+  margin: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (min-width: 520px) {
+  .add-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .add-form label:last-of-type {
+    grid-column: span 1;
+  }
+
+  .add-form .btn.primary {
+    grid-column: 1 / -1;
+  }
+}

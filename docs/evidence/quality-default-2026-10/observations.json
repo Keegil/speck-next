@@ -1,0 +1,368 @@
+[
+  {
+    "name": "B",
+    "checks": [
+      {
+        "label": "add two books",
+        "pass": true
+      },
+      {
+        "label": "planned time 8 hours",
+        "pass": true
+      },
+      {
+        "label": "over-budget feedback",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and selection persist",
+        "pass": true
+      },
+      {
+        "label": "hour budget persists",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives selection",
+        "pass": true
+      },
+      {
+        "label": "planned time updates on deselection",
+        "pass": true
+      },
+      {
+        "label": "remove selected book updates total",
+        "pass": true
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "negative time is rejected",
+        "pass": true
+      },
+      {
+        "label": "zero budget persists",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n\n'8' !== '0'\n"
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "zero budget persists: Expected values to be strictly equal:\n\n'8' !== '0'\n"
+    ],
+    "pageErrors": [],
+    "focusAfterToggle": {
+      "tag": "INPUT",
+      "label": "Include Dune this weekend"
+    }
+  },
+  {
+    "name": "D",
+    "checks": [
+      {
+        "label": "add two books",
+        "pass": true
+      },
+      {
+        "label": "planned time 8 hours",
+        "pass": true
+      },
+      {
+        "label": "over-budget feedback",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and selection persist",
+        "pass": true
+      },
+      {
+        "label": "hour budget persists",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives selection",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+      },
+      {
+        "label": "planned time updates on deselection",
+        "pass": true
+      },
+      {
+        "label": "remove selected book updates total",
+        "pass": true
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "negative time is rejected",
+        "pass": true
+      },
+      {
+        "label": "zero budget persists",
+        "pass": true
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "keyboard focus survives selection: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+    ],
+    "pageErrors": [],
+    "focusAfterToggle": {
+      "tag": "BODY",
+      "label": null
+    }
+  },
+  {
+    "name": "C",
+    "checks": [
+      {
+        "label": "add two books",
+        "pass": true
+      },
+      {
+        "label": "planned time 8 hours",
+        "pass": true
+      },
+      {
+        "label": "over-budget feedback",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and selection persist",
+        "pass": true
+      },
+      {
+        "label": "hour budget persists",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives selection",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+      },
+      {
+        "label": "planned time updates on deselection",
+        "pass": true
+      },
+      {
+        "label": "remove selected book updates total",
+        "pass": true
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "negative time is rejected",
+        "pass": true
+      },
+      {
+        "label": "zero budget persists",
+        "pass": true
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "keyboard focus survives selection: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+    ],
+    "pageErrors": [],
+    "focusAfterToggle": {
+      "tag": "BODY",
+      "label": null
+    }
+  },
+  {
+    "name": "A",
+    "checks": [
+      {
+        "label": "add two books",
+        "pass": true
+      },
+      {
+        "label": "planned time 8 hours",
+        "pass": true
+      },
+      {
+        "label": "over-budget feedback",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and selection persist",
+        "pass": true
+      },
+      {
+        "label": "hour budget persists",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives selection",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+      },
+      {
+        "label": "planned time updates on deselection",
+        "pass": true
+      },
+      {
+        "label": "remove selected book updates total",
+        "pass": true
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "negative time is rejected",
+        "pass": true
+      },
+      {
+        "label": "zero budget persists",
+        "pass": true
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "keyboard focus survives selection: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Include Dune this weekend'\n"
+    ],
+    "pageErrors": [],
+    "focusAfterToggle": {
+      "tag": "BODY",
+      "label": null
+    }
+  },
+  {
+    "name": "F",
+    "checks": [
+      {
+        "label": "add three categories",
+        "pass": true
+      },
+      {
+        "label": "packed count updates",
+        "pass": true
+      },
+      {
+        "label": "remaining count is visible",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and packed state persist",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives packing",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Mark Sandwich as packed'\n"
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "empty item is rejected",
+        "pass": true
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "keyboard focus survives packing: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Mark Sandwich as packed'\n"
+    ],
+    "pageErrors": [],
+    "progressText": "1 / 3 packed\n\n2 items left to pack.",
+    "focusAfterToggle": {
+      "tag": "BODY",
+      "label": null
+    }
+  },
+  {
+    "name": "E",
+    "checks": [
+      {
+        "label": "add three categories",
+        "pass": true
+      },
+      {
+        "label": "packed count updates",
+        "pass": true
+      },
+      {
+        "label": "remaining count is visible",
+        "pass": true
+      },
+      {
+        "label": "mobile containment",
+        "pass": true
+      },
+      {
+        "label": "list and packed state persist",
+        "pass": true
+      },
+      {
+        "label": "keyboard focus survives packing",
+        "pass": false,
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Packed: Sandwich'\n"
+      },
+      {
+        "label": "removal persists",
+        "pass": true
+      },
+      {
+        "label": "empty item is rejected",
+        "pass": true
+      },
+      {
+        "label": "no runtime exceptions",
+        "pass": true
+      }
+    ],
+    "findings": [
+      "keyboard focus survives packing: Expected values to be strictly equal:\n+ actual - expected\n\n+ null\n- 'Packed: Sandwich'\n"
+    ],
+    "pageErrors": [],
+    "progressText": "STILL TO PACK\n2\nof 3 items",
+    "focusAfterToggle": {
+      "tag": "BODY",
+      "label": null
+    }
+  }
+]

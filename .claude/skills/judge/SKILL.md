@@ -16,9 +16,9 @@ For code, identify the task's base and reviewed head. Inspect the full net diff 
 ## Challenge what could make the result wrong
 
 - Compare with user intent: missing or partial behavior, contradictions, regressions, and unrequested changes. Preserve unrelated work when proposing repairs.
-- Exercise the uncertainty that matters. Passing author tests and completion marks do not settle whether the agreed job works. Run the smallest probe that closes a consequential evidence gap; use `experience` for a broader workflow or failure walkthrough when needed.
+- Evaluate workmanship alongside conformance using criteria relevant to the audience, job, scope, and budget: visual coherence and ease for interfaces, robustness and maintainability for code, factual support and clear reasoning for analysis or writing. Exercise the uncertainty that matters. Passing author tests and completion marks do not settle whether the agreed job works. Run the smallest probe that closes a consequential evidence gap; use `experience` for a broader workflow or failure walkthrough when needed.
 - Check favorable claims against contrary evidence. For proposals, test assumptions against the repository, users, or external evidence instead of only checking documents against each other.
-- Keep unresolved disagreements visible. Distinguish a requirement failure from a stylistic preference or optional improvement. Do not weaken agreed expectations to make the result pass.
+- Keep unresolved disagreements visible. Distinguish a concrete quality or promise failure from owner taste; optional unrelated polish does not block acceptance, but do not weaken agreed execution-quality expectations to make sloppy scoped work pass. Do not open endless perfection loops.
 
 Use another specialist only for a distinct material risk the current review cannot cover. One fresh context can both exercise the work and decide acceptance.
 

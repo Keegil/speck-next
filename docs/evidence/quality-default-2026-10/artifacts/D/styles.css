@@ -1,0 +1,264 @@
+:root {
+  --bg: #f4f0e8;
+  --surface: #fffdf8;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --accent: #0f766e;
+  --accent-soft: #ccfbf1;
+  --warn: #b45309;
+  --warn-bg: #fff7ed;
+  --over: #b91c1c;
+  --over-bg: #fef2f2;
+  --border: #e7e5e4;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(28, 25, 23, 0.08);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #e8e2d6 0%, var(--bg) 55%);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.header h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1.35rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.budget-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.budget-field input {
+  max-width: 8rem;
+}
+
+.budget-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  font-size: 1.15rem;
+}
+
+.budget-summary .divider {
+  color: var(--muted);
+}
+
+.budget-status {
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+
+.budget-status.ok {
+  color: var(--accent);
+}
+
+.budget-status.tight {
+  color: var(--warn);
+}
+
+.budget-status.over {
+  color: var(--over);
+  font-weight: 600;
+}
+
+.budget-panel.over-budget {
+  background: var(--over-bg);
+  border-color: #fecaca;
+}
+
+.budget-panel.within-budget {
+  background: var(--accent-soft);
+  border-color: #99f6e4;
+}
+
+.add-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 520px) {
+  .add-form {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+
+  .add-form label:nth-child(3) {
+    grid-column: 1;
+  }
+
+  .add-form .btn {
+    grid-column: 2;
+    justify-self: end;
+  }
+}
+
+.add-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+input[type="text"],
+input[type="number"] {
+  font: inherit;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+
+input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.btn {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn.primary:hover {
+  background: #0d9488;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.btn.ghost:hover {
+  color: var(--over);
+}
+
+.list-header {
+  margin-bottom: 0.5rem;
+}
+
+.list-hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.book-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.book-list:empty + .empty-state {
+  display: block;
+}
+
+.empty-state {
+  display: none;
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.book-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.65rem 0.75rem;
+  align-items: center;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.book-item.selected {
+  border-color: #5eead4;
+  background: #f0fdfa;
+}
+
+.book-item input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+}
+
+.book-meta strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.book-meta span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.book-hours {
+  font-size: 0.9rem;
+  color: var(--muted);
+  white-space: nowrap;
+}

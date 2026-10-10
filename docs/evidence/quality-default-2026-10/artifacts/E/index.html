@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Day-trip bag</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="header-text">
+          <h1>Day-trip bag</h1>
+          <p class="tagline">Pack light. Leave nothing behind.</p>
+        </div>
+        <div class="progress-card" aria-live="polite">
+          <span class="progress-label">Still to pack</span>
+          <span class="progress-value" id="remaining-count">0</span>
+          <span class="progress-sub" id="progress-sub">of 0 items</span>
+        </div>
+      </header>
+
+      <section class="add-panel" aria-labelledby="add-heading">
+        <h2 id="add-heading" class="visually-hidden">Add item</h2>
+        <form id="add-form" class="add-form">
+          <label class="field">
+            <span class="field-label">Item</span>
+            <input
+              type="text"
+              id="item-name"
+              name="name"
+              placeholder="e.g. rain jacket"
+              autocomplete="off"
+              required
+              maxlength="120"
+            />
+          </label>
+          <label class="field field--category">
+            <span class="field-label">Category</span>
+            <select id="item-category" name="category" required>
+              <option value="clothes">Clothes</option>
+              <option value="food">Food</option>
+              <option value="equipment">Equipment</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn--primary">Add</button>
+        </form>
+      </section>
+
+      <nav class="filters" aria-label="Filter by category">
+        <button type="button" class="filter-btn is-active" data-filter="all">All</button>
+        <button type="button" class="filter-btn" data-filter="clothes">Clothes</button>
+        <button type="button" class="filter-btn" data-filter="food">Food</button>
+        <button type="button" class="filter-btn" data-filter="equipment">Equipment</button>
+      </nav>
+
+      <main>
+        <ul id="item-list" class="item-list" aria-label="Packing list"></ul>
+        <p id="empty-state" class="empty-state" hidden>
+          Your bag is empty. Add something above to get started.
+        </p>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -23,7 +23,7 @@ No vocabulary lesson. The agent used the real product while building.
 
 **Expertise when uncertainty is costly.** Product, Business, Experience, and Engineering are lenses, not four mandatory meetings per task. Separate judgment before landing **substantive** changes; trivial reversible fixes get a targeted check. More testers, judges, or specialists appear when distinct risk demands them — not as a fixed panel.
 
-**Real use and honest evidence.** Build on the running surface. Independent reviewers may exercise and accept in one fresh context. Token totals inform cost; they do not pass or fail the product.
+**Real use and honest evidence.** Build on the running surface. Ordinary work refines demonstrated roughness within scope before calling user-visible results done. Independent reviewers may exercise and accept in one fresh context. Token totals inform cost; they do not pass or fail the product.
 
 **Protect what hurts.** Auth, money, privacy, data integrity, regulation, and irreversibility get care on the **affected** behavior — a short diff is not an excuse.
 
