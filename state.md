@@ -6,6 +6,8 @@ Execution quality is now part of ordinary scope in the source method. The root p
 
 Published version 7.1.0 and its optional toolkit retain their prior release evidence in [the release record](work/toolkit-7.1.md). This source increment adds no installed file, skill or runtime dependency.
 
+The accepted source was pushed at `37a9721`; GitHub release checks passed at that SHA. All four existing native checkouts received the same method files through upgrade commits, with owner files and ongoing edits preserved and remote heads verified. [Distribution evidence](work/quality-default-2026-10.md#distribution). No new version tag was published.
+
 ## Evidence and limits
 
 Claude Opus 5.5 independently accepted the source change and exercised six frozen trial apps. The deterministic suite passed 34 tests; the final source passed a fresh installed-surface check at 43,306 bytes, twenty regular installed files including the marker, and five skills. Both host entrypoints share the same files. [Review](docs/reviews/quality-default-2026-10.md) and [capabilities](capabilities.md) retain precise scope.

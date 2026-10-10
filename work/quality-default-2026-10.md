@@ -50,3 +50,18 @@ The reading comparison exposed that general wording did not produce visual inspe
 [Requests, frozen app sources, screenshots, traces and observations](../docs/evidence/quality-default-2026-10/runs.json) retain the observations and anonymous-subject mapping. [Runtime assertions](../docs/evidence/quality-default-2026-10/observations.json) and the adjacent `inspect-reading.mjs` / `inspect-packing.mjs` scripts allow replay using the recorded Playwright installation. Supplementary [native runs](../docs/evidence/quality-default-2026-10/native-runs.json) retain the environment failures and token usage. Raw full logs remain in `.local/quality-default-2026-10-10/`.
 
 The comparisons establish that the needed guidance is distributed and can be read, while these models did not reliably follow it. They do not reproduce the owner's original ugly-interface example or establish general quality gains, causation, consistent host activation, production performance, or a cost improvement. Source acceptance and unproved behavioral effectiveness remain separate.
+
+## Distribution
+
+Source commit `37a9721d085b0918f7b84956524e9c15d7a13223` was pushed to main. GitHub's [Release checks](https://github.com/Keegil/speck-next/actions/runs/38047746725) completed successfully at that SHA. This is a source increment; no new version tag was published.
+
+The accepted method was also upgraded, committed and pushed in the four existing native checkouts under the previously authorized adopter rollout. All nineteen canonical method files and the Codex discovery link matched the source. The upgrade preserved each checkout's owner files, index and pre-existing dirty status; commits contained only the eight changed managed paths. Remote branch heads were read back and matched the recorded commits. [Rollout observations](../docs/evidence/quality-default-2026-10/adopter-rollout.json).
+
+| Checkout | Remote commit | Owner paths preserved |
+|---|---|---|
+| Odd preparation app | `b97590d691e120e1c9ae140ce7b31db56c0ec782` | 16,581 |
+| Splang Slack | `8b062b654082fddaa05dda9c6d2a5031d0f674c9` | 68 |
+| Odd p2r review | `431e46e135aacc7284a251f562cf057e176b9ddd` | 540 |
+| Odd Boka visual | `ff364ca606075502cc1038cf1fadfa59866b1d3b` | 519 |
+
+These are installation and preservation observations. They do not establish downstream product quality. The supplementary native trial and these distribution records were recorded after the independent source review; neither changes the accepted method bytes.

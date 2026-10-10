@@ -1,0 +1,82 @@
+[
+  {
+    "path": "/Users/kjetil/Code/odd",
+    "head": "b97590d691e120e1c9ae140ce7b31db56c0ec782",
+    "owner_paths_preserved": 16581,
+    "managed_paths_changed": [
+      ".claude/skills/craft/SKILL.md",
+      ".claude/skills/experience/SKILL.md",
+      ".claude/skills/experience/references/walk.md",
+      ".claude/skills/judge/SKILL.md",
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/skills/shape-product/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "index_unchanged_by_upgrade": true,
+    "dirty_status_preserved": true,
+    "canonical_files_matched": 19,
+    "codex_link_matched": true,
+    "upstream_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/telum/splang-slack",
+    "head": "8b062b654082fddaa05dda9c6d2a5031d0f674c9",
+    "owner_paths_preserved": 68,
+    "managed_paths_changed": [
+      ".claude/skills/craft/SKILL.md",
+      ".claude/skills/experience/SKILL.md",
+      ".claude/skills/experience/references/walk.md",
+      ".claude/skills/judge/SKILL.md",
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/skills/shape-product/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "index_unchanged_by_upgrade": true,
+    "dirty_status_preserved": true,
+    "canonical_files_matched": 19,
+    "codex_link_matched": true,
+    "upstream_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/p2r-review-20260908",
+    "head": "431e46e135aacc7284a251f562cf057e176b9ddd",
+    "owner_paths_preserved": 540,
+    "managed_paths_changed": [
+      ".claude/skills/craft/SKILL.md",
+      ".claude/skills/experience/SKILL.md",
+      ".claude/skills/experience/references/walk.md",
+      ".claude/skills/judge/SKILL.md",
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/skills/shape-product/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "index_unchanged_by_upgrade": true,
+    "dirty_status_preserved": true,
+    "canonical_files_matched": 19,
+    "codex_link_matched": true,
+    "upstream_verified": true
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/boka-visual-20260908",
+    "head": "ff364ca606075502cc1038cf1fadfa59866b1d3b",
+    "owner_paths_preserved": 519,
+    "managed_paths_changed": [
+      ".claude/skills/craft/SKILL.md",
+      ".claude/skills/experience/SKILL.md",
+      ".claude/skills/experience/references/walk.md",
+      ".claude/skills/judge/SKILL.md",
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/skills/shape-product/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md"
+    ],
+    "index_unchanged_by_upgrade": true,
+    "dirty_status_preserved": true,
+    "canonical_files_matched": 19,
+    "codex_link_matched": true,
+    "upstream_verified": true
+  }
+]
