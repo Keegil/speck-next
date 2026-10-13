@@ -1,0 +1,15 @@
+{
+  "release": "https://github.com/Keegil/speck-next/releases/tag/v7.2.0",
+  "releaseSHA": "234fb5add7cb7f2be39226f9a5d77a89bfb8537b",
+  "annotatedTagSHA": "823e785b1403280439c6e5f234127c07824ec051",
+  "latestStableReadBack": true,
+  "ciRun": "https://github.com/Keegil/speck-next/actions/runs/38445456568",
+  "ciConclusion": "success",
+  "deterministicTests": 34,
+  "toolkitLiveChecks": 15,
+  "toolkitPlatform": "linux-x64",
+  "toolkitElapsedSeconds": 40.543,
+  "installedBytes": 46293,
+  "nativeCheckouts": 4,
+  "ownerPathsPreserved": 2920
+}

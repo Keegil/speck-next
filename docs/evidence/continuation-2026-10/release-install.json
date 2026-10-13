@@ -1,0 +1,19 @@
+{
+  "package": "github:Keegil/speck-next#v7.2.0",
+  "source_commit": "234fb5add7cb7f2be39226f9a5d77a89bfb8537b",
+  "install_exit": 0,
+  "isolated_npm_cache": true,
+  "canonical_files_matched": 19,
+  "marker": {
+    "name": "speck-next",
+    "version": "7.2.0",
+    "sourceCheckout": "234fb5a",
+    "methodSurfaceSha256": "a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3",
+    "upgradeAssessmentRecord": null,
+    "installedAt": "2026-10-13T18:20:00.107Z"
+  },
+  "codex_discovery_verified": true,
+  "no_forced_product_records": true,
+  "toolkit_doctor_exit": 1,
+  "toolkit_limit": "Optional managed cache absent on this Mac. No setup performed as part of method upgrade. Published method installation and hosted Linux toolkit checks passed; no local tool readiness claim."
+}

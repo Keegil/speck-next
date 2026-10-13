@@ -29,4 +29,23 @@ The existing deterministic suite passed 34 tests: nine installed-surface checks,
 
 Fresh native Composer 2.5 independently accepted the complete source at `cb50b23` and the private active-plan application. It reproduced both broken fixture cases and all four passing returned implementations. The first 300-second interval ended without a verdict; the resumed context delivered acceptance in 32.135 seconds. A wording ambiguity between the unrepaired fixture and the prior-method arm was clarified. [Review scope and limits](../docs/reviews/continuation-7.2.md).
 
-Publication, published installation and adopter preservation remain to be verified. The current consumer is this release and its adopter handoffs; subsequent ordinary product work must supply evidence of actual progress. Do not repeat synthetic campaigns just to obtain a favorable result.
+The current consumer is this release and its adopter handoffs; subsequent ordinary product work must supply evidence of actual progress. Do not repeat synthetic campaigns just to obtain a favorable result.
+
+## Release and adoption
+
+[7.2.0](https://github.com/Keegil/speck-next/releases/tag/v7.2.0) is published at `234fb5add7cb7f2be39226f9a5d77a89bfb8537b`. The annotated tag and latest stable release were read back from GitHub. [Release checks](https://github.com/Keegil/speck-next/actions/runs/38445456568) passed at that exact SHA: all 34 deterministic tests and fifteen real Linux x64 toolkit checks (40.543 seconds). Installed surface: 46,293 bytes, nineteen canonical files plus marker, five skills and one discovery link. [Release observations](../docs/evidence/continuation-2026-10/release.json).
+
+A fresh tagged installation with an isolated npm cache matched all nineteen canonical files and the Codex discovery link, reported version 7.2.0 and digest `a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3`, and created no forced product records. The optional local toolkit diagnosis reported its managed cache absent; this does not prevent method installation. No local toolkit setup or readiness is claimed in this release. [Installation observations](../docs/evidence/continuation-2026-10/release-install.json).
+
+Discovery found four native checkouts: the active product, its two retained side branches and the Slack product. Old-Speck and unmarked projects were not converted. Each active handoff was reconciled separately and independently accepted, preserving explicit owner choices and unresolved product authority. The side branches retain their own exact archived states and historical map bodies. The installed method does not silently rewrite owner records.
+
+Each checkout then ran `npx -y github:Keegil/speck-next#v7.2.0 upgrade`. Before/after fingerprints preserved 2,920 tracked and nonignored untracked owner paths across the four checkouts, including modes and symlink targets; ignored caches were outside the snapshot. Each Git index survived the upgrade unchanged. Method-only commits preserved existing staged owner entries and dirty status, including the Slack project's pending Business contribution. All nineteen canonical files, marker digest and discovery links matched; remote branch heads and marker contents were read back at the exact pushed commits. [Rollout observations](../docs/evidence/continuation-2026-10/release-rollout.json).
+
+| Checkout | Branch | Pushed upgrade commit |
+| --- | --- | --- |
+| Odd | `codex/odd-preparation-app` | `923084546a2c9e1be061a35b36a8696616d52e67` |
+| Odd Boka side checkout | `codex/odd-boka-visual-20260908` | `50d0694b7c3da30927debc0f36ff2785cf6fa91f` |
+| Odd p2r side checkout | `codex/odd-p2r-review-resume-20260908` | `df9f6bf6d7fde2e30411621ac2927d59127c2c69` |
+| Splang in Slack | `main` | `727f4b054c1121394ce9d24942e507ccf387d036` |
+
+Publication and adoption are complete. No product runtime, data, live model path or user experience was changed or accepted by this rollout. Ordinary resumed work is the next consumer of the revised handoffs and method, within each product's existing authority. Raw install, upgrade, review and read-back evidence remains under `.local/continuation-2026-10-13/`.

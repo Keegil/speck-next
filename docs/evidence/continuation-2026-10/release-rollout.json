@@ -1,0 +1,90 @@
+[
+  {
+    "path": "/Users/kjetil/Code/odd",
+    "branch": "codex/odd-preparation-app",
+    "head": "923084546a2c9e1be061a35b36a8696616d52e67",
+    "version": "7.2.0",
+    "methodSurfaceSha256": "a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 1791,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md",
+      "templates/map.md",
+      "templates/state.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true,
+    "remote_marker_blob": "aa1b0c762015c0294c3fda113f5612651a904281"
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/boka-visual-20260908",
+    "branch": "codex/odd-boka-visual-20260908",
+    "head": "50d0694b7c3da30927debc0f36ff2785cf6fa91f",
+    "version": "7.2.0",
+    "methodSurfaceSha256": "a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 520,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md",
+      "templates/map.md",
+      "templates/state.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true,
+    "remote_marker_blob": "7e39c1e2dff4b0b7e25a791a764a2744fa5e770f"
+  },
+  {
+    "path": "/Users/kjetil/Code/odd-worktrees/p2r-review-20260908",
+    "branch": "codex/odd-p2r-review-resume-20260908",
+    "head": "df9f6bf6d7fde2e30411621ac2927d59127c2c69",
+    "version": "7.2.0",
+    "methodSurfaceSha256": "a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 541,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md",
+      "templates/map.md",
+      "templates/state.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true,
+    "remote_marker_blob": "29abbc86532f19f7f61e952ab3a23505d31715c7"
+  },
+  {
+    "path": "/Users/kjetil/Code/telum/splang-slack",
+    "branch": "main",
+    "head": "727f4b054c1121394ce9d24942e507ccf387d036",
+    "version": "7.2.0",
+    "methodSurfaceSha256": "a82759733cdc265ab9213898d5d87415ad7deedb5bf55c30266c5089e2ca8ca3",
+    "canonical_files_matched": 19,
+    "owner_paths_preserved": 68,
+    "index_preserved_by_upgrade": true,
+    "staged_owner_entries_preserved": true,
+    "dirty_status_preserved": true,
+    "changed_paths": [
+      ".claude/skills/map-build/SKILL.md",
+      ".claude/speck-next.json",
+      "AGENTS.md",
+      "templates/map.md",
+      "templates/state.md"
+    ],
+    "remote_verified": true,
+    "remote_marker_verified": true,
+    "remote_marker_blob": "9311f1bbe8ce786b4de302e950a7fcd5e938ab49"
+  }
+]
