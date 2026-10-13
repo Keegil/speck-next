@@ -2,18 +2,16 @@
 
 ## Goal and current result
 
-Execution quality is now part of ordinary scope in the source method. The root page, product contract and five existing skills require deliberate design and relevant practices, actual inspection, scoped refinement, and review of workmanship. New UI work does not need a separate request for polish. Tiny fixes remain small. [Change record](work/quality-default-2026-10.md).
+Release the authorized continuation repair as 7.2.0 and upgrade existing native adoptions. Builders should resume from the current requested outcome and remaining obstacle, reconsider shared mechanisms when local repairs leave the same job failing, and reconcile superseded generated procedure in active records. [Change and evidence](work/continuation-7.2.md).
 
-Published version [7.1.1](https://github.com/Keegil/speck-next/releases/tag/v7.1.1) includes the execution-quality repair. Its optional toolkit is unchanged. This increment adds no installed file, skill or runtime dependency. [Release and adoption evidence](work/quality-release-7.1.1.md); prior toolkit evidence remains in [the toolkit record](work/toolkit-7.1.md).
-
-The accepted source was initially pushed at `37a9721`. Release tag v7.1.1 resolves to `0dd97b4`; GitHub checks passed at that SHA. A fresh published installation matched the source. All four existing native checkouts received the tagged upgrade, with owner files and ongoing edits preserved and remote heads and marker contents verified. The missing optional tool cache was restored and all five managed tools diagnosed ready.
+The source change is implemented. It adds no installed file, skill or dependency and leaves the toolkit unchanged. Publication and adopter upgrades are pending independent review. The prior published release is [7.1.1](https://github.com/Keegil/speck-next/releases/tag/v7.1.1); its [execution-quality findings](work/quality-default-2026-10.md) and [adoption evidence](work/quality-release-7.1.1.md) retain their scope.
 
 ## Evidence and limits
 
-Claude Opus 5.5 independently accepted the source change and exercised six frozen trial apps. The deterministic suite passed 34 tests; the final source passed a fresh installed-surface check at 43,306 bytes, twenty regular installed files including the marker, and five skills. Both host entrypoints share the same files. [Review](docs/reviews/quality-default-2026-10.md) and [capabilities](capabilities.md) retain precise scope.
+All 34 deterministic tests passed. Two offline complete-job cases each ran under the prior and revised method with the same Composer 2.5 model and 120-second budget. All four returned implementations passed the external checker. Neither method reconciled the obsolete generated clause in active product.md. The tests do not establish improved quality, speed, cost or reliable adherence. Instruction-only adoption remains unproved.
 
-The executed comparisons did not establish quality gains or reliable adherence. Reading and packing builders skipped image inspection and left keyboard-focus defects even after explicit instructions. Tiny typo repairs stayed small. Native Codex attempted real rendering, correctly reported a sandbox limitation, then captured desktop/mobile images in a browser-capable isolated run; the trace does not establish that the author opened them. The integrator viewed those images. These are illustrative uses, not accepted products or general behavioral proof.
+The motivating product's active handoff and map are being reconciled in its own repository; its pause, exhausted model allowance, approved product order and open whole-job findings stay intact. No product development or new live model journey follows from this method authorization.
 
 ## Next action
 
-Use the revised guidance in ordinary work and have review reject concrete workmanship gaps within the requested scope. Treat the current default-quality promise as a requirement whose reliable adoption remains unproved. Further methodology changes need an observed failure or a new owner request; do not restart a synthetic build campaign solely to obtain a favorable score.
+Obtain fresh independent acceptance of the complete source change and private product-plan application. Then publish the reviewed 7.2.0 source, verify its exact release SHA and a fresh tagged installation, and upgrade the four discovered native checkouts with owner-file preservation and remote read-back. Record actual release evidence here. Subsequent ordinary product work must demonstrate whether the continuation procedure helps; do not open another synthetic campaign merely to seek a favorable result.

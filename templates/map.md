@@ -4,7 +4,7 @@
 
 ## Ordered work
 
-- **[Increment]:** [Observable result. Dependencies. Check that will establish it works. Owner when delegated.]
+- **[Increment]:** [Observable result. Dependencies. Consumer and remaining step to use supporting work, when relevant. Check that will establish it works. Owner when delegated.]
 
 ## Shared interfaces
 

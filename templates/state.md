@@ -4,7 +4,7 @@
 
 ## Goal and current result
 
-[Requested outcome, current progress, and relevant constraints.]
+[Current requested outcome, current progress, and relevant constraints, including explicit priorities, pauses, and budgets. For supporting work, identify its consumer and what remains before that use.]
 
 ## Evidence and limits
 
@@ -12,8 +12,8 @@
 
 ## Open issues
 
-[Failures, affected dependencies, or consequential owner choices.]
+[Observed obstacles to the complete user job, affected dependencies, or consequential owner choices.]
 
 ## Next action
 
-[Command or action and required setup, verified against the checkout and runtime.]
+[Action chosen to address the current obstacle and why it advances the requested outcome. Command and required setup where useful, verified against the checkout and runtime.]

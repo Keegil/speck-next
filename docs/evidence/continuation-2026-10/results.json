@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-13",
+  "comparison": "one run per arm per case; same Composer 2.5 model and 120-second limit",
+  "results": [
+    {
+      "case": "packing",
+      "arm": "old",
+      "model": "composer-2.5",
+      "deadlineSeconds": 120,
+      "baseline": "27026f7",
+      "rootInstructionSha256": "7c8ef44883c47fe95a5e7be5b23aa569af5e3498ff460ef3c30b3f17a321c407",
+      "exitCode": 0,
+      "elapsedSeconds": 41.618,
+      "checkExit": 0,
+      "checkOutput": "PASS: packing complete job\n",
+      "resultSubtype": "success",
+      "isError": false,
+      "usage": {
+        "inputTokens": 16880,
+        "outputTokens": 2108,
+        "cacheReadTokens": 81017,
+        "cacheWriteTokens": 0
+      },
+      "sessionId": "fd7e066b-383d-4abc-b58e-499b779b7806",
+      "artifacts": "packing-old",
+      "activeGeneratedProcedureReconciled": false,
+      "traceSha256": "9fd43d0a318b3a988e460b90594ab058fe683c34bf6146050000885984e1d8b6"
+    },
+    {
+      "case": "packing",
+      "arm": "revised",
+      "model": "composer-2.5",
+      "deadlineSeconds": 120,
+      "baseline": null,
+      "rootInstructionSha256": "b35e2fc328534eadeee98e387df9b228b6f431548a0385ead8c1db65e3f57d07",
+      "exitCode": 0,
+      "elapsedSeconds": 37.553,
+      "checkExit": 0,
+      "checkOutput": "PASS: packing complete job\n",
+      "resultSubtype": "success",
+      "isError": false,
+      "usage": {
+        "inputTokens": 17069,
+        "outputTokens": 1946,
+        "cacheReadTokens": 82042,
+        "cacheWriteTokens": 0
+      },
+      "sessionId": "4ff694f9-631e-4add-a93e-c974e7b91d9e",
+      "artifacts": "packing-revised",
+      "activeGeneratedProcedureReconciled": false,
+      "traceSha256": "03d6264e4e311b2c5a52f5ef23700e45330c1e25e5e762506dde2384ffec692c"
+    },
+    {
+      "case": "integrity",
+      "arm": "old",
+      "model": "composer-2.5",
+      "deadlineSeconds": 120,
+      "baseline": "27026f7",
+      "rootInstructionSha256": "7c8ef44883c47fe95a5e7be5b23aa569af5e3498ff460ef3c30b3f17a321c407",
+      "exitCode": 0,
+      "elapsedSeconds": 84.569,
+      "checkExit": 0,
+      "checkOutput": "PASS: integrity complete job\n",
+      "resultSubtype": "success",
+      "isError": false,
+      "usage": {
+        "inputTokens": 18433,
+        "outputTokens": 2952,
+        "cacheReadTokens": 166197,
+        "cacheWriteTokens": 0
+      },
+      "sessionId": "042158ee-f7f6-4ae6-af85-44785d86eeaa",
+      "artifacts": "integrity-old",
+      "activeGeneratedProcedureReconciled": false,
+      "traceSha256": "e48e3fb342e33a277614751a2785301a9edf5909fa6c06646468b78144d1de83"
+    },
+    {
+      "case": "integrity",
+      "arm": "revised",
+      "model": "composer-2.5",
+      "deadlineSeconds": 120,
+      "baseline": null,
+      "rootInstructionSha256": "b35e2fc328534eadeee98e387df9b228b6f431548a0385ead8c1db65e3f57d07",
+      "exitCode": 0,
+      "elapsedSeconds": 40.18,
+      "checkExit": 0,
+      "checkOutput": "PASS: integrity complete job\n",
+      "resultSubtype": "success",
+      "isError": false,
+      "usage": {
+        "inputTokens": 18724,
+        "outputTokens": 2955,
+        "cacheReadTokens": 125869,
+        "cacheWriteTokens": 0
+      },
+      "sessionId": "c4758f51-d6dc-4ee5-9e62-4cd009ef691f",
+      "artifacts": "integrity-revised",
+      "activeGeneratedProcedureReconciled": false,
+      "traceSha256": "4ff3c3bcaf42de74a1345a604c3000b1c8e8a40a19f79e1bb348ef6a2e87e69a"
+    }
+  ],
+  "conclusion": "Both methods passed both bounded jobs. Neither reconciled the generated v6 clause in active product.md. No quality, reliability, cost or speed improvement is established."
+}

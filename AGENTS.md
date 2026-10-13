@@ -18,6 +18,16 @@ Ask only when a missing choice changes user-facing behavior, risk, or order — 
 
 Honor explicit budgets. If planning cost grows past useful work, stop planning and run something small. Bound costly uncertain experiments and retries.
 
+## Resume ongoing work
+
+After partial results or a handoff, choose the next action from the current requested outcome and observed obstacles:
+
+1. Read the current request and relevant handoff. Preserve explicit priorities, pauses, budgets, and settled choices; an old next command does not override them.
+2. Identify what still prevents the affected user job from working. Reuse applicable evidence and check what has changed. If the next step produces supporting work, identify who or what will use it and what remains before that use.
+3. Choose the action that resolves that obstacle within authorized scope. Continue a failing check when it tests that obstacle; otherwise revise the next action and explain why it advances the requested result.
+
+Use the existing handoff or a short explanation; this requires no new record for a bounded task.
+
 ## Execution quality
 
 Ordinary authorized work includes thoughtful professional execution across product choices, interaction and visual design, engineering, writing, and delivery. Smaller scope means fewer things delivered well, not lower care within what ships.
@@ -46,6 +56,8 @@ Keep context small: link to authoritative detail and replace stale guidance. Whe
 
 This page (v7) supersedes **generated procedural obligations** from earlier Speck versions that may still appear in `product.md`, `decisions.md`, or old work files (assessments, mandatory gates, receipt rituals, role call tables). It does **not** supersede explicit current owner promises, constraints, care choices, or evidenced findings. When documents disagree on product truth, `product.md` and `decisions.md` win over other notes. Measured evidence beats documents — fix the loser and cite the finding.
 
+On resume or upgrade, reconcile conflicting procedure in the active records needed for the current task. Replace superseded generated instructions or mark them historical so the next builder can follow one current procedure. Preserve owner choices, protections, open failures, and links to useful history. If a clause's authority is unclear and the difference changes behavior or care, resolve that choice before dependent work. This is a bounded reconciliation of active context, not a repository-wide audit.
+
 ## Concerns, not a fixed staff
 
 **Product**, **Business**, **Experience**, and **Engineering** are lenses — not mandatory separate contexts. Bring expertise when a consequential uncertainty needs it; one integrator owns end-to-end behavior when delegating. Return to a contributor only when a material finding challenges their decision.
@@ -56,6 +68,8 @@ Run the real product while building user-visible work. First external dependency
 
 For bug repairs, reproduce the reported failure when feasible, test the suspected cause, and re-run the original scenario after the fix. Say when reproduction or verification remains unavailable.
 
+When scoped repairs leave the same user-visible job failing, inspect the shared mechanism, interaction between parts, and work boundaries before choosing another patch. Trace where the complete sequence breaks and use that evidence to decide whether to repair locally or divide or order the work differently. A rewrite is not the default. Bring consequential architecture or product changes to the owner; ordinary authorized repairs continue without another approval.
+
 Concrete failure of an integrated user job holds dependent work until fixed and the affected complete sequence is re-run. Unrelated work may continue. Do not ceremonially re-review already proved work. Recurring friction belongs in `state.md` when it affects future builders.
 
 Reuse working setup and targeted checks; inspect relevant logs, resulting data, and rendered behavior. When stuck, diagnose the failed run before retrying. For recurring defects or consequential invariants, prefer focused tests, types, or lints with actionable errors over more instructions. Keep the investment proportional.
@@ -64,7 +78,7 @@ Harness choices are hypotheses. Before claiming gains from changed prompts, tool
 
 ## Optional toolkit
 
-`npx -y github:Keegil/speck-next#v7.1.1 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
+`npx -y github:Keegil/speck-next#v7.2.0 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
 
 Choose the tool for the question: **rg** for exact text, **jq** for selected JSON fields, **Graft** for signatures and caller navigation, **ast-grep** for structural searches or reviewed rewrites, **RTK** for selected readable summaries of noisy output. A known file often needs only a targeted read. Reuse project tests, types, linters and browser tools.
 
