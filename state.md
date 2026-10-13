@@ -4,7 +4,7 @@
 
 Release the authorized continuation repair as 7.2.0 and upgrade existing native adoptions. Builders should resume from the current requested outcome and remaining obstacle, reconsider shared mechanisms when local repairs leave the same job failing, and reconcile superseded generated procedure in active records. [Change and evidence](work/continuation-7.2.md).
 
-The source change is implemented. It adds no installed file, skill or dependency and leaves the toolkit unchanged. Publication and adopter upgrades are pending independent review. The prior published release is [7.1.1](https://github.com/Keegil/speck-next/releases/tag/v7.1.1); its [execution-quality findings](work/quality-default-2026-10.md) and [adoption evidence](work/quality-release-7.1.1.md) retain their scope.
+The source change is implemented and independently accepted at `cb50b23` by fresh native Composer 2.5. It adds no installed file, skill or dependency and leaves the toolkit unchanged. Publication and adopter upgrades are pending. The prior published release is [7.1.1](https://github.com/Keegil/speck-next/releases/tag/v7.1.1); its [execution-quality findings](work/quality-default-2026-10.md) and [adoption evidence](work/quality-release-7.1.1.md) retain their scope.
 
 ## Evidence and limits
 
@@ -14,4 +14,4 @@ The motivating product's active handoff and map are being reconciled in its own 
 
 ## Next action
 
-Obtain fresh independent acceptance of the complete source change and private product-plan application. Then publish the reviewed 7.2.0 source, verify its exact release SHA and a fresh tagged installation, and upgrade the four discovered native checkouts with owner-file preservation and remote read-back. Record actual release evidence here. Subsequent ordinary product work must demonstrate whether the continuation procedure helps; do not open another synthetic campaign merely to seek a favorable result.
+Publish the reviewed 7.2.0 source, verify its exact release SHA and a fresh tagged installation, and upgrade the four discovered native checkouts with owner-file preservation and remote read-back. The main private product handoff is independently accepted; bounded side-checkout and other-adopter reconciliation is still being verified. Record actual release evidence here. Subsequent ordinary product work must demonstrate whether the continuation procedure helps; do not open another synthetic campaign merely to seek a favorable result.

@@ -12,7 +12,7 @@ The existing map skill and two optional templates carry the same behavior. Durin
 
 [Two offline cases](../devsuite/continuation/README.md) use a small Python packing-list app, outside the motivating product. The packing case has an old handoff pointing at heading punctuation while visible numbering marks the wrong saved item. The integrity case requires the storage repair to remain the next action because it prevents damaged private data being overwritten. Both include an explicitly generated obsolete v6 clause alongside current owner constraints.
 
-Each case ran once with the preceding source (`27026f7`) and once with the revised method, using native Cursor Composer 2.5, identical prompts, a 120-second limit and two concurrent workers. The checker was outside each builder checkout. Baselines failed; separate positive controls passed. Returned implementations were executed with fresh evaluator data, and their code and handoffs inspected. [Outputs, instruction hashes and reported usage](../docs/evidence/continuation-2026-10/results.json) are retained beside each returned implementation and handoff.
+Each case ran once with the preceding source (`27026f7`) and once with the revised method, using native Cursor Composer 2.5, identical prompts, a 120-second limit and two concurrent workers. The checker was outside each builder checkout. The unrepaired fixture failed both cases; separate positive controls passed. Returned implementations from both method versions were executed with fresh evaluator data, and their code and handoffs inspected. [Outputs, instruction hashes and reported usage](../docs/evidence/continuation-2026-10/results.json) are retained beside each returned implementation and handoff.
 
 | Case | Prior method | Revised method |
 | --- | --- | --- |
@@ -27,4 +27,6 @@ The observed omission remains a limitation of instruction-only distribution. Ado
 
 The existing deterministic suite passed 34 tests: nine installed-surface checks, fourteen toolkit tests and eleven installation/upgrade tests. The installed payload remains nineteen canonical regular files plus its marker, five skills and the Codex discovery link; measured surface 46,293 bytes. The toolkit is unchanged.
 
-Independent review is pending. Publication, published installation and adopter preservation remain to be verified. The current consumer is this release and its adopter handoffs; subsequent ordinary product work must supply evidence of actual progress. Do not repeat synthetic campaigns just to obtain a favorable result.
+Fresh native Composer 2.5 independently accepted the complete source at `cb50b23` and the private active-plan application. It reproduced both broken fixture cases and all four passing returned implementations. The first 300-second interval ended without a verdict; the resumed context delivered acceptance in 32.135 seconds. A wording ambiguity between the unrepaired fixture and the prior-method arm was clarified. [Review scope and limits](../docs/reviews/continuation-7.2.md).
+
+Publication, published installation and adopter preservation remain to be verified. The current consumer is this release and its adopter handoffs; subsequent ordinary product work must supply evidence of actual progress. Do not repeat synthetic campaigns just to obtain a favorable result.
