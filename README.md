@@ -33,15 +33,15 @@ Hard limits and promises: [CONTRACT.md](CONTRACT.md). Evidence and limits: [capa
 
 ## Status
 
-Current version: **7.2.0**. Continuing work starts from the remaining obstacle to the requested outcome. Repeated local repairs prompt a check of the shared mechanism and work boundaries; conflicting inherited procedure is reconciled in the active records. [Continuation evidence](work/continuation-7.2.md) records the checks and their limits. Ordinary work includes deliberate design, relevant practices and review of workmanship; earlier [execution-quality trials](work/quality-default-2026-10.md) retain their limits. The optional toolkit is unchanged. The five skills, optional records and proportional workflow remain the method. [Toolkit verification](work/toolkit-7.1.md) records its scope.
+Current version: **7.3.0**. For work applications, `craft` prioritizes working content and the next meaningful action, with navigation shaped around user workflows. `judge` checks what users must read or navigate through before starting. Supporting context stays available for informed decisions and accessibility; reports remain appropriate for reading, comparison and monitoring. [Release scope and checks](work/workflows-7.3.md). The five skills, optional records, proportional workflow and toolkit remain in place. Earlier [continuation evidence](work/continuation-7.2.md), [execution-quality trials](work/quality-default-2026-10.md) and [toolkit verification](work/toolkit-7.1.md) retain their scope and limits.
 
 ## Install and check
 
 Have Node.js/npm and Git available. The target directory must already exist and be a Git repository. For a new project, create it and run `git init` there first. Install into a fresh repository; use upgrade for a repository that already has a Speck Next marker.
 
 ```sh
-npx -y github:Keegil/speck-next#v7.2.0 install /path/to/repo
-npx -y github:Keegil/speck-next#v7.2.0 upgrade /path/to/repo
+npx -y github:Keegil/speck-next#v7.3.0 install /path/to/repo
+npx -y github:Keegil/speck-next#v7.3.0 upgrade /path/to/repo
 ```
 
 ## Optional toolkit
@@ -49,14 +49,14 @@ npx -y github:Keegil/speck-next#v7.2.0 upgrade /path/to/repo
 Set up the tools once, then use them where they help. The manager supports macOS and Linux on arm64/x64. It requires Node.js 20 or newer, npm, Git, `tar`, `unzip`, and network access for downloads; Linux needs glibc for some binaries. Graft's native dependencies may require a compiler toolchain and Python. Normal method installation does not download the toolkit. Windows setup is not supported in this release.
 
 ```sh
-npx -y github:Keegil/speck-next#v7.2.0 tools setup
-npx -y github:Keegil/speck-next#v7.2.0 tools doctor
-npx -y github:Keegil/speck-next#v7.2.0 tools run rg -- -n 'customerId' src
-npx -y github:Keegil/speck-next#v7.2.0 tools run jq -- '.version' package.json
-npx -y github:Keegil/speck-next#v7.2.0 tools run graft -- build .
-npx -y github:Keegil/speck-next#v7.2.0 tools run graft -- skeleton src/example.ts .
-npx -y github:Keegil/speck-next#v7.2.0 tools run ast-grep -- run --lang ts --pattern 'console.log($$$ARGS)' src
-npx -y github:Keegil/speck-next#v7.2.0 tools run rtk -- git status
+npx -y github:Keegil/speck-next#v7.3.0 tools setup
+npx -y github:Keegil/speck-next#v7.3.0 tools doctor
+npx -y github:Keegil/speck-next#v7.3.0 tools run rg -- -n 'customerId' src
+npx -y github:Keegil/speck-next#v7.3.0 tools run jq -- '.version' package.json
+npx -y github:Keegil/speck-next#v7.3.0 tools run graft -- build .
+npx -y github:Keegil/speck-next#v7.3.0 tools run graft -- skeleton src/example.ts .
+npx -y github:Keegil/speck-next#v7.3.0 tools run ast-grep -- run --lang ts --pattern 'console.log($$$ARGS)' src
+npx -y github:Keegil/speck-next#v7.3.0 tools run rtk -- git status
 ```
 
 | Tool | Useful for |
