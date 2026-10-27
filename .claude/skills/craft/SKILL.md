@@ -22,6 +22,8 @@ Skip a branding exercise when direction is already clear from the repo or owner.
 
 Judge the **whole affected flow or set**, not isolated controls. Make the primary action and its result easy to understand. Choose hierarchy, spacing, typography, and color to support that job. Reuse the product's components before inventing new patterns.
 
+For applications where people carry out work, give working content and the next meaningful action priority. Derive navigation from user workflows rather than mirroring project documents, hypotheses, or capability lists. Keep explanations, status, and history where they help people choose, perform, or check the work; disclose other detail when needed. Remove filler without removing context needed for informed decisions or accessibility. Reports and information-led views are appropriate when reading, comparing, or monitoring is the user's job.
+
 Cover the states this change introduces or alters, such as empty data, loading, saving, success, or failure. Make recovery and the next action reachable. Inspect response to input, timely feedback, layout stability, and transitions where they affect the job. Use motion and visuals when they help comprehension or the intended feel.
 
 For changed controls, preserve keyboard access, focus, readable contrast, and useful labels. Inspect affected viewport sizes, touch targets, and text scaling; respect reduced motion when adding animation. AI-specific interaction belongs where the agreed product calls for it, with assumptions visible and correctable.
