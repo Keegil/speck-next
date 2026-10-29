@@ -1,0 +1,196 @@
+[
+  {
+    "case": "goal",
+    "arm": "prior",
+    "sourceRef": "v7.3.0",
+    "sourceSHA": "ba117e1bc54a49956aeaaea230fb7badda99c1b2",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 56.681,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 22,
+    "check": {
+      "exit": 0,
+      "stdout": "{\n  \"mechanics\": \"pass\",\n  \"semantic_fidelity\": \"requires independent review\",\n  \"goal_id\": 2,\n  \"objective_sha256\": \"7ae8a4bcf606c959c58849f219d44968a07ec47d3fc94cb01e35d7fdace0c3aa\",\n  \"characters\": 1978,\n  \"event_count\": 3\n}\n",
+      "stderr": ""
+    },
+    "methodSha256": "bf58eea29ad2157c66b46dd1bea6ae0976e9c1bc794890a00c3c571a18668256",
+    "promptSha256": "4108f7aee965328cbd849f0d427eae7c7763e241a706d1095267224c858831e0",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 51274,
+      "duration_api_ms": 51274,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 30,
+        "outputTokens": 5854,
+        "cacheReadTokens": 514689,
+        "cacheWriteTokens": 35413
+      }
+    },
+    "result": "Need to trim ~500 chars.Still ~160 over; trim.Yo, the Gather goal is registered and active on the local host. It's goal #2 and replaces the old \"Read objective.md\" setup goal. I haven't started building anything.\n\n- **Read-back:** `show` returns the goal as registered, active, with a 750 NOK budget. That is the host's maximum. The text is 1,978 characters, under the 2,000 limit.\n- **Compression:** The host caps the objective at 2,000 characters and `objective.md` is longer, so I wrote a condensed version to `goal-objective.md`. I kept the full job (create, revise, assign, return, recovery) and the preview with real persisted state. I also kept the full-content testing across phone and desktop, never dropping qualifications or negatives, and the independent reviewer. The authority limits, the 750 NOK cap and the honest handling of real-world evidence are in there too.\n- **What got cut:** Some of the wording is shorter. For example, \"history/provenance\" became \"history\", and the line telling the builder not to invent extra features is gone. The registered text points the reviewer at `objective.md`, which is still the full source and was not edited.\n- **Next builder:** Read `objective.md` first, because the registered text is only a summary of it. No spend so far, so 750 NOK remains. There are no open failures.\n- **Next action:** Build the first runnable slice of the coordinator journey. That is event entry, proposed tasks and persisted assignment in a private preview.\n- **Constraints:** There is no `state.md`, since you didn't ask for one. I made no commits and used no network or delegation."
+  },
+  {
+    "case": "goal",
+    "arm": "revised",
+    "sourceRef": "67199d2",
+    "sourceSHA": "67199d22ffca2c70196ab27113d08a662bb7b142",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 34.387,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 9,
+    "check": {
+      "exit": 0,
+      "stdout": "{\n  \"mechanics\": \"pass\",\n  \"semantic_fidelity\": \"requires independent review\",\n  \"goal_id\": 2,\n  \"objective_sha256\": \"7de6432d9c98917da8b7d0af6a76851c312f867e4b965632963b9b13f3f824d8\",\n  \"characters\": 1890,\n  \"event_count\": 3\n}\n",
+      "stderr": ""
+    },
+    "methodSha256": "f950398cb44377d1891faab2ea3e29ea153dd0dfb147eec5b5c20ac40c708ae9",
+    "promptSha256": "4108f7aee965328cbd849f0d427eae7c7763e241a706d1095267224c858831e0",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 25836,
+      "duration_api_ms": 25836,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 16,
+        "outputTokens": 2691,
+        "cacheReadTokens": 203361,
+        "cacheWriteTokens": 27165
+      }
+    },
+    "result": "Shell cwd differs; check.Need to trim ~220 chars.The Gather goal is now registered and active on the local host. Nothing has been built.\n\nI read the goal back after registering it. It replaced the setup goal (id 1) as goal id 2. It shows status `active`, a budget of 750 NOK, and 1890 of the 2000 characters allowed.\n\nThe full `objective.md` is about 4,400 characters, so I wrote a compressed version to `registered-objective.md` and registered that. The registered text keeps:\n- the connected job: create, revise, assign, return and recover, in a private preview with persisted state;\n- the quality expectations: phone and desktop, full and sparse content, the empty, error, retry and undo states, and not dropping qualifications or negatives;\n- independent review of the rendered journey;\n- the authority limits and the 750 NOK cap;\n- the rule against faking real-world evaluation;\n- the handoff requirement.\n\nIt does not carry the long wording of `objective.md`, and it points back to that file as the source. I did not edit `goal_host.py`, the host storage or logs, or `objective.md`.\n\n**Handoff for the next builder**\n- **Goal:** read `objective.md` first, then confirm the active goal with `python3 goal_host.py show`.\n- **Progress:** goal setup only. There is no product code, preview or review yet, and the 750 NOK budget is unspent.\n- **Next step:** build the earliest slice of the connected coordinator-to-helper job with persisted state, and run it in a private preview.\n- **Open dependency:** proving real-world value needs actual coordinators over several events, so that cannot be done by building alone."
+  },
+  {
+    "case": "review",
+    "arm": "prior",
+    "sourceRef": "v7.3.0",
+    "sourceSHA": "ba117e1bc54a49956aeaaea230fb7badda99c1b2",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 23.984,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 5,
+    "check": null,
+    "methodSha256": "bf58eea29ad2157c66b46dd1bea6ae0976e9c1bc794890a00c3c571a18668256",
+    "promptSha256": "8cbd9d64d7bd2624c783aeaf38216c2ec10d9f66656727541e179d03104fd8a5",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 19238,
+      "duration_api_ms": 19238,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 2229,
+        "cacheReadTokens": 77174,
+        "cacheWriteTokens": 28362
+      }
+    },
+    "result": "Yo bro, review's done and `state-next.md` is written. Decision: **not accepted**. I only read the packet and ran nothing.\n\n**Why it's rejected**\n1. **Dispatch/reopen is broken.** The sandbox handoff says success, but reopening shows \"Ready to dispatch.\" A second click made a second carrier ID for the same shipment. That's a duplicate-send risk, so it's a blocker.\n2. **The populated screen fails the brief.** With 12 packages, the first package sits at y=1160 and its correction control at y=1720 on mobile (y=1320 on desktop for the first action). The brief says contents and the next action should lead. The earlier \"optional polish\" label was wrong.\n3. **The address exception is hidden.** The operator opened three packages before finding it, because nothing in the list marks it.\n\n**Calls I made**\n- I rejected the green-accent suggestion. The blue accents are the approved identity.\n- The address classifier is done. Nothing links it to the duplicate shipment, so I dropped the old \"optimize classifier\" next step.\n- The calibration-key warning (\"Do not send separately…\") has to stay intact when the text is condensed.\n\n**Next work, in order**\n1. Fix persisted status and make dispatch idempotent. Then re-run dispatch, reopen, a blocked second click, and check for a single carrier ID.\n2. Rework the populated-screen hierarchy. Put the package list and next action first, collapse the rationales, and flag address exceptions inline before dispatch.\n3. Check that a correction shows its consequences in the list.\n\n**Evidence still missing**\n- Mobile and desktop screenshots of the populated shipment.\n- Keyboard focus and 200% text-size checks.\n- A flag that doesn't rely on color alone.\n- A full sandbox run that includes a carrier failure.\n- A fresh independent review of the whole product after the repairs."
+  },
+  {
+    "case": "review",
+    "arm": "revised",
+    "sourceRef": "67199d2",
+    "sourceSHA": "67199d22ffca2c70196ab27113d08a662bb7b142",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 23.835,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 5,
+    "check": null,
+    "methodSha256": "f950398cb44377d1891faab2ea3e29ea153dd0dfb147eec5b5c20ac40c708ae9",
+    "promptSha256": "8cbd9d64d7bd2624c783aeaf38216c2ec10d9f66656727541e179d03104fd8a5",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 18556,
+      "duration_api_ms": 18556,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 1969,
+        "cacheReadTokens": 69226,
+        "cacheWriteTokens": 24217
+      }
+    },
+    "result": "**Decision: not accepted.** I reviewed the documents only. I didn't run the UI, and the packet has no screenshots.\n\nWhy it fails against the brief:\n1. **The dispatch/reopen job is broken.** The sandbox carrier call succeeds, but reopening the shipment shows \"Ready to dispatch\". A second click creates a second carrier ID. This blocks the complete job. It's the first thing to fix, starting with a trace of the status write, and the dispatch needs a guard against double submission.\n2. **The populated screen misses the brief's hierarchy requirement.** On phone the first package sits at y=1160 and its first action at y=1720. The operator opened three packages to find the address exception, because nothing marks it. The earlier \"optional polish\" call is wrong, since address exceptions must be visible before dispatch. The fix is an ordinary reversible design change, so it needs no owner question. Keep the \"Do not send separately…\" qualification intact when collapsing the rationales.\n3. **Pause classifier work.** Its examples pass, and nothing links it to the duplicate dispatch. I also set aside the suggestions to switch to green accents and to ask the owner first. The blue identity is approved.\n\nEvidence still needed:\n- Populated-sample screenshots at 390x844 and 1440x900.\n- A task run where the operator finds the exception without opening packages.\n- Keyboard/focus and enlarged-text checks.\n- A dispatch → reload → reopen run showing a single carrier ID.\n- Independent review of the whole application, not only the classifier.\n\nThe handoff is in `state-next.md`, with the priorities and next command."
+  },
+  {
+    "case": "tiny",
+    "arm": "prior",
+    "sourceRef": "v7.3.0",
+    "sourceSHA": "ba117e1bc54a49956aeaaea230fb7badda99c1b2",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 11.435,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 2,
+    "check": {
+      "text": "Your parcel is ready for collection.\n",
+      "passes": true
+    },
+    "methodSha256": "bf58eea29ad2157c66b46dd1bea6ae0976e9c1bc794890a00c3c571a18668256",
+    "promptSha256": "b60a8d67ea6d3f6603a000c0ffe02fee541d565e5c1a96e7526ddb6d21761742",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 6454,
+      "duration_api_ms": 6454,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 321,
+        "cacheReadTokens": 75590,
+        "cacheWriteTokens": 25745
+      }
+    },
+    "result": "Fixed, bro! 🔥 In `notice.txt`, \"reday\" is now \"ready\", so the line reads: \"Your parcel is ready for collection.\"\n\nI made that one edit and didn't run any other checks. I didn't use the network or delegation, and I touched nothing outside this checkout."
+  },
+  {
+    "case": "tiny",
+    "arm": "revised",
+    "sourceRef": "67199d2",
+    "sourceSHA": "67199d22ffca2c70196ab27113d08a662bb7b142",
+    "modelRequested": "claude-sonnet-5-5-medium",
+    "modelReported": "Claude Sonnet 5.5 300K Medium",
+    "seconds": 11.096,
+    "timeoutSeconds": 120,
+    "timeout": false,
+    "exit": 0,
+    "completedTools": 2,
+    "check": {
+      "text": "Your parcel is ready for collection.\n",
+      "passes": true
+    },
+    "methodSha256": "f950398cb44377d1891faab2ea3e29ea153dd0dfb147eec5b5c20ac40c708ae9",
+    "promptSha256": "b60a8d67ea6d3f6603a000c0ffe02fee541d565e5c1a96e7526ddb6d21761742",
+    "terminal": {
+      "type": "result",
+      "subtype": "success",
+      "duration_ms": 6757,
+      "duration_api_ms": 6757,
+      "is_error": false,
+      "usage": {
+        "inputTokens": 8,
+        "outputTokens": 286,
+        "cacheReadTokens": 67638,
+        "cacheWriteTokens": 21769
+      }
+    },
+    "result": "Fixed the typo in `notice.txt`: \"reday\" is now \"ready\", so the line reads \"Your parcel is ready for collection.\" I didn't touch any other file or run any other check."
+  }
+]

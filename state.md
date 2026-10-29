@@ -2,14 +2,14 @@
 
 ## Goal and current result
 
-The owner's requested release from [PR #1](https://github.com/Keegil/speck-next/pull/1) is published as [7.3.0](https://github.com/Keegil/speck-next/releases/tag/v7.3.0). `craft` prioritizes working content and the next meaningful action in work applications, and `judge` checks what users must read or navigate through before starting. [Scope and release evidence](work/workflows-7.3.md).
+The requested Speck Next changes are implemented as the 7.4.0 candidate on `codex/goal-quality-continuity`, independently accepted and pushed. Goals preserve concrete quality requirements through shortening, consequential rewrites receive existing substantive review before activation, and unresolved experience findings inform design work and representative-state checks. [Scope and evidence](work/goal-quality-7.4.md).
 
 ## Evidence and limits
 
-Fresh native Sonnet 5.5 independently accepted the complete instruction package at `e78ba5a`. Release tag v7.3.0 resolves to merge SHA `ba117e1bc54a49956aeaaea230fb7badda99c1b2`, whose tree matches that reviewed head. All 34 deterministic tests and fifteen live Linux toolkit checks passed on GitHub at the release SHA. A fresh tagged installation matched all nineteen canonical files and the discovery link; a tagged upgrade preserved owner bytes and the Git index. The footprint is 47,287 bytes including marker and link target. This guidance has no new downstream UX trial; package checks establish distribution only. No adopter rollout is included in this request.
+All 34 deterministic checks passed locally. Hosted checks passed at independently accepted source `38e329e`; final review also executed positive/negative goal controls and surface checks. Seven bounded native runs include two failed semantic self-checks; the externally reviewed/repaired goal was registered and read back exactly. No general quality or efficiency gain, spontaneous review recruitment, native host reliability or downstream UX improvement is established. [Independent review](docs/reviews/goal-quality-7.4.md).
 
-The previous [7.2.0 release and four-checkout adoption](work/continuation-7.2.md) retain their evidence and limitations. Existing product pauses, budgets, owner decisions and open findings remain applicable.
+The GitHub connector opened a PR creation form requiring user submission. A subsequent branch-filtered read found no open PR. The candidate is not merged or released; latest published version remains 7.3.0. Odd and other adopters are unchanged.
 
 ## Next action
 
-Publication is complete. Use the revised guidance in the next authorized product work and judge the actual affected workflow. An existing Speck Next project can adopt it with `npx -y github:Keegil/speck-next#v7.3.0 upgrade /path/to/repo`. No further method campaign or product rollout is queued.
+After the GitHub form is submitted, verify the created PR and current branch head, attach it to this chat, update its description with final validation, and complete merge/release within the owner's publishing authorization. Preserve existing product pauses, budgets, authority and open findings. No product build or adopter rollout has been started.

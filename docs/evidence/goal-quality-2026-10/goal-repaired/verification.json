@@ -1,0 +1,11 @@
+{
+  "mode": "integrator-orchestrated independent review and repair",
+  "reviewSourceSHA": "7bf738e937d03ff8d6e9d31bde0ec2a47482e2b3",
+  "reviewPacketSHA": "18220eedebc8c814ac0a027817913e752afc65e8",
+  "conditionalCorrection": "with real content. -> with realistic content.",
+  "candidateEqualsConditionallyApprovedText": true,
+  "registeredTextEqualsReviewedCandidate": true,
+  "characters": 1999,
+  "mechanics": "pass",
+  "nativeSpontaneousReviewRecruitment": "not tested"
+}

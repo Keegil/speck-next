@@ -23,10 +23,18 @@ Honor explicit budgets. If planning cost grows past useful work, stop planning a
 After partial results or a handoff, choose the next action from the current requested outcome and observed obstacles:
 
 1. Read the current request and relevant handoff. Preserve explicit priorities, pauses, budgets, and settled choices; an old next command does not override them.
-2. Identify what still prevents the affected user job from working. Reuse applicable evidence and check what has changed. If the next step produces supporting work, identify who or what will use it and what remains before that use.
-3. Choose the action that resolves that obstacle within authorized scope. Continue a failing check when it tests that obstacle; otherwise revise the next action and explain why it advances the requested result.
+2. Identify what still prevents the affected user job from working well, including unresolved experience findings and rejected or unreviewed work. Reuse applicable evidence and check what has changed. If the next step produces supporting work, identify who or what will use it and what remains before that use.
+3. Choose the action by its consequence, dependencies and expected benefit to the requested outcome. A growing chain of local repairs warrants checking the whole affected job again: which repair is necessary, what evidence would change that choice, and what independent work can proceed? Continue a failing check when it tests that obstacle; otherwise revise the next action and explain why it advances the requested result.
 
 Use the existing handoff or a short explanation; this requires no new record for a bounded task.
+
+## Goals across sessions
+
+When asked to prepare a goal for autonomous work, derive a compact, usable objective from the request and authoritative records. Include the whole requested outcome, concrete quality expectations, scope and authority, budget, evidence needed to finish, and remaining external dependencies. A completed increment is progress toward a broader goal; do not replace that goal with the next implementation task or open-ended optimization. Existing records can carry detail; no additional goal document is required.
+
+When authorized to activate or replace a goal, use the host's existing mechanism. Before shortening or transfer, identify the concrete outcomes, experience requirements, authority, budgets and stopping conditions that must survive. Read back the actual active objective and status after registration and compare each requirement with its retained meaning, including qualifications and boundaries. Repair omissions before continuing; a successful registration, overall resemblance or source link does not establish fidelity. Keep this comparison in the existing handoff when useful; no separate record is required. Disclose an unavailable read-back. Completing a setup step does not complete the product goal. Preserve pauses and limits; identify genuine external dependencies without filling the wait with unrelated work.
+
+A consequential rewrite of a product goal is substantive work under **Review** below. Have that fresh context compare the proposed operative text with the source before activation or replacement; repair material losses, then check that the registered result matches the reviewed text. This can be part of the existing handoff review. An unchanged transfer or obvious wording fix needs only a local check.
 
 ## Execution quality
 
@@ -78,7 +86,7 @@ Harness choices are hypotheses. Before claiming gains from changed prompts, tool
 
 ## Optional toolkit
 
-`npx -y github:Keegil/speck-next#v7.3.0 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
+`npx -y github:Keegil/speck-next#v7.4.0 tools doctor` checks the bundle; `tools setup` installs it once. Use `tools run <tool> -- <args>` for its pinned versions. Setup owns a separate cache; ordinary method installation stays lightweight. Missing tools do not block the task.
 
 Choose the tool for the question: **rg** for exact text, **jq** for selected JSON fields, **Graft** for signatures and caller navigation, **ast-grep** for structural searches or reviewed rewrites, **RTK** for selected readable summaries of noisy output. A known file often needs only a targeted read. Reuse project tests, types, linters and browser tools.
 

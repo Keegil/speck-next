@@ -8,12 +8,12 @@
 
 ## Evidence and limits
 
-[Build, commit, or working-tree snapshot checked. Runs, observations, review status, and untested claims.]
+[Build, commit, or working-tree snapshot and relevant content states checked. Runs, observations, review status (including rejected or unreviewed work), and untested claims.]
 
 ## Open issues
 
-[Observed obstacles to the complete user job, affected dependencies, or consequential owner choices.]
+[Observed obstacles to the complete user job, including unresolved material experience findings, affected dependencies, or consequential owner choices. Preserve unresolved findings across handoffs, with any explicit owner disposition; close them with evidence.]
 
 ## Next action
 
-[Action chosen to address the current obstacle and why it advances the requested outcome. Command and required setup where useful, verified against the checkout and runtime.]
+[Action chosen to address the current obstacle and why it advances the requested outcome. Keep other material findings visible when prioritizing this action. Command and required setup where useful, verified against the checkout and runtime.]

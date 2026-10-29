@@ -1,0 +1,23 @@
+[
+  {
+    "tool": "readToolCall",
+    "path": "<workspace>/brief.md"
+  },
+  {
+    "tool": "readToolCall",
+    "path": "<workspace>/observations.md"
+  },
+  {
+    "tool": "readToolCall",
+    "path": "<workspace>/state.md"
+  },
+  {
+    "tool": "readToolCall",
+    "path": "<workspace>/request.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/state-next.md",
+    "contentSha256": "1a2c0d4df06bd118c842a6f2da8d9ae31958cf8c8264bd9225f5453a6f212d0c"
+  }
+]

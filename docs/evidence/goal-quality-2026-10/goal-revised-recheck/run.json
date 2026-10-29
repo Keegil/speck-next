@@ -1,0 +1,34 @@
+{
+  "case": "goal",
+  "arm": "revised-recheck",
+  "sourceRef": "de68c37",
+  "sourceSHA": "de68c374dcaae20488f64d98ccd7238a04ff2294",
+  "modelRequested": "claude-sonnet-5-5-medium",
+  "modelReported": "Claude Sonnet 5.5 300K Medium",
+  "seconds": 54.851,
+  "timeoutSeconds": 120,
+  "timeout": false,
+  "exit": 0,
+  "completedTools": 22,
+  "check": {
+    "exit": 0,
+    "stdout": "{\n  \"mechanics\": \"pass\",\n  \"semantic_fidelity\": \"requires independent review\",\n  \"goal_id\": 2,\n  \"objective_sha256\": \"ba90e581fcbd0390c3038defd80d174a2edb7931f23f56527f442d884c9a60e8\",\n  \"characters\": 1998,\n  \"event_count\": 5\n}\n",
+    "stderr": ""
+  },
+  "methodSha256": "a5b9e5285360be249f449538c6eed3062a453d274eea0bbc9acf89c3008b5f7b",
+  "promptSha256": "4108f7aee965328cbd849f0d427eae7c7763e241a706d1095267224c858831e0",
+  "terminal": {
+    "type": "result",
+    "subtype": "success",
+    "duration_ms": 50085,
+    "duration_api_ms": 50085,
+    "is_error": false,
+    "result": "Parallel race; retry.Gather is now registered as the active goal on the local host. It's goal #2 with a 750 NOK budget, replacing the setup goal. I read it back with `show`.\n\nThe host caps objectives at 2000 characters and `objective.md` is much longer. I wrote a compressed version to `goal-objective.md` (1998 characters) and registered that. It points back to `objective.md`, which governs if the two differ.\n\nI compared the read-back with the original and these points carried over:\n- The whole connected job: creation, revision, assignment, return and recovery, in a private preview with real saved state.\n- Quality on phone and desktop, and testing full, long-text and sparse events plus empty, waiting, error, retry, undo and return states.\n- Never dropping qualifications or negatives when shortening text.\n- A fresh independent reviewer checking against the rendered result, with repairs and re-checks.\n- Authority limits: no new integrations, publishing, contacting real volunteers, invitations, live-event changes, purchases or irreversible acts.\n- The 750 NOK cap, what to do at the cap, and the real-coordinator evidence that can't be faked.\n- The handoff requirement.\n\nBecause of the cap, some wording was shortened:\n- **Dropped:** explicit lines about existing agent subscriptions being outside the budget and about not inventing extra features.\n- **Compressed:** \"Existing approved services within current authority\" and \"reserve enough for verification\" are now much terser.\n\nNext builder: read `objective.md` first, then `goal-objective.md`. The first step is to build the earliest running slice of the coordinator-to-helper flow, with budget spent so far at 0 NOK. I haven't started building anything, and I didn't touch the host, `objective.md` or the host's storage and log files.",
+    "usage": {
+      "inputTokens": 30,
+      "outputTokens": 5413,
+      "cacheReadTokens": 459785,
+      "cacheWriteTokens": 31131
+    }
+  }
+}

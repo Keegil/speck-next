@@ -1,0 +1,11 @@
+# Goal and product-quality guidance review
+
+Fresh native Cursor Claude Opus 5.5 High accepted source `38e329e30de814d9521fd6ea897ca930ed03d60b` through frozen packet `081d1bead4200b8eaceb46625d1bf08160db7d9e`. The process exited 0 after 75.758 seconds with a successful terminal result and eight completed tool events. The reviewer did not author the method or corrected goal.
+
+The first review found semantic omissions despite successful goal registration/read-back, and an incomplete positive control. A targeted self-comparison rerun still omitted the low-reading requirement. Both failures remain in the evidence. The method now applies its existing substantive-review rule to consequential goal rewrites before activation. A second reading accepted the corrected goal conditionally on retaining “realistic content”; the integrator applied that exact correction before registration and checked the stored text.
+
+The final reviewer executed four isolated controls: untouched setup and missing read-back failed with exit 1; both the faithful and deliberately lossy goals passed mechanics with exit 0. It independently accepted the faithful text and rejected the lossy text on meaning, compared the corrected registered text with the reviewed control, and ran the surface checker successfully: twenty regular files including marker, 50,585 bytes, five skills and one discovery link. The initial cleanup command was blocked; the reviewer recovered by creating a fresh scratch subdirectory. No tracked source was changed.
+
+Earlier review sessions used Ask mode and could not execute writes. The final fresh Agent session allowed only scratch test artifacts. Its attempted checker call on the archived evidence folder failed because the archive intentionally lacks executable fixture inputs; it then verified the stored text and events directly. The complete live fixture was separately checked by the integrator.
+
+Acceptance covers the instruction package and these bounded cases. The reviewer did not rerun the full suite, hosted Linux checks, or every prior native task. It did not test native host continuation, spontaneous reviewer recruitment or downstream product quality. Raw native events and packet manifests remain under `.local/goal-quality-7.4/`.

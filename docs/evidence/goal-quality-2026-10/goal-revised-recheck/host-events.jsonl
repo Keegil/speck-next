@@ -1,0 +1,5 @@
+{"action": "show", "budget_nok": 0, "goal_id": 1, "objective_sha256": "87174595cbdaa98957c3e447f0f958acb61e58a1bc207cdd8ffa0bb0f500d582", "status": "active"}
+{"action": "rejected", "budget_nok": 0, "goal_id": 1, "objective_sha256": "87174595cbdaa98957c3e447f0f958acb61e58a1bc207cdd8ffa0bb0f500d582", "reason": "Objective exceeds the 2000-character limit (2016)", "status": "active"}
+{"action": "rejected", "budget_nok": 0, "goal_id": 1, "objective_sha256": "87174595cbdaa98957c3e447f0f958acb61e58a1bc207cdd8ffa0bb0f500d582", "reason": "Objective exceeds the 2000-character limit (2002)", "status": "active"}
+{"action": "set", "budget_nok": 750, "goal_id": 2, "objective_sha256": "ba90e581fcbd0390c3038defd80d174a2edb7931f23f56527f442d884c9a60e8", "status": "active"}
+{"action": "show", "budget_nok": 750, "goal_id": 2, "objective_sha256": "ba90e581fcbd0390c3038defd80d174a2edb7931f23f56527f442d884c9a60e8", "status": "active"}

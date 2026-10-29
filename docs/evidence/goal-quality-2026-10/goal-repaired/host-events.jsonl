@@ -1,0 +1,2 @@
+{"action": "set", "budget_nok": 750, "goal_id": 2, "objective_sha256": "7b75228014e46ae0e40c9a4534ddf7f3a2d2a6ebf66cf12437db533be9b6346e", "status": "active"}
+{"action": "show", "budget_nok": 750, "goal_id": 2, "objective_sha256": "7b75228014e46ae0e40c9a4534ddf7f3a2d2a6ebf66cf12437db533be9b6346e", "status": "active"}

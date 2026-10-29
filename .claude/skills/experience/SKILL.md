@@ -11,7 +11,7 @@ Gather direct evidence about whether someone can complete the requested job with
 
 Read the request and relevant promises. Identify the actual build, commit, or working-tree snapshot being evaluated, with the needed entry point and test data. Include uncommitted changes when they are part of the claim. Use isolation when it protects data or makes the result reproducible; a clean clone is useful only if it contains the subject under review.
 
-Choose the smallest set of scenarios that can establish or overturn the claim. One affected flow may be enough. Add accounts, personas, or failure conditions for distinct risks, rather than to fill a roster. Coordinate parallel tests that share mutable state.
+Choose the smallest set of representative scenarios that can establish or overturn the claim. Include content states that could change the result: for example, long generated explanations or populated history when judging readability. A sparse screen does not establish quality for those states. Add accounts, personas, or failure conditions for distinct risks, rather than to fill a roster. Coordinate parallel tests that share mutable state.
 
 ## Run the scenarios
 
@@ -27,6 +27,6 @@ Before a product exists, test a proposal against raw user evidence, repository b
 
 ## Return evidence someone can assess
 
-Report the subject tested, actions actually run, observed results, reproducible findings, and material gaps. Keep expected behavior separate from observations. Mark unavailable runtime checks as untested. If a failure is repaired, re-run the affected complete sequence before closing that finding.
+Report the version and content states tested, actions actually run, observed results, reproducible findings, and material gaps. Keep expected behavior separate from observations. Mark unavailable runtime checks as untested. If a failure is repaired, re-run the affected complete sequence before closing that finding.
 
 Stop when the affected scope has adequate evidence or a concrete blocker is identified. For substantive acceptance, the reviewer must not have contributed to the change. That same fresh context may gather evidence and use `judge` to decide acceptance; a second testing context is not inherently necessary.
