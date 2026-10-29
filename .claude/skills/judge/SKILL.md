@@ -19,14 +19,14 @@ For code, identify the task's base and reviewed head. Inspect the full net diff 
 - Evaluate workmanship alongside conformance using criteria relevant to the audience, job, scope, and budget: visual coherence and ease for interfaces, robustness and maintainability for code, factual support and clear reasoning for analysis or writing. Exercise the uncertainty that matters. Passing author tests and completion marks do not settle whether the agreed job works. Run the smallest probe that closes a consequential evidence gap; use `experience` for a broader workflow or failure walkthrough when needed.
 - For applications where people carry out work, inspect whether the intended user can start the task directly and what they must read or navigate through first. A visible action button alone does not establish an effective workflow. Check whether working content, navigation, and supporting detail help people choose, perform, and check the task. Judge reports and information-led views by their intended reading, comparison, or monitoring job.
 - Check favorable claims against contrary evidence. For proposals, test assumptions against the repository, users, or external evidence instead of only checking documents against each other.
-- Keep unresolved disagreements visible. Distinguish a concrete quality or promise failure from owner taste; optional unrelated polish does not block acceptance, but do not weaken agreed execution-quality expectations to make sloppy scoped work pass. Do not open endless perfection loops.
+- Keep unresolved disagreements visible. Classify readability, comprehension, and coherence findings by their consequence for the user job and agreed quality. Working controls do not make these findings optional. Reserve owner choices for consequential changes of direction or genuinely unsettled preferences; ordinary authorized design repairs belong in the work. Unrelated polish does not block acceptance or justify endless perfection loops.
 
 Use another specialist only for a distinct material risk the current review cannot cover. One fresh context can both exercise the work and decide acceptance.
 
 ## Give a usable decision
 
-State whether the requested result is acceptable, needs a concrete repair, or lacks consequential evidence. Name the inspected subject, supporting checks, findings, and limits. Do not imply that untested behavior passed.
+State whether the requested result is acceptable, needs a concrete repair, or lacks consequential evidence. Name the inspected subject, supporting checks, findings, and limits. A narrow review supports only that scope, not whole-product acceptance. Do not imply that untested behavior passed.
 
-For each blocking finding, explain its consequence and the smallest next action: fix the implementation, correct the plan, resolve a promise, or obtain missing evidence. Escalate only consequential owner choices that existing instructions do not settle. Ordinary authorized fixes need no new approval.
+For each blocking finding, explain its consequence and the smallest next action: implement a design or behavior repair, correct the plan, resolve a promise, or obtain missing evidence. Escalate only consequential owner choices that existing instructions do not settle. Ordinary authorized fixes need no new approval.
 
 After a repair, re-run the affected scenario and inspect other paths sharing the same failing mechanism. Finish when the agreed scope is supported and material open items are explicit; unrelated improvement ideas do not hold acceptance.

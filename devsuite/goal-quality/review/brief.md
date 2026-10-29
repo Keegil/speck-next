@@ -1,0 +1,3 @@
+# Dispatch desk
+
+A small workshop needs to review a prepared shipment and dispatch it safely. On phone and desktop, shipment contents and the next meaningful action should lead. The operator should not have to read a report to find which package needs attention. Address exceptions must be visible before dispatch. Explanations are available when useful, with qualifications intact. The approved visual identity is neutral with blue accents. A complete result includes preparing a shipment, correcting its contents, seeing consequences, dispatching to the sandbox carrier and reopening its persisted status. This assignment authorizes ordinary reversible design and code repairs, not a rebrand or real carrier writes.
