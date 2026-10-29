@@ -1,0 +1,102 @@
+[
+  {
+    "tool": "shellToolCall",
+    "command": "python3 goal_host.py --help; cat objective.md; cat host-state.json"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "python3 goal_host.py show; python3 goal_host.py set --help; python3 goal_host.py status --help"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "43de03c9ff875cbacd4e210a89647ead8de7ad741bde280ce4dd0131ea7fa4bc"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "58cc6d5b6fbc091ed753349dd955db607ff21740472ec8fe22fdae29701e9799"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "2405f535ebc20dacc5e43e47639ecc96f6e2759f2e171e132e5cffed9f138492"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "sleep 1; cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "ce700d8f37212b5bdc71483826f551421fd8bc7cc14532c43ce6747e2e3a31dd"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "3f22ad2360e9b0a01d7242da37b8521cbe0b817cbb03c4f06f88b49da58e4cbd"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "d06fed36fbf6cc02c8269fa2ae0ea0ea328dedc2011040194a102da6029b3438"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "42717fd9920f990ac56f9407e589720b3c01076ce520594394f51b7b6dc31bf0"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "c091737f39a32fc05d636f9ba860058be310daa2c1c081c07ae9b7fb8723ab39"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "d88902bb7e2ef435db1a9d7f9571636333b667acc389ff3dd9c93864f2b9f436"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "d74e4e70253096fb80a9646cd3eabdd30b17d2b0c8b6f3069b97940cd3d4bcad"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/goal-objective.md",
+    "contentSha256": "d9e1ed021c794a9124a9746fa2c186d56ef666afb606705a610bda6b1c89fd41"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m goal-objective.md && python3 goal_host.py set --objective-file goal-objective.md --budget-nok 750 --status active && python3 goal_host.py show"
+  }
+]

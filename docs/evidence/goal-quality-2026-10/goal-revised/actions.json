@@ -1,0 +1,40 @@
+[
+  {
+    "tool": "readToolCall",
+    "path": "<workspace>/objective.md"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "python3 goal_host.py --help; python3 goal_host.py status 2>&1 | head -30"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "python3 goal_host.py show; python3 goal_host.py set -h"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "wc -m registered-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/registered-objective.md",
+    "contentSha256": "6f5efb53b9a53cc717d1cd6fa3b140b6df00a58624f01196d7c4a8082ff26b15"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m registered-objective.md"
+  },
+  {
+    "tool": "editToolCall",
+    "path": "<workspace>/registered-objective.md",
+    "contentSha256": "11c344360c0030e99b9c7517712dfa00ee7e5dcd8360edab78613c5d6ff3e5f8"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && wc -m registered-objective.md"
+  },
+  {
+    "tool": "shellToolCall",
+    "command": "cd <workspace> && python3 goal_host.py set --objective-file registered-objective.md --budget-nok 750 --status active && python3 goal_host.py show"
+  }
+]
