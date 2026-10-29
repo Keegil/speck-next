@@ -12,7 +12,7 @@ No new skill, installed file, mandatory record, fixed roster, approval flow or s
 
 ## Validation
 
-All 34 deterministic checks passed locally: nine surface controls, fourteen toolkit controls and eleven installer/upgrade checks. The installed method is 50,179 bytes at `de68c37` across nineteen canonical files plus marker, with five skills and one discovery link. Three modified skill manifests validate; `git diff --check` passed.
+All 34 deterministic checks passed locally: nine surface controls, fourteen toolkit controls and eleven installer/upgrade checks. The final installed method is 50,585 bytes across nineteen canonical files plus marker, with five skills and one discovery link. Three modified skill manifests validate; `git diff --check` passed.
 
 Six fresh native Cursor runs compared 7.3.0 (`ba117e1`) with candidate `67199d2`, using the same `claude-sonnet-5-5-medium` selector and a 120-second limit per task. The runtime reported Claude Sonnet 5.5 300K Medium. Each arm received the same task, initial files, installed method and tool permissions. Existing operator instructions remain a shared influence, so these are comparisons of the real configured stack, not isolated model experiments. The cases and external criteria were frozen before the runs.
 
@@ -28,11 +28,13 @@ Both versions handled the requested tasks. The goal comparison uses a simulated 
 
 The first independent semantic review rejected the evidence package: the revised goal omitted low-reading-effort and some authority/budget boundaries, despite successful read-back. The prior goal retained those clauses more clearly. It also found that the initial positive control omitted the helper job. That control was repaired; the lossy control intentionally remains mechanically valid.
 
-An item-by-item comparison instruction was added and the same goal task was rerun once with a fresh context at `de68c37`: 54.851 seconds, successful registration and read-back, 1,998 stored characters. It restored several boundaries but again omitted an explicit low-reading requirement. This tuned rerun does not demonstrate semantic reliability. The method now explicitly applies its existing substantive-review rule to consequential product-goal rewrites, before the goal directs product work. Unchanged transfers and obvious wording fixes keep local checks only. The forthcoming review and repair of that stored goal exercise this workflow through the external integrator; spontaneous reviewer recruitment is not claimed.
+An item-by-item comparison instruction was added and the same goal task was rerun once with a fresh context at `de68c37`: 54.851 seconds, successful registration and read-back, 1,998 stored characters. It restored several boundaries but again omitted an explicit low-reading requirement. This tuned rerun does not demonstrate semantic reliability. The method now explicitly applies its existing substantive-review rule to consequential product-goal rewrites, before the goal directs product work. Unchanged transfers and obvious wording fixes keep local checks only. The subsequent independent review and repair exercised this workflow through the external integrator; spontaneous reviewer recruitment is not claimed.
 
 The first review also noted that the prior workflow handoff stated an untraced persistence diagnosis as fact; the revised handoff kept the cause uncertain. The supplied observations support the symptom, not that diagnosis. The review task remains a bounded decision exercise, not a full product judgment.
 
-Independent acceptance of the final package and the corrected control remains pending.
+Fresh native Claude Opus 5.5 independently accepted the final package at `38e329e`, executed positive/negative goal controls and the surface check, and accepted the corrected 1,999-character goal while rejecting the lossy control on meaning. The integrator registered the reviewed text through the fixture host and verified exact equality after read-back. [Review scope and limitations](../docs/reviews/goal-quality-7.4.md). This demonstrates an externally orchestrated review/repair path, not autonomous semantic reliability.
+
+[Hosted checks](https://github.com/Keegil/speck-next/actions/runs/40935985841) passed at that exact source SHA. The changes are pushed on `codex/goal-quality-continuity`. The GitHub connector requested submission of its PR form; a read-back found no open PR for the branch. Version 7.4.0 remains an unpublished candidate. No adopter has been upgraded.
 
 ## Use and remaining evidence
 
