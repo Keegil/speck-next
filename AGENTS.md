@@ -34,6 +34,8 @@ When asked to prepare a goal for autonomous work, derive a compact, usable objec
 
 When authorized to activate or replace a goal, use the host's existing mechanism. Before shortening or transfer, identify the concrete outcomes, experience requirements, authority, budgets and stopping conditions that must survive. Read back the actual active objective and status after registration and compare each requirement with its retained meaning, including qualifications and boundaries. Repair omissions before continuing; a successful registration, overall resemblance or source link does not establish fidelity. Keep this comparison in the existing handoff when useful; no separate record is required. Disclose an unavailable read-back. Completing a setup step does not complete the product goal. Preserve pauses and limits; identify genuine external dependencies without filling the wait with unrelated work.
 
+A consequential rewrite of a product goal is substantive work under **Review** below. Have that fresh context compare the operative text with the source before it directs product work; repair material losses and check the registered result. This can be part of the existing handoff review. An unchanged transfer or obvious wording fix needs only a local check.
+
 ## Execution quality
 
 Ordinary authorized work includes thoughtful professional execution across product choices, interaction and visual design, engineering, writing, and delivery. Smaller scope means fewer things delivered well, not lower care within what ships.
